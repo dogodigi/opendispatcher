@@ -1,0 +1,402 @@
+html {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+body {
+    color: #000000;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.layActive {
+    background-color: #AA0009 !important;
+    opacity: 1 !important;
+    filter: alpha(opacity=100) !important; /* For IE8 and earlier */
+    color: #ffffff;
+}
+.hb {
+    border: 1px solid #3388ff;
+    background-color: #ff00ff;
+    border-radius: 9px;
+    float: left;
+    height: 6px;
+    width: 6px;
+    margin-right: 8px;
+}
+.hbpb{
+    border: 2px solid #3388ff;
+    background-color: #ff00ff;
+    border-radius: 9px;
+    float: left;
+    height: 6px;
+    width: 6px;
+    margin-right: 8px;
+}
+
+.bpb {
+    border: 2px solid #3388ff;
+    background-color: #ff0000;
+    border-radius: 9px;
+    float: left;
+    height: 6px;
+    width: 6px;
+    margin-right: 8px;
+}
+
+.mb {
+    border: 2px solid #555555;
+    background-color: #ff0000;
+    border-radius: 9px;
+    float: left;
+    height: 6px;
+    width: 6px;
+    margin-right: 8px;
+}
+
+.vb {
+    border: 2px solid #555555;
+    background-color: #0000ff;
+    border-radius: 9px;
+    float: left;
+    height: 6px;
+    width: 6px;
+    margin-right: 8px;
+}
+.gef_big{
+	    background: url('../images/gef_icon_48.png') no-repeat center center scroll;
+	    height: 4em;
+	    width: 4em;
+	    margin: 1em;
+	    cursor: pointer;
+	    display: block;
+    }
+    .pdf_big{
+	    background: url('../images/pdf_icon_48.png') no-repeat center center scroll;
+	    height: 4em;
+	    width: 4em;
+	    margin: 1em;
+	    cursor: pointer;
+	    display: block;
+    }
+@media screen {
+    .aan {
+        background-color: #AA0009 !important;
+        opacity: 1 !important;
+        filter: alpha(opacity=100) !important; /* For IE8 and earlier */
+        color: #ffffff;
+    }
+    .uitleg {
+        position:absolute;
+        padding: 0.3em;
+        padding-top:0.8em;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
+    ul.icons {
+    	list-style-type: none;
+    	margin-left: -1em;
+    	text-indent: -0.4em;
+	}
+	li [class^="icon-"], li [class*=" icon-"] {
+    	width: 0.4em !important;
+	}
+    .bor_item{}
+    .mtab {
+        border-bottom: 1px solid #cccccc;
+        border-left: 1px solid #cccccc;
+        border-right: 1px solid #cccccc;
+        color: #000000;
+        -moz-border-radius-bottomleft: 10px 10px;
+        border-bottom-left-radius: 10px 10px;
+        -moz-border-radius-bottomright: 10px 10px;
+        border-bottom-right-radius: 10px 10px;
+		width: 1.2em;
+		text-align: center;
+		font-size: 3em;
+        position: absolute;
+        float: right;
+        top: 0;
+        z-index: 303;
+        cursor: pointer;
+        background-color: #ffffff;
+    }
+    .active{
+    	color: #cc9933;
+    }
+    .geolocation {
+    	right: 3.9em;
+    }
+    .lay{
+    	right: 2.6em;
+    }
+    .over{
+    	right: 1.3em;
+    }
+    .info {
+    	right: 0;
+        z-index: 302 !important;
+    }
+    .zoek {
+        background: #cccc00 url('../images/zoek_wit.png') no-repeat center center scroll;
+        right: 13.5em;
+        margin-right: 1%;
+    }
+    
+    .olControlZoom {
+        display: none !important;
+    }
+    .baselayertitle{
+        color: #797979;
+	    border-bottom: 1px solid #cc9933 !important;
+    }
+    #mapc1map1 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+    #infopanel{
+        display: none;
+        border: 1px solid #cccccc;
+        -moz-border-radius-topleft: 10px 10px;
+        border-top-left-radius: 10px 10px;
+        -moz-border-radius-topright: 10px 10px;
+        border-top-right-radius: 10px 10px;
+        position: absolute;
+	      opacity:0.9;
+        filter:alpha(opacity=90); /* For IE8 and earlier */
+        padding: 1%;
+        height: 100%;
+        bottom: 0;
+        right: 0;
+        z-index: 302;
+        background-color: #ffffff;
+        overflow: hidden;
+    }
+    .infocontent{
+        padding-left: 0.5em;
+        padding-top: 3em;
+    }
+    .infofieldtitle{
+        color: #cc9933;
+    }
+    .olControlScaleLineBottom{
+    	display: none;
+    }
+    #zoekpanel{
+        display: none;
+        border: 1px solid #cccccc;
+        -moz-border-radius-topleft: 10px 10px;
+        border-top-left-radius: 10px 10px;
+        -moz-border-radius-topright: 10px 10px;
+        border-top-right-radius: 10px 10px;
+        position: absolute;
+	    opacity:0.9;
+        filter:alpha(opacity=90); /* For IE8 and earlier */
+        width: 98%;
+        padding: 1%;
+        bottom: 0;
+        z-index: 301;
+        background-color: #ffffff;
+        overflow: hidden;
+    }
+    
+    #zoekpanel div {
+        font-size: 1.6em;
+        padding: 0.8em;
+        text-align: center;
+    }
+    
+    #overlaypanel{
+        display: none;
+        border: 1px solid #cccccc;
+        -moz-border-radius-topleft: 10px 10px;
+        border-top-left-radius: 10px 10px;
+        -moz-border-radius-topright: 10px 10px;
+        border-top-right-radius: 10px 10px;
+        position: absolute;
+	    opacity:0.9;
+        filter:alpha(opacity=90); /* For IE8 and earlier */
+        width: 98%;
+        padding: 1%;
+        bottom: 0;
+        z-index: 301;
+        background-color: #ffffff;
+        overflow: hidden;
+    }
+    #overlaypanel input {
+        display: none;
+    }
+
+    #baselayerpanel{
+        /*font-size: 0.8em;*/
+        display: none;
+        border: 1px solid #cccccc;
+        -moz-border-radius-topleft: 10px 10px;
+        border-top-left-radius: 10px 10px;
+        -moz-border-radius-topright: 10px 10px;
+        border-top-right-radius: 10px 10px;
+        position: absolute;
+	    opacity:0.9;
+        filter:alpha(opacity=90); /* For IE8 and earlier */
+        width: 98%;
+        padding: 1%;
+        bottom: 0;
+        z-index: 301;
+        background-color: #ffffff;
+        overflow: hidden;
+    }
+
+    .dv_begin{
+        font-size: 3em;
+        color: #FFFFFF;
+	    display: block;
+	    background-color: #CCCC00;
+        -moz-border-radius: 4px 4px;
+        border-radius: 4px 4px;
+        cursor: pointer;
+        text-align: center;
+    	width: 1.2em;
+        bottom: 0;
+        left: 0;
+        position: absolute;
+    }
+
+    .dv_eind{
+        font-size: 3em;
+        color: #FFFFFF;
+	    display: block;
+	    background-color: #CCCC00;
+        -moz-border-radius: 4px 4px;
+        border-radius: 4px 4px;
+        cursor: pointer;
+        text-align: center;
+    	width: 1.2em;
+        bottom: 0;
+        right: 0;
+        position: absolute;
+    }
+
+    .dv_title {
+        border-bottom: 1px solid #CCCC00 !important;
+        cursor: pointer;
+        font-weight: bolder;
+        height: 1em;
+        margin: 0.1em;
+        opacity: 1 !important;
+        padding: 1em;
+    }
+    .bor_title {
+	    width: 100%;
+	    cursor: pointer;
+    }
+    .bor_datum {
+	    margin-right: 3px;
+	    font-size: 0.8em;
+    }
+    .bor_ident{
+	    color: #000000;
+	    margin-right: 3px;
+	    font-size: 0.8em;
+    }
+    .bor_id {
+	    float: left;
+	    margin: 2px;
+    }
+    .bor_sub {
+	    margin-top: 5px;
+	    margin-left: 5px;
+	    margin-bottom: 20px;
+
+    }
+    .gef_big{
+	    background: url('../images/gef_icon_48.png') no-repeat center center scroll;
+	    height: 4em;
+	    width: 4em;
+	    margin: 1em;
+	    cursor: pointer;
+	    display: block;
+    }
+    .pdf_big{
+	    background: url('../images/pdf_icon_48.png') no-repeat center center scroll;
+	    height: 4em;
+	    width: 4em;
+	    margin: 1em;
+	    cursor: pointer;
+	    display: block;
+    }
+    .gef{
+	    background: url('../images/320_gef_icon_16.gif') no-repeat left top scroll;
+	    height: 16px;
+	    width: 16px;
+	    float: right;
+	    margin: 2px;
+	    cursor: pointer;
+    }
+    .pdf{
+	    background: url('../images/320_pdf_icon_16.gif') no-repeat left top scroll;
+	    height: 16px;
+	    width: 16px;
+	    float: right;
+	    margin: 2px;
+	    cursor: pointer;
+    }
+}
+@media screen and (max-width: 600px) {
+    #logo{
+        background: url('../images/brandweer-nederland_alpha_shaded-s.png') no-repeat center center scroll;
+        height: 60px;
+        width: 60px;
+        margin: 0;
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    #infopanel{
+        width: 98%;
+    }
+    #overlaypanel div {
+        font-size: 1.6em;
+        padding: 0.2em;
+        text-align: center;
+    }
+    #baselayerpanel div {
+        font-size: 1.6em;
+        padding: 0.2em;
+        text-align: center;
+    }
+}
+@media screen and (min-width: 601px) {
+    #logo{
+        background: url('../images/brandweer-nederland_alpha_shaded.png') no-repeat center center scroll;
+        height: 90px;
+        width: 90px;
+        margin: 0;
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    #infopanel{
+        width: 30%;
+    }
+    #overlaypanel div {
+        font-size: 1.3em;
+        padding: 0.5em;
+        text-align: center;
+    }
+    #baselayerpanel div {
+        font-size: 1.3em;
+        padding: 0.5em;
+        text-align: center;
+    }
+}
