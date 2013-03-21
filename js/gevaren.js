@@ -9,6 +9,7 @@ var gevaren = {
      * URL naar een statisch boringen bestand in gml formaat
      */
     url: "/geoserver/zeeland/wms?",
+    namespace: "zeeland",
     /**
      * Laag. Wordt geiniteerd met de functie gevaren.show() kan worden overruled
      */
@@ -20,8 +21,8 @@ var gevaren = {
      */
     show: function(activate) {
         this.layer = new OpenLayers.Layer.WMS("Onderkende gevaren en inzetbijzonderheden", this.url,
-                {layers: 'zeeland:WFS_tblGevaarlijk_Stoffen', format: 'image/png', transparent: true},
-        {transitionEffect: 'resize', singleTile: false, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck"});
+                {layers: this.namespace + ':WFS_tblGevaarlijk_Stoffen', format: 'image/png', transparent: true},
+        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck"});
         if (activate === true) {
             map.addLayers([
                 this.layer

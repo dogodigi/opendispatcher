@@ -8,6 +8,26 @@ var baselayers = [];
 var overlays = [];
 var modules = [];
 
+
+/**
+ * 
+ * @param {String} variable
+ * @param {String} defaultvalue
+ * @returns {String} the value for the given queryparameter
+ */
+function getQueryVariable(variable, defaultvalue) {
+    var query = window.location.search.substring(1);
+    var vars = query.split('&');
+    var returnval = defaultvalue;
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) === variable) {
+            returnval = decodeURIComponent(pair[1]);
+        }
+    }
+    return returnval;
+}
+
 /**
  * Functie voor updaten van de zichtbaarheid van baselayers
  * @param {integer} nr
@@ -55,7 +75,8 @@ function toggleOverlay(obj) {
  * @param feature
  */
 function onFeatureSelect(feature) {
-    $('#tb03').toggleClass('active');
+    $('#infopanel').html('');
+    $('#tb03').addClass('active');
     $.each(modules, function(mod_index, module) {
         if (feature.layer.name === module.layer.name) {
             module.select(feature);
@@ -74,7 +95,7 @@ function onFeatureSelect(feature) {
  * @param feature
  */
 function onFeatureUnselect(feature) {
-
+    $('#mtab').removeClass('active');
     var i;
     for (i = 0; i < map.popups.length; i++) {
         map.popups[i].destroy();
@@ -99,7 +120,6 @@ function init() {
         resolutions: [860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210, 0.105, 0.0525],
         maxExtent: new OpenLayers.Bounds(-65200.96, 242799.04, 375200.96, 68320096)
     };
-
     map = new OpenLayers.Map(options);
     OpenLayers.Lang.setCode("nl");
     baselayers[0] = new OpenLayers.Layer.WMS('BRT achtergrond', 'http://geodata.nationaalgeoregister.nl/wmsc?',
@@ -109,26 +129,6 @@ function init() {
             {layers: "lufo2005-1m", format: "image/jpeg", transparent: false},
     {transitionEffect: 'resize', singleTile: false, buffer: 0, isBaseLayer: true, visibility: true, attribution: "NLR"});
 
-    /*
-     overlays[0] = new OpenLayers.Layer.WMS('Vlakken','http://safetymaps.nl/geoserver/zeeland/wms?', 
-     {layers: 'zeeland:WFS_tblDBK_Polygon',format: 'image/png',transparent: true},
-     {transitionEffect: 'resize',singleTile: false, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck"});
-     overlays[1] = new OpenLayers.Layer.WMS('Lijnen','http://safetymaps.nl/geoserver/zeeland/wms?', 
-     {layers: 'zeeland:WFS_tblCustom_Polyline',format: 'image/png',transparent: true},
-     {transitionEffect: 'resize',singleTile: false, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck"});
-     overlays[2] = new OpenLayers.Layer.WMS('Compartimenten','http://safetymaps.nl/geoserver/zeeland/wms?', 
-     {layers: 'zeeland:WFS_tblBrandcompartimentering',format: 'image/png',transparent: true},
-     {transitionEffect: 'resize',singleTile: false, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck"});
-     overlays[3] = new OpenLayers.Layer.WMS('Gevaarlijke stoffen','http://safetymaps.nl/geoserver/zeeland/wms?', 
-     {layers: 'zeeland:WFS_tblGevaarlijk_Stoffen',format: 'image/png',transparent: true},
-     {transitionEffect: 'resize',singleTile: false, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck"});
-     overlays[4] = new OpenLayers.Layer.WMS('Teksten','http://safetymaps.nl/geoserver/zeeland/wms?', 
-     {layers: 'zeeland:WFS_tblLabels',format: 'image/png',transparent: true},
-     {transitionEffect: 'resize',singleTile: false, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck"});
-     overlays[5] = new OpenLayers.Layer.WMS('Symbolen','http://safetymaps.nl/geoserver/zeeland/wms?', 
-     {layers: 'zeeland:WFS_tblSymbol_Point',format: 'image/png',transparent: true},
-     {transitionEffect: 'resize',singleTile: false, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck"});
-     */
     map.addLayers(baselayers);
 
     $('#overlaypanel').append('<div class="baselayertitle">Lagen (aan/uit):</div>');
@@ -137,55 +137,57 @@ function init() {
     $.each(baselayers, function(bl_index, bl) {
         $('#baselayerpanel').append('<div class="bl" onclick="toggleBaseLayer(' + bl_index + ');">' + bl.name + '</div>');
     });
-
-    /**
-     * Initialiseer de selectFeature Control
-     * 
-     * De lagen worden in de afzonderlijke modules toegevoegd 
-     * indien deze de selectFeature Control ondersteunen
-     */
-    /*
-     selectControl = new OpenLayers.Control.SelectFeature(
-     [],
-     {
-     onSelect: onFeatureSelect,
-     onUnselect: onFeatureUnselect,
-     clickout: false, toggle: true,
-     multiple: false, hover: false,
-     toggleKey: "ctrlKey", // ctrl key removes from selection
-     multipleKey: "shiftKey" // shift key adds to selection
-     }
-     );
-     map.addControl(selectControl);
-     selectControl.activate();
-     */
-    toggleBaseLayer(0);
-    $.each(modules, function(mod_index, module) {
-        module.show(true);
-    });
-    map.setCenter(new OpenLayers.LonLat(45247, 387852), 3);
-
-    // Tonen RD-coordinaten
-    var mousePos = new OpenLayers.Control.MousePosition({numDigits: 0, div: OpenLayers.Util.getElement('coords')});
-    map.addControl(mousePos);
-    if (geolocate) {
-        map.addLayers([vector]);
-        map.addControl(geolocate);
-    }
-    scalebar = new OpenLayers.Control.ScaleLine();
-    map.addControl(scalebar);
-    map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));
-    map.events.register('click', map, function(e) {
-        $('#infopanel').html('');
-        $.each(modules, function(mod_index, module) {
-            if (typeof(module.getfeatureinfo) !== "undefined") {
-                module.getfeatureinfo(e);
+    var wms_url;
+    var wms_namespace;
+    var actieve_regio = getQueryVariable('regio','brabant');
+    $.getJSON('data/regios.json', function(data) {
+        if (data.type === "regiocollectie") {
+            $.each(data.regios, function(key, val) {
+                if (val.id === actieve_regio) {
+                    if (val.gebied.geometry.type === "Point") {
+                        map.setCenter(
+                                new OpenLayers.LonLat(
+                                val.gebied.geometry.coordinates[0],
+                                val.gebied.geometry.coordinates[1]
+                                ).transform(
+                                new OpenLayers.Projection("EPSG:28992"),
+                                map.getProjectionObject()
+                                ),
+                                val.gebied.zoom
+                                );
+                    }
+                    wms_url = val.safetymaps_url;
+                    wms_namespace = val.id;
+                }
+            });
+            toggleBaseLayer(0);
+            $.each(modules, function(mod_index, module) {
+                module.namespace = wms_namespace;
+                module.url = wms_url;
+                module.show(true);
+            });
+            // Tonen RD-coordinaten
+            var mousePos = new OpenLayers.Control.MousePosition({numDigits: 0, div: OpenLayers.Util.getElement('coords')});
+            map.addControl(mousePos);
+            if (geolocate) {
+                map.addLayers([vector]);
+                map.addControl(geolocate);
             }
-        });
+            scalebar = new OpenLayers.Control.ScaleLine();
+            map.addControl(scalebar);
+            //map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));
+            map.events.register('click', map, function(e) {
+                $('#infopanel').html('');
+                $.each(modules, function(mod_index, module) {
+                    if (typeof(module.getfeatureinfo) !== "undefined") {
+                        module.getfeatureinfo(e);
+                    }
+                });
 
-        //check welke module er een getfeatureinfo actief heeft, gebruik deze
+                //check welke module er een getfeatureinfo actief heeft, gebruik deze
+            });
+        }
     });
-
 }
 
 $(document).ready(function() {
@@ -193,23 +195,39 @@ $(document).ready(function() {
     $('#infopanel').html(info_text);
 
     $('.mtab').click(function() {
-        $(this).toggleClass('active');
-        if (this.id === "tb04") {
-            if ($(this).hasClass('active') === true) {
-                geolocate.activate();
-            } else {
+        if ($(this).hasClass('active')){
+            $('.mtab').removeClass('active');
+            if (this.id === "tb04") {
                 vector.removeAllFeatures();
                 geolocate.deactivate();
             }
-        }
-        if (this.id === "tb03") {
-            $('#infopanel').toggle();
-        }
-        if (this.id === "tb02") {
-            $('#baselayerpanel').toggle();
-        }
-        if (this.id === "tb01") {
-            $('#overlaypanel').toggle();
+            if (this.id === "tb03") {
+                $('#infopanel').hide();
+            }
+            if (this.id === "tb02") {
+                $('#baselayerpanel').hide();
+            }
+            if (this.id === "tb01") {
+                $('#overlaypanel').hide();
+            }
+        } else {
+            $('.mtab').removeClass('active');
+            $('.panel').hide();
+            $(this).addClass('active');
+            if (this.id === "tb04") {
+                if ($(this).hasClass('active') === true) {
+                    geolocate.activate();
+                }
+            }
+            if (this.id === "tb03") {
+                $('#infopanel').show();
+            }
+            if (this.id === "tb02") {
+                $('#baselayerpanel').show();
+            }
+            if (this.id === "tb01") {
+                $('#overlaypanel').show();
+            }
         }
     });
 });

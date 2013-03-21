@@ -1,0 +1,77 @@
+{
+    "type": "regiocollectie",
+    "regios": [{
+            "id": "avdict",
+            "titel": "Falck AVD",
+            "omschrijving": "Testomgeving Falck AVD",
+            "safetymaps_url": "/geoserver/avdict/wms?",
+            "gebied": {
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "urn:ogc:def:crs:EPSG::28992"
+                        }
+                    },
+                    "coordinates": [184648, 484420]
+                },
+                "zoom": 9
+            }
+        }, {
+            "id": "vnog",
+            "titel": "VNOG",
+            "omschrijving": "Veiligheidsregio Noord-Oost Gelderland",
+            "safetymaps_url": "/geoserver/vnog/wms?",
+            "gebied": {
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "urn:ogc:def:crs:EPSG::28992"
+                        }
+                    },
+                    "coordinates": [182103, 484046]
+                },
+                "zoom": 4
+            }
+        }, {
+            "id": "zeeland",
+            "titel": "Zeeland",
+            "omschrijving": "Veiligheidsregio Zeeland",
+            "safetymaps_url": "/geoserver/zeeland/wms?",
+            "gebied": {
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "urn:ogc:def:crs:EPSG::28992"
+                        }
+                    },
+                    "coordinates": [45247, 387852]
+                },
+                "zoom": 3
+            }
+        },
+        {
+            "id": "brabant",
+            "titel": "Brabant",
+            "omschrijving": "Veiligheidsregio Brabant",
+            "safetymaps_url": "/geoserver/brabant/wms?",
+            "gebied": {
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "urn:ogc:def:crs:EPSG::28992"
+                        }
+                    },
+                    "coordinates": [149756, 411527]
+                },
+                "zoom": 3
+            }
+        }]
+}

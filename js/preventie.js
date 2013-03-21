@@ -9,6 +9,7 @@ var preventie = {
      * URL naar een statisch boringen bestand in gml formaat
      */
     url: "/geoserver/zeeland/wms?",
+    namespace: "zeeland",
     /**
      * Laag. Wordt geiniteerd met de functie preventie.show() kan worden overruled
      */
@@ -20,8 +21,8 @@ var preventie = {
      */
     show: function(activate) {
         this.layer = new OpenLayers.Layer.WMS("Preventieve voorzieningen", this.url,
-                {layers: 'zeeland:WFS_tblCustom_Polyline,zeeland:WFS_tblSymbol_Point', format: 'image/png', transparent: true},
-        {transitionEffect: 'none', singleTile: false, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck"});
+                {layers: this.namespace + ':WFS_tblCustom_Polyline,' + this.namespace + ':WFS_tblSymbol_Point', format: 'image/png', transparent: true},
+        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck"});
         if (activate === true) {
             map.addLayers([
                 this.layer
@@ -78,7 +79,7 @@ var preventie = {
             params.x = e.xy.x;
             params.y = e.xy.y;
         }
-        OpenLayers.Request.GET({url: "/geoserver/zeeland/wms?", "params": params, callback: preventie.panel});
+        OpenLayers.Request.GET({url: preventie.url, "params": params, callback: preventie.panel});
         OpenLayers.Event.stop(e);
     },
     panel: function(response) {
