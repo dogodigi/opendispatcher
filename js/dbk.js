@@ -1,5 +1,6 @@
 OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 OpenLayers.Util.onImageLoadErrorColor = "transparent";
+
 Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <>";
 var info_text = "";
 var map;
@@ -7,7 +8,7 @@ var selectControl;
 var baselayers = [];
 var overlays = [];
 var modules = [];
-
+var regio;
 
 /**
  * 
@@ -46,7 +47,19 @@ function toggleBaseLayer(nr) {
         }
     }
 }
-
+function onClick(e){
+    $('#tb03').addClass('active');
+        $('#infopanel').html('');
+        $.each(modules, function(mod_index, module) {
+            if (typeof(module.getfeatureinfo) !== "undefined") {
+                module.getfeatureinfo(e);
+            }
+        });
+}
+function activateClick(){
+    map.events.register('click', map, onClick);
+    map.events.register('touchend', map, onClick);
+}
 /**
  * script voor updaten zichtbaarheid van overlays 
  * @param {<OpenLayers.Layer>} obj
@@ -63,56 +76,35 @@ function toggleOverlay(obj) {
         alert('layer niet gevonden (of meer dan 1)');
     }
 }
-
-/**
- * Acties op basis van een click in de kaart op een laag waarvoor de select
- * functie aanstaat. 
- * 
- * 1. Controleer of een module actief is
- * 2. Controleer of de laag voor de feature gelijk is aan die van de module
- * 3. Geef de feature door aan de betreffende module
- * 
- * @param feature
- */
-function onFeatureSelect(feature) {
-    $('#infopanel').html('');
-    $('#tb03').addClass('active');
-    $.each(modules, function(mod_index, module) {
-        if (feature.layer.name === module.layer.name) {
-            module.select(feature);
+function challengeAuth(regio) {
+    $.ajax({
+        url: "geoserver/" + regio.id + "/ows",
+        data: {"service": "wms","version": "1.3.0", "request": "GetCapabilities"},
+        method: 'GET',
+        error: function(jqXHR, textStatus, errorThrown) {
+            //@TODO what to do when auth fails?
+        },
+        success: function() {
+            successAuth(regio);
         }
+
     });
 }
 
-/**
- * Sluit popups en panels behorende bij een eerder geselecteerde feature
- * 
- * 1. Sluit alle popups
- * 2. Controleer of een module actief is
- * 3. Controleer of de laag van de feature gelijk is aan die van de module
- * 4. Geef de feature door aan de betreffende module
- * 
- * @param feature
- */
-function onFeatureUnselect(feature) {
-    $('#mtab').removeClass('active');
-    var i;
-    for (i = 0; i < map.popups.length; i++) {
-        map.popups[i].destroy();
-    }
+function successAuth(regio) {
     $.each(modules, function(mod_index, module) {
-        if (feature.layer.name === module.layer.name) {
-            module.unselect();
-        }
+        module.namespace = regio.id;
+        module.url = regio.safetymaps_url;
+        module.show(true);
     });
-    $('#infopanel').html(info_text);
+    activateClick();
 }
-
 /**
  * Initialisatie van de <OpenLayers.Map> 
  */
 function init() {
     var options = {
+        theme: null,
         div: 'mapc1map1',
         projection: new OpenLayers.Projection("EPSG:28992"),
         units: "m",
@@ -125,25 +117,19 @@ function init() {
     baselayers[0] = new OpenLayers.Layer.WMS('BRT achtergrond', 'http://geodata.nationaalgeoregister.nl/wmsc?',
             {layers: "brtachtergrondkaart", format: "image/png8", transparent: false, bgcolor: "0x99b3cc"},
     {transitionEffect: 'resize', singleTile: false, buffer: 0, isBaseLayer: true, visibility: true, attribution: "PDOK"});
-    baselayers[1] = new OpenLayers.Layer.WMS('NLR Luchtfoto 2005', 'http://gdsc.nlr.nl/wms/lufo2005',
-            {layers: "lufo2005-1m", format: "image/jpeg", transparent: false},
+    baselayers[1] = new OpenLayers.Layer.WMS('PDOK Luchtfoto 2009', 'http://geodata1.nationaalgeoregister.nl/luchtfoto/wms?',
+            {layers: "luchtfoto", format: "image/jpeg", transparent: false},
     {transitionEffect: 'resize', singleTile: false, buffer: 0, isBaseLayer: true, visibility: true, attribution: "NLR"});
 
     map.addLayers(baselayers);
-
-    $('#overlaypanel').append('<div class="baselayertitle">Lagen (aan/uit):</div>');
-    // Voeg de baselayers toe aan de baselayer panel
-    $('#baselayerpanel').append('<div class="baselayertitle">Selecteer kaart:</div>');
-    $.each(baselayers, function(bl_index, bl) {
-        $('#baselayerpanel').append('<div class="bl" onclick="toggleBaseLayer(' + bl_index + ');">' + bl.name + '</div>');
-    });
     var wms_url;
     var wms_namespace;
-    var actieve_regio = getQueryVariable('regio','brabant');
+    actieve_regio = getQueryVariable('regio', 'brabant');
     $.getJSON('data/regios.json', function(data) {
         if (data.type === "regiocollectie") {
             $.each(data.regios, function(key, val) {
                 if (val.id === actieve_regio) {
+                    regio = val;
                     if (val.gebied.geometry.type === "Point") {
                         map.setCenter(
                                 new OpenLayers.LonLat(
@@ -156,37 +142,27 @@ function init() {
                                 val.gebied.zoom
                                 );
                     }
-                    wms_url = val.safetymaps_url;
-                    wms_namespace = val.id;
                 }
             });
             toggleBaseLayer(0);
-            $.each(modules, function(mod_index, module) {
-                module.namespace = wms_namespace;
-                module.url = wms_url;
-                module.show(true);
-            });
-            // Tonen RD-coordinaten
-            var mousePos = new OpenLayers.Control.MousePosition({numDigits: 0, div: OpenLayers.Util.getElement('coords')});
-            map.addControl(mousePos);
-            if (geolocate) {
-                map.addLayers([vector]);
-                map.addControl(geolocate);
-            }
-            scalebar = new OpenLayers.Control.ScaleLine();
-            map.addControl(scalebar);
-            //map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));
-            map.events.register('click', map, function(e) {
-                $('#infopanel').html('');
-                $.each(modules, function(mod_index, module) {
-                    if (typeof(module.getfeatureinfo) !== "undefined") {
-                        module.getfeatureinfo(e);
-                    }
-                });
+            challengeAuth(regio);
 
-                //check welke module er een getfeatureinfo actief heeft, gebruik deze
-            });
         }
+    });
+    // Tonen RD-coordinaten
+    var mousePos = new OpenLayers.Control.MousePosition({numDigits: 0, div: OpenLayers.Util.getElement('coords')});
+    map.addControl(mousePos);
+    if (geolocate) {
+        map.addLayers([vector]);
+        map.addControl(geolocate);
+    }
+    scalebar = new OpenLayers.Control.ScaleLine();
+    map.addControl(scalebar);
+    
+    $('#overlaypanel').append('<div class="baselayertitle">Lagen (aan/uit):</div>');
+    $('#baselayerpanel').append('<div class="baselayertitle">Selecteer kaart:</div>');
+    $.each(baselayers, function(bl_index, bl) {
+        $('#baselayerpanel').append('<div class="bl" onclick="toggleBaseLayer(' + bl_index + ');">' + bl.name + '</div>');
     });
 }
 
@@ -195,7 +171,7 @@ $(document).ready(function() {
     $('#infopanel').html(info_text);
 
     $('.mtab').click(function() {
-        if ($(this).hasClass('active')){
+        if ($(this).hasClass('active')) {
             $('.mtab').removeClass('active');
             if (this.id === "tb04") {
                 vector.removeAllFeatures();
