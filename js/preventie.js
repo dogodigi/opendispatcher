@@ -5,6 +5,7 @@
  */
 var preventie = {
     id: "dbkprev",
+    title: "Preventieve voorzieningen",
     /**
      * URL naar een statisch boringen bestand in gml formaat
      */
@@ -20,9 +21,9 @@ var preventie = {
      * @param {type} activate
      */
     show: function(activate) {
-        this.layer = new OpenLayers.Layer.WMS("Preventieve voorzieningen", this.url,
+        this.layer = new OpenLayers.Layer.WMS(this.title, this.url,
                 {layers: this.namespace + ':WFS_tblCustom_Polyline,' + this.namespace + ':WFS_tblSymbol_Point', format: 'image/png', transparent: true},
-        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck"});
+        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck", maxResolution: 6.71});
         if (activate === true) {
             map.addLayers([
                 this.layer
@@ -90,8 +91,6 @@ var preventie = {
         if (features.length > 0) {
             html = '<div class="infocontent">';
             for (var feat in features) {
-                //html += "Feature: Geometry: "+ features[feat].geometry+",";
-                //map.zoomToExtent(features[feat].geometry.getBounds());
                 html += '<h2>Preventie</h2>';
                 html += "<table>";
                 for (var j in features[feat].attributes) {
