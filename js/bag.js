@@ -3,13 +3,13 @@
  * 
  * Voor alle functionaliteit gerelateerd aan boringen
  */
-var gevaren = {
-    id: "dbkgev",
+var bag = {
+    id: "dbkbag",
     /**
      * URL naar een statisch boringen bestand in gml formaat
      */
-    url: "/geoserver/zeeland/wms?",
-    namespace: "zeeland",
+    url: "/geoserver/bag/wms?",
+    namespace: "bag",
     /**
      * Laag. Wordt geiniteerd met de functie gevaren.show() kan worden overruled
      */
@@ -20,9 +20,9 @@ var gevaren = {
      * @param {type} activate
      */
     show: function(activate) {
-        this.layer = new OpenLayers.Layer.WMS("Onderkende gevaren en inzetbijzonderheden", this.url,
-                {layers: this.namespace + ':WFS_tblGevaarlijk_Stoffen', format: 'image/png', transparent: true},
-        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck", maxResolution: 6.71});
+        this.layer = new OpenLayers.Layer.WMS("BAG", "/geoserver/wms?",
+                {layers: 'bag:adres,bag:pandactueelbestaand', format: 'image/png', transparent: true},
+        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "LV"});
         if (activate === true) {
             map.addLayers([
                 this.layer
@@ -37,18 +37,18 @@ var gevaren = {
         $('#cbx_' + this.id).attr('checked', this.layer.visibility);
         $('#cbx_' + this.id).click(function() {
             if (this.checked === true) {
-                gevaren.layer.setVisibility(true);
+                bag.layer.setVisibility(true);
             } else {
-                gevaren.layer.setVisibility(false);
+                bag.layer.setVisibility(false);
             }
         });
         $('#div_' + this.id).click(function() {
             if ($(this).hasClass('aan')) {
                 $(this).removeClass('aan');
-                gevaren.layer.setVisibility(false);
+                bag.layer.setVisibility(false);
             } else {
                 $(this).addClass('aan');
-                gevaren.layer.setVisibility(true);
+                bag.layer.setVisibility(true);
             }
         });
     },
@@ -61,4 +61,4 @@ var gevaren = {
         $('#infopanel').toggle(true);
     }
 };
-modules.push(gevaren);
+modules.push(bag);

@@ -114,23 +114,6 @@ body {
         height: 100%;
         z-index: 0;
     }
-    #infopanel{
-        display: none;
-        border: 1px solid #cccccc;
-        -moz-border-radius-topleft: 10px 10px;
-        border-top-left-radius: 10px 10px;
-        -moz-border-radius-topright: 10px 10px;
-        border-top-right-radius: 10px 10px;
-        position: absolute;
-	      opacity:0.9;
-        filter:alpha(opacity=90); /* For IE8 and earlier */
-        height: 100%;
-        bottom: 0;
-        right: 0;
-        z-index: 302;
-        background-color: #ffffff;
-        overflow: hidden;
-    }
     .infocontent{
         display: inherit;
         height: 100%;
@@ -169,29 +152,10 @@ body {
         text-align: center;
     }
     
-    #overlaypanel{
-        display: none;
-        border: 1px solid #cccccc;
-        -moz-border-radius-topleft: 10px 10px;
-        border-top-left-radius: 10px 10px;
-        -moz-border-radius-topright: 10px 10px;
-        border-top-right-radius: 10px 10px;
-        position: absolute;
-	    opacity:0.9;
-        filter:alpha(opacity=90); /* For IE8 and earlier */
-        width: 98%;
-        padding: 1%;
-        bottom: 0;
-        z-index: 301;
-        background-color: #ffffff;
-        overflow: hidden;
-    }
     #overlaypanel input {
         display: none;
     }
-
-    #baselayerpanel{
-        /*font-size: 0.8em;*/
+    .panel {
         display: none;
         border: 1px solid #cccccc;
         -moz-border-radius-topleft: 10px 10px;
@@ -201,15 +165,28 @@ body {
         position: absolute;
 	    opacity:0.9;
         filter:alpha(opacity=90); /* For IE8 and earlier */
-        width: 98%;
-        padding: 1%;
-        bottom: 0;
-        z-index: 301;
         background-color: #ffffff;
         overflow: hidden;
+        z-index: 302;
     }
 }
 @media screen and (max-width: 600px) {
+    #infopanel{
+        height: 100%;
+        width: 100%;
+        bottom: 0;
+        right: 0;
+    }
+    #baselayerpanel{
+        width: 98%;
+        padding: 1%;
+        bottom: 0;
+    }
+    #overlaypanel{
+        width: 98%;
+        padding: 1%;
+        bottom: 0;
+    }
     #logo{
         background: url('../images/brandweer-nederland_alpha_shaded-s.png') no-repeat center center scroll;
         height: 60px;
@@ -221,21 +198,31 @@ body {
         top: 0;
     }
 
-    #infopanel{
-        width: 98%;
-    }
-    #overlaypanel div {
-        font-size: 1.6em;
-        padding: 0.2em;
-        text-align: center;
-    }
-    #baselayerpanel div {
+    .panel div {
         font-size: 1.6em;
         padding: 0.2em;
         text-align: center;
     }
 }
 @media screen and (min-width: 601px) {
+    #infopanel{
+        height: 100%;
+        width: 40%;
+        bottom: 0;
+        right: 0;
+    }
+    #baselayerpanel{
+        width: 20%;
+        right: 0;
+        padding: 1%;
+        bottom: 0;
+    }
+    #overlaypanel{
+        width: 20%;
+        right: 0;
+        padding: 1%;
+        bottom: 0;
+    }
     #logo{
         background: url('../images/brandweer-nederland_alpha_shaded.png') no-repeat center center scroll;
         height: 90px;
@@ -246,17 +233,9 @@ body {
         left: 0;
         top: 0;
     }
-    #infopanel{
-        width: 30%;
-    }
-    #overlaypanel div {
-        font-size: 1.3em;
+    .panel div {
+        font-size: 1em;
         padding: 0.5em;
-        text-align: center;
-    }
-    #baselayerpanel div {
-        font-size: 1.3em;
-        padding: 0.5em;
-        text-align: center;
+        text-align: left;
     }
 }

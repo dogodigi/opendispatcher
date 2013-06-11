@@ -50,16 +50,16 @@
                             "name": "urn:ogc:def:crs:EPSG::28992"
                         }
                     },
-                    "coordinates": [45247, 387852]
+                    "coordinates": [54117, 392314]
                 },
-                "zoom": 3
+                "zoom": 5
             }
         },
         {
-            "id": "brabant",
-            "titel": "Brabant",
-            "omschrijving": "Veiligheidsregio Brabant",
-            "safetymaps_url": "/geoserver/brabant/wms?",
+            "id": "brabantnoord",
+            "titel": "Brabant Noord",
+            "omschrijving": "Veiligheidsregio Brabant Noord",
+            "safetymaps_url": "/geoserver/brabantnoord/wms?",
             "gebied": {
                 "geometry": {
                     "type": "Point",
@@ -71,7 +71,31 @@
                     },
                     "coordinates": [149756, 411527]
                 },
-                "zoom": 3
+                "zoom": 5
+            },
+            "groepen":{
+                "groep1":{
+                    "titel":"Preventie"
+                }
+            }
+        },
+        {
+            "id": "limburgnoord",
+            "titel": "Limburg Noord",
+            "omschrijving": "Veiligheidsregio Limburg Noord",
+            "safetymaps_url": "/geoserver/limburgnoord/wms?",
+            "gebied": {
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "urn:ogc:def:crs:EPSG::28992"
+                        }
+                    },
+                    "coordinates": [190378, 366942]
+                },
+                "zoom": 5
             }
         }]
 }

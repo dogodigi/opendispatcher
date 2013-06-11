@@ -22,7 +22,7 @@ var dbkobject = {
     show: function(activate) {
         this.layer = new OpenLayers.Layer.WMS("Objecten", this.url,
                 {layers: this.namespace + ':WFS_tblDBK_Polygon,' + this.namespace + ':WFS_tblUitrukroute', format: 'image/png', transparent: true},
-        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck"});
+        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck", maxResolution: 6.71});
         if (activate === true) {
             map.addLayers([
                 this.layer

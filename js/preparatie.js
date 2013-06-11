@@ -22,7 +22,7 @@ var preparatie = {
     show: function(activate) {
         this.layer = new OpenLayers.Layer.WMS("Preparatieve voorzieningen", this.url,
                 {layers: this.namespace + ':WFS_tblBrandcompartimentering', format: 'image/png', transparent: true},
-        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck"});
+        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck", maxResolution: 6.71});
         if (activate === true) {
             map.addLayers([
                 this.layer
