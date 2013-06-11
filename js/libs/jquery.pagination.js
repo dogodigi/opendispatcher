@@ -14,8 +14,8 @@ jQuery.fn.pagination = function(maxentries, opts){
 		current_page:0,
 		num_edge_entries:0,
 		link_to:"#",
-		prev_text:"Vorige",
-		next_text:"Volgende",
+		prev_text:'<i class="icon-chevron-left"></i>',
+		next_text:'<i class="icon-chevron-right"></i>',
 		ellipse_text:"...",
 		prev_show_always:true,
 		next_show_always:true,
@@ -83,11 +83,12 @@ jQuery.fn.pagination = function(maxentries, opts){
 				page_id = page_id<0?0:(page_id<np?page_id:np-1); // Normalize page id to sane value
 				appendopts = jQuery.extend({text:page_id+1, classes:""}, appendopts||{});
 				if(page_id === current_page){
-					var lnk = jQuery("<span class='current'>"+(appendopts.text)+"</span>");
+
+					var lnk = jQuery("<a class='btn'>"+(appendopts.text)+"</a>");
 				}
 				else
 				{
-					var lnk = jQuery("<a>"+(appendopts.text)+"</a>")
+					var lnk = jQuery('<a class="btn">'+(appendopts.text)+"</a>")
 						.bind("click", getClickHandler(page_id))
 						.attr('href', opts.link_to.replace(/__id__/,page_id));
 						
@@ -98,7 +99,7 @@ jQuery.fn.pagination = function(maxentries, opts){
 			};
 			// Generate "Previous"-Link
 			if(opts.prev_text && (current_page > 0 || opts.prev_show_always)){
-				appendItem(current_page-1,{text:opts.prev_text, classes:"prev"});
+				appendItem(current_page-1,{text:opts.prev_text, classes:"btn"});
 			}
 			// Generate starting points
 			if (interval[0] > 0 && opts.num_edge_entries > 0)
@@ -109,7 +110,7 @@ jQuery.fn.pagination = function(maxentries, opts){
 				}
 				if(opts.num_edge_entries < interval[0] && opts.ellipse_text)
 				{
-					jQuery("<span>"+opts.ellipse_text+"</span>").appendTo(panel);
+					jQuery('<a class="btn">'+opts.ellipse_text+"</a>").appendTo(panel);
 				}
 			}
 			// Generate interval links
@@ -121,7 +122,7 @@ jQuery.fn.pagination = function(maxentries, opts){
 			{
 				if(np-opts.num_edge_entries > interval[1]&& opts.ellipse_text)
 				{
-					jQuery("<span>"+opts.ellipse_text+"</span>").appendTo(panel);
+					jQuery('<a class="btn">'+opts.ellipse_text+"</a>").appendTo(panel);
 				}
 				var begin = Math.max(np-opts.num_edge_entries, interval[1]);
 				for(var i=begin; i<np; i++) {
@@ -131,7 +132,7 @@ jQuery.fn.pagination = function(maxentries, opts){
 			}
 			// Generate "Next"-Link
 			if(opts.next_text && (current_page < np-1 || opts.next_show_always)){
-				appendItem(current_page+1,{text:opts.next_text, classes:"next"});
+				appendItem(current_page+1,{text:opts.next_text, classes:"btn"});
 			}
 		}
 		

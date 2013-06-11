@@ -316,52 +316,53 @@ var dbkfeature = {
         });
     },
     featureInfohtml: function(feature) {
-        var retval = '';
+        var ret_tr = $('<tr></tr>');
+        var ret_title = $('<td></td>');
+        ret_tr.append(ret_title);
+        ret_title.append('<span class="infofieldtitle">' + feature.attributes.id + ' - </span>');
+        var ret_val = $('<td class="dbk_feature" id="dbk_' + feature.attributes.id + '"></td>');
+        ret_val.html(feature.attributes.formelenaam);
+        ret_tr.append(ret_val);
 
-        retval += '<tr><td><span class="infofieldtitle">' + feature.attributes.id + ' - </span></td><td>' + feature.attributes.formelenaam + "</td></tr>";
-
-        return retval;
+        $(ret_tr).click(function() {
+            map.setCenter(feature.geometry.getBounds().getCenterLonLat(),11);
+            //console.log(feature);
+        });
+        return ret_tr;
     },
     getfeatureinfo: function(e) {
-        $('#infopanel').html('');
-        if (e.feature.cluster) {
-            $('#infopanel').append('<div id="Pagination" class="pagination" style="float:left;"></div>');
-            $('#infopanel').append('<div style="float:left;width:100%;"><table id="Searchresult"></table></div>');
-            dbkfeature.currentCluster = e.feature.cluster;
-            $("#Pagination").pagination(e.feature.cluster.length, {
-                items_per_page: 20,
-                callback: function(page_index, jq) {
-                    // Get number of elements per pagionation page from form
-                    var items_per_page = 20;
-                    var max_elem = Math.min((page_index + 1) * items_per_page, dbkfeature.currentCluster.length);
-                    var newcontent = '';
+        if (typeof(e.feature) !== "undefined") {
+            $('#infopanel').html('');
+            if (e.feature.cluster) {
 
-                    // Iterate through a selection of the content and build an HTML string
-                    for (var i = page_index * items_per_page; i < max_elem; i++)
-                    {
-                        newcontent += dbkfeature.featureInfohtml(dbkfeature.currentCluster[i]);
+                $('#infopanel').append('<div style="float:left;width:100%;"><table id="Searchresult"></table></div>');
+                $('#infopanel').append('<div id="Pagination" class="pagination" style="float:left;"></div>');
+                dbkfeature.currentCluster = e.feature.cluster;
+                $("#Pagination").pagination(e.feature.cluster.length, {
+                    items_per_page: 20,
+                    callback: function(page_index, jq) {
+                        // Get number of elements per pagionation page from form
+                        var items_per_page = 20;
+                        var max_elem = Math.min((page_index + 1) * items_per_page, dbkfeature.currentCluster.length);
+
+                        // Iterate through a selection of the content and build an HTML string
+                        $('#Searchresult').html('');
+                        for (var i = page_index * items_per_page; i < max_elem; i++)
+                        {
+                            $('#Searchresult').append(dbkfeature.featureInfohtml(dbkfeature.currentCluster[i]));
+                        }
                     }
-
-                    // Replace old content with new content
-                    $('#Searchresult').html(newcontent);
-
-                    // Prevent click eventpropagation
-                }
-            });
-        } else {
-            var html = '';
-            html = '<h2>DBK Feature</h2>';
-            html += "<table>";
-            html += dbkfeature.featureInfohtml(e.feature);
-            html += "</table>";
-            html += '</div>';
-            $('#infopanel').append(html);
-            dbkfeature.currentCluster = [];
+                });
+            } else {
+                $('#infopanel').append('<div style="float:left;width:100%;"><table id="Searchresult"></table></div>');
+                $('#Searchresult').append(dbkfeature.featureInfohtml(e.feature));
+                dbkfeature.currentCluster = [];
+            }
+            if (!$('#tb03').hasClass('close')) {
+                $('#tb03').addClass('close');
+            }
+            $('#infopanel').toggle(true);
         }
-        if (!$('#tb03').hasClass('close')) {
-            $('#tb03').addClass('close');
-        }
-        $('#infopanel').toggle(true);
     }
 };
 modules.push(dbkfeature);
