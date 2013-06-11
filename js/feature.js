@@ -325,7 +325,15 @@ var dbkfeature = {
         ret_tr.append(ret_val);
 
         $(ret_tr).click(function() {
-            map.setCenter(feature.geometry.getBounds().getCenterLonLat(),11);
+            preparatie.updateFilter(feature.attributes.id);
+            preventie.updateFilter(feature.attributes.id);
+            gevaren.updateFilter(feature.attributes.id);
+            dbkobject.updateFilter(feature.attributes.id);
+            if(map.zoom < 13){
+                map.setCenter(feature.geometry.getBounds().getCenterLonLat(),13);
+            } else {
+                map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+            }
             //console.log(feature);
         });
         return ret_tr;

@@ -19,6 +19,18 @@ var preparatie = {
      * Initialisatie functie om objecten toe te voegen aan de kaart
      * @param {type} activate
      */
+    updateFilter:  function(dbk_id) {
+        var cql_filter = "";
+        if(typeof(dbk_id) !== "undefined"){
+            cql_filter = "DBK_ID=" + dbk_id;
+            this.layer.mergeNewParams({'CQL_FILTER': cql_filter });
+        } else {
+            delete this.layer.params.CQL_FILTER;
+        }
+        this.layer.redraw();
+        return false;
+    },
+
     show: function(activate) {
         this.layer = new OpenLayers.Layer.WMS("Preparatieve voorzieningen", this.url,
                 {layers: this.namespace + ':WFS_tblBrandcompartimentering', format: 'image/png', transparent: true},
