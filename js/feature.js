@@ -11,7 +11,7 @@ var dbkfeature = {
      */
     highlightlayer: null,
     timer: null,
-    showlabels: false,
+    showlabels: true,
     layer: null,
     currentCluster: [],
     selection: null,
@@ -33,7 +33,11 @@ var dbkfeature = {
         context: {
             mygraphicheight: function(feature) {
                 if (feature.cluster) {
-                    return feature.cluster.length + 38;
+                    if (feature.cluster.length < 10) {
+                        return feature.cluster.length + 38;
+                    } else if (feature.cluster.length > 10) {
+                        return 49;
+                    }
                 } else {
                     return 38;
                 }
@@ -41,7 +45,11 @@ var dbkfeature = {
             },
             mygraphicwidth: function(feature) {
                 if (feature.cluster) {
-                    return feature.cluster.length + 24;
+                    if (feature.cluster.length < 10) {
+                        return feature.cluster.length + 24;
+                    } else if (feature.cluster.length > 10) {
+                        return 35;
+                    }
                 } else {
                     return 24;
                 }
@@ -54,11 +62,7 @@ var dbkfeature = {
                 }
             },
             myfontsize: function(feature) {
-                if (feature.cluster) {
-                    return "10px";
-                } else {
-                    return "9px";
-                }
+                return "10.5px";
             },
             mylabelalign: function(feature) {
                 if (feature.cluster) {
@@ -114,17 +118,19 @@ var dbkfeature = {
                 }
             },
             labeltext: function(feature) {
-                if (this.showlabels === true) {
+                if (dbkfeature.showlabels) {
                     if (feature.cluster) {
                         var lbl_txt, c;
                         if (feature.cluster.length > 1) {
                             lbl_txt = feature.cluster.length + "";
                         } else {
-                            lbl_txt = feature.cluster[0].attributes.formelenaam;
+                            //lbl_txt = feature.cluster[0].attributes.formelenaam;
+                            lbl_txt = "";
                         }
                         return lbl_txt;
                     } else {
-                        return feature.attributes.formelenaam;
+                        //return feature.attributes.formelenaam;
+                        return "";
                     }
                 } else {
                     return "";
@@ -150,7 +156,11 @@ var dbkfeature = {
         context: {
             mygraphicheight: function(feature) {
                 if (feature.cluster) {
-                    return feature.cluster.length + 38;
+                    if (feature.cluster.length < 10) {
+                        return feature.cluster.length + 38;
+                    } else if (feature.cluster.length > 10) {
+                        return 49;
+                    }
                 } else {
                     return 38;
                 }
@@ -158,7 +168,11 @@ var dbkfeature = {
             },
             mygraphicwidth: function(feature) {
                 if (feature.cluster) {
-                    return feature.cluster.length + 24;
+                    if (feature.cluster.length < 10) {
+                        return feature.cluster.length + 24;
+                    } else if (feature.cluster.length > 10) {
+                        return 35;
+                    }
                 } else {
                     return 24;
                 }
@@ -171,11 +185,7 @@ var dbkfeature = {
                 }
             },
             myfontsize: function(feature) {
-                if (feature.cluster) {
-                    return "10px";
-                } else {
-                    return "9px";
-                }
+                return "14px";
             },
             mylabelalign: function(feature) {
                 if (feature.cluster) {
@@ -227,17 +237,19 @@ var dbkfeature = {
                 }
             },
             labeltext: function(feature) {
-                if (this.showlabels === true) {
+                if (dbkfeature.showlabels) {
                     if (feature.cluster) {
                         var lbl_txt, c;
                         if (feature.cluster.length > 1) {
                             lbl_txt = feature.cluster.length + "";
                         } else {
-                            lbl_txt = feature.cluster[0].attributes.formelenaam;
+                            //lbl_txt = feature.cluster[0].attributes.formelenaam;
+                            lbl_txt = "";
                         }
                         return lbl_txt;
                     } else {
-                        return feature.attributes.formelenaam;
+                        //return feature.attributes.formelenaam;
+                        return "";
                     }
                 } else {
                     return "";
@@ -257,6 +269,36 @@ var dbkfeature = {
             zIndexing: true
         }
     }),
+    activateDBK: function(id) {
+        //eenmalig afvuren wanneer een laag wordt geladen. Niet herhalen tijdens het in en uitzoomen!
+        preparatie.updateFilter(id);
+        preventie.updateFilter(id);
+        gevaren.updateFilter(id);
+        dbkobject.updateFilter(id);
+        var feature;
+        $.each(this.layer.features, function(fi, fv) {
+            if (fv.cluster) {
+                $.each(fv.cluster, function(ci, cv) {
+                    if (cv.attributes.id.toString() === id) {
+                        feature = cv;
+                    }
+                });
+            }
+            else {
+                if (fv.attributes.id.toString() === id) {
+                    feature = fv;
+                }
+            }
+        });
+        if (feature) {
+            if (map.zoom < 13) {
+                map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
+            } else {
+                map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+            }
+        }
+
+    },
     show: function() {
         this.layer = new OpenLayers.Layer.Vector("Feature", {
             rendererOptions: {
@@ -264,11 +306,11 @@ var dbkfeature = {
             },
             strategies: [
                 new OpenLayers.Strategy.Cluster({
-                    distance: 50,
-                    threshold: 5
+                    distance: 60,
+                    threshold: 2
                 })
             ],
-            minResolution: 6.72
+            minResolution: 1
         });
         this.layer.setZIndex(2006);
         this.sketch.setZIndex(2002);
@@ -281,7 +323,19 @@ var dbkfeature = {
         map.addLayers([this.sketch, this.layer]);
         this.layer.events.on({
             "featureselected": this.getfeatureinfo,
+            "featuresadded": function() {
+                if (typeof(dbk) !== "undefined" && dbk !== '') {
+                    dbkfeature.activateDBK(dbk);
+                    //release the dbk object
+                    dbk = '';
+                }
+
+            },
             "featureunselected": function(e) {
+                $('#infopanel').hide();
+                if ($('#tb03').hasClass('active')) {
+                    $('#tb03').removeClass('active');
+                }
             }
         });
         this.get();
@@ -319,57 +373,76 @@ var dbkfeature = {
         var ret_tr = $('<tr></tr>');
         var ret_title = $('<td></td>');
         ret_tr.append(ret_title);
-        ret_title.append('<span class="infofieldtitle">' + feature.attributes.id + ' - </span>');
-        var ret_val = $('<td class="dbk_feature" id="dbk_' + feature.attributes.id + '"></td>');
-        ret_val.html(feature.attributes.formelenaam);
-        ret_tr.append(ret_val);
+        ret_title.append('<a href="?regio=' + regio.id + '&dbk=' + feature.attributes.id + '" class="infofieldtitle">' + feature.attributes.formelenaam + '</a>&nbsp;');
+        //var ret_val = $('<td class="dbk_feature" id="dbk_' + feature.attributes.id + '"></td>');
+        //ret_val.html(feature.attributes.formelenaam);
+        //ret_tr.append(ret_val);
 
         $(ret_tr).click(function() {
             preparatie.updateFilter(feature.attributes.id);
             preventie.updateFilter(feature.attributes.id);
             gevaren.updateFilter(feature.attributes.id);
             dbkobject.updateFilter(feature.attributes.id);
-            if(map.zoom < 13){
-                map.setCenter(feature.geometry.getBounds().getCenterLonLat(),13);
+            if (map.zoom < 13) {
+                map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
             } else {
                 map.setCenter(feature.geometry.getBounds().getCenterLonLat());
             }
-            //console.log(feature);
+            return false;
         });
         return ret_tr;
+    },
+    zoomToFeature: function(feature) {
+        preparatie.updateFilter(feature.attributes.id);
+        preventie.updateFilter(feature.attributes.id);
+        gevaren.updateFilter(feature.attributes.id);
+        dbkobject.updateFilter(feature.attributes.id);
+        if (map.zoom < 13) {
+            map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
+        } else {
+            map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+        }
     },
     getfeatureinfo: function(e) {
         if (typeof(e.feature) !== "undefined") {
             $('#infopanel').html('');
             if (e.feature.cluster) {
+                if (e.feature.cluster.length === 1) {
+                    dbkfeature.zoomToFeature(e.feature.cluster[0]);
+                } else {
+                    $('#infopanel').append('<div style="float:left;width:100%;"><table id="Searchresult"></table></div>');
+                    $('#infopanel').append('<div id="Pagination" class="pagination" style="float:left;"></div>');
+                    dbkfeature.currentCluster = e.feature.cluster;
+                    $("#Pagination").pagination(e.feature.cluster.length, {
+                        items_per_page: 20,
+                        callback: function(page_index, jq) {
+                            // Get number of elements per pagionation page from form
+                            var items_per_page = 20;
+                            var max_elem = Math.min((page_index + 1) * items_per_page, dbkfeature.currentCluster.length);
 
-                $('#infopanel').append('<div style="float:left;width:100%;"><table id="Searchresult"></table></div>');
-                $('#infopanel').append('<div id="Pagination" class="pagination" style="float:left;"></div>');
-                dbkfeature.currentCluster = e.feature.cluster;
-                $("#Pagination").pagination(e.feature.cluster.length, {
-                    items_per_page: 20,
-                    callback: function(page_index, jq) {
-                        // Get number of elements per pagionation page from form
-                        var items_per_page = 20;
-                        var max_elem = Math.min((page_index + 1) * items_per_page, dbkfeature.currentCluster.length);
-
-                        // Iterate through a selection of the content and build an HTML string
-                        $('#Searchresult').html('');
-                        for (var i = page_index * items_per_page; i < max_elem; i++)
-                        {
-                            $('#Searchresult').append(dbkfeature.featureInfohtml(dbkfeature.currentCluster[i]));
+                            // Iterate through a selection of the content and build an HTML string
+                            $('#Searchresult').html('');
+                            for (var i = page_index * items_per_page; i < max_elem; i++)
+                            {
+                                $('#Searchresult').append(dbkfeature.featureInfohtml(dbkfeature.currentCluster[i]));
+                            }
                         }
+                    });
+                    $('#infopanel').show(true);
+                    if (!$('#tb03').hasClass('active')) {
+                        $('#tb03').addClass('active');
                     }
-                });
+                }
             } else {
-                $('#infopanel').append('<div style="float:left;width:100%;"><table id="Searchresult"></table></div>');
-                $('#Searchresult').append(dbkfeature.featureInfohtml(e.feature));
+                //$('#infopanel').append('<div style="float:left;width:100%;"><table id="Searchresult"></table></div>');
+                //$('#Searchresult').append(dbkfeature.featureInfohtml(e.feature));
                 dbkfeature.currentCluster = [];
+                dbkfeature.zoomToFeature(e.feature);
+                $('#infopanel').hide();
+                if ($('#tb03').hasClass('active')) {
+                    $('#tb03').removeClass('active');
+                }
             }
-            if (!$('#tb03').hasClass('close')) {
-                $('#tb03').addClass('close');
-            }
-            $('#infopanel').toggle(true);
         }
     }
 };

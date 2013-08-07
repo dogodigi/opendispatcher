@@ -19,7 +19,7 @@ var preventie = {
      updateFilter:  function(dbk_id) {
         var cql_filter = "";
         if(typeof(dbk_id) !== "undefined"){
-            cql_filter = "DBK_ID=" + dbk_id + ';DBK_ID=' + dbk_id;
+            cql_filter = "DBK_ID=" + dbk_id + ';DBK_ID=' + dbk_id +';DBK_ID=' + dbk_id;
             this.layer.mergeNewParams({'CQL_FILTER': cql_filter });
         } else {
             delete this.layer.params.CQL_FILTER;
@@ -29,7 +29,7 @@ var preventie = {
     },
     show: function(activate) {
         this.layer = new OpenLayers.Layer.WMS(this.title, this.url,
-                {layers: this.namespace + ':WFS_tblCustom_Polyline,' + this.namespace + ':WFS_tblSymbol_Point', format: 'image/png', transparent: true},
+                {layers: this.namespace + ':WFS_tblCustom_Polyline,' + this.namespace + ':WFS_tblSymbol_Point,'+ this.namespace + ':WFS_tblLabels', format: 'image/png', transparent: true},
         {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck", maxResolution: 6.71});
         if (activate === true) {
             map.addLayers([

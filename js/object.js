@@ -76,6 +76,9 @@ var dbkobject = {
             styles: dbkobject.layer.params.STYLES,
             srs: dbkobject.layer.params.SRS
         };
+        if(dbkobject.layer.params.CQL_FILTER){
+            params.CQL_FILTER = dbkobject.layer.params.CQL_FILTER;
+        }
 
         // handle the wms 1.3 vs wms 1.1 madness
         if (dbkobject.layer.params.VERSION === "1.3.0") {

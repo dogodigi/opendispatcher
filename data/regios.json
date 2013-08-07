@@ -56,6 +56,30 @@
             }
         },
         {
+            "id": "bn_a",
+            "titel": "Testomgeving",
+            "omschrijving": "Testomgeving",
+            "safetymaps_url": "/geoserver/bn_a/wms?",
+            "gebied": {
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "urn:ogc:def:crs:EPSG::28992"
+                        }
+                    },
+                    "coordinates": [121478, 400130]
+                },
+                "zoom": 5
+            },
+            "groepen":{
+                "groep1":{
+                    "titel":"Preventie"
+                }
+            }
+        },
+        {
             "id": "brabantnoord",
             "titel": "Brabant Noord",
             "omschrijving": "Veiligheidsregio Brabant Noord",
