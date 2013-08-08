@@ -120,12 +120,11 @@ var bag = {
         map.setLayerIndex(bag.layer, 0);
         
         // vinkje op webpagina aan/uitzetten
-        var dv_div = $('<div id="div_' + this.id + '" class="ovl"></div>');
-        dv_div.append(this.layer.name);
-        $('#overlaypanel').append(dv_div);
+        var dv_div = $('<li id="div_' + this.id + '" class="ovl"></li>');
+        dv_div.append('<a href="#">' + this.layer.name + '</a>');
+        $('#overlaypanel_b').append(dv_div);
         $('#div_' + this.id).click(function() {
-            if ($(this).hasClass('aan')) {
-                $(this).removeClass('aan');
+            if ($(this).hasClass('active')) {
                 bag.layer.setVisibility(false);
                 var bagpand_lyr = map.getLayersByName('BAG panden');
                 var bagvbo_lyr = map.getLayersByName('BAG verblijfsobjecten');
@@ -136,7 +135,6 @@ var bag = {
                     map.removeLayer(bagvbo_lyr);
                 }
             } else {
-                $(this).addClass('aan');
                 bag.layer.setVisibility(true);
                 bag.activateVectors();
             }
@@ -157,16 +155,13 @@ var bag = {
     getfeatureinfo: function(e) {
         if (typeof(e.feature) !== "undefined") {
             if ($('#baginfo').length === 0) {
-                $('#infopanel').append('<div id="baginfo" style="float:left;width:100%;"><h2>BAG gegevens</h2></div>');
+                $('#infopanel_b').append('<div id="baginfo" style="float:left;width:100%;"><h2>BAG gegevens</h2></div>');
             }
             var mybaginfo = $('#baginfo');
             var mytable = $('<table></table>');
             mytable.append(bag.featureInfohtml(e.feature));
             mybaginfo.append(mytable);
 
-            if (!$('#tb03').hasClass('close')) {
-                $('#tb03').addClass('close');
-            }
             $('#infopanel').toggle(true);
         } else {
             //console.log("bag klik zonder feature");
@@ -190,10 +185,7 @@ var bag = {
     },
     panel: function() {
         //verwerk de featureinformatie
-        $('#infopanel').html("test");
-        if (!$('#tb03').hasClass('close')) {
-            $('#tb03').addClass('close');
-        }
+        $('#infopanel_b').html("test");
         $('#infopanel').toggle(true);
     }
 };

@@ -4,6 +4,7 @@ OpenLayers.Util.onImageLoadErrorColor = "transparent";
 Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <>";
 var info_text = "";
 var map;
+var naviHis;
 var selectControl;
 var baselayers = [];
 var overlays = [];
@@ -22,7 +23,12 @@ var pdok_tms = {
     zoomOffset: 2
 };
 
-
+$('#c_prev').click(function() {
+    naviHis.previousTrigger();
+});
+$('#c_next').click(function() {
+    naviHis.nextTrigger();
+});
 function isJsonNull(val) {
     if (val === "null" || val === null || val === "" || typeof(val) === "undefined") {
         return true;
@@ -48,6 +54,42 @@ function getQueryVariable(variable, defaultvalue) {
     }
     return returnval;
 }
+$('div.btn-group ul.dropdown-menu li a').click(function(e) {
+    var mdiv = $(this).parent().parent().parent();
+    var mbtn = mdiv.parent().find('.input-group-addon');
+    var minp = mdiv.parent().find('input');
+    if ($(this).text() === " Adres") {
+        mbtn.html('<i class="icon-home"></i>');
+        minp.attr("placeholder", "zoek adres");
+    } else if ($(this).text() === " Coördinaat") {
+        mbtn.html('<i class="icon-pushpin"></i>');
+        minp.attr("placeholder", "zoek coördinaat");
+    } else if ($(this).text() === " DBK") {
+        mbtn.html('<i class="icon-building"></i>');
+        minp.attr("placeholder", "zoek dbk");
+    } else if ($(this).text() === " OMS") {
+        mbtn.html('<i class="icon-bell"></i>');
+        minp.attr("placeholder", "zoek oms");
+    }
+    mdiv.removeClass('open');
+    mdiv.removeClass('active');
+    e.preventDefault();
+    return false;
+});
+
+//search_btn_dropdown.children('li').click(function() {
+//    if ($(this).text() === "Address") {
+//        //User wants to search on address, show a single input bar with address pre-
+//        $('#search_input').html('<span class="add-on"><i class="icon-home"></i></span><input id="address_search" class="span2" type="text" placeholder="First Avenue 2, New York">');
+//    } else if ($(this).text() === "Coördinates") {
+//        $('#search_input').html('<span class="add-on"><i class="icon-globe"></i></span><input id="coord_search" class="span2" type="text" placeholder="5.1 , 52.4">');
+//    } else if ($(this).text() === "Unit") {
+//        $('#search_input').html('<span class="add-on"><i class="icon-truck"></i></span><input id="unit_search" class="span2" type="text" placeholder="54321">');
+//    } else if ($(this).text() === "Incident") {
+//        $('#search_input').html('<span class="add-on"><i class="icon-star"></i></span><input id="incident_search" class="span2" type="text" placeholder="3211">');
+//    }
+//    $(this).parent().toggle();
+//});
 
 /**
  * Functie voor updaten van de zichtbaarheid van baselayers
@@ -58,25 +100,23 @@ function toggleBaseLayer(nr) {
     var i;
     for (i = 0; i < layerbuttons.length; i++) {
         if (i !== nr) {
-            $(layerbuttons[i]).removeClass("layActive", true);
+            $(layerbuttons[i]).removeClass("active", true);
             baselayers[i].setVisibility(false);
         } else {
-            $(layerbuttons[nr]).addClass("layActive", true);
+            $(layerbuttons[nr]).addClass("active", true);
             baselayers[nr].setVisibility(true);
             map.setBaseLayer(baselayers[nr]);
         }
     }
 }
 function onClick(e) {
-    $('#tb03').addClass('active');
-    $('#infopanel').html('');
+    $('#infopanel_b').html('');
     $.each(modules, function(mod_index, module) {
-        if (typeof(module.layer) !== "undefined" && module.layer.visibility){
+        if (typeof(module.layer) !== "undefined" && module.layer.visibility) {
             if (typeof(module.getfeatureinfo) !== "undefined") {
                 module.getfeatureinfo(e);
             }
         }
-    
     });
 }
 function activateClick() {
@@ -167,7 +207,7 @@ function init() {
     };
     map = new OpenLayers.Map(options);
     OpenLayers.Lang.setCode("nl");
-    baselayers[0] = new OpenLayers.Layer.TMS("osm-rd-TMS",
+    baselayers[0] = new OpenLayers.Layer.TMS("Openbasiskaart",
             "http://openbasiskaart.nl/mapcache/tms/",
             {layername: 'osm-nb@rd', type: "png", serviceVersion: "1.0.0",
                 gutter: 0, buffer: 0, isBaseLayer: true, transitionEffect: 'resize',
@@ -186,7 +226,7 @@ function init() {
 //    {transitionEffect: 'resize', singleTile: false, buffer: 0, isBaseLayer: true, visibility: true, attribution: "ogg"}
 //    );
     baselayers[1] = new OpenLayers.Layer.TMS(
-            'BRT Achtergrond',
+            'Basisregistratie Topografie (PDOK)',
             'http://geodata.nationaalgeoregister.nl/tms/',
             {
                 layername: 'brtachtergrondkaart',
@@ -204,12 +244,12 @@ function init() {
 //            {layers: "brtachtergrondkaart", format: "image/png8", transparent: false, bgcolor: "0x99b3cc"},
 //    {transitionEffect: 'resize', singleTile: false, buffer: 0, isBaseLayer: true, visibility: true, attribution: "PDOK"}
 //  );
-    baselayers[2] = new OpenLayers.Layer.WMS('PDOK Luchtfoto 2009', 'http://geodata1.nationaalgeoregister.nl/luchtfoto/wms?',
+    baselayers[2] = new OpenLayers.Layer.WMS('Luchtfoto 2009 (PDOK)', 'http://geodata1.nationaalgeoregister.nl/luchtfoto/wms?',
             {layers: "luchtfoto", format: "image/jpeg", transparent: false},
     {transitionEffect: 'resize', singleTile: false, buffer: 0, isBaseLayer: true, visibility: true, attribution: "PDOK"}
     );
     baselayers[3] = new OpenLayers.Layer.TMS(
-            'Topografische kaart 1:10.000',
+            'Topografische kaart 1:10.000 - top10nl (PDOK)',
             'http://geodata.nationaalgeoregister.nl/tms/',
             {
                 layername: 'top10nl',
@@ -224,6 +264,7 @@ function init() {
             }
     );
     map.addLayers(baselayers);
+    var overviewmap = baselayers[1].clone();
     var wms_url;
     var wms_namespace;
     actieve_regio = getQueryVariable('regio', 'zeeland');
@@ -271,52 +312,52 @@ function init() {
     }
     scalebar = new OpenLayers.Control.ScaleLine();
     map.addControl(scalebar);
+    naviHis = new OpenLayers.Control.NavigationHistory();
+    map.addControl(naviHis);
+    naviHis.activate();
+    var baselayer_ul = $('<ul class="nav nav-pills nav-stacked">');
 
-    $('#overlaypanel').append('<div class="baselayertitle">Lagen (aan/uit):</div>');
-    $('#baselayerpanel').append('<div class="baselayertitle">Selecteer kaart:</div>');
     $.each(baselayers, function(bl_index, bl) {
-        $('#baselayerpanel').append('<div class="bl" onclick="toggleBaseLayer(' + bl_index + ');">' + bl.name + '</div>');
+        baselayer_ul.append('<li class="bl" onclick="toggleBaseLayer(' + bl_index + ');"><a href="#">' + bl.name + '</a></li>');
     });
+    $('#baselayerpanel_b').append(baselayer_ul);
+    map.events.register("moveend", map, function() {
+        //check if the naviHis has any content
+        if (naviHis.nextStack.length > 0) {
+            //enable next button
+            $('#c_next').removeClass('disabled');
+        } else {
+            $('#c_next').addClass('disabled');
+        }
+        if (naviHis.previousStack.length > 1) {
+            //enable previous button
+            $('#c_prev').removeClass('disabled');
+        } else {
+            $('#c_prev').addClass('disabled');
+        }
+    });
+    var overview1 = new OpenLayers.Control.OverviewMap({
+            div: document.getElementById('minimappanel_b'),
+            size: new OpenLayers.Size(180,180)
+        });
+    map.addControl(overview1);
 }
 
 $(document).ready(function() {
     init();
-    $('#infopanel').html(info_text);
+    $('#infopanel_b').html(info_text);
 
-    $('.mtab').click(function() {
-        if ($(this).hasClass('active')) {
-            $('.mtab').removeClass('active');
-            if (this.id === "tb04") {
+    $('.btn').click(function() {
+        if(this.id === "tb03"){
+            $('#infopanel').toggle();
+        } else if (this.id === "tb04"){
+            if ($(this).hasClass('active')) {
                 vector.removeAllFeatures();
                 geolocate.deactivate();
             }
-            if (this.id === "tb03") {
-                $('#infopanel').hide();
-            }
-            if (this.id === "tb02") {
-                $('#baselayerpanel').hide();
-            }
-            if (this.id === "tb01") {
-                $('#overlaypanel').hide();
-            }
-        } else {
-            $('.mtab').removeClass('active');
-            $('.panel').hide();
-            $(this).addClass('active');
-            if (this.id === "tb04") {
-                if ($(this).hasClass('active') === true) {
-                    geolocate.activate();
-                }
-            }
-            if (this.id === "tb03") {
-                $('#infopanel').show();
-            }
-            if (this.id === "tb02") {
-                $('#baselayerpanel').show();
-            }
-            if (this.id === "tb01") {
-                $('#overlaypanel').show();
-            }
+        }
+        else if (this.id === "c_minimap"){
+            $('#minimappanel').toggle();
         }
     });
 });

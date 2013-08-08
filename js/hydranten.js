@@ -38,11 +38,9 @@ var hydranten = {
             }
         });
         $('#div_' + this.id).click(function() {
-            if ($(this).hasClass('aan')) {
-                $(this).removeClass('aan');
+            if ($(this).hasClass('active')) {
                 hydranten.layer.setVisibility(false);
             } else {
-                $(this).addClass('aan');
                 hydranten.layer.setVisibility(true);
             }
         });
@@ -97,11 +95,7 @@ var hydranten = {
                 html += "</table>";
             }
             html += '</div>';
-            $('#infopanel').append(html);
-
-            if (!$('#tb03').hasClass('close')) {
-                $('#tb03').addClass('close');
-            }
+            $('#infopanel_b').append(html);
             $('#infopanel').toggle(true);
         }
     }

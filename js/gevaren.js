@@ -36,25 +36,13 @@ var gevaren = {
             ]);
         }
         // vinkje op webpagina aan/uitzetten
-        var dv_div = $('<div id="div_' + this.id + '" class="ovl aan"></div>');
-        var dv_cbx = $('<input type="checkbox" id="cbx_' + this.id + '" name="' + this.layer.name + '" />');
-        dv_div.append(dv_cbx);
-        dv_div.append(this.layer.name);
-        $('#overlaypanel').append(dv_div);
-        $('#cbx_' + this.id).attr('checked', this.layer.visibility);
-        $('#cbx_' + this.id).click(function() {
-            if (this.checked === true) {
-                gevaren.layer.setVisibility(true);
-            } else {
-                gevaren.layer.setVisibility(false);
-            }
-        });
+        var dv_div = $('<li id="div_' + this.id + '" class="ovl"></li>');
+        dv_div.append('<a href="#">' + this.layer.name + '</a>');
+        $('#overlaypanel_b').append(dv_div);
         $('#div_' + this.id).click(function() {
-            if ($(this).hasClass('aan')) {
-                $(this).removeClass('aan');
+            if ($(this).hasClass('active')) {
                 gevaren.layer.setVisibility(false);
             } else {
-                $(this).addClass('aan');
                 gevaren.layer.setVisibility(true);
             }
         });
@@ -109,11 +97,7 @@ var gevaren = {
                 html += "</table>";
             }
             html += '</div>';
-            $('#infopanel').append(html);
-
-            if (!$('#tb03').hasClass('close')) {
-                $('#tb03').addClass('close');
-            }
+            $('#infopanel_b').append(html);
             $('#infopanel').toggle(true);
         }
     }

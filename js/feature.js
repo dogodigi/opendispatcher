@@ -333,9 +333,6 @@ var dbkfeature = {
             },
             "featureunselected": function(e) {
                 $('#infopanel').hide();
-                if ($('#tb03').hasClass('active')) {
-                    $('#tb03').removeClass('active');
-                }
             }
         });
         this.get();
@@ -405,13 +402,13 @@ var dbkfeature = {
     },
     getfeatureinfo: function(e) {
         if (typeof(e.feature) !== "undefined") {
-            $('#infopanel').html('');
+            $('#infopanel_b').html('');
             if (e.feature.cluster) {
                 if (e.feature.cluster.length === 1) {
                     dbkfeature.zoomToFeature(e.feature.cluster[0]);
                 } else {
-                    $('#infopanel').append('<div style="float:left;width:100%;"><table id="Searchresult"></table></div>');
-                    $('#infopanel').append('<div id="Pagination" class="pagination" style="float:left;"></div>');
+                    $('#infopanel_b').append('<div style="float:left;width:100%;"><table id="Searchresult"></table></div>');
+                    $('#infopanel_b').append('<div id="Pagination" class="pagination" style="float:left;"></div>');
                     dbkfeature.currentCluster = e.feature.cluster;
                     $("#Pagination").pagination(e.feature.cluster.length, {
                         items_per_page: 20,
@@ -429,19 +426,11 @@ var dbkfeature = {
                         }
                     });
                     $('#infopanel').show(true);
-                    if (!$('#tb03').hasClass('active')) {
-                        $('#tb03').addClass('active');
-                    }
                 }
             } else {
-                //$('#infopanel').append('<div style="float:left;width:100%;"><table id="Searchresult"></table></div>');
-                //$('#Searchresult').append(dbkfeature.featureInfohtml(e.feature));
                 dbkfeature.currentCluster = [];
                 dbkfeature.zoomToFeature(e.feature);
                 $('#infopanel').hide();
-                if ($('#tb03').hasClass('active')) {
-                    $('#tb03').removeClass('active');
-                }
             }
         }
     }
