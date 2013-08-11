@@ -16,11 +16,11 @@ var preventie = {
      */
     layer: null,
     highlightlayer: null,
-     updateFilter:  function(dbk_id) {
+    updateFilter: function(dbk_id) {
         var cql_filter = "";
-        if(typeof(dbk_id) !== "undefined"){
-            cql_filter = "DBK_ID=" + dbk_id + ';DBK_ID=' + dbk_id +';DBK_ID=' + dbk_id;
-            this.layer.mergeNewParams({'CQL_FILTER': cql_filter });
+        if (typeof(dbk_id) !== "undefined") {
+            cql_filter = "DBK_ID=" + dbk_id + ';DBK_ID=' + dbk_id + ';DBK_ID=' + dbk_id;
+            this.layer.mergeNewParams({'CQL_FILTER': cql_filter});
         } else {
             delete this.layer.params.CQL_FILTER;
         }
@@ -29,7 +29,7 @@ var preventie = {
     },
     show: function(activate) {
         this.layer = new OpenLayers.Layer.WMS(this.title, this.url,
-                {layers: this.namespace + ':WFS_tblCustom_Polyline,' + this.namespace + ':WFS_tblSymbol_Point,'+ this.namespace + ':WFS_tblLabels', format: 'image/png', transparent: true},
+                {layers: this.namespace + ':WFS_tblCustom_Polyline,' + this.namespace + ':WFS_tblSymbol_Point,' + this.namespace + ':WFS_tblLabels', format: 'image/png', transparent: true},
         {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck", maxResolution: 6.71});
         if (activate === true) {
             map.addLayers([
@@ -39,12 +39,18 @@ var preventie = {
         // vinkje op webpagina aan/uitzetten
         var dv_div = $('<li id="div_' + this.id + '" class="ovl"></li>');
         dv_div.append('<a href="#">' + this.layer.name + '</a>');
+        if (preventie.layer.getVisibility()) {
+            dv_div.addClass('active');
+        }
+
         $('#overlaypanel_b').append(dv_div);
         $('#div_' + this.id).click(function() {
             if ($(this).hasClass('active')) {
                 preventie.layer.setVisibility(false);
+                $(this).removeClass('active');
             } else {
                 preventie.layer.setVisibility(true);
+                $(this).addClass('active');
             }
         });
     },
@@ -97,6 +103,7 @@ var preventie = {
             }
             html += '</div>';
             $('#infopanel_b').append(html);
+            $('#infopanel_f').html('');
             $('#infopanel').toggle(true);
         }
     }

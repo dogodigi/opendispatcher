@@ -24,24 +24,19 @@ var hydranten = {
             ]);
         }
         // vinkje op webpagina aan/uitzetten
-        var dv_div = $('<div id="div_' + this.id + '" class="ovl aan"></div>');
-        var dv_cbx = $('<input type="checkbox" id="cbx_' + this.id + '" name="' + this.layer.name + '" />');
-        dv_div.append(dv_cbx);
+        var dv_div = $('<div id="div_' + this.id + '" class="ovl"></div>');
         dv_div.append(this.layer.name);
+        if (hydranten.layer.getVisibility()) {
+            dv_div.addClass('active');
+        }
         $('#overlaypanel').append(dv_div);
-        $('#cbx_' + this.id).attr('checked', this.layer.visibility);
-        $('#cbx_' + this.id).click(function() {
-            if (this.checked === true) {
-                hydranten.layer.setVisibility(true);
-            } else {
-                hydranten.layer.setVisibility(false);
-            }
-        });
         $('#div_' + this.id).click(function() {
             if ($(this).hasClass('active')) {
                 hydranten.layer.setVisibility(false);
+                $(this).removeClass('active');
             } else {
                 hydranten.layer.setVisibility(true);
+                $(this).addClass('active');
             }
         });
     },
@@ -96,6 +91,7 @@ var hydranten = {
             }
             html += '</div>';
             $('#infopanel_b').append(html);
+            $('#infopanel_f').html('');
             $('#infopanel').toggle(true);
         }
     }

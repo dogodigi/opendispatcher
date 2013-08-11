@@ -123,20 +123,25 @@ var bag = {
         var dv_div = $('<li id="div_' + this.id + '" class="ovl"></li>');
         dv_div.append('<a href="#">' + this.layer.name + '</a>');
         $('#overlaypanel_b').append(dv_div);
+        if (bag.layer.getVisibility()) {
+            dv_div.addClass('active');
+        }
         $('#div_' + this.id).click(function() {
             if ($(this).hasClass('active')) {
                 bag.layer.setVisibility(false);
-                var bagpand_lyr = map.getLayersByName('BAG panden');
-                var bagvbo_lyr = map.getLayersByName('BAG verblijfsobjecten');
+                var bagpand_lyr = map.getLayersByName('BAG panden')[0];
+                var bagvbo_lyr = map.getLayersByName('BAG verblijfsobjecten')[0];
                 if (bagpand_lyr){
                     map.removeLayer(bagpand_lyr);
                 }
                 if (bagvbo_lyr){
                     map.removeLayer(bagvbo_lyr);
                 }
+                $(this).removeClass('active');
             } else {
                 bag.layer.setVisibility(true);
                 bag.activateVectors();
+                $(this).addClass('active');
             }
         });
     },
@@ -155,7 +160,7 @@ var bag = {
     getfeatureinfo: function(e) {
         if (typeof(e.feature) !== "undefined") {
             if ($('#baginfo').length === 0) {
-                $('#infopanel_b').append('<div id="baginfo" style="float:left;width:100%;"><h2>BAG gegevens</h2></div>');
+                $('#infopanel_b').append('<div id="baginfo" class="tab-content"><h2>BAG gegevens</h2></div>');
             }
             var mybaginfo = $('#baginfo');
             var mytable = $('<table></table>');
@@ -185,7 +190,8 @@ var bag = {
     },
     panel: function() {
         //verwerk de featureinformatie
-        $('#infopanel_b').html("test");
+        $('#infopanel_b').html('');
+        $('#infopanel_f').html('');
         $('#infopanel').toggle(true);
     }
 };

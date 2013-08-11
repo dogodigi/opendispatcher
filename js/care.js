@@ -27,11 +27,16 @@ var care = {
         var dv_div = $('<li id="div_' + this.id + '" class="ovl"></li>');
         dv_div.append('<a href="#">' + this.layer.name + '</a>');
         $('#overlaypanel_b').append(dv_div);
+        if (care.layer.getVisibility()) {
+            dv_div.addClass('active');
+        }
         $('#div_' + this.id).click(function() {
             if ($(this).hasClass('active')) {
                 care.layer.setVisibility(false);
+                $(this).removeClass('active');
             } else {
                 care.layer.setVisibility(true);
+                $(this).addClass('active');
             }
         });
     },
@@ -86,6 +91,7 @@ var care = {
             }
             html += '</div>';
             $('#infopanel_b').append(html);
+            $('#infopanel_f').html('');
             $('#infopanel').toggle(true);
         }
     }

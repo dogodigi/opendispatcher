@@ -111,6 +111,7 @@ function toggleBaseLayer(nr) {
 }
 function onClick(e) {
     $('#infopanel_b').html('');
+    $('#infopanel_f').html('');
     $.each(modules, function(mod_index, module) {
         if (typeof(module.layer) !== "undefined" && module.layer.visibility) {
             if (typeof(module.getfeatureinfo) !== "undefined") {
@@ -310,7 +311,7 @@ function init() {
         map.addLayers([vector]);
         map.addControl(geolocate);
     }
-    scalebar = new OpenLayers.Control.ScaleLine();
+    scalebar = new OpenLayers.Control.Scale(OpenLayers.Util.getElement('scale'));
     map.addControl(scalebar);
     naviHis = new OpenLayers.Control.NavigationHistory();
     map.addControl(naviHis);

@@ -367,15 +367,13 @@ var dbkfeature = {
         });
     },
     featureInfohtml: function(feature) {
-        var ret_tr = $('<tr></tr>');
-        var ret_title = $('<td></td>');
-        ret_tr.append(ret_title);
-        ret_title.append('<a href="?regio=' + regio.id + '&dbk=' + feature.attributes.id + '" class="infofieldtitle">' + feature.attributes.formelenaam + '</a>&nbsp;');
+        var ret_title = $('<li></li>');
+        ret_title.append('<a href="?regio=' + regio.id + '&dbk=' + feature.attributes.id + '">' + feature.attributes.formelenaam + '</a>');
         //var ret_val = $('<td class="dbk_feature" id="dbk_' + feature.attributes.id + '"></td>');
         //ret_val.html(feature.attributes.formelenaam);
         //ret_tr.append(ret_val);
 
-        $(ret_tr).click(function() {
+        $(ret_title).click(function() {
             preparatie.updateFilter(feature.attributes.id);
             preventie.updateFilter(feature.attributes.id);
             gevaren.updateFilter(feature.attributes.id);
@@ -387,7 +385,7 @@ var dbkfeature = {
             }
             return false;
         });
-        return ret_tr;
+        return ret_title;
     },
     zoomToFeature: function(feature) {
         preparatie.updateFilter(feature.attributes.id);
@@ -407,22 +405,24 @@ var dbkfeature = {
                 if (e.feature.cluster.length === 1) {
                     dbkfeature.zoomToFeature(e.feature.cluster[0]);
                 } else {
-                    $('#infopanel_b').append('<div style="float:left;width:100%;"><table id="Searchresult"></table></div>');
-                    $('#infopanel_b').append('<div id="Pagination" class="pagination" style="float:left;"></div>');
+                    $('#infopanel_f').append('<ul id="Pagination" class="pagination"></ul>');
                     dbkfeature.currentCluster = e.feature.cluster;
                     $("#Pagination").pagination(e.feature.cluster.length, {
-                        items_per_page: 20,
+                        items_per_page: 10,
                         callback: function(page_index, jq) {
                             // Get number of elements per pagionation page from form
-                            var items_per_page = 20;
+                            var items_per_page = 10;
                             var max_elem = Math.min((page_index + 1) * items_per_page, dbkfeature.currentCluster.length);
 
                             // Iterate through a selection of the content and build an HTML string
-                            $('#Searchresult').html('');
+                            var item_ul = $('<ul class="nav nav-pills nav-stacked"></ul>');
+                            $('#infopanel_b').html('');
+                            
                             for (var i = page_index * items_per_page; i < max_elem; i++)
                             {
-                                $('#Searchresult').append(dbkfeature.featureInfohtml(dbkfeature.currentCluster[i]));
+                                item_ul.append(dbkfeature.featureInfohtml(dbkfeature.currentCluster[i]));
                             }
+                            $('#infopanel_b').append(item_ul);
                         }
                     });
                     $('#infopanel').show(true);

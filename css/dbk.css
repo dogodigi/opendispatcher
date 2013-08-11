@@ -1,3 +1,14 @@
+#header {
+   position: absolute;
+   right: 4em;
+   z-index:1000;
+}
+#coords {
+    width: 140px;
+}
+#scale {
+    width: 80px;
+}
 html {
     margin: 0;
     width: 100%;
@@ -5,6 +16,9 @@ html {
 }
 .input-group-addon {
     background-color: #ffffff !important;
+}
+.pagination {
+    margin: 0 !important;
 }
 body {
     color: #000000;
@@ -17,7 +31,6 @@ body {
 #infopanel{
     position: absolute;
     right: 1em;
-    width: 600px;
     z-index: 300;
     bottom: 0;
     margin-bottom: 0 !important;

@@ -40,11 +40,16 @@ var dbkobject = {
         var dv_div = $('<li id="div_' + this.id + '" class="ovl"></li>');
         dv_div.append('<a href="#">' + this.layer.name + '</a>');
         $('#overlaypanel_b').append(dv_div);
+        if (dbkobject.layer.getVisibility()) {
+            dv_div.addClass('active');
+        }
         $('#div_' + this.id).click(function() {
             if ($(this).hasClass('active')) {
                 dbkobject.layer.setVisibility(false);
+                $(this).removeClass('active');
             } else {
                 dbkobject.layer.setVisibility(true);
+                $(this).addClass('active');
             }
         });
     },
@@ -101,6 +106,7 @@ var dbkobject = {
             }
             html += '</div>';
             $('#infopanel_b').append(html);
+            $('#infopanel_f').html('');
             $('#infopanel').toggle(true);
         }
     }

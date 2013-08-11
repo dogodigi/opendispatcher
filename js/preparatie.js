@@ -43,12 +43,17 @@ var preparatie = {
         // vinkje op webpagina aan/uitzetten
         var dv_div = $('<li id="div_' + this.id + '" class="ovl"></li>');
         dv_div.append('<a href="#">' + this.layer.name + '</a>');
+        if (preparatie.layer.getVisibility()) {
+            dv_div.addClass('active');
+        }
         $('#overlaypanel_b').append(dv_div);
         $('#div_' + this.id).click(function() {
             if ($(this).hasClass('active')) {
                 preparatie.layer.setVisibility(false);
+                $(this).removeClass('active');
             } else {
                 preparatie.layer.setVisibility(true);
+                $(this).addClass('active');
             }
         });
     },
@@ -103,6 +108,7 @@ var preparatie = {
             }
             html += '</div>';
             $('#infopanel_b').append(html);
+            $('#infopanel_f').html('');
             $('#infopanel').toggle(true);
         }
     }
