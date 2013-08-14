@@ -28,6 +28,10 @@ body {
     width: 100%;
     font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
+#search_input {
+    background-color: #ffffff !important;
+    width:30em !important;
+}
 #infopanel{
     position: absolute;
     right: 1em;

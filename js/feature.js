@@ -3,7 +3,7 @@ var dbkfeature = {
     /**
      * URL naar een statisch boringen bestand in gml formaat
      */
-
+    features: [],
     url: "/geoserver/zeeland/ows?",
     namespace: "zeeland",
     /**
@@ -356,7 +356,10 @@ var dbkfeature = {
             dataType: "json",
             success: function(data) {
                 var geojson_format = new OpenLayers.Format.GeoJSON();
-                _this.layer.addFeatures(geojson_format.read(data));
+                dbkfeature.features = geojson_format.read(data);
+
+                _this.layer.addFeatures(dbkfeature.features);
+                dbkfeature.search_dbk();
             },
             error: function() {
                 return false;
@@ -386,6 +389,74 @@ var dbkfeature = {
             return false;
         });
         return ret_title;
+    },
+    search_dbk: function() {
+        //Voeg de DBK objecten toe aan de typeahead set..
+        var dbk_naam_array = [];
+
+        $.each(dbkfeature.features, function(key, value) {
+            //alert(value.properties.formelenaam + ' (' + value.properties.identificatie_id + ')');
+            dbk_naam_array.push({
+                value: value.attributes.formelenaam + ' ' + value.attributes.identificatie_id,
+                geometry: value.geometry,
+                id: value.attributes.id
+            });
+        });
+        $('#search_input').typeahead({
+            name: 'dbk',
+            //prefetch: '../data/countries.json',
+            local: dbk_naam_array,
+            limit: 10
+                    //template: '<p class="repo-language">{{name}}&nbsp;<i>({{identificatie}})</i></p>',
+        });
+        $('#search_input').bind('typeahead:selected', function(obj, datum) {
+            //console.log(obj);
+            //console.log(datum);
+            preparatie.updateFilter(datum.id);
+            preventie.updateFilter(datum.id);
+            gevaren.updateFilter(datum.id);
+            dbkobject.updateFilter(datum.id);
+            if (map.zoom < 13) {
+                map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
+            } else {
+                map.setCenter(datum.geometry.getBounds().getCenterLonLat());
+            }
+        });
+    },
+    search_oms: function() {
+        //Voeg de DBK objecten toe aan de typeahead set..
+        var dbk_naam_array = [];
+
+        $.each(dbkfeature.features, function(key, value) {
+            //alert(value.properties.formelenaam + ' (' + value.properties.identificatie_id + ')');
+            if (value.attributes.OMSnummer !== "") {
+                dbk_naam_array.push({
+                    value: 'oms: ' + value.attributes.OMSnummer + ' - ' + value.attributes.formelenaam,
+                    geometry: value.geometry,
+                    id: value.attributes.id
+                });
+            }
+        });
+        $('#search_input').typeahead({
+            name: 'oms',
+            //prefetch: '../data/countries.json',
+            local: dbk_naam_array,
+            limit: 10
+                    //template: '<p class="repo-language">{{name}}&nbsp;<i>({{identificatie}})</i></p>',
+        });
+        $('#search_input').bind('typeahead:selected', function(obj, datum) {
+            //console.log(obj);
+            //console.log(datum);
+            preparatie.updateFilter(datum.id);
+            preventie.updateFilter(datum.id);
+            gevaren.updateFilter(datum.id);
+            dbkobject.updateFilter(datum.id);
+            if (map.zoom < 13) {
+                map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
+            } else {
+                map.setCenter(datum.geometry.getBounds().getCenterLonLat());
+            }
+        });
     },
     zoomToFeature: function(feature) {
         preparatie.updateFilter(feature.attributes.id);
@@ -417,7 +488,7 @@ var dbkfeature = {
                             // Iterate through a selection of the content and build an HTML string
                             var item_ul = $('<ul class="nav nav-pills nav-stacked"></ul>');
                             $('#infopanel_b').html('');
-                            
+
                             for (var i = page_index * items_per_page; i < max_elem; i++)
                             {
                                 item_ul.append(dbkfeature.featureInfohtml(dbkfeature.currentCluster[i]));
