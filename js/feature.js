@@ -429,9 +429,9 @@ var dbkfeature = {
 
         $.each(dbkfeature.features, function(key, value) {
             //alert(value.properties.formelenaam + ' (' + value.properties.identificatie_id + ')');
-            if (value.attributes.OMSnummer !== "") {
+            if (!isJsonNull(value.attributes.OMSnummer)) {
                 dbk_naam_array.push({
-                    value: 'oms: ' + value.attributes.OMSnummer + ' - ' + value.attributes.formelenaam,
+                    value: '' + value.attributes.OMSnummer + ' - ' + value.attributes.formelenaam,
                     geometry: value.geometry,
                     id: value.attributes.id
                 });

@@ -64,7 +64,7 @@ $('div.btn-group ul.dropdown-menu li a').click(function(e) {
     $('#search_input').typeahead('destroy');
     $('#search_input').val('');
     var mdiv = $(this).parent().parent().parent();
-    var mbtn = mdiv.parent().find('.input-group-addon');
+    var mbtn = $('#search-add-on');
     var minp = mdiv.parent().find('input');
     if ($(this).text() === " Adres") {
         mbtn.html('<i class="icon-home"></i>');
