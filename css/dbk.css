@@ -4,6 +4,10 @@ html {
     height: 100%;
 }
 
+.input-group-addon, .input-group-btn {
+    width: auto !important;
+}
+
 .input-group-addon {
     background-color: #ffffff !important;
 }
@@ -85,13 +89,13 @@ body {
         overflow: auto;
     }
     ul.icons {
-    	list-style-type: none;
-    	margin-left: -1em;
-    	text-indent: -0.4em;
-	}
-	li [class^="icon-"], li [class*=" icon-"] {
-    	width: 0.4em !important;
-	}
+        list-style-type: none;
+        margin-left: -1em;
+        text-indent: -0.4em;
+    }
+    li [class^="icon-"], li [class*=" icon-"] {
+        width: 0.4em !important;
+    }
     .mtab {
         border-bottom: 1px solid #cccccc;
         border-left: 1px solid #cccccc;
@@ -101,9 +105,9 @@ body {
         border-bottom-left-radius: 10px 10px;
         -moz-border-radius-bottomright: 10px 10px;
         border-bottom-right-radius: 10px 10px;
-		width: 1.2em;
-		text-align: center;
-		font-size: 3em;
+        width: 1.2em;
+        text-align: center;
+        font-size: 3em;
         position: absolute;
         float: right;
         top: 0;
@@ -112,7 +116,7 @@ body {
         background-color: #ffffff;
     }
     .active{
-    	color: #cc9933;
+        color: #cc9933;
     }
     .prev {
         right: 7.8em;
@@ -124,16 +128,16 @@ body {
         right: 5.2em;
     }
     .geolocation {
-    	right: 3.9em;
+        right: 3.9em;
     }
     .lay{
-    	right: 2.6em;
+        right: 2.6em;
     }
     .over{
-    	right: 1.3em;
+        right: 1.3em;
     }
     .info {
-    	right: 0;
+        right: 0;
         z-index: 302 !important;
     }
     .zoek {
@@ -141,13 +145,13 @@ body {
         right: 13.5em;
         margin-right: 1%;
     }
-    
+
     .olControlZoom {
         display: none !important;
     }
     .baselayertitle{
         color: #797979;
-	    border-bottom: 1px solid #cc9933 !important;
+        border-bottom: 1px solid #cc9933 !important;
     }
     #mapc1map1 {
         position: absolute;
@@ -170,7 +174,7 @@ body {
         color: #cc9933;
     }
     .olControlScaleLineBottom{
-    	display: none;
+        display: none;
     }
     #zoekpanel{
         display: none;
@@ -180,7 +184,7 @@ body {
         -moz-border-radius-topright: 10px 10px;
         border-top-right-radius: 10px 10px;
         position: absolute;
-	    opacity:0.9;
+        opacity:0.9;
         filter:alpha(opacity=90); /* For IE8 and earlier */
         width: 98%;
         padding: 1%;
@@ -189,13 +193,13 @@ body {
         background-color: #ffffff;
         overflow: hidden;
     }
-    
+
     #zoekpanel div {
         font-size: 1.6em;
         padding: 0.8em;
         text-align: center;
     }
-    
+
     #overlaypanel input {
         display: none;
     }
