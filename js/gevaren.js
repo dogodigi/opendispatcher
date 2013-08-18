@@ -36,11 +36,20 @@ var gevaren = {
             ]);
         }
         // vinkje op webpagina aan/uitzetten
-        var dv_div = $('<li id="div_' + this.id + '" class="ovl"></li>');
-        dv_div.append('<a href="#">' + this.layer.name + '</a>');
-        $('#overlaypanel_b').append(dv_div);
+        var dv_panel = $('<div class="panel"></div>');
+        var dv_panel_heading = $('<div class="panel-heading"></div>');
+        var dv_panel_title = $('<h4 class="panel-title"></div>');
+        dv_panel_title.append('<input type="checkbox" name="box_' + this.id + '"/>&nbsp;');
+        dv_panel_title.append(this.layer.name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' + this.id + '" data-parent="#overlaypanel_b" ><i class="icon-info-sign"></i></a>');
+        dv_panel_heading.append(dv_panel_title);
+        dv_panel.append(dv_panel_heading);
+        var dv_panel_content = $('<div id="collapse_' + this.id + '" class="panel-collapse collapse"></div>');
+        dv_panel_content.append('<div class="panel-body">Bladiebla</div>');
+        dv_panel.append(dv_panel_content);
+        $('#overlaypanel_b').append(dv_panel);
         if (gevaren.layer.getVisibility()) {
-            dv_div.addClass('active');
+            //checkbox aan
+            $('input[name="box_' + this.id + '"]').attr('checked','checked');
         }
         $('#div_' + this.id).click(function() {
             if ($(this).hasClass('active')) {

@@ -3,7 +3,11 @@ html {
     width: 100%;
     height: 100%;
 }
-
+h4, h5, h6 {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+}
+.accordion-heading a.accordion-toggle { display: inline-block; }
 .input-group-addon, .input-group-btn {
     width: auto !important;
 }
@@ -73,6 +77,7 @@ body {
     left:1em;
     bottom: 1em;
 }
+
 @media screen {
     .aan {
         background-color: #AA0009 !important;
@@ -200,9 +205,6 @@ body {
         text-align: center;
     }
 
-    #overlaypanel input {
-        display: none;
-    }
     .panel {
         z-index: 302;
     }

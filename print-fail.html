@@ -1,0 +1,85 @@
+<html> 
+    <head> 
+        <title>Print - this one fails</title>
+        <script src="js/libs/jquery.1.9.1.min.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var postdata = {
+                    "units": "m",
+                    "srs": "EPSG:28992",
+                    "layout": "A4 portrait",
+                    "dpi": 75,
+                    "layers": [
+                        {
+                            "type": "TMS",
+                            "baseURL": "http://openbasiskaart.nl/mapcache/tms/",
+                            "version": "1.0.0",
+                            "opacity": 1,
+                            "singleTile": false,
+                            "maxExtent": [
+                                -285401.92,
+                                22598.08,
+                                595401.92,
+                                903401.92
+                            ],
+                            "tileSize": [
+                                256,
+                                256
+                            ],
+                            "format": "png;",
+                            "extension": "png",
+                            "layer": "osm-nb@rd",
+                            "resolutions": [
+                                3440.64,
+                                1720.32,
+                                860.16,
+                                430.08,
+                                215.04,
+                                107.52,
+                                53.76,
+                                26.88,
+                                13.44,
+                                6.72,
+                                3.36,
+                                1.68,
+                                0.84,
+                                0.42,
+                                0.21
+                            ],
+                            "styles": [
+                                ""
+                            ]
+                        }
+                    ],
+                    "pages": [
+                        {
+                            "center": [
+                                54117.000091572,
+                                392313.99977642
+                            ],
+                            "scale": 25000,
+                            "rotation": 0,
+                            "mapTitle": "dbk viewer print test",
+                            "comment": "Dit is de print test van de dbk viewer"
+                        }
+                    ]
+                };
+                $('#berichten').html('Print wordt verwerkt...');
+                $.ajax({
+                    type: "POST",
+                    url: "geoserver/pdf/create.json",
+                    contentType: "application/json",
+                    data: JSON.stringify(postdata),
+                    dataType: "json",
+                    complete: function(response) {
+                        $('#berichten').html('Klaar!');
+                        window.location = JSON.parse(response.responseText).getURL;
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div id="berichten"></div>
+    </body> 
+</html> 

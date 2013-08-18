@@ -1,3 +1,6 @@
 [submodule "submodules/bootstrap"]
 	path = submodules/bootstrap
 	url = git@github.com:twbs/bootstrap.git
+[submodule "submodules/bootstrap-slider"]
+	path = submodules/bootstrap-slider
+	url = git@github.com:bao1018/bootstrap-slider.git

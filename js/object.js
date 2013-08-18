@@ -29,7 +29,7 @@ var dbkobject = {
     },
     show: function(activate) {
         this.layer = new OpenLayers.Layer.WMS("Objecten", this.url,
-                {layers: this.namespace + ':WFS_tblDBK_Polygon,' + this.namespace + ':WFS_tblUitrukroute', format: 'image/png', transparent: true},
+                {layers: this.namespace + ':WFS_tblDBK_Gebied,' + this.namespace + ':WFS_tblDBK_Polygon,' + this.namespace + ':WFS_tblUitrukroute', format: 'image/png', transparent: true},
         {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck", maxResolution: 6.71});
         if (activate === true) {
             map.addLayers([
@@ -37,11 +37,20 @@ var dbkobject = {
             ]);
         }
         // vinkje op webpagina aan/uitzetten
-        var dv_div = $('<li id="div_' + this.id + '" class="ovl"></li>');
-        dv_div.append('<a href="#">' + this.layer.name + '</a>');
-        $('#overlaypanel_b').append(dv_div);
+        var dv_panel = $('<div class="panel"></div>');
+        var dv_panel_heading = $('<div class="panel-heading" draggable="true"></div>');
+        var dv_panel_title = $('<h4 class="panel-title"></div>');
+        dv_panel_title.append('<input type="checkbox" name="box_' + this.id + '"/>&nbsp;');
+        dv_panel_title.append(this.layer.name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' + this.id + '" data-parent="#overlaypanel_b" ><i class="icon-info-sign"></i></a>');
+        dv_panel_heading.append(dv_panel_title);
+        dv_panel.append(dv_panel_heading);
+        var dv_panel_content = $('<div id="collapse_' + this.id + '" class="panel-collapse collapse"></div>');
+        dv_panel_content.append('<div class="panel-body">Bladiebla</div>');
+        dv_panel.append(dv_panel_content);
+        $('#overlaypanel_b').append(dv_panel);
         if (dbkobject.layer.getVisibility()) {
-            dv_div.addClass('active');
+            //checkbox aan
+            $('input[name="box_' + this.id + '"]').attr('checked','checked');
         }
         $('#div_' + this.id).click(function() {
             if ($(this).hasClass('active')) {

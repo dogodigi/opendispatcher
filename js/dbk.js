@@ -120,20 +120,6 @@ $('div.btn-group ul.dropdown-menu li a').click(function(e) {
     return false;
 });
 
-//search_btn_dropdown.children('li').click(function() {
-//    if ($(this).text() === "Address") {
-//        //User wants to search on address, show a single input bar with address pre-
-//        $('#search_input').html('<span class="add-on"><i class="icon-home"></i></span><input id="address_search" class="span2" type="text" placeholder="First Avenue 2, New York">');
-//    } else if ($(this).text() === "Coördinates") {
-//        $('#search_input').html('<span class="add-on"><i class="icon-globe"></i></span><input id="coord_search" class="span2" type="text" placeholder="5.1 , 52.4">');
-//    } else if ($(this).text() === "Unit") {
-//        $('#search_input').html('<span class="add-on"><i class="icon-truck"></i></span><input id="unit_search" class="span2" type="text" placeholder="54321">');
-//    } else if ($(this).text() === "Incident") {
-//        $('#search_input').html('<span class="add-on"><i class="icon-star"></i></span><input id="incident_search" class="span2" type="text" placeholder="3211">');
-//    }
-//    $(this).parent().toggle();
-//});
-
 /**
  * Functie voor updaten van de zichtbaarheid van baselayers
  * @param {integer} nr
@@ -222,10 +208,6 @@ function successAuth(regio) {
         if (module.id === "dbkf") {
             selectControl.setLayer((selectControl.layers || selectControl.layer).concat(module.layer));
         }
-        //if (module.id === "dbkbag") {
-//            selectControl.setLayer((selectControl.layers || selectControl.layer).concat(module.pand_layer));
-//            selectControl.setLayer((selectControl.layers || selectControl.layer).concat(module.vbo_layer));
-//        }
     });
     activateClick();
 }
@@ -264,11 +246,7 @@ function init() {
                 sphericalMercator: false
             }
     );
-//    baselayers[0] = new OpenLayers.Layer.WMS('openbasiskaart',
-//            'http://openbasiskaart.nl/cgi-bin/mapserv.fcgi?map=/var/opt/openbasiskaart/mapserver/basemaps/osm-nobuildings.map',
-//            {layers: "default", format: "image/jpeg", transparent: false},
-//    {transitionEffect: 'resize', singleTile: false, buffer: 0, isBaseLayer: true, visibility: true, attribution: "ogg"}
-//    );
+
     baselayers[1] = new OpenLayers.Layer.TMS(
             'Basisregistratie Topografie (PDOK)',
             'http://geodata.nationaalgeoregister.nl/tms/',
@@ -276,7 +254,7 @@ function init() {
                 layername: 'brtachtergrondkaart',
                 isBaseLayer: true,
                 displayInLayerSwitcher: true,
-                type: 'png8',
+                type: 'png',
                 matrixSet: 'EPSG:28992',
                 matrixIds: matrixIds,
                 tileOrigin: new OpenLayers.LonLat(-285401.92, 22598.08),
@@ -284,10 +262,7 @@ function init() {
                 tileFulExtent: new OpenLayers.Bounds(-285401.92, 22598.08, 595401.9199999999, 903401.9199999999)
             }
     );
-//  baselayers[0] = new OpenLayers.Layer.WMS('BRT achtergrond', 'http://geodata.nationaalgeoregister.nl/wmsc?',
-//            {layers: "brtachtergrondkaart", format: "image/png8", transparent: false, bgcolor: "0x99b3cc"},
-//    {transitionEffect: 'resize', singleTile: false, buffer: 0, isBaseLayer: true, visibility: true, attribution: "PDOK"}
-//  );
+
     baselayers[2] = new OpenLayers.Layer.WMS('Luchtfoto 2009 (PDOK)', 'http://geodata1.nationaalgeoregister.nl/luchtfoto/wms?',
             {layers: "luchtfoto", format: "image/jpeg", transparent: false},
     {transitionEffect: 'resize', singleTile: false, buffer: 0, isBaseLayer: true, visibility: true, attribution: "PDOK"}
@@ -299,7 +274,7 @@ function init() {
                 layername: 'top10nl',
                 isBaseLayer: true,
                 displayInLayerSwitcher: true,
-                type: 'png8',
+                type: 'png',
                 matrixSet: 'EPSG:28992',
                 matrixIds: matrixIds,
                 tileOrigin: new OpenLayers.LonLat(-285401.92, 22598.08),
@@ -399,9 +374,10 @@ $(document).ready(function() {
                 vector.removeAllFeatures();
                 geolocate.deactivate();
             }
-        }
-        else if (this.id === "c_minimap") {
+        } else if (this.id === "c_minimap") {
             $('#minimappanel').toggle();
+        } else if (this.id === "c_print") {
+            dbkjs.print.print();
         }
     });
 });
