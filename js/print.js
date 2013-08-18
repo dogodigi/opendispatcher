@@ -5,7 +5,7 @@ dbkjs.print = {
         "title": "mapfish print",
         "units": "degrees",
         "srs": "EPSG:4326",
-        "layout": "DBK staand",
+        "layout": "A4 portrait",
         "dpi": 300,
         "layers": [
             {
