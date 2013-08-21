@@ -481,6 +481,7 @@ var dbkfeature = {
                     dbkfeature.zoomToFeature(e.feature.cluster[0]);
                 } else {
                     $('#infopanel_f').append('<ul id="Pagination" class="pagination"></ul>');
+                    $('#infopanel_f').show();
                     dbkfeature.currentCluster = e.feature.cluster;
                     $("#Pagination").pagination(e.feature.cluster.length, {
                         items_per_page: 10,

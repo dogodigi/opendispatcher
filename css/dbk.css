@@ -7,6 +7,9 @@ h4, h5, h6 {
     margin-bottom: 0 !important;
     margin-top: 0 !important;
 }
+.tab-content{
+    width: 600px;
+}
 .accordion-heading a.accordion-toggle { display: inline-block; }
 .input-group-addon, .input-group-btn {
     width: auto !important;
@@ -120,27 +123,7 @@ body {
         cursor: pointer;
         background-color: #ffffff;
     }
-    .active{
-        color: #cc9933;
-    }
-    .prev {
-        right: 7.8em;
-    }
-    .next {
-        right: 6.5em;
-    }
-    .search {
-        right: 5.2em;
-    }
-    .geolocation {
-        right: 3.9em;
-    }
-    .lay{
-        right: 2.6em;
-    }
-    .over{
-        right: 1.3em;
-    }
+    
     .info {
         right: 0;
         z-index: 302 !important;
