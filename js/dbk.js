@@ -158,7 +158,7 @@ function procesWFS(response) {
                     '<h4>' + formelenaam + '</h4><h5>' + informelenaam + '</h5>' + 
                     '<p>Controledatum: ' + controledatum  + '</p>' + 
                 '</div>');
-            panel_tabs.html('<li class="active"><a  data-toggle="tab" href="#collapse_algemeen_' + dbk + '">Algemeen</a></li>');
+            panel_tabs.html('<li class="active"><a data-toggle="tab" href="#collapse_algemeen_' + dbk + '">Algemeen</a></li>');
             
             var verblijf = xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKFeature"]["dbk:verblijf"];
             if (verblijf) {
@@ -181,7 +181,7 @@ function procesWFS(response) {
                     verblijf_div.append(verblijf_ul);
                 }
                 panel_group.append(verblijf_div);
-                panel_tabs.append('<li><a  data-toggle="tab" href="#collapse_verblijf_' + dbk + '">Verblijf</a></li>');
+                panel_tabs.append('<li><a data-toggle="tab" href="#collapse_verblijf_' + dbk + '">Verblijf</a></li>');
             } else {
                 panel_tabs.append('<li class="disabled"><a href="#collapse_verblijf_' + dbk + '">Verblijf</a></li>');
             }
