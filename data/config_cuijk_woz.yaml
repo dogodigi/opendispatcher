@@ -1,0 +1,1054 @@
+ #===========================================================================
+# allowed DPIs
+#===========================================================================
+dpis:
+  - 150
+
+#===========================================================================
+# the allowed scales
+#===========================================================================
+scales:
+  - 100
+  - 200
+  - 250
+  - 500
+  - 750
+  - 1000
+  - 1500
+  - 2000
+  - 2500
+  - 5000
+  - 10000
+  - 15000
+  - 25000
+  - 50000
+
+#===========================================================================
+# the list of allowed hosts
+#===========================================================================
+hosts:
+  - !localMatch
+    dummy: true
+  - !ipMatch
+    ip: www.gisarts.nl
+  - !ipMatch
+    ip: www.gisboxmeer.nl
+  - !ipMatch
+    ip: www.gissomeren.nl
+
+layouts:
+#===========================================================================
+  1. Standaard (A4 liggend):
+  #===========================================================================
+    mainPage:
+      rotation: true
+      pageSize: A4
+      landscape: true
+      header:
+        height: 29
+        items:
+          - !columns
+            config:
+              borderWidthTop: 1
+              borderWidthBottom: 1
+              borderColor: black
+              cells:
+                - paddingTop: 1
+                  paddingBottom: 1
+            items:
+              - !columns
+                config:
+                  cells:
+                    - padding: 0
+                widths: [10,90]
+                backgroundColor: #EEEEEE
+                items:
+                  - !image
+                    align: left
+                    url: '${logoURL}'
+                    maxWidth: 200
+                    maxHeight: 45
+                  - !text
+                    font: Arial-Bold
+                    fontSize: 20
+                    align: right
+                    vertAlign: middle
+                    text: '${mapTitle}'
+      marginTop: 25
+      marginLeft: 36
+      marginBottom: 36
+      items:
+        - !columns
+          config:
+            cells: 
+              - padding: 0
+          absoluteX: 36
+          absoluteY: 520
+          width: 450
+          items:
+            - !map
+              align: left
+              vertAlign: middle
+              width: 600
+              height: 450
+        - !columns
+          absoluteX: 536
+          absoluteY: 520
+          width: 100
+          config:
+            cells: 
+              - padding: 2
+                borderColor: red
+                borderWidth: 2
+          items: 
+            - !map
+              width: 96
+              height: 96
+              overviewMap: 2
+              vertAlign: top
+              align: right
+        - !columns
+          widths: [80,20]
+          config:
+            cells:
+              - col: 1
+                paddingLeft: 0
+                paddingRight: 0
+                paddingTop: 20
+                paddingBottom: 0                
+          items:
+            - !text
+              text: ''
+            - !legends
+              maxIconWidth: 18
+              maxIconHeight: 15
+              layerSpace: 4
+              layerFontSize: 10
+              classIndentation: 10
+              classFontSize: 9
+              classSpace: 4
+      footer:
+        height: 35
+        items:
+          - !columns
+              config:
+                borderWidthTop: 1
+                borderWidthBottom: 1
+                borderColor: black
+                cells:
+                  - paddingTop: 10
+                    paddingBottom: 10
+              items: 
+                - !columns
+                  widths: [80, 30, 10, 20]
+                  backgroundColor: #EEEEEE
+                  items:
+                    - !text
+                      fontSize: 12
+                      text: '${gemnaam} geprint op ${now dd/MM/yyyy} schaal 1:${scale} A4'
+                      align: left
+                    - !scalebar
+                      maxSize: 150
+                      units: m
+                      type: bar
+                      align: right
+                      subIntervals: false
+                    - !image
+                      maxWidth: 40
+                      maxHeight: 40
+                      url: 'http://www.cgm-millensinthubert.nl/shared/img/Arrow_North_CFCF.svg'
+                      rotation: '${rotation}'
+                      align: right
+                    - !text
+                      fontSize: 8
+                      text: 'Aan dit kaartproduct kunnen geen rechten worden ontleend'
+                      vertAlign: bottom
+  #===========================================================================
+  2. Standaard (A3 liggend):
+  #===========================================================================
+    mainPage:
+      rotation: true
+      pageSize: A3
+      landscape: true
+      header:
+        height: 29
+        items:
+          - !columns
+            config:
+              borderWidthTop: 1
+              borderWidthBottom: 1
+              borderColor: black
+              cells:
+                - paddingTop: 1
+                  paddingBottom: 1
+            items:
+              - !columns
+                config:
+                  cells:
+                    - padding: 0
+                widths: [10,90]
+                backgroundColor: #EEEEEE
+                items:
+                  - !image
+                    align: left
+                    url: '${logoURL}'
+                    maxWidth: 200
+                    maxHeight: 45
+                  - !text
+                    font: Arial-Bold
+                    fontSize: 20
+                    align: right
+                    vertAlign: middle
+                    text: '${mapTitle}'
+      marginTop: 25
+      marginLeft: 36
+      marginBottom: 25
+      items:
+        - !columns
+          config:
+            cells:
+              - padding: 0
+          absoluteX: 36
+          absoluteY: 760
+          width: 450
+          items:
+            - !map
+              align: left
+              vertAlign: middle
+              width: 880
+              height: 680
+        - !columns
+          absoluteX: 816
+          absoluteY: 760
+          width: 100
+          config:
+            cells:
+              - padding: 2
+                borderColor: red
+                borderWidth: 2
+          items:
+            - !map
+              width: 96
+              height: 96
+              overviewMap: 2
+              vertAlign: top
+              align: right
+        - !columns
+          widths: [80,20]
+          config:
+            cells:
+              - col: 1
+                paddingLeft: 0
+                paddingRight: 0
+                paddingTop: 20
+                paddingBottom: 0                
+          items:
+          items:
+            - !text
+              text: ''
+            - !legends
+              maxIconWidth: 18
+              maxIconHeight: 15
+              layerSpace: 4
+              layerFontSize: 10
+              classIndentation: 10
+              classFontSize: 9
+              classSpace: 4
+      footer:
+        height: 55
+        items:
+          - !columns
+              config:
+                borderWidthTop: 1
+                borderWidthBottom: 1
+                borderColor: black
+                cells:
+                  - paddingTop: 10
+                    paddingBottom: 10
+              items: 
+                - !columns
+                  widths: [80, 30, 10, 30]
+                  backgroundColor: #EEEEEE
+                  items:
+                    - !text
+                      fontSize: 12
+                      text: '${gemnaam} geprint op ${now dd/MM/yyyy} schaal 1:${scale} A3'
+                      align: left
+                    - !scalebar
+                      maxSize: 150
+                      units: m
+                      type: bar
+                      align: right
+                      subIntervals: false
+                    - !image
+                      maxWidth: 40
+                      maxHeight: 40
+                      url: 'http://www.cgm-millensinthubert.nl/shared/img/Arrow_North_CFCF.svg'
+                      rotation: '${rotation}'
+                      align: right
+                    - !text
+                      fontSize: 8
+                      text: 'Aan dit kaartproduct kunnen geen rechten worden ontleend'
+                      vertAlign: bottom
+
+  #===========================================================================
+  3. Kadastraal (A4 liggend):
+  #===========================================================================
+    mainPage:
+      rotation: true
+      pageSize: A4
+      landscape: true
+      header:
+        height: 29
+        items:
+          - !columns
+            config:
+              borderWidthTop: 1
+              borderWidthBottom: 1
+              borderColor: black
+              cells:
+                - paddingTop: 1
+                  paddingBottom: 1
+            items:
+              - !columns
+                config:
+                  cells:
+                    - padding: 0
+                widths: [10,90]
+                backgroundColor: #EEEEEE
+                items:
+                  - !image
+                    align: left
+                    url: '${logoURL}'
+                    maxWidth: 200
+                    maxHeight: 45
+                  - !text
+                    font: Arial-Bold
+                    fontSize: 20
+                    align: right
+                    vertAlign: middle
+                    text: '${mapTitle}'
+      marginTop: 25
+      marginLeft: 36
+      marginBottom: 36
+      items:
+        - !columns
+          config:
+            cells: 
+              - padding: 0
+          absoluteX: 36
+          absoluteY: 520
+          width: 450
+          items:
+            - !map
+              align: left
+              vertAlign: middle
+              width: 600
+              height: 400
+        - !columns
+          absoluteX: 536
+          absoluteY: 520
+          width: 100
+          config:
+            cells: 
+              - padding: 2
+                borderColor: red
+                borderWidth: 2
+          items: 
+            - !map
+              width: 96
+              height: 96
+              overviewMap: 2
+              vertAlign: top
+              align: right
+        - !columns
+          absoluteX: 36
+          absoluteY: 115
+          width: 600
+          condition: showAttributes
+          config:
+            cells:
+              - col: 1
+                paddingLeft: 0
+                paddingRight: 0
+                paddingTop: 0
+                paddingBottom: 0
+          items:
+            - !attributes
+              source: data
+              columnDefs:
+                kodkgk:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 6
+                    text: 'Kadastrale gemeente'
+                  cell: !text
+                    fontSize: 6
+                    text: '${kodkgk}'
+                kodksc:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 6
+                    text: 'Kadastrale sectie'
+                  cell: !text
+                    fontSize: 6
+                    text: '${kodksc}'
+                kodpnr:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 6
+                    text: 'Perceelnummer'
+                  cell: !text
+                    fontSize: 6
+                    text: '${kodpnr}'
+                deel_geheel_perceel:
+                  columnWeight: 1
+                  header: !text
+                    fontSize: 6
+                    text: 'D/G'
+                  cell: !text
+                    fontSize: 6
+                    text: '${deel_geheel_perceel}'
+                eigenaar:
+                  columnWeight: 5
+                  header: !text
+                    fontSize: 6
+                    text: 'Voornaamst zakelijk gerechtigde (vzg)'
+                  cell: !text
+                    fontSize: 6
+                    text: '${eigenaar}'
+                straat:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 6
+                    text: 'Straatnaam vzg'
+                  cell: !text
+                    fontSize: 6
+                    text: '${straat}'
+                kadhuisnrhlt:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 6
+                    text: 'Huisnummer vzg'
+                  cell: !text
+                    fontSize: 6
+                    text: '${kadhuisnrhlt}'
+                woonplaats:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 6
+                    text: 'Woonplaats vzg'
+                  cell: !text
+                    fontSize: 6
+                    text: '${woonplaats}'
+                vasges:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 6
+                    text: 'Oppervlakte (m2)'
+                  cell: !text
+                    fontSize: 6
+                    text: '${vasges}'
+        - !columns
+          widths: [80,20]
+          config:
+            cells:
+              - col: 1
+                paddingLeft: 0
+                paddingRight: 0
+                paddingTop: 20
+                paddingBottom: 0                
+          items:
+            - !text
+              text: ''
+            - !legends
+              maxIconWidth: 18
+              maxIconHeight: 15
+              layerSpace: 4
+              layerFontSize: 10
+              classIndentation: 10
+              classFontSize: 9
+              classSpace: 4
+      footer:
+        height: 35
+        items:
+          - !columns
+              config:
+                borderWidthTop: 1
+                borderWidthBottom: 1
+                borderColor: black
+                cells:
+                  - paddingTop: 10
+                    paddingBottom: 10
+              items: 
+                - !columns
+                  widths: [80, 30, 10, 20]
+                  backgroundColor: #EEEEEE
+                  items:
+                    - !text
+                      fontSize: 12
+                      text: '${gemnaam} geprint op ${now dd/MM/yyyy} schaal 1:${scale} A4'
+                      align: left
+                    - !scalebar
+                      maxSize: 150
+                      units: m
+                      type: bar
+                      align: right
+                      subIntervals: false
+                    - !image
+                      maxWidth: 40
+                      maxHeight: 40
+                      url: 'http://www.cgm-millensinthubert.nl/shared/img/Arrow_North_CFCF.svg'
+                      rotation: '${rotation}'
+                      align: right
+                    - !text
+                      fontSize: 8
+                      text: 'Aan dit kaartproduct kunnen geen rechten worden ontleend'
+                      vertAlign: bottom
+  #===========================================================================
+  4. Kadastraal (A3 liggend):
+  #===========================================================================
+    mainPage:
+      rotation: true
+      pageSize: A3
+      landscape: true
+      header:
+        height: 29
+        items:
+          - !columns
+            config:
+              borderWidthTop: 1
+              borderWidthBottom: 1
+              borderColor: black
+              cells:
+                - paddingTop: 1
+                  paddingBottom: 1
+            items:
+              - !columns
+                config:
+                  cells:
+                    - padding: 0
+                widths: [10,90]
+                backgroundColor: #EEEEEE
+                items:
+                  - !image
+                    align: left
+                    url: '${logoURL}'
+                    maxWidth: 200
+                    maxHeight: 45
+                  - !text
+                    font: Arial-Bold
+                    fontSize: 20
+                    align: right
+                    vertAlign: middle
+                    text: '${mapTitle}'
+      marginTop: 25
+      marginLeft: 36
+      marginBottom: 25
+      items:
+        - !columns
+          config:
+            cells:
+              - padding: 0
+          absoluteX: 36
+          absoluteY: 760
+          width: 450
+          items:
+            - !map
+              align: left
+              vertAlign: middle
+              width: 880
+              height: 630
+        - !columns
+          absoluteX: 816
+          absoluteY: 760
+          width: 100
+          config:
+            cells:
+              - padding: 2
+                borderColor: red
+                borderWidth: 2
+          items:
+            - !map
+              width: 96
+              height: 96
+              overviewMap: 2
+              vertAlign: top
+              align: right
+        - !columns
+          absoluteX: 36
+          absoluteY: 125
+          width: 880
+          condition: showAttributes
+          config:
+            cells:
+              - col: 1
+                paddingLeft: 0
+                paddingRight: 0
+                paddingTop: 0
+                paddingBottom: 0
+          items:
+            - !attributes
+              source: data
+              columnDefs:
+                kodkgk:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 8
+                    text: 'Kadastrale gemeente'
+                  cell: !text
+                    fontSize: 8
+                    text: '${kodkgk}'
+                kodksc:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 8
+                    text: 'Kadastrale sectie'
+                  cell: !text
+                    fontSize: 8
+                    text: '${kodksc}'
+                kodpnr:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 8
+                    text: 'Perceelnummer'
+                  cell: !text
+                    fontSize: 8
+                    text: '${kodpnr}'
+                deel_geheel_perceel:
+                  columnWeight: 1
+                  header: !text
+                    fontSize: 8
+                    text: 'D/G'
+                  cell: !text
+                    fontSize: 8
+                    text: '${deel_geheel_perceel}'
+                eigenaar:
+                  columnWeight: 5
+                  header: !text
+                    fontSize: 8
+                    text: 'Voornaamst zakelijk gerechtigde (vzg)'
+                  cell: !text
+                    fontSize: 8
+                    text: '${eigenaar}'
+                straat:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 8
+                    text: 'Straatnaam vzg'
+                  cell: !text
+                    fontSize: 8
+                    text: '${straat}'
+                kadhuisnrhlt:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 8
+                    text: 'Huisnummer vzg'
+                  cell: !text
+                    fontSize: 8
+                    text: '${kadhuisnrhlt}'
+                woonplaats:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 8
+                    text: 'Woonplaats vzg'
+                  cell: !text
+                    fontSize: 8
+                    text: '${woonplaats}'
+                vasges:
+                  columnWeight: 3
+                  header: !text
+                    fontSize: 8
+                    text: 'Oppervlakte (m2)'
+                  cell: !text
+                    fontSize: 8
+                    text: '${vasges}'
+        - !columns
+          widths: [80,20]
+          config:
+            cells:
+              - col: 1
+                paddingLeft: 0
+                paddingRight: 0
+                paddingTop: 20
+                paddingBottom: 0                
+          items:
+          items:
+            - !text
+              text: ''
+            - !legends
+              maxIconWidth: 18
+              maxIconHeight: 15
+              layerSpace: 4
+              layerFontSize: 10
+              classIndentation: 10
+              classFontSize: 9
+              classSpace: 4
+      footer:
+        height: 55
+        items:
+          - !columns
+              config:
+                borderWidthTop: 1
+                borderWidthBottom: 1
+                borderColor: black
+                cells:
+                  - paddingTop: 10
+                    paddingBottom: 10
+              items: 
+                - !columns
+                  widths: [80, 30, 10, 30]
+                  backgroundColor: #EEEEEE
+                  items:
+                    - !text
+                      fontSize: 12
+                      text: '${gemnaam} geprint op ${now dd/MM/yyyy} schaal 1:${scale} A3'
+                      align: left
+                    - !scalebar
+                      maxSize: 150
+                      units: m
+                      type: bar
+                      align: right
+                      subIntervals: false
+                    - !image
+                      maxWidth: 40
+                      maxHeight: 40
+                      url: 'http://www.cgm-millensinthubert.nl/shared/img/Arrow_North_CFCF.svg'
+                      rotation: '${rotation}'
+                      align: right
+                    - !text
+                      fontSize: 8
+                      text: 'Aan dit kaartproduct kunnen geen rechten worden ontleend'
+                      vertAlign: bottom
+  #===========================================================================
+  5. WOZ (A4 liggend):
+  #===========================================================================
+    mainPage:
+      rotation: true
+      pageSize: A4
+      landscape: true
+      header:
+        height: 29
+        items:
+          - !columns
+            config:
+              borderWidthTop: 1
+              borderWidthBottom: 1
+              borderColor: black
+              cells:
+                - paddingTop: 1
+                  paddingBottom: 1
+            items:
+              - !columns
+                config:
+                  cells:
+                    - padding: 0
+                widths: [10,90]
+                backgroundColor: #EEEEEE
+                items:
+                  - !image
+                    align: left
+                    url: '${logoURL}'
+                    maxWidth: 200
+                    maxHeight: 45
+                  - !text
+                    font: Arial-Bold
+                    fontSize: 20
+                    align: right
+                    vertAlign: middle
+                    text: '${mapTitle}'
+      marginTop: 25
+      marginLeft: 36
+      marginBottom: 36
+      items:
+        - !columns
+          config:
+            cells: 
+              - padding: 0
+          absoluteX: 36
+          absoluteY: 520
+          width: 450
+          items:
+            - !map
+              align: left
+              vertAlign: middle
+              width: 600
+              height: 400
+        - !columns
+          absoluteX: 536
+          absoluteY: 520
+          width: 100
+          config:
+            cells: 
+              - padding: 2
+                borderColor: red
+                borderWidth: 2
+          items: 
+            - !map
+              width: 96
+              height: 96
+              overviewMap: 2
+              vertAlign: top
+              align: right
+        - !columns
+          absoluteX: 36
+          absoluteY: 115
+          width: 450
+          condition: showAttributes
+          config:
+            cells:
+              - col: 1
+                paddingLeft: 0
+                paddingRight: 0
+                paddingTop: 0
+                paddingBottom: 0
+          items:
+            - !attributes
+              source: data
+              columnDefs:
+                wozAlgemeen:
+                  columnWeight: 7
+                  header: !text
+                    fontSize: 7
+                    text: 'WOZ Algemeen'
+                  cell: !text
+                    fontSize: 7
+                    text: '${wozAlgemeen}'
+                wozAlgemeen2:
+                  columnWeight: 6
+                  header: !text
+                    fontSize: 7
+                    text: ''
+                  cell: !text
+                    fontSize: 7
+                    text: '${wozAlgemeen2}'
+                wozSubject:
+                  columnWeight: 7
+                  header: !text
+                    fontSize: 7
+                    text: 'WOZ Subject'
+                  cell: !text
+                    fontSize: 7
+                    text: '${wozSubject}'
+        - !columns
+          widths: [80,20]
+          config:
+            cells:
+              - col: 1
+                paddingLeft: 0
+                paddingRight: 0
+                paddingTop: 20
+                paddingBottom: 0                
+          items:
+            - !text
+              text: ''
+            - !legends
+              maxIconWidth: 18
+              maxIconHeight: 15
+              layerSpace: 4
+              layerFontSize: 10
+              classIndentation: 10
+              classFontSize: 9
+              classSpace: 4
+      footer:
+        height: 35
+        items:
+          - !columns
+              config:
+                borderWidthTop: 1
+                borderWidthBottom: 1
+                borderColor: black
+                cells:
+                  - paddingTop: 10
+                    paddingBottom: 10
+              items: 
+                - !columns
+                  widths: [80, 30, 10, 20]
+                  backgroundColor: #EEEEEE
+                  items:
+                    - !text
+                      fontSize: 12
+                      text: '${gemnaam} geprint op ${now dd/MM/yyyy} schaal 1:${scale} A4'
+                      align: left
+                    - !scalebar
+                      maxSize: 150
+                      units: m
+                      type: bar
+                      align: right
+                      subIntervals: false
+                    - !image
+                      maxWidth: 40
+                      maxHeight: 40
+                      url: 'http://www.cgm-millensinthubert.nl/shared/img/Arrow_North_CFCF.svg'
+                      rotation: '${rotation}'
+                      align: right
+                    - !text
+                      fontSize: 8
+                      text: 'Aan dit kaartproduct kunnen geen rechten worden ontleend'
+                      vertAlign: bottom
+  #===========================================================================
+  6. WOZ (A3 liggend):
+  #===========================================================================
+    mainPage:
+      rotation: true
+      pageSize: A3
+      landscape: true
+      header:
+        height: 29
+        items:
+          - !columns
+            config:
+              borderWidthTop: 1
+              borderWidthBottom: 1
+              borderColor: black
+              cells:
+                - paddingTop: 1
+                  paddingBottom: 1
+            items:
+              - !columns
+                config:
+                  cells:
+                    - padding: 0
+                widths: [10,90]
+                backgroundColor: #EEEEEE
+                items:
+                  - !image
+                    align: left
+                    url: '${logoURL}'
+                    maxWidth: 200
+                    maxHeight: 45
+                  - !text
+                    font: Arial-Bold
+                    fontSize: 20
+                    align: right
+                    vertAlign: middle
+                    text: '${mapTitle}'
+      marginTop: 25
+      marginLeft: 36
+      marginBottom: 25
+      items:
+        - !columns
+          config:
+            cells:
+              - padding: 0
+          absoluteX: 36
+          absoluteY: 760
+          width: 450
+          items:
+            - !map
+              align: left
+              vertAlign: middle
+              width: 880
+              height: 630
+        - !columns
+          absoluteX: 816
+          absoluteY: 760
+          width: 100
+          config:
+            cells:
+              - padding: 2
+                borderColor: red
+                borderWidth: 2
+          items:
+            - !map
+              width: 96
+              height: 96
+              overviewMap: 2
+              vertAlign: top
+              align: right
+        - !columns
+          absoluteX: 36
+          absoluteY: 125
+          width: 880
+          condition: showAttributes
+          config:
+            cells:
+              - col: 1
+                paddingLeft: 0
+                paddingRight: 0
+                paddingTop: 0
+                paddingBottom: 0
+          items:
+            - !attributes
+              source: data
+              columnDefs:
+                wozAlgemeen:
+                  columnWeight: 7
+                  header: !text
+                    fontSize: 7
+                    text: 'WOZ Algemeen'
+                  cell: !text
+                    fontSize: 7
+                    text: '${wozAlgemeen}'
+                wozAlgemeen2:
+                  columnWeight: 6
+                  header: !text
+                    fontSize: 7
+                    text: ''
+                  cell: !text
+                    fontSize: 7
+                    text: '${wozAlgemeen2}'
+                wozSubject:
+                  columnWeight: 7
+                  header: !text
+                    fontSize: 7
+                    text: 'WOZ Subject'
+                  cell: !text
+                    fontSize: 7
+                    text: '${wozSubject}'
+        - !columns
+          widths: [80,20]
+          config:
+            cells:
+              - col: 1
+                paddingLeft: 0
+                paddingRight: 0
+                paddingTop: 20
+                paddingBottom: 0
+          items:
+            - !text
+              text: ''
+            - !legends
+              maxIconWidth: 18
+              maxIconHeight: 15
+              layerSpace: 4
+              layerFontSize: 10
+              classIndentation: 10
+              classFontSize: 9
+              classSpace: 4
+      footer:
+        height: 55
+        items:
+          - !columns
+              config:
+                borderWidthTop: 1
+                borderWidthBottom: 1
+                borderColor: black
+                cells:
+                  - paddingTop: 10
+                    paddingBottom: 10
+              items: 
+                - !columns
+                  widths: [80, 30, 10, 30]
+                  backgroundColor: #EEEEEE
+                  items:
+                    - !text
+                      fontSize: 12
+                      text: '${gemnaam} geprint op ${now dd/MM/yyyy} schaal 1:${scale} A3'
+                      align: left
+                    - !scalebar
+                      maxSize: 150
+                      units: m
+                      type: bar
+                      align: right
+                      subIntervals: false
+                    - !image
+                      maxWidth: 40
+                      maxHeight: 40
+                      url: 'http://www.cgm-millensinthubert.nl/shared/img/Arrow_North_CFCF.svg'
+                      rotation: '${rotation}'
+                      align: right
+                    - !text
+                      fontSize: 8
+                      text: 'Aan dit kaartproduct kunnen geen rechten worden ontleend'
+                      vertAlign: bottom

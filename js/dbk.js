@@ -11,6 +11,8 @@ var overlays = [];
 var modules = [];
 var regio;
 var dbk;
+var busy_wfs = false;
+var current_dbk_feature;
 var pdok_tms = {
     baseURL: 'http://geodata.nationaalgeoregister.nl',
     TMS: 'http://geodata.nationaalgeoregister.nl/tms/',
@@ -138,13 +140,131 @@ function toggleBaseLayer(nr) {
         }
     }
 }
+function procesWFS(response) {
+    var xmldoc = $.xml2json(response.responseXML);
+    console.log(xmldoc);
+    //en nu de foto er uit halen bij wijze van proef.
+    //fotocollection = xmldoc.getElementsByTagName("dbk:Foto");
+    if (xmldoc["wfs:FeatureCollection"]["wfs:member"]) {
+        if (xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKFeature"]) {
+            current_dbk_feature.div = $('<div class="tabbable tabs-below"></div>');
+            var panel_group = $('<div class="tab-content"></div>');
+            var panel_tabs = $('<ul class="nav nav-pills nav-justified"></ul>');
+            /** Algemene dbk info **/
+            var formelenaam = xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKFeature"]["dbk:formeleNaam"].value;
+            var informelenaam = xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKFeature"]["dbk:informeleNaam"].value;
+            var controledatum = xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKFeature"]["dbk:controleDatum"].value;
+            panel_group.html('<div class="tab-pane active" id="collapse_algemeen_' + dbk + '">' + 
+                    '<h4>' + formelenaam + '</h4><h5>' + informelenaam + '</h5>' + 
+                    '<p>Controledatum: ' + controledatum  + '</p>' + 
+                '</div>');
+            panel_tabs.html('<li class="active"><a  data-toggle="tab" href="#collapse_algemeen_' + dbk + '">Algemeen</a></li>');
+            
+            var verblijf = xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKFeature"]["dbk:verblijf"];
+            if (verblijf) {
+                verblijf_div = $('<div class="tab-pane" id="collapse_verblijf_' + dbk + '"></div>');
+                if (verblijf["dbk:AantalPersonen"]) {
+                    verblijf_div.append(verblijf["dbk:AantalPersonen"]["dbk:tijdvakBegintijd"].value.replace(":00Z", '').replace('Z', '') + ' tot ' +
+                            verblijf["dbk:AantalPersonen"]["dbk:tijdvakEindtijd"].value.replace(":00Z", '').replace('Z', '') + ' ' +
+                            verblijf["dbk:AantalPersonen"]["dbk:aantal"].value + ' ' +
+                            verblijf["dbk:AantalPersonen"]["dbk:typeAanwezigheidsgroep"].value);
+                } else {
+                    verblijf_ul = $('<ul></ul>');
+                    $.each(verblijf, function(verblijf_index, waarde) {
+                        verblijf_ul.append('<li>' +
+                                waarde["dbk:AantalPersonen"]["dbk:tijdvakBegintijd"].value.replace(":00Z", '').replace('Z', '') + ' tot ' +
+                                waarde["dbk:AantalPersonen"]["dbk:tijdvakEindtijd"].value.replace(":00Z", '').replace('Z', '') + ' ' +
+                                waarde["dbk:AantalPersonen"]["dbk:aantal"].value + ' ' +
+                                waarde["dbk:AantalPersonen"]["dbk:typeAanwezigheidsgroep"].value +
+                                '</li>');
+                    });
+                    verblijf_div.append(verblijf_ul);
+                }
+                panel_group.append(verblijf_div);
+                panel_tabs.append('<li><a  data-toggle="tab" href="#collapse_verblijf_' + dbk + '">Verblijf</a></li>');
+            } else {
+                panel_tabs.append('<li class="disabled"><a href="#collapse_verblijf_' + dbk + '">Verblijf</a></li>');
+            }
+            
+            
+            var foto = xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKFeature"]["dbk:foto"]
+            if (foto) {
+                foto_div = $('<div class="tab-pane" id="collapse_foto_' + dbk + '"></div>');
+                if (foto["dbk:Foto"]) {
+                    var url = foto["dbk:Foto"]["dbk:URL"].value;
+                    foto_div.append('<img src="' + url + '"><p><i>' + foto["dbk:Foto"]["dbk:naam"].value) + '</i></p>';
+                } else {
+                    $.each(foto, function(foto_index, waarde) {
+                        var url = waarde["dbk:Foto"]["dbk:URL"].value;
+                        foto_div.append('<img src="' + url + '"><p><i>' + waarde["dbk:Foto"]["dbk:naam"].value) + '</i></p>';
+                    });
+
+                }
+                panel_group.append(foto_div);
+                panel_tabs.append('<li><a data-toggle="tab" href="#collapse_foto_' + dbk + '">Media</a></li>');
+                current_dbk_feature.div.append(panel_group);
+                current_dbk_feature.div.append(panel_tabs);
+            } else {
+                panel_tabs.append('<li class="disabled"><a href="#collapse_foto_' + dbk + '">Media</a></li>');
+            }
+            $('#infopanel_b').html(current_dbk_feature.div);
+        }
+    } else {
+        current_dbk_feature = {};
+        $('#infopanel_b').html('Geen informatie gevonden');
+    }
+
+    busy_wfs = false;
+
+}
+function getDBKfeature(id) {
+    var url = 'http://dbk.mapcache.nl/wfs?';
+    var params = {
+        request: 'getFeature',
+        version: '2.0',
+        typename: 'dbk:DBKFeature',
+        outputFormat: 'gml32',
+        featureID: 'DBKFeature.' + id
+    };
+    OpenLayers.Request.GET({url: url, "params": params, callback: procesWFS});
+}
+
 function onClick(e) {
     $('#infopanel_b').html('');
     $('#infopanel_f').html('');
     $.each(modules, function(mod_index, module) {
         if (typeof(module.layer) !== "undefined" && module.layer.visibility) {
-            if (typeof(module.getfeatureinfo) !== "undefined") {
-                module.getfeatureinfo(e);
+            // Controleer of het een van de dbk layers is waar op is geklikt.
+            if ($.inArray(module.id, ["dbko", "dbkf", "dbkgev", "dbkprep", "dbkprev"]) !== -1) {
+
+                //controleer of de currentFeature id gelijk is aan de dbk,
+                if (!current_dbk_feature) {
+                    if (!busy_wfs) {
+                        //http://dbk.mapcache.nl/wfs?request=GetFeature&version=2.0&typename=dbk:DBKFeature&outputFormat=gml32&featureID=DBKFeature.1367827139
+                        busy_wfs = true;
+                        current_dbk_feature = {id: dbk, div: '<div>bezig met ophalen...</div>'};
+                        $('#infopanel_b').html(current_dbk_feature.div);
+                        $('#infopanel').show();
+                        getDBKfeature(dbk);
+                    }
+                } else if (dbk === current_dbk_feature.id) {
+                    //doe niks
+                    $('#infopanel_b').html(current_dbk_feature.div);
+                    $('#infopanel').show();
+                } else {
+                    //anders opnieuw ophalen.    
+                    if (!busy_wfs) {
+                        busy_wfs = true;
+                        current_dbk_feature = {id: dbk, div: '<div>bezig met ophalen...</div>'};
+                        $('#infopanel_b').html(current_dbk_feature.div);
+                        $('#infopanel').show();
+                        getDBKfeature(dbk);
+                    }
+                }
+            } else {
+                if (typeof(module.getfeatureinfo) !== "undefined") {
+                    module.getfeatureinfo(e);
+                }
             }
         }
     });

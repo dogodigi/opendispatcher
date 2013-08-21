@@ -271,6 +271,7 @@ var dbkfeature = {
     }),
     activateDBK: function(id) {
         //eenmalig afvuren wanneer een laag wordt geladen. Niet herhalen tijdens het in en uitzoomen!
+        dbk = id;
         preparatie.updateFilter(id);
         preventie.updateFilter(id);
         gevaren.updateFilter(id);
@@ -377,6 +378,7 @@ var dbkfeature = {
         //ret_tr.append(ret_val);
 
         $(ret_title).click(function() {
+            dbk = feature.attributes.id;
             preparatie.updateFilter(feature.attributes.id);
             preventie.updateFilter(feature.attributes.id);
             gevaren.updateFilter(feature.attributes.id);
@@ -412,6 +414,7 @@ var dbkfeature = {
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             //console.log(obj);
             //console.log(datum);
+            dbk = datum.id;
             preparatie.updateFilter(datum.id);
             preventie.updateFilter(datum.id);
             gevaren.updateFilter(datum.id);
@@ -459,6 +462,7 @@ var dbkfeature = {
         });
     },
     zoomToFeature: function(feature) {
+        dbk = feature.attributes.id;
         preparatie.updateFilter(feature.attributes.id);
         preventie.updateFilter(feature.attributes.id);
         gevaren.updateFilter(feature.attributes.id);

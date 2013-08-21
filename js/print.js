@@ -1,6 +1,39 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.print = {
+    url: null,
+    capabilities: null,
+    method: "POST",
+    encoding: document.charset || document.characterSet || "UTF-8",
+    timeout: 30000,
+    customParams: null,
+    scales: null,
+    dpis: null,
+    layouts: null,
+    dpi: null,
+    layout: null,
+    //constructor
+    // apply config
+    // initialize events
+
+    /** 
+     * @name method[setLayout]
+     * @param layout {string}
+     * @description Sets the layout for this printProvider.
+     */
+    setLayout: function(layout) {
+        this.layout = layout;
+
+    },
+    /**
+     * @name method[setDpi]
+     * @param dpi {integer}
+     * @description Sets the dpi for this printProvider.
+     */
+    setDpi: function(dpi) {
+        this.dpi = dpi;
+        this.fireEvent("dpichange", this, dpi);
+    },
     default: {
         "title": "mapfish print",
         "units": "degrees",
@@ -30,7 +63,7 @@ dbkjs.print = {
             }
         ]
     },
-    layer: function(layer){
+    layer: function(layer) {
         //get information from the current baselayer
         var bl_type = layer.CLASS_NAME.split('.')[2];
         if (bl_type === "TMS") {
@@ -51,13 +84,51 @@ dbkjs.print = {
                 layer: layer.layername,
                 resolutions: layer.resolutions,
                 styles: [""]
-            }
+            };
         }
     },
-    print: function() {
+    /**
+     * @name print
+     * @description 
+     *   Sends the print command to the print service
+     *   and opens a new window
+     *   with the resulting PDF.
+     *   
+     * @param {OpenLayers.Map} map
+     * @param {Array} pages
+     * @param {Object} options
+     */
+    print: function(map, pages, options) {
+        pages = pages instanceof Array ? pages : [pages];
+        options = options || {};
+        var jsonData = $.extend({
+            units: map.getUnits(),
+            srs: map.baseLayer.projection.getCode(),
+            layout: this.layout.name,
+            dpi: this.dpi.value
+        }, this.customParams);
+        
+        var pagesLayer = pages[0].feature.layer;
+        var encodedLayers = [];
+        
+        $.each(layers, function(index, layer){
+            if(layer !== pagesLayer && layer.getVisibility() === true) {
+                var enc = this.encodeLayer(layer);
+                enc && encodedLayers.push(enc);
+            }
+        }, $.proxy(this));
+        jsonData.layers = encodedLayers;
+        var encodedPages = [];
+        // ensure that the baseLayer is the first one in the encoded list
+        var layers = map.layers.concat();
+        layers.remove(map.baseLayer);
+        layers.unshift(map.baseLayer);
+        
+        
+        
         params = dbkjs.print.default;
         //bepaal de schaal
-        
+
         params.pages[0].scale = 10000;
         //bepaal het crs
         params.srs = map.projection.getCode();
