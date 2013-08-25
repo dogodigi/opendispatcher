@@ -1,4 +1,7 @@
-var dbkfeature = {
+var dbkjs = dbkjs || {};
+window.dbkjs = dbkjs;
+dbkjs.modules = dbkjs.modules || {};
+dbkjs.modules.feature = {
     id: "dbkf",
     /**
      * URL naar een statisch boringen bestand in gml formaat
@@ -96,7 +99,7 @@ var dbkfeature = {
                 if (feature.cluster) {
                     return "images/building_1.png";
                 } else {
-                    if (map.zoom < 10) {
+                    if (dbkjs.map.zoom < 10) {
                         return "images/building_1.png";
                     } else {
                         return "images/building_1.png";
@@ -118,7 +121,7 @@ var dbkfeature = {
                 }
             },
             labeltext: function(feature) {
-                if (dbkfeature.showlabels) {
+                if (dbkjs.modules.feature.showlabels) {
                     if (feature.cluster) {
                         var lbl_txt, c;
                         if (feature.cluster.length > 1) {
@@ -237,7 +240,7 @@ var dbkfeature = {
                 }
             },
             labeltext: function(feature) {
-                if (dbkfeature.showlabels) {
+                if (dbkjs.modules.feature.showlabels) {
                     if (feature.cluster) {
                         var lbl_txt, c;
                         if (feature.cluster.length > 1) {
@@ -269,39 +272,49 @@ var dbkfeature = {
             zIndexing: true
         }
     }),
-    activateDBK: function(id) {
-        //eenmalig afvuren wanneer een laag wordt geladen. Niet herhalen tijdens het in en uitzoomen!
-        dbk = id;
-        preparatie.updateFilter(id);
-        preventie.updateFilter(id);
-        gevaren.updateFilter(id);
-        dbkobject.updateFilter(id);
+    getActive: function() {
+        var _obj = dbkjs.modules.feature;
         var feature;
-        $.each(this.layer.features, function(fi, fv) {
+        var _search_field = 'id';
+        var _search_value;
+        if (!dbkjs.util.isJsonNull(dbkjs.options.dbk)) {
+            _search_field = 'id';
+            _search_value = dbkjs.options.dbk;
+        } else if (!dbkjs.util.isJsonNull(dbkjs.options.omsnummer)) {
+            _search_field = 'OMSnummer';
+            _search_value = dbkjs.options.omsnummer;
+        }
+
+        $.each(_obj.layer.features, function(fi, fv) {
             if (fv.cluster) {
                 $.each(fv.cluster, function(ci, cv) {
-                    if (cv.attributes.id.toString() === id) {
+                    if (cv.attributes[_search_field].toString() === _search_value) {
                         feature = cv;
                     }
                 });
-            }
-            else {
-                if (fv.attributes.id.toString() === id) {
+            } else {
+                if (fv.attributes[_search_field].toString() === _search_value) {
                     feature = fv;
                 }
             }
         });
+
         if (feature) {
-            if (map.zoom < 13) {
-                map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
+            dbkjs.options.dbk = feature.attributes.id;
+            dbkjs.modules.updateFilter(dbkjs.options.dbk);
+            if (dbkjs.map.zoom < 13) {
+                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
             } else {
-                map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
             }
         }
-
     },
-    show: function() {
-        this.layer = new OpenLayers.Layer.Vector("Feature", {
+    register: function(options) {
+        var _obj = dbkjs.modules.feature;
+        _obj.namespace = options.namespace || _obj.namespace;
+        _obj.url = options.url || _obj.url;
+        _obj.visibility = options.visible || _obj.visibility;
+        _obj.layer = new OpenLayers.Layer.Vector("Feature", {
             rendererOptions: {
                 zIndexing: true
             },
@@ -313,54 +326,50 @@ var dbkfeature = {
             ],
             minResolution: 1
         });
-        this.layer.setZIndex(2006);
-        this.sketch.setZIndex(2002);
-        this.layer.styleMap = new OpenLayers.StyleMap({
-            'default': this.defaultStyle,
-            'select': this.selectStyle
+        _obj.layer.setZIndex(2006);
+        _obj.sketch.setZIndex(2002);
+        _obj.layer.styleMap = new OpenLayers.StyleMap({
+            'default': _obj.defaultStyle,
+            'select': _obj.selectStyle
         }),
-        this.layer.displayInLayerSwitcher = false;
-        this.sketch.displayInLayerSwitcher = false;
-        map.addLayers([this.sketch, this.layer]);
-        this.layer.events.on({
-            "featureselected": this.getfeatureinfo,
+        _obj.layer.displayInLayerSwitcher = false;
+        _obj.sketch.displayInLayerSwitcher = false;
+        dbkjs.map.addLayers([_obj.sketch, _obj.layer]);
+        //Add the layer to the selectControl
+        dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.layer));
+        _obj.layer.events.on({
+            "featureselected": _obj.getfeatureinfo,
             "featuresadded": function() {
-                if (typeof(dbk) !== "undefined" && dbk !== '') {
-                    dbkfeature.activateDBK(dbk);
-                    //release the dbk object
-                    dbk = '';
-                }
-
+                dbkjs.modules.feature.getActive();
             },
             "featureunselected": function(e) {
                 $('#infopanel').hide();
             }
         });
-        this.get();
+        _obj.get();
     },
     get: function() {
+        var _obj = dbkjs.modules.feature;
         var mydata = {};
-        mydata.bbox = map.getExtent().toBBOX(0);
+        mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
         mydata.time = new Date().getTime();
         mydata.service = "WFS";
         mydata.version = "1.0.0";
         mydata.request = "GetFeature";
-        mydata.typename = this.namespace + ":dbkfeature_centroid";
+        mydata.typename = _obj.namespace + ":dbkfeature_centroid";
         mydata.maxFeatures = 500;
         mydata.outputFormat = "json";
         //http://safetymaps.nl/geoserver/brabantnoord/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=brabantnoord:dbkfeature_centroid&maxFeatures=50&outputFormat=json
-        var _this = this;
         $.ajax({
             type: "GET",
-            url: this.url,
+            url: _obj.url,
             data: mydata,
             dataType: "json",
             success: function(data) {
                 var geojson_format = new OpenLayers.Format.GeoJSON();
-                dbkfeature.features = geojson_format.read(data);
-
-                _this.layer.addFeatures(dbkfeature.features);
-                dbkfeature.search_dbk();
+                _obj.features = geojson_format.read(data);
+                _obj.layer.addFeatures(_obj.features);
+                _obj.search_dbk();
             },
             error: function() {
                 return false;
@@ -372,31 +381,29 @@ var dbkfeature = {
     },
     featureInfohtml: function(feature) {
         var ret_title = $('<li></li>');
-        ret_title.append('<a href="?regio=' + regio.id + '&dbk=' + feature.attributes.id + '">' + feature.attributes.formelenaam + '</a>');
+        ret_title.append('<a href="?regio=' + dbkjs.options.regio.id + '&dbk=' + feature.attributes.id + '">' + feature.attributes.formelenaam + '</a>');
         //var ret_val = $('<td class="dbk_feature" id="dbk_' + feature.attributes.id + '"></td>');
         //ret_val.html(feature.attributes.formelenaam);
         //ret_tr.append(ret_val);
 
         $(ret_title).click(function() {
-            dbk = feature.attributes.id;
-            preparatie.updateFilter(feature.attributes.id);
-            preventie.updateFilter(feature.attributes.id);
-            gevaren.updateFilter(feature.attributes.id);
-            dbkobject.updateFilter(feature.attributes.id);
-            if (map.zoom < 13) {
-                map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
+            dbkjs.options.dbk = feature.attributes.id;
+            dbkjs.modules.updateFilter(feature.attributes.id);
+            if (dbkjs.map.zoom < 13) {
+                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
             } else {
-                map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
             }
             return false;
         });
         return ret_title;
     },
     search_dbk: function() {
+        var _obj = dbkjs.modules.feature;
         //Voeg de DBK objecten toe aan de typeahead set..
         var dbk_naam_array = [];
 
-        $.each(dbkfeature.features, function(key, value) {
+        $.each(_obj.features, function(key, value) {
             //alert(value.properties.formelenaam + ' (' + value.properties.identificatie_id + ')');
             dbk_naam_array.push({
                 value: value.attributes.formelenaam + ' ' + value.attributes.identificatie_id,
@@ -414,23 +421,21 @@ var dbkfeature = {
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             //console.log(obj);
             //console.log(datum);
-            dbk = datum.id;
-            preparatie.updateFilter(datum.id);
-            preventie.updateFilter(datum.id);
-            gevaren.updateFilter(datum.id);
-            dbkobject.updateFilter(datum.id);
-            if (map.zoom < 13) {
-                map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
+            dbkjs.options.dbk = datum.id;
+            dbkjs.modules.updateFilter(datum.id);
+
+            if (dbkjs.map.zoom < 13) {
+                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
             } else {
-                map.setCenter(datum.geometry.getBounds().getCenterLonLat());
+                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat());
             }
         });
     },
     search_oms: function() {
-        //Voeg de DBK objecten toe aan de typeahead set..
+        var _obj = dbkjs.modules.feature;
         var dbk_naam_array = [];
 
-        $.each(dbkfeature.features, function(key, value) {
+        $.each(_obj, function(key, value) {
             //alert(value.properties.formelenaam + ' (' + value.properties.identificatie_id + ')');
             if (!isJsonNull(value.attributes.OMSnummer)) {
                 dbk_naam_array.push({
@@ -450,45 +455,41 @@ var dbkfeature = {
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             //console.log(obj);
             //console.log(datum);
-            preparatie.updateFilter(datum.id);
-            preventie.updateFilter(datum.id);
-            gevaren.updateFilter(datum.id);
-            dbkobject.updateFilter(datum.id);
-            if (map.zoom < 13) {
-                map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
+            dbkjs.modules.updateFilter(datum.id);
+
+            if (dbkjs.map.zoom < 13) {
+                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
             } else {
-                map.setCenter(datum.geometry.getBounds().getCenterLonLat());
+                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat());
             }
         });
     },
     zoomToFeature: function(feature) {
-        dbk = feature.attributes.id;
-        preparatie.updateFilter(feature.attributes.id);
-        preventie.updateFilter(feature.attributes.id);
-        gevaren.updateFilter(feature.attributes.id);
-        dbkobject.updateFilter(feature.attributes.id);
-        if (map.zoom < 13) {
-            map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
+        dbkjs.options.dbk = feature.attributes.id;
+        dbkjs.modules.updateFilter(feature.attributes.id);
+        if (dbkjs.map.zoom < 13) {
+            dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
         } else {
-            map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+            dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
         }
     },
     getfeatureinfo: function(e) {
+        var _obj = dbkjs.modules.feature;
         if (typeof(e.feature) !== "undefined") {
             $('#infopanel_b').html('');
             if (e.feature.cluster) {
                 if (e.feature.cluster.length === 1) {
-                    dbkfeature.zoomToFeature(e.feature.cluster[0]);
+                    _obj.zoomToFeature(e.feature.cluster[0]);
                 } else {
                     $('#infopanel_f').append('<ul id="Pagination" class="pagination"></ul>');
                     $('#infopanel_f').show();
-                    dbkfeature.currentCluster = e.feature.cluster;
+                    _obj.currentCluster = e.feature.cluster;
                     $("#Pagination").pagination(e.feature.cluster.length, {
                         items_per_page: 10,
                         callback: function(page_index, jq) {
                             // Get number of elements per pagionation page from form
                             var items_per_page = 10;
-                            var max_elem = Math.min((page_index + 1) * items_per_page, dbkfeature.currentCluster.length);
+                            var max_elem = Math.min((page_index + 1) * items_per_page, _obj.currentCluster.length);
 
                             // Iterate through a selection of the content and build an HTML string
                             var item_ul = $('<ul class="nav nav-pills nav-stacked"></ul>');
@@ -496,7 +497,7 @@ var dbkfeature = {
 
                             for (var i = page_index * items_per_page; i < max_elem; i++)
                             {
-                                item_ul.append(dbkfeature.featureInfohtml(dbkfeature.currentCluster[i]));
+                                item_ul.append(_obj.featureInfohtml(_obj.currentCluster[i]));
                             }
                             $('#infopanel_b').append(item_ul);
                         }
@@ -504,12 +505,10 @@ var dbkfeature = {
                     $('#infopanel').show(true);
                 }
             } else {
-                dbkfeature.currentCluster = [];
-                dbkfeature.zoomToFeature(e.feature);
+                _obj.currentCluster = [];
+                _obj.zoomToFeature(e.feature);
                 $('#infopanel').hide();
             }
         }
     }
 };
-modules.push(dbkfeature);
-

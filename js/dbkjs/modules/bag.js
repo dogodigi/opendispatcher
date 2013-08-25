@@ -1,13 +1,18 @@
+var dbkjs = dbkjs || {};
+window.dbkjs = dbkjs;
+dbkjs.modules = dbkjs.modules || {};
+
 /**
  * BAG class
  * 
  * Voor alle functionaliteit gerelateerd aan bag
  */
-var bag = {
+dbkjs.modules.bag = {
     id: "dbkbag",
     namespace: "bag",
     layer: null,
     activateVectors: function() {
+        var _obj = dbkjs.modules.bag;
         var pandstylemap = new OpenLayers.StyleMap({
             fillColor: "yellow",
             fillOpacity: 0.4,
@@ -33,12 +38,12 @@ var bag = {
             featureType: "pand",
             featureNS: "http://bagviewer.geonovum.nl",
             geometryName: "geometrie",
-            srsName: "EPSG:28992",
+            srsName: dbkjs.options.projection.code,
             outputFormat: 'json',
             handleRead: function(response) {
                 var features = new OpenLayers.Format.GeoJSON().read(JSON.parse(response.priv.responseText));
-                bag.pand_layer.addFeatures(features);
-                bag.vbo_layer.filter = new OpenLayers.Filter.Comparison({
+                _obj.pand_layer.addFeatures(features);
+                _obj.vbo_layer.filter = new OpenLayers.Filter.Comparison({
                     type: OpenLayers.Filter.Comparison.EQUAL_TO,
                     property: "pandidentificatie",
                     value: 0
@@ -46,13 +51,13 @@ var bag = {
                 for (var feat in features) {
                     var e = {};
                     e.feature = features[feat];
-                    bag.getfeatureinfo(e);
-                    bag.vbo_layer.filter = new OpenLayers.Filter.Comparison({
+                    _obj.getfeatureinfo(e);
+                    _obj.vbo_layer.filter = new OpenLayers.Filter.Comparison({
                         type: OpenLayers.Filter.Comparison.EQUAL_TO,
                         property: "pandidentificatie",
                         value: features[feat].attributes.identificatie
                     });
-                    bag.vbo_layer.refresh({force: true});
+                    _obj.vbo_layer.refresh({force: true});
                     return false;
                 }
                 //Direct de featureinfo tonen.
@@ -74,82 +79,85 @@ var bag = {
             outputFormat: 'json',
             handleRead: function(response) {
                 var features = new OpenLayers.Format.GeoJSON().read(JSON.parse(response.priv.responseText));
-                bag.vbo_layer.addFeatures(features);
+                _obj.vbo_layer.addFeatures(features);
                 for (var feat in features) {
                     var e = {};
                     e.feature = features[feat];
-                    bag.getfeatureinfo(e);
+                    _obj.getfeatureinfo(e);
                 }
             }
         });
 
-        bag.pand_layer = new OpenLayers.Layer.Vector("BAG panden", {
+        _obj.pand_layer = new OpenLayers.Layer.Vector("BAG panden", {
             strategies: [new OpenLayers.Strategy.BBOX()],
             protocol: pandprotocol,
             filter: pandfilter,
             styleMap: pandstylemap
         });
 
-        bag.vbo_layer = new OpenLayers.Layer.Vector("BAG verblijfsobjecten", {
+        _obj.vbo_layer = new OpenLayers.Layer.Vector("BAG verblijfsobjecten", {
             strategies: [new OpenLayers.Strategy.BBOX()],
             protocol: verblijfsobjectprotocol,
             filter: verblijfsobjectfilter,
             styleMap: vbostylemap
         });
-        map.addLayers([bag.pand_layer, bag.vbo_layer]);
-        bag.pand_layer.events.on({
-            "featureselected": bag.getfeatureinfo
+        dbkjs.map.addLayers([_obj.pand_layer, _obj.vbo_layer]);
+        _obj.pand_layer.events.on({
+            "featureselected": _obj.getfeatureinfo
         });
-        bag.vbo_layer.events.on({
-            "featureselected": bag.getfeatureinfo
+        _obj.vbo_layer.events.on({
+            "featureselected": _obj.getfeatureinfo
         });
     },
     /**
      * Initialisatie functie om objecten toe te voegen aan de kaart
-     * @param {type} activate
      */
-    show: function(activate) {
-        bag.layer = new OpenLayers.Layer.WMS("BAG", "/bag/wms?",
+    register: function() {
+        var _obj = dbkjs.modules.bag;
+        _obj.layer = new OpenLayers.Layer.WMS("BAG", "/bag/wms?",
                 {layers: 'pand,standplaats,ligplaats', format: 'image/png', transparent: true},
         {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: false});
 
 
-        map.addLayers([
-            bag.layer
+        dbkjs.map.addLayers([
+            _obj.layer
         ]);
-        map.setLayerIndex(bag.layer, 0);
+        dbkjs.map.setLayerIndex(_obj.layer, 0);
         
         // vinkje op webpagina aan/uitzetten
         var dv_panel = $('<div class="panel"></div>');
         var dv_panel_heading = $('<div class="panel-heading"></div>');
         var dv_panel_title = $('<h4 class="panel-title"></div>');
-        dv_panel_title.append('<input type="checkbox" name="box_' + this.id + '"/>&nbsp;');
-        dv_panel_title.append(this.layer.name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' + this.id + '" data-parent="#overlaypanel_b" ><i class="icon-info-sign"></i></a>');
+        dv_panel_title.append('<input type="checkbox" name="box_' + _obj.id + '"/>&nbsp;');
+        dv_panel_title.append(_obj.layer.name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' + _obj.id + '" data-parent="#overlaypanel_b" ><i class="icon-info-sign"></i></a>');
         dv_panel_heading.append(dv_panel_title);
         dv_panel.append(dv_panel_heading);
-        var dv_panel_content = $('<div id="collapse_' + this.id + '" class="panel-collapse collapse"></div>');
+        var dv_panel_content = $('<div id="collapse_' + _obj.id + '" class="panel-collapse collapse"></div>');
         dv_panel_content.append('<div class="panel-body">Bladiebla</div>');
         dv_panel.append(dv_panel_content);
         $('#overlaypanel_b').append(dv_panel);
-        if (bag.layer.getVisibility()) {
-            //checkbox aan
-            $('input[name="box_' + this.id + '"]').attr('checked','checked');
-        }
-        $('#div_' + this.id).click(function() {
+        $('input[name="box_' + _obj.id + '"]').click(function() {
+            if($(this).is(':checked')) {
+                _obj.layer.setVisibility(true);
+            } else {
+                _obj.layer.setVisibility(false);
+            }
+        });
+        $('input[name="box_' + _obj.id + '"]').click(function() {
             if ($(this).hasClass('active')) {
-                bag.layer.setVisibility(false);
-                var bagpand_lyr = map.getLayersByName('BAG panden')[0];
-                var bagvbo_lyr = map.getLayersByName('BAG verblijfsobjecten')[0];
+                _obj.layer.setVisibility(false);
+                var bagpand_lyr = dbkjs.map.getLayersByName('BAG panden')[0];
+                var bagvbo_lyr = dbkjs.map.getLayersByName('BAG verblijfsobjecten')[0];
                 if (bagpand_lyr){
-                    map.removeLayer(bagpand_lyr);
+                    dbkjs.map.removeLayer(bagpand_lyr);
                 }
                 if (bagvbo_lyr){
-                    map.removeLayer(bagvbo_lyr);
+                    dbkjs.map.removeLayer(bagvbo_lyr);
                 }
                 $(this).removeClass('active');
             } else {
-                bag.layer.setVisibility(true);
-                bag.activateVectors();
+                _obj.layer.setVisibility(true);
+                _obj.activateVectors();
                 $(this).addClass('active');
             }
         });
@@ -167,41 +175,33 @@ var bag = {
         return ret_title;
     },
     getfeatureinfo: function(e) {
+        var _obj = dbkjs.modules.bag;
         if (typeof(e.feature) !== "undefined") {
             if ($('#baginfo').length === 0) {
                 $('#infopanel_b').append('<div id="baginfo" class="tab-content"><h2>BAG gegevens</h2></div>');
             }
             var mybaginfo = $('#baginfo');
             var mytable = $('<table></table>');
-            mytable.append(bag.featureInfohtml(e.feature));
+            mytable.append(_obj.featureInfohtml(e.feature));
             mybaginfo.append(mytable);
 
             $('#infopanel').toggle(true);
         } else {
-            //console.log("bag klik zonder feature");
-//            <ogc:Contains>
-//                <ogc:PropertyName>geometrie</ogc:PropertyName>
-//                <gml:Point xmlns:gml="http://www.opengis.net/gml">
-//                    <gml:pos>123040.84 434573.96</gml:pos>
-//                </gml:Point>
-//            </ogc:Contains>
-            bag.pand_layer.destroyFeatures();
-            bag.vbo_layer.destroyFeatures();
-            var lonLat = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(e.xy.x, e.xy.y));
-            bag.pand_layer.filter = new OpenLayers.Filter.Spatial({
+            _obj.pand_layer.destroyFeatures();
+            _obj.vbo_layer.destroyFeatures();
+            var lonLat = dbkjs.map.getLonLatFromViewPortPx(new OpenLayers.Pixel(e.xy.x, e.xy.y));
+            _obj.pand_layer.filter = new OpenLayers.Filter.Spatial({
                 type: OpenLayers.Filter.Spatial.CONTAINS,
                 property: "geometrie",
                 value: new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat)
             });
-            bag.pand_layer.refresh({force: true});
+            _obj.pand_layer.refresh({force: true});
             return false;
         }
     },
     panel: function() {
-        //verwerk de featureinformatie
         $('#infopanel_b').html('');
         $('#infopanel_f').html('');
         $('#infopanel').toggle(true);
     }
 };
-modules.push(bag);

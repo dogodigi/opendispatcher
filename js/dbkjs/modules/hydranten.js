@@ -1,9 +1,7 @@
-/**
- * Objecten class, conform de DBK object definitie
- * 
- * Voor alle functionaliteit gerelateerd aan boringen
- */
-var hydranten = {
+var dbkjs = dbkjs || {};
+window.dbkjs = dbkjs;
+dbkjs.modules = dbkjs.modules || {};
+dbkjs.modules.hydranten = {
     id: "dbkhyd",
     /**
      * URL naar een statisch boringen bestand in gml formaat
@@ -14,51 +12,55 @@ var hydranten = {
      * Laag. Wordt geiniteerd met de functie hydranten.show() kan worden overruled
      */
     layer: null,
-    show: function(activate) {
-        this.layer = new OpenLayers.Layer.WMS("Hydranten", this.url,
-                {layers: this.namespace + ':gwt2009v1', format: 'image/png', transparent: true},
-        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "BRWBN"});
-        if (activate === true) {
-            map.addLayers([
-                this.layer
-            ]);
-        }
+    /**
+     * 
+     * @param {type} options
+     * @returns {undefined}
+     */
+    register: function(options) {
+        var _obj = dbkjs.modules.hydranten;
+        _obj.namespace = options.namespace || _obj.namespace;
+        _obj.url = options.url || _obj.url;
+        _obj.visibility = options.visible || _obj.visibility;
+        _obj.layer = new OpenLayers.Layer.WMS("Hydranten", _obj.url,
+                {layers: _obj.namespace + ':gwt2009v1', format: 'image/png', transparent: true},
+        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: _obj.visibility, attribution: "BRWBN"});
+        map.addLayers([_obj.layer]);
         // vinkje op webpagina aan/uitzetten
-        var dv_div = $('<div id="div_' + this.id + '" class="ovl"></div>');
-        dv_div.append(this.layer.name);
-        if (hydranten.layer.getVisibility()) {
+        var dv_div = $('<div id="div_' + _obj.id + '" class="ovl"></div>');
+        dv_div.append(_obj.layer.name);
+        if (_obj.layer.getVisibility()) {
             dv_div.addClass('active');
         }
         $('#overlaypanel').append(dv_div);
-        $('#div_' + this.id).click(function() {
-            if ($(this).hasClass('active')) {
-                hydranten.layer.setVisibility(false);
-                $(this).removeClass('active');
+        $('input[name="box_' + _obj.id + '"]').click(function() {
+            if($(this).is(':checked')) {
+                _obj.layer.setVisibility(true);
             } else {
-                hydranten.layer.setVisibility(true);
-                $(this).addClass('active');
+                _obj.layer.setVisibility(false);
             }
         });
     },
     getfeatureinfo: function(e) {
+        var _obj = dbkjs.modules.hydranten;
         var params = {
             REQUEST: "GetFeatureInfo",
             EXCEPTIONS: "application/vnd.ogc.se_xml",
-            BBOX: map.getExtent().toBBOX(),
+            BBOX: dbkjs.map.getExtent().toBBOX(),
             SERVICE: "WMS",
             INFO_FORMAT: 'application/vnd.ogc.gml',
-            QUERY_LAYERS: hydranten.layer.params.LAYERS,
+            QUERY_LAYERS: _obj.layer.params.LAYERS,
             FEATURE_COUNT: 50,
-            Layers: hydranten.layer.params.LAYERS,
-            WIDTH: map.size.w,
-            HEIGHT: map.size.h,
+            Layers: _obj.layer.params.LAYERS,
+            WIDTH: dbkjs.map.size.w,
+            HEIGHT: dbkjs.map.size.h,
             format: 'image/png',
-            styles: hydranten.layer.params.STYLES,
-            srs: hydranten.layer.params.SRS
+            styles: _obj.layer.params.STYLES,
+            srs: _obj.layer.params.SRS
         };
 
         // handle the wms 1.3 vs wms 1.1 madness
-        if (preparatie.layer.params.VERSION === "1.3.0") {
+        if (_obj.layer.params.VERSION === "1.3.0") {
             params.version = "1.3.0";
             params.j = e.xy.x;
             params.i = e.xy.y;
@@ -67,7 +69,7 @@ var hydranten = {
             params.x = e.xy.x;
             params.y = e.xy.y;
         }
-        OpenLayers.Request.GET({url: hydranten.url, "params": params, callback: hydranten.panel});
+        OpenLayers.Request.GET({url: _obj.url, "params": params, callback: _obj.panel});
         //OpenLayers.Event.stop(e);
     },
     panel: function(response) {
@@ -96,4 +98,3 @@ var hydranten = {
         }
     }
 };
-modules.push(hydranten);

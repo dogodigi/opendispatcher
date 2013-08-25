@@ -1,9 +1,7 @@
-/**
- * Objecten class, conform de DBK object definitie
- * 
- * Voor alle functionaliteit gerelateerd aan boringen
- */
-var dbkobject = {
+var dbkjs = dbkjs || {};
+window.dbkjs = dbkjs;
+dbkjs.modules = dbkjs.modules || {};
+dbkjs.modules.object = {
     id: "dbko",
     /**
      * URL naar een statisch boringen bestand in gml formaat
@@ -11,79 +9,85 @@ var dbkobject = {
     url: "/geoserver/zeeland/wms?",
     namespace: "zeeland",
     /**
-     * Laag. Wordt geiniteerd met de functie dbkobject.show() kan worden overruled
+     * Laag. Wordt geiniteerd met de functie register(). kan worden overruled
      */
     layer: null,
     highlightlayer: null,
+    /**
+     * 
+     * @param {type} dbk_id
+     * @returns {Boolean}
+     */
     updateFilter:  function(dbk_id) {
+        var _obj = dbkjs.modules.object;
         var cql_filter = "";
         if(typeof(dbk_id) !== "undefined"){
             //de cql filter moet worden losgelaten op ALLE lagen voor de WMS request
             cql_filter = "DBK_ID=" + dbk_id + ';DBK_ID=' + dbk_id;
-            this.layer.mergeNewParams({'CQL_FILTER': cql_filter });
+            _obj.layer.mergeNewParams({'CQL_FILTER': cql_filter });
         } else {
-            delete this.layer.params.CQL_FILTER;
+            delete _obj.layer.params.CQL_FILTER;
         }
-        this.layer.redraw();
+        _obj.layer.redraw();
         return false;
     },
-    show: function(activate) {
-        this.layer = new OpenLayers.Layer.WMS("Objecten", this.url,
-                {layers: this.namespace + ':WFS_tblDBK_Polygon,' + this.namespace + ':WFS_tblUitrukroute', format: 'image/png', transparent: true},
-        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck", maxResolution: 6.71});
-        if (activate === true) {
-            map.addLayers([
-                this.layer
-            ]);
-        }
+    register: function(options) {
+        var _obj = dbkjs.modules.object;
+        _obj.namespace = options.namespace || _obj.namespace;
+        _obj.url = options.url || _obj.url;
+        _obj.visibility = options.visible || _obj.visibility;
+        _obj.layer = new OpenLayers.Layer.WMS("Objecten", _obj.url,
+                {layers: _obj.namespace + ':WFS_tblDBK_Polygon,' + _obj.namespace + ':WFS_tblUitrukroute', format: 'image/png', transparent: true},
+        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: _obj.visibility, attribution: "Falck", maxResolution: 6.71});
+        dbkjs.map.addLayers([_obj.layer]);
+
         // vinkje op webpagina aan/uitzetten
         var dv_panel = $('<div class="panel"></div>');
         var dv_panel_heading = $('<div class="panel-heading" draggable="true"></div>');
         var dv_panel_title = $('<h4 class="panel-title"></div>');
-        dv_panel_title.append('<input type="checkbox" name="box_' + this.id + '"/>&nbsp;');
-        dv_panel_title.append(this.layer.name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' + this.id + '" data-parent="#overlaypanel_b" ><i class="icon-info-sign"></i></a>');
+        dv_panel_title.append('<input type="checkbox" name="box_' + _obj.id + '"/>&nbsp;');
+        dv_panel_title.append(_obj.layer.name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' + _obj.id + '" data-parent="#overlaypanel_b" ><i class="icon-info-sign"></i></a>');
         dv_panel_heading.append(dv_panel_title);
         dv_panel.append(dv_panel_heading);
-        var dv_panel_content = $('<div id="collapse_' + this.id + '" class="panel-collapse collapse"></div>');
+        var dv_panel_content = $('<div id="collapse_' + _obj.id + '" class="panel-collapse collapse"></div>');
         dv_panel_content.append('<div class="panel-body">Bladiebla</div>');
         dv_panel.append(dv_panel_content);
         $('#overlaypanel_b').append(dv_panel);
-        if (dbkobject.layer.getVisibility()) {
+        if (_obj.layer.getVisibility()) {
             //checkbox aan
-            $('input[name="box_' + this.id + '"]').attr('checked','checked');
+            $('input[name="box_' + _obj.id + '"]').attr('checked','checked');
         }
-        $('#div_' + this.id).click(function() {
-            if ($(this).hasClass('active')) {
-                dbkobject.layer.setVisibility(false);
-                $(this).removeClass('active');
+        $('input[name="box_' + _obj.id + '"]').click(function() {
+            if($(this).is(':checked')) {
+                _obj.layer.setVisibility(true);
             } else {
-                dbkobject.layer.setVisibility(true);
-                $(this).addClass('active');
+                _obj.layer.setVisibility(false);
             }
         });
     },
     getfeatureinfo: function(e) {
+        var _obj = dbkjs.modules.object;
         var params = {
             REQUEST: "GetFeatureInfo",
             EXCEPTIONS: "application/vnd.ogc.se_xml",
-            BBOX: map.getExtent().toBBOX(),
+            BBOX: dbkjs.map.getExtent().toBBOX(),
             SERVICE: "WMS",
             INFO_FORMAT: 'application/vnd.ogc.gml',
-            QUERY_LAYERS: dbkobject.layer.params.LAYERS,
+            QUERY_LAYERS: _obj.layer.params.LAYERS,
             FEATURE_COUNT: 50,
-            Layers: dbkobject.layer.params.LAYERS,
-            WIDTH: map.size.w,
-            HEIGHT: map.size.h,
+            Layers: _obj.layer.params.LAYERS,
+            WIDTH: dbkjs.map.size.w,
+            HEIGHT: dbkjs.map.size.h,
             format: 'image/png',
-            styles: dbkobject.layer.params.STYLES,
-            srs: dbkobject.layer.params.SRS
+            styles: _obj.layer.params.STYLES,
+            srs: _obj.layer.params.SRS
         };
-        if(dbkobject.layer.params.CQL_FILTER){
-            params.CQL_FILTER = dbkobject.layer.params.CQL_FILTER;
+        if(_obj.layer.params.CQL_FILTER){
+            params.CQL_FILTER = _obj.layer.params.CQL_FILTER;
         }
 
         // handle the wms 1.3 vs wms 1.1 madness
-        if (dbkobject.layer.params.VERSION === "1.3.0") {
+        if (_obj.layer.params.VERSION === "1.3.0") {
             params.version = "1.3.0";
             params.j = e.xy.x;
             params.i = e.xy.y;
@@ -92,7 +96,7 @@ var dbkobject = {
             params.x = e.xy.x;
             params.y = e.xy.y;
         }
-        OpenLayers.Request.GET({url: dbkobject.url, "params": params, callback: dbkobject.panel});
+        OpenLayers.Request.GET({url: _obj.url, "params": params, callback: _obj.panel});
         OpenLayers.Event.stop(e);
     },
     panel: function(response) {
@@ -120,4 +124,3 @@ var dbkobject = {
         }
     }
 };
-modules.push(dbkobject);

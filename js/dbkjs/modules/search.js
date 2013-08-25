@@ -1,7 +1,15 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
-dbkjs.search = {
-    search: function() {
+dbkjs.modules = dbkjs.modules || {};
+dbkjs.modules.updateFilter = function(id){
+  $.each(dbkjs.modules, function(mod_index, module) {
+      if(module.updateFilter){
+          module.updateFilter(id);
+      }
+  });  
+};
+dbkjs.modules.search = {
+    register: function() {
         $('#search_input').typeahead({
             name: 'address',
             remote: {
@@ -10,7 +18,12 @@ dbkjs.search = {
                     var dataset = [];
 
                     for (i = 0; i < parsedResponse.length; i++) {
-                        var pnt = new OpenLayers.Geometry.Point(parsedResponse[i].lon, parsedResponse[i].lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+                        var pnt = new OpenLayers.Geometry.Point(
+                            parsedResponse[i].lon, 
+                            parsedResponse[i].lat).transform(
+                                new OpenLayers.Projection("EPSG:4326"), 
+                                dbkjs.map.getProjectionObject()
+                            );
                         dataset.push({
                             value: parsedResponse[i].display_name,
                             id: parsedResponse[i].osm_id,
@@ -23,16 +36,11 @@ dbkjs.search = {
             }
         });
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
-            //console.log(obj);
-            //console.log(datum);
-            preparatie.updateFilter(datum.id);
-            preventie.updateFilter(datum.id);
-            gevaren.updateFilter(datum.id);
-            dbkobject.updateFilter(datum.id);
-            if (map.zoom < 13) {
-                map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 11);
+            dbkjs.modules.updateFilter(datum.id);
+            if (dbkjs.map.zoom < 13) {
+                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 11);
             } else {
-                map.setCenter(datum.geometry.getBounds().getCenterLonLat());
+                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat());
             }
         });
     }
