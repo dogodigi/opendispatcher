@@ -1,8 +1,31 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
-
+$.browser = {};
+$.browser.mozilla = /mozilla/.test(navigator.userAgent.toLowerCase()) && !/webkit    /.test(navigator.userAgent.toLowerCase());
+$.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
+$.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
+$.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 dbkjs.modules.print = {
     url: "/geoserver/pdf/",
+    options: {
+        "units": "degrees",
+        "srs": "EPSG:4326",
+        "layout": "A4 portrait",
+        "dpi": 75,
+        "mapTitle": "Printing Demo",
+        "comment": "This is a map printed from GeoExt.",
+        "layers": [{
+                "baseURL": "http://demo.opengeo.org/geoserver/wms",
+                "opacity": 1,
+                "singleTile": true, "type": "WMS", "layers": ["topp:tasmania_state_boundaries"],
+                "format": "image/jpeg", "styles": [""]}],
+        "pages": [{"center": [146.56, -41.56], "scale": 4000000, "rotation": 0}]},
+    register: function(){
+        //$('#btngrp_3').append('<a id="btn_print" class="btn btn-default navbar-btn" href="#"><i class="icon-print"></i></a>');
+        //$('#btn_print').click(function(){
+        //    dbkjs.modules.print.printdirect();
+        //});
+    },
     capabilities: null,
     method: "POST",
     customParams: null,
@@ -12,6 +35,35 @@ dbkjs.modules.print = {
     dpi: null,
     layout: null,
     encoding: document.charset || document.characterSet || "UTF-8",
+    options: {
+        "title": "mapfish print",
+        "units": "degrees",
+        "srs": "EPSG:4326",
+        "layout": "A4 portrait",
+        "dpi": 300,
+        "layers": [
+            {
+                "baseURL": "http://demo.opengeo.org/geoserver/wms",
+                "opacity": 1,
+                "singleTile": false,
+                "type": "WMS",
+                "layers": [
+                    "ne:ne"
+                ],
+                "format": "image/png;"
+
+
+            }
+        ],
+        "pages": [
+            {
+                "title": "Mapfish Print",
+                "rotation": 0,
+                "mapTitle": "Mapfish Map",
+                "comment": "This is a Mapfish map."
+            }
+        ]
+    },
     timeout: 30000,
     setLayout: function(layout) {
         this.layout = layout;
@@ -20,6 +72,14 @@ dbkjs.modules.print = {
         this.dpi = dpi;
     },
     printdirect: function(map, pages, options) {
+        var pages = pages || [
+            {
+                "title": "Mapfish Print",
+                "rotation": 0,
+                "mapTitle": "Mapfish Map",
+                "comment": "This is a Mapfish map."
+            }
+        ];
         dbkjs.modules.print.loadCapabilities(function(capabilities) {
             dbkjs.modules.print.setLayout(dbkjs.modules.print.capabilities.layouts[0]);
             dbkjs.modules.print.setDpi(dbkjs.modules.print.capabilities.dpis[0]);
@@ -38,16 +98,19 @@ dbkjs.modules.print = {
             dpi: _obj.dpi.value
         }, _obj.customParams);
 
-        var pagesLayer = pages[0].feature.layer;
+        // feature wordt gebruikt voor de extent van de kaart.. Ik moet nog even uitvinden hoe..
+        //var pagesLayer = pages[0].feature.layer;
         var encodedLayers = [];
 
         // ensure that the baseLayer is the first one in the encoded list
-        var layers = map.layers.concat();
-        layers.remove(map.baseLayer);
-        layers.unshift(map.baseLayer);
+        var layers = map.layers.concat(); //concat results in a new array
+        //layers.remove(map.baseLayer);
+        //layers.unshift(map.baseLayer);
 
         $.each(layers, function(layer_idx, layer) {
-            if (layer !== pagesLayer && layer.getVisibility() === true) {
+            if (
+                    //layer !== pagesLayer && 
+            layer.getVisibility() === true) {
                 var enc = _obj.encodeLayer(layer);
                 enc && encodedLayers.push(enc);
             }
@@ -129,7 +192,7 @@ dbkjs.modules.print = {
                 _obj.capabilities = response;
                 console.log(_obj.capabilities);
                 //_obj.loadStores();
-                if(callback){
+                if (callback) {
                     callback.call();
                 }
             },
@@ -137,7 +200,7 @@ dbkjs.modules.print = {
                 alert(response.responseText);
             }
         });
-        
+
     },
     /** private: method[loadStores]
      */
