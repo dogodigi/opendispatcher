@@ -7,9 +7,10 @@ dbkjs.protocol.imdbk21 = {
     processing: false,
     panel_group: null,
     panel_tabs: null,
+    panel_algemeen: null,
     process: function(selection_id) {
-        //controleer of de currentFeature id gelijk is aan de dbk,
-        //http://dbk.mapcache.nl/wfs?request=GetFeature&version=2.0&typename=dbk:DBKFeature&outputFormat=gml32&featureID=DBKFeature.1367827139
+//controleer of de currentFeature id gelijk is aan de dbk,
+//http://dbk.mapcache.nl/wfs?request=GetFeature&version=2.0&typename=dbk:DBKFeature&outputFormat=gml32&featureID=DBKFeature.1367827139
         if (!this.feature) {
             if (!dbkjs.protocol.imdbk21.processing) {
                 dbkjs.protocol.imdbk21.processing = true;
@@ -19,11 +20,11 @@ dbkjs.protocol.imdbk21 = {
                 dbkjs.protocol.imdbk21.getObject(selection_id);
             }
         } else if (selection_id === dbkjs.protocol.imdbk21.feature.id) {
-            //doe niks
+//doe niks
             $('#infopanel_b').html(dbkjs.protocol.imdbk21.feature.div);
             $('#infopanel').show();
         } else {
-            //anders opnieuw ophalen.    
+//anders opnieuw ophalen.    
             if (!dbkjs.protocol.imdbk21.processing) {
                 dbkjs.protocol.imdbk21.processing = true;
                 dbkjs.protocol.imdbk21.feature = {id: selection_id, div: '<div>bezig met ophalen...</div>'};
@@ -46,7 +47,7 @@ dbkjs.protocol.imdbk21 = {
                 if (xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]) {
                     _obj.feature.div = $('<div class="tabbable"></div>');
                     if (_obj.constructAlgemeen(xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"])) {
-                        //dbkjs.protocol.imdbk21.constructAddress(xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:adres"]);
+                        _obj.constructAdres(xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:adres"]);
                         _obj.constructBijzonderheid(
                                 xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:bijzonderheid"]
                                 );
@@ -58,7 +59,6 @@ dbkjs.protocol.imdbk21 = {
                                 );
                     }
                     ;
-
                     _obj.feature.div.append(_obj.panel_group);
                     _obj.feature.div.append(_obj.panel_tabs);
                     $('#infopanel_b').html(_obj.feature.div);
@@ -71,12 +71,21 @@ dbkjs.protocol.imdbk21 = {
             _obj.processing = false;
         }
     },
+    constructRow: function(val, caption) {
+        if (!dbkjs.util.isJsonNull(val)) {
+            var output = '<div class="row">' + '<div class="col-xs-3">' + caption + '</div><div class="col-xs-9">' + val + '</div>' + '</div>';
+            return output;
+        } else {
+            return '';
+        }
+    },
     constructAlgemeen: function(DBKObject) {
         var _obj = dbkjs.protocol.imdbk21;
         /** Algemene dbk info **/
         if (DBKObject) {
             var formelenaam = DBKObject["dbk:formeleNaam"].value;
             var informelenaam = DBKObject["dbk:informeleNaam"].value;
+            $("#infopanel_h").html('<span class="h4">' + formelenaam + '</span><span class="h5">&nbsp;' + informelenaam + '</span>');
             var controledatum = '<span class="label label-warning">Niet bekend</span>';
             var bhvaanwezig = '<span class="label label-warning">Geen BHV aanwezig of onbekend</span>';
             var omsnummer = '';
@@ -84,7 +93,6 @@ dbkjs.protocol.imdbk21 = {
             var bouwlaag = '';
             var laagste;
             var hoogste;
-
             if (DBKObject["dbk:controleDatum"]) {
                 controledatum = DBKObject["dbk:controleDatum"].value;
             }
@@ -112,25 +120,14 @@ dbkjs.protocol.imdbk21 = {
             } else if (hoogste && !laagste) {
                 bouwlaag = 'Hoogste bouwlaag: ' + hoogste + '';
             }
-
-            _obj.panel_group.html('<div class="tab-pane active" id="collapse_algemeen_' + _obj.feature.id + '">' +
-                '<div class="row">' + 
-                    '<div class="col-xs-8"><h4>' + formelenaam + '</h4></div>'+ 
-                    '<div class="col-xs-4"><h5>' + informelenaam + '</h5></div>' +
-                    '</div><div class="row">' + 
-                    '<div class="col-xs-3">Controledatum</div><div class="col-xs-9">' + controledatum + '</div>' +
-                    '</div><div class="row">' +
-                    '<div class="col-xs-3">BHV</div><div class="col-xs-9">' + bhvaanwezig + '</div>' +
-                    '</div><div class="row">' +
-                    '<div class="col-xs-3">OMS</div><div class="col-xs-9">' + omsnummer + '</div>' +
-                    '</div><div class="row">' +
-                    '<div class="col-xs-3">Gebruik</div><div class="col-xs-9">' + gebruikstype + '</div>' +
-                    '</div><div class="row">' +
-                    '<div class="col-xs-3">Bouwlagen</div><div class="col-xs-9">' + bouwlaag + '</div>' +
-                    '</div><div class="row">' + 
-                    '<div class="col-xs-12"><div id="dbk_' + _obj.feature.id + '_adres></div></div>' +
-                '</div>' +
-            '</div>');
+            _obj.panel_algemeen = $('<div class="tab-pane active" id="collapse_algemeen_' + _obj.feature.id + '">' +
+                    _obj.constructRow(controledatum, 'Controledatum') +
+                    _obj.constructRow(bhvaanwezig, 'BHV') +
+                    _obj.constructRow(omsnummer, 'OMS nummer') +
+                    _obj.constructRow(gebruikstype, 'Gebruik') +
+                    _obj.constructRow(bouwlaag, 'Bouwlagen') +
+                    '</div>');
+            _obj.panel_group.html(_obj.panel_algemeen);
             _obj.panel_tabs.html('<li class="active"><a data-toggle="tab" href="#collapse_algemeen_' + _obj.feature.id + '">Algemeen</a></li>');
             return true;
         } else {
@@ -170,7 +167,9 @@ dbkjs.protocol.imdbk21 = {
         var postcode = '';
         var woonplaatsnaam = '';
         if (adres) {
-            var adres_div = $('<div class="tab-pane" id="collapse_adres_' + _obj.feature.id + '"></div>');
+            //var adres_div = $('<div class="tab-pane" id="collapse_adres_' + _obj.feature.id + '"></div>');\
+            var adres_row = $('<div class="row"></div>');
+            var adres_div = $('<div class="col-xs-12"></div>');
             if (adres["dbk:Adres"]) {
                 if (adres["dbk:Adres"]["dbk:huisnummer"]) {
                     huisnummer = adres["dbk:Adres"]["dbk:huisnummer"].value;
@@ -185,26 +184,34 @@ dbkjs.protocol.imdbk21 = {
                     openbareruimtenaam = adres["dbk:Adres"]["dbk:openbareRuimteNaam"].value;
                 }
                 adres_div.append(
-                        //adres["dbk:Adres"]["dbk:volgnummer"].value + '. ' + 
-                        '<h4>' + adres["dbk:Adres"]["dbk:soort"].value + '</h4><p>' +
-                        adres["dbk:Adres"]["dbk:tekst"].value + '</p>');
+                        openbareruimtenaam + ' ' + huisnummer + '<br/>' +
+                        woonplaatsnaam + ' ' + postcode
+                        );
             } else {
                 var adres_ul = $('<ul></ul>');
                 $.each(adres, function(adres_index, waarde) {
+                    if (adres["dbk:Adres"]["dbk:huisnummer"]) {
+                        huisnummer = waarde["dbk:Adres"]["dbk:huisnummer"].value;
+                    }
+                    if (adres["dbk:Adres"]["dbk:postcode"]) {
+                        postcode = waarde["dbk:Adres"]["dbk:postcode"].value;
+                    }
+                    if (adres["dbk:Adres"]["dbk:woonplaatsNaam"]) {
+                        woonplaatsnaam = waarde["dbk:Adres"]["dbk:woonplaatsNaam"].value;
+                    }
+                    if (adres["dbk:Adres"]["dbk:openbareRuimteNaam"]) {
+                        openbareruimtenaam = waarde["dbk:Adres"]["dbk:openbareRuimteNaam"].value;
+                    }
                     adres_ul.append('<li>' +
-                            //waarde["dbk:Adres"]["dbk:volgnummer"].value + '. ' + 
-                            '<i>' + waarde["dbk:Adres"]["dbk:soort"].value + ' - </i> ' +
-                            waarde["dbk:Adres"]["dbk:tekst"].value +
+                            openbareruimtenaam + ' ' + huisnummer + '<br/>' +
+                            woonplaatsnaam + ' ' + postcode +
                             '</li>');
                 });
-                adres_div.append(adres_ul);
             }
-            _obj.panel_group.append(adres_div);
-            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_adres_' + _obj.feature.id + '">Adres</a></li>');
-        } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#collapse_adres_' + _obj.feature.id + '">Adres</a></li>');
+            adres_div.append(adres_ul);
+            adres_row.append(adres_div);
+            _obj.panel_algemeen.append(adres_row);
         }
-
     },
     constructMedia: function(foto) {
         var _obj = dbkjs.protocol.imdbk21;
@@ -212,7 +219,6 @@ dbkjs.protocol.imdbk21 = {
             var foto_div = $('<div class="tab-pane" id="collapse_foto_' + _obj.feature.id + '"></div>');
             var image_carousel = $('<div id="carousel_foto_' + _obj.feature.id + '" class="carousel slide" data-interval="false"></div>');
             var image_carousel_inner = $('<div class="carousel-inner"></div>');
-
             if (foto["dbk:Foto"]) {
                 var url = foto["dbk:Foto"]["dbk:URL"].value;
                 image_carousel_inner.append('<div class="item active"><img src="' + url + '"><div class="carousel-caption">' + foto["dbk:Foto"]["dbk:naam"].value) + '</div></div>';
@@ -235,13 +241,10 @@ dbkjs.protocol.imdbk21 = {
                         '<span class="icon-prev"></span></a>');
                 image_carousel.append('<a class="right carousel-control" href="#carousel_foto_' + _obj.feature.id + '" data-slide="next">' +
                         '<span class="icon-next"></span></a>');
-
-
             }
             foto_div.append(image_carousel);
             _obj.panel_group.append(foto_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_foto_' + _obj.feature.id + '">Media</a></li>');
-
         } else {
             _obj.panel_tabs.append('<li class="disabled"><a href="#collapse_foto_' + _obj.feature.id + '">Media</a></li>');
         }
