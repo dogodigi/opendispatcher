@@ -3,15 +3,13 @@ html, body {
     width: 100%;
     height: 100%;
 }
-.row {
-    border-bottom: 1px solid #cccccc;
-}
+
 h4, h5, h6 {
     margin-bottom: 0 !important;
     margin-top: 0 !important;
 }
 .tab-content{
-    width: 600px;
+    min-width: 300px;
 }
 .accordion-heading a.accordion-toggle { display: inline-block; }
 .input-group-addon, .input-group-btn {

@@ -41,11 +41,12 @@ dbkjs.modules.district = {
                 var district_li = $('<li><a href="#district_0">' + _obj.features[0].attributes.naam + '</a></li>');
                 district_li.click(function() {
                     var n = parseInt($(this).children('a:first').attr('href').replace("#district_", ""));
-                    $('#geselecteerd_gebied').html(_obj.features[n].attributes.naam);
+                    $('#geselecteerd_district').html(_obj.features[n].attributes.naam);
                     var bounds = _obj.features[n].geometry.getBounds().clone();
                     dbkjs.map.zoomToExtent(bounds, false);
                     //_obj.ul = _obj.ul.detach();
-                    //$('#geselecteerd_gebied').append(dbkjs.modules.gemeente.ul);
+                    $('#regio_selectie').hide();
+                    $('#district_selectie').show();
                 });
                 _obj.ul.append(district_li);
                 for (var i = 1; i < _obj.features.length; i++) {
@@ -54,7 +55,7 @@ dbkjs.modules.district = {
                     _obj.ul.append(district_li);
                     district_li.click(function() {
                         var n = parseInt($(this).children('a:first').attr('href').replace("#district_", ""));
-                        $('#geselecteerd_gebied').html(_obj.features[n].attributes.naam);
+                        $('#geselecteerd_district').html(_obj.features[n].attributes.naam);
                         var bounds = _obj.features[n].geometry.getBounds().clone();
                         dbkjs.map.zoomToExtent(bounds, false);
                         //_obj.ul = _obj.ul.detach();
@@ -66,9 +67,9 @@ dbkjs.modules.district = {
                 _obj.ul.append(regio_li);
                 regio_li.click(function(){
                    dbkjs.map.zoomToExtent(_obj.bounds, false); 
-                   $('#geselecteerd_gebied').html('Regio');
+                   $('#geselecteerd_district').html('Regio');
                 });
-                $('#gebied_selectie').append(dbkjs.modules.district.ul);
+                $('#regio_selectie').append(dbkjs.modules.district.ul);
             },
             error: function() {
                 return false;

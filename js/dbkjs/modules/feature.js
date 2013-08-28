@@ -127,12 +127,12 @@ dbkjs.modules.feature = {
                         if (feature.cluster.length > 1) {
                             lbl_txt = feature.cluster.length + "";
                         } else {
-                            //lbl_txt = feature.cluster[0].attributes.formelenaam;
+                            //lbl_txt = feature.cluster[0].attributes.formeleNaam;
                             lbl_txt = "";
                         }
                         return lbl_txt;
                     } else {
-                        //return feature.attributes.formelenaam;
+                        //return feature.attributes.formeleNaam;
                         return "";
                     }
                 } else {
@@ -246,12 +246,12 @@ dbkjs.modules.feature = {
                         if (feature.cluster.length > 1) {
                             lbl_txt = feature.cluster.length + "";
                         } else {
-                            //lbl_txt = feature.cluster[0].attributes.formelenaam;
+                            //lbl_txt = feature.cluster[0].attributes.formeleNaam;
                             lbl_txt = "";
                         }
                         return lbl_txt;
                     } else {
-                        //return feature.attributes.formelenaam;
+                        //return feature.attributes.formeleNaam;
                         return "";
                     }
                 } else {
@@ -356,7 +356,7 @@ dbkjs.modules.feature = {
         mydata.service = "WFS";
         mydata.version = "1.0.0";
         mydata.request = "GetFeature";
-        mydata.typename = _obj.namespace + ":dbkfeature_centroid";
+        mydata.typename = _obj.namespace + ":WMS_DBKFeature";
         mydata.maxFeatures = 500;
         mydata.outputFormat = "json";
         //http://safetymaps.nl/geoserver/brabantnoord/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=brabantnoord:dbkfeature_centroid&maxFeatures=50&outputFormat=json
@@ -381,9 +381,9 @@ dbkjs.modules.feature = {
     },
     featureInfohtml: function(feature) {
         var ret_title = $('<li></li>');
-        ret_title.append('<a href="?regio=' + dbkjs.options.regio.id + '&dbk=' + feature.attributes.id + '">' + feature.attributes.formelenaam + '</a>');
+        ret_title.append('<a href="?regio=' + dbkjs.options.regio.id + '&dbk=' + feature.attributes.id + '">' + feature.attributes.formeleNaam + '</a>');
         //var ret_val = $('<td class="dbk_feature" id="dbk_' + feature.attributes.id + '"></td>');
-        //ret_val.html(feature.attributes.formelenaam);
+        //ret_val.html(feature.attributes.formeleNaam);
         //ret_tr.append(ret_val);
 
         $(ret_title).click(function() {
@@ -405,7 +405,7 @@ dbkjs.modules.feature = {
 
         $.each(_obj.features, function(key, value) {
             dbk_naam_array.push({
-                value: value.attributes.formelenaam,
+                value: value.attributes.formeleNaam + ' ' + value.attributes.informeleNaam,
                 geometry: value.geometry,
                 id: value.attributes.id
             });
@@ -435,10 +435,10 @@ dbkjs.modules.feature = {
         var dbk_naam_array = [];
 
         $.each(_obj.features, function(key, value) {
-            //alert(value.properties.formelenaam + ' (' + value.properties.identificatie_id + ')');
+            //alert(value.properties.formeleNaam + ' (' + value.properties.identificatie_id + ')');
             if (!dbkjs.util.isJsonNull(value.attributes.OMSnummer)) {
                 dbk_naam_array.push({
-                    value: '' + value.attributes.OMSnummer + ' - ' + value.attributes.formelenaam,
+                    value: value.attributes.OMSnummer + ' - ' + value.attributes.formeleNaam,
                     geometry: value.geometry,
                     id: value.attributes.id
                 });

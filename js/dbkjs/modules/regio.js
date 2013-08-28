@@ -52,6 +52,7 @@ dbkjs.modules.regio = {
         for (var i = 1; i < _obj.features.length; i++) {
             bounds.extend(_obj.features[i].geometry.getBounds());
         }
+        //dbkjs.map.maxExtent = bounds;
         dbkjs.map.zoomToExtent(bounds, false);
     }
 };

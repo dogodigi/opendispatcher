@@ -36,7 +36,11 @@ dbkjs.modules.gebieden = {
         dv_panel_heading.append(dv_panel_title);
         dv_panel.append(dv_panel_heading);
         var dv_panel_content = $('<div id="collapse_' + _obj.id + '" class="panel-collapse collapse"></div>');
-        dv_panel_content.append('<div class="panel-body">Bladiebla</div>');
+        dv_panel_content.append('<div class="panel-body"><p>Regio-, district- en gemeente contouren. Toont tevens de district namen.</p><p>' +
+        '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#ffffff;border:3px solid #000000;">&nbsp;</div></div><div class="col-xs-10"> Regio contour</div></div>' +
+        '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#ffffff;border:2px solid #000000;">&nbsp;</div></div><div class="col-xs-10"> District contouren</div></div>' +
+        '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#ffffff;border:1px dashed #000000;">&nbsp;</div></div><div class="col-xs-10"> Gemeente contouren</div></div>' +
+        '</p></div>');
         dv_panel.append(dv_panel_content);
         $('#overlaypanel_b').append(dv_panel);
         if (_obj.layer.getVisibility()) {

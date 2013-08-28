@@ -1,14 +1,14 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
-dbkjs.modules = dbkjs.modules || {};
-dbkjs.modules.getCapabilities = {
+dbkjs.protocol = dbkjs.protocol || {};
+dbkjs.protocol.getCapabilities = {
     wmsCapabilitiesFormat: new OpenLayers.Format.WMSCapabilities(),
     onLayerLoadError: function() {
         /* Display error message, etc */
     },
     get: function() {
         OpenLayers.Request.GET({
-            url: 'http://safetymaps.nl/geoserver/bn_a/wms?',
+            url: 'gs2/custom_21/wms?',
             params: {
                 SERVICE: 'WMS',
                 VERSION: '1.1.0', // For example, '1.1.1'
@@ -19,18 +19,25 @@ dbkjs.modules.getCapabilities = {
                 if (!doc || !doc.documentElement) {
                     doc = r.responseText;
                 }
-                var c = wmsCapabilitiesFormat.read(doc);
+                var c = dbkjs.protocol.getCapabilities.wmsCapabilitiesFormat.read(doc);
                 if (!c || !c.capability) {
-                    dbkjs.modules.getcapabilities.onLayerLoadError();
+                    dbkjs.protocol.getCapabilities.onLayerLoadError();
                     return;
                 }
-
+//                var layer = format.createLayer(capabilities, {
+//                    layer: "medford:buildings",
+//                    matrixSet: "EPSG:900913",
+//                    format: "image/png",
+//                    opacity: 0.7,
+//                    isBaseLayer: false
+//                });
+//                map.addLayer(layer);
                 // Here is result, do whatever you want with it
                 // @TODO do something with the result!
-                // console.log(c);
+                console.log(c);
             },
             failure: function(r) {
-                dbkjs.modules.getcapabilities.onLayerLoadError();
+                dbkjs.protocol.getCapabilities.onLayerLoadError();
             }
         });
     }

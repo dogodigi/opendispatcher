@@ -18,7 +18,8 @@ dbkjs.modules.preventie = {
         var _obj = dbkjs.modules.preventie;
         var cql_filter = "";
         if (typeof(dbk_id) !== "undefined") {
-            cql_filter = "DBK_ID=" + dbk_id + ';DBK_ID=' + dbk_id + ';DBK_ID=' + dbk_id;
+            cql_filter = "dbkfeature_id=" + dbk_id + ';' + 
+            'dbkfeature_id=' + dbk_id + ';dbkfeature_id=' + dbk_id;
             _obj.layer.mergeNewParams({'CQL_FILTER': cql_filter});
         } else {
             delete _obj.layer.params.CQL_FILTER;
@@ -32,7 +33,9 @@ dbkjs.modules.preventie = {
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
         _obj.layer = new OpenLayers.Layer.WMS(_obj.title, _obj.url,
-                {layers: _obj.namespace + ':WFS_tblCustom_Polyline,' + _obj.namespace + ':WFS_tblSymbol_Point,' + _obj.namespace + ':WFS_tblLabels', format: 'image/png', transparent: true},
+                {layers:
+                            _obj.namespace + ':WMS_Hulplijn,' + 
+                            _obj.namespace + ':WMS_Brandweervoorziening,' + _obj.namespace + ':WMS_TekstObject', format: 'image/png', transparent: true},
         {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck", maxResolution: 6.71});
         dbkjs.map.addLayers([_obj.layer]);
 
@@ -50,10 +53,10 @@ dbkjs.modules.preventie = {
         $('#overlaypanel_b').append(dv_panel);
         if (_obj.layer.getVisibility()) {
             //checkbox aan
-            $('input[name="box_' + _obj.id + '"]').attr('checked','checked');
+            $('input[name="box_' + _obj.id + '"]').attr('checked', 'checked');
         }
         $('input[name="box_' + _obj.id + '"]').click(function() {
-            if($(this).is(':checked')) {
+            if ($(this).is(':checked')) {
                 _obj.layer.setVisibility(true);
             } else {
                 _obj.layer.setVisibility(false);
@@ -77,7 +80,7 @@ dbkjs.modules.preventie = {
             styles: _obj.layer.params.STYLES,
             srs: _obj.layer.params.SRS
         };
-        if(_obj.layer.params.CQL_FILTER){
+        if (_obj.layer.params.CQL_FILTER) {
             params.CQL_FILTER = _obj.layer.params.CQL_FILTER;
         }
 

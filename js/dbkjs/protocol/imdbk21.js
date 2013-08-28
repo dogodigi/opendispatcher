@@ -14,6 +14,7 @@ dbkjs.protocol.imdbk21 = {
         if (!this.feature) {
             if (!dbkjs.protocol.imdbk21.processing) {
                 dbkjs.protocol.imdbk21.processing = true;
+                $("#infopanel_h").html('<span class="h4"><i class="icon-spinner icon-spin"></i>&nbspBezig..</span>');
                 dbkjs.protocol.imdbk21.feature = {id: selection_id, div: '<div>bezig met ophalen...</div>'};
                 $('#infopanel_b').html(dbkjs.protocol.imdbk21.feature.div);
                 $('#infopanel').show();
@@ -27,6 +28,7 @@ dbkjs.protocol.imdbk21 = {
 //anders opnieuw ophalen.    
             if (!dbkjs.protocol.imdbk21.processing) {
                 dbkjs.protocol.imdbk21.processing = true;
+                $("#infopanel_h").html('<span class="h4"><i class="icon-spinner icon-spin"></i>&nbspBezig..</span>');
                 dbkjs.protocol.imdbk21.feature = {id: selection_id, div: '<div>bezig met ophalen...</div>'};
                 $('#infopanel_b').html(dbkjs.protocol.imdbk21.feature.div);
                 $('#infopanel').show();
@@ -166,14 +168,15 @@ dbkjs.protocol.imdbk21 = {
                             '');
                     if (waarde["dbk:Adres"]["dbk:bagId"]) {
                         var bag_p = $('<p></p>');
-                        var bag_button = $('<button type="button" class="btn btn-primary">BAG raadplegen</button>')
+                        var bag_button = $('<button type="button" class="btn btn-primary">BAG raadplegen</button>');
                         bag_p.append(bag_button);
                         bag_button.click(function() {
                             if (dbkjs.modules.bag) {
                                 dbkjs.modules.bag.getVBO(waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value, function(result) {
                                     if (result.length === 0) {
                                         $('#collapse_algemeen_' + _obj.feature.id).append(
-                                                '<div class="alert alert-warning">' +
+                                                '<div class="alert alert-warning alert-dismissable">' +
+                                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
                                                 '<strong>Mislukt!</strong>' +
                                                 ' verblijfsobject ' + waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value + ' niet gevonden.' +
                                                 '</div>'
@@ -201,6 +204,35 @@ dbkjs.protocol.imdbk21 = {
             } else {
                 return false;
             }
+        }
+    },
+    constructContact: function(contact) {
+        var _obj = dbkjs.protocol.imdbk21;
+        if (bijzonderheid) {
+            var bijzonderheid_div = $('<div class="tab-pane" id="collapse_bijzonderheid_' + _obj.feature.id + '"></div>');
+            if (bijzonderheid["dbk:Bijzonderheid"]) {
+                var temp = bijzonderheid;
+                bijzonderheid = [];
+                bijzonderheid.push(temp);
+            }
+            var bijzonderheid_table_div = $('<div class="table-responsive"></div>');
+            var bijzonderheid_table = $('<table class="table table-hover"></table>');
+            bijzonderheid_table.append('<tr><th>#</th><th>soort</th><th>informatie</th></tr>');
+            $.each(bijzonderheid, function(bijzonderheid_index, waarde) {
+                bijzonderheid_table.append(
+                        '<tr>' +
+                        '<td>' + waarde["dbk:Bijzonderheid"]["dbk:volgnummer"].value + '</td>' +
+                        '<td>' + waarde["dbk:Bijzonderheid"]["dbk:soort"].value + '</td>' +
+                        '<td>' + waarde["dbk:Bijzonderheid"]["dbk:tekst"].value + '</td>'
+                        + '</tr>'
+                        );
+            });
+            bijzonderheid_table_div.append(bijzonderheid_table);
+            bijzonderheid_div.append(bijzonderheid_table_div);
+            _obj.panel_group.append(bijzonderheid_div);
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_bijzonderheid_' + _obj.feature.id + '">Bijzonderheden</a></li>');
+        } else {
+            _obj.panel_tabs.append('<li class="disabled"><a href="#collapse_bijzonderheid_' + _obj.feature.id + '">Bijzonderheden</a></li>');
         }
     },
     constructBijzonderheid: function(bijzonderheid) {
@@ -253,16 +285,25 @@ dbkjs.protocol.imdbk21 = {
                 } else {
                     active = '';
                 }
-                image_carousel_inner.append('<div class="item ' + active + '"><img src="' + url + '"><div class="carousel-caption">' + waarde["dbk:Foto"]["dbk:naam"].value) + '</div></div>';
-                image_carousel_nav.append('<li data-target="#carousel_foto_' + _obj.feature.id + '" data-slide-to="' + foto_index + '" class="' + active + '"></li>');
+                var url_arr = url.split(".");
+                var extension = url_arr[url_arr.length - 1];
+                if (extension === "pdf" || extension === "doc" || extension === "docx") {
+                    image_carousel_inner.append('<div class="item ' + active + '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + url + '" target="_blank"><h1><i class="icon-download icon-large"></h1></i></a><h3>' + waarde["dbk:Foto"]["dbk:naam"].value + '</h3><a href="' + url + '" target="_blank"><h2>Download bestand</h2></a></div></div>');
+                } else {
+                    image_carousel_inner.append('<div class="item ' + active + '"><img src="' + url + '"><div class="carousel-caption"><h3>' + waarde["dbk:Foto"]["dbk:naam"].value + '</h3></div></div>');
+                }
+                if (foto.length > 1) {
+                    image_carousel_nav.append('<li data-target="#carousel_foto_' + _obj.feature.id + '" data-slide-to="' + foto_index + '" class="' + active + '"></li>');
+                }
             });
             image_carousel.append(image_carousel_nav);
             image_carousel.append(image_carousel_inner);
-            image_carousel.append('<a class="left carousel-control" href="#carousel_foto_' + _obj.feature.id + '" data-slide="prev">' +
-                    '<span class="icon-prev"></span></a>');
-            image_carousel.append('<a class="right carousel-control" href="#carousel_foto_' + _obj.feature.id + '" data-slide="next">' +
-                    '<span class="icon-next"></span></a>');
-
+            if (foto.length > 1) {
+                image_carousel.append('<a class="left carousel-control" href="#carousel_foto_' + _obj.feature.id + '" data-slide="prev">' +
+                        '<span class="icon-prev"></span></a>');
+                image_carousel.append('<a class="right carousel-control" href="#carousel_foto_' + _obj.feature.id + '" data-slide="next">' +
+                        '<span class="icon-next"></span></a>');
+            }
             foto_div.append(image_carousel);
             _obj.panel_group.append(foto_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_foto_' + _obj.feature.id + '">Media</a></li>');
@@ -305,7 +346,7 @@ dbkjs.protocol.imdbk21 = {
             version: '2.0',
             typename: 'dbk:DBKObject',
             outputFormat: 'gml32',
-            featureID: 'DBKObject.' + id,
+            featureID: 'DBKObject.' + id
         };
         OpenLayers.Request.GET({
             url: dbkjs.protocol.imdbk21.url,

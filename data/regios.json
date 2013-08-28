@@ -81,9 +81,10 @@
         },
         {
             "id": "brabantnoord",
+            "workspace": "dbk",
             "titel": "Brabant Noord",
             "omschrijving": "Veiligheidsregio Brabant Noord",
-            "safetymaps_url": "/geoserver/brabantnoord/wms?",
+            "safetymaps_url": "gs2/dbk/wms?",
             "gebied": {
                 "geometry": {
                     "type": "Point",

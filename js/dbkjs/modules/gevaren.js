@@ -22,7 +22,7 @@ dbkjs.modules.gevaren = {
         var _obj = dbkjs.modules.gevaren;
         var cql_filter = "";
         if (typeof(dbk_id) !== "undefined") {
-            cql_filter = "DBK_ID=" + dbk_id;
+            cql_filter = "dbkfeature_id=" + dbk_id;
             _obj.layer.mergeNewParams({'CQL_FILTER': cql_filter});
         } else {
             delete _obj.layer.params.CQL_FILTER;
@@ -39,7 +39,7 @@ dbkjs.modules.gevaren = {
         _obj.layer = new OpenLayers.Layer.WMS(
             "Onderkende gevaren en inzetbijzonderheden", 
             _obj.url, {
-                layers: this.namespace + ':WFS_tblGevaarlijk_Stoffen', 
+                layers: this.namespace + ':WMS_GevaarlijkeStof', 
                 format: 'image/png', 
                 transparent: true
             }, {

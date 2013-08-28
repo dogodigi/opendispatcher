@@ -15,7 +15,7 @@ dbkjs.options = {
     projection: {
         code: "EPSG:28992",
         coordinates: {
-            numdigits: 0
+            numDigits: 0
         }
     }
 };
@@ -167,7 +167,7 @@ dbkjs.init = function() {
                     }
                 }
             });
-            dbkjs.challengeAuth(dbkjs.options.regio.id);
+            dbkjs.challengeAuth();
 
         }
     });
@@ -197,15 +197,15 @@ dbkjs.init = function() {
         //check if the naviHis has any content
         if (dbkjs.naviHis.nextStack.length > 0) {
             //enable next button
-            $('#c_next').removeClass('disabled');
+            $('#zoom_next').removeClass('disabled');
         } else {
-            $('#c_next').addClass('disabled');
+            $('#zoom_next').addClass('disabled');
         }
         if (dbkjs.naviHis.previousStack.length > 1) {
             //enable previous button
-            $('#c_prev').removeClass('disabled');
+            $('#zoom_prev').removeClass('disabled');
         } else {
-            $('#c_prev').addClass('disabled');
+            $('#zoom_prev').addClass('disabled');
         }
     });
     dbkjs.toggleBaseLayer(0);
@@ -214,6 +214,11 @@ dbkjs.init = function() {
         size: new OpenLayers.Size(180, 180)
     });
     dbkjs.map.addControl(dbkjs.overview);
+    dbkjs.map.addControl(new OpenLayers.Control.Zoom({
+            zoomInId: "zoom_in",
+            zoomOutId: "zoom_out"
+        })
+    );
 };
 
 /**
@@ -240,23 +245,23 @@ dbkjs.activateClick = function() {
     dbkjs.map.events.register('touchend', dbkjs.map, dbkjs.util.onClick);
 };
 
-dbkjs.challengeAuth = function(region) {
+dbkjs.challengeAuth = function() {
     $.ajax({
         //perform a dummy request to trigger authentication
-        url: "geoserver/" + region + "/wms?layers=" + region + ":WFS_tblUitrukroute&styles=&bbox=0,0,1,1&width=1&height=1&srs=" + dbkjs.options.projection.code + "&format=image/png",
+        url: dbkjs.options.regio.safetymaps_url + "layers=" + dbkjs.options.regio.workspace + ":WMS_TekstObject&styles=&bbox=0,0,1,1&width=1&height=1&srs=" + dbkjs.options.projection.code + "&format=image/png",
         data: {"service": "wms", "version": "1.3.0", "request": "GetMap"},
         method: 'GET',
         error: function(jqXHR, textStatus, errorThrown) {
             //@TODO what to do when auth fails?
         },
         success: function() {
-            dbkjs.successAuth(region);
+            dbkjs.successAuth();
         }
 
     });
 };
 
-dbkjs.successAuth = function(region) {
+dbkjs.successAuth = function() {
     //zoek de dbk op wanneer de variabele dbk gevuld is.
     //Geef de dbk door als filter
     //zoom naar de juiste dbk!
@@ -275,9 +280,12 @@ dbkjs.successAuth = function(region) {
     //register modules
     $.each(dbkjs.modules, function(mod_index, module) {
         if (module.register) {
-            module.register({namespace: dbkjs.options.regio.id, url: dbkjs.options.regio.safetymaps_url, visible: true});
+            module.register({namespace: dbkjs.options.regio.workspace, url: dbkjs.options.regio.safetymaps_url, visible: true});
         }
     });
+    if(dbkjs.ui.gui){
+        dbkjs.ui.gui.activate();
+    }
     dbkjs.activateClick();
 };
 

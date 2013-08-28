@@ -41,18 +41,24 @@ dbkjs.modules.gemeente = {
                 var gem_li = $('<li><a href="#gem_0">' + _obj.features[0].attributes.naam + '</a></li>');
                 gem_li.click(function() {
                     var n = parseInt($(this).children('a:first').attr('href').replace("#gem_", ""));
-                    $('#geselecteerd_gebied').html(_obj.features[n].attributes.naam);
+                    $('#geselecteerde_gemeente').html(_obj.features[n].attributes.naam);
                     var bounds = _obj.features[n].geometry.getBounds().clone();
                     dbkjs.map.zoomToExtent(bounds, false);
                 });
                 _obj.ul.append(gem_li);
+                if(dbkjs.modules.care){
+                    dbkjs.modules.care.updateSelection(_obj.features[0].attributes.naam);
+                }
                 for (var i = 1; i < _obj.features.length; i++) {
                     _obj.bounds.extend(_obj.features[i].geometry.getBounds());
                     gem_li = $('<li><a href="#gem_' + i + '">' + _obj.features[i].attributes.naam + '</a></li>');
                     _obj.ul.append(gem_li);
+                    if(dbkjs.modules.care){
+                        dbkjs.modules.care.updateSelection(_obj.features[i].attributes.naam);
+                    }
                     gem_li.click(function() {
                         var n = parseInt($(this).children('a:first').attr('href').replace("#gem_", ""));
-                        $('#geselecteerd_gebied').html(_obj.features[n].attributes.naam);
+                        $('#geselecteerde_gemeente').html(_obj.features[n].attributes.naam);
                         var bounds = _obj.features[n].geometry.getBounds().clone();
                         dbkjs.map.zoomToExtent(bounds, false);
                     });
@@ -62,11 +68,12 @@ dbkjs.modules.gemeente = {
                 _obj.ul.append(regio_li);
                 regio_li.click(function() {
                     dbkjs.map.zoomToExtent(_obj.bounds, false);
-                    $('#geselecteerd_gebied').html(_obj.features[0].attributes.district);
+                    $('#geselecteerde_gemeente').html(_obj.features[0].attributes.district);
                     _obj.ul = _obj.ul.detach();
-                    $('#gebied_selectie').append(dbkjs.modules.district.ul);
+                    $('#district_selectie').hide();
+                    $('#regio_selectie').show();
                 });
-                //$('#gebied_selectie').append(dbkjs.modules.district.ul);
+                $('#district_selectie').append(_obj.ul);
             },
             error: function() {
                 return false;

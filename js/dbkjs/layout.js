@@ -5,16 +5,24 @@
  * This module depends on dbkjs, jQuery and OpenLayers
  * 
  */
-$('#c_prev').click(function() {
+$('#zoom_prev').click(function() {
     dbkjs.naviHis.previousTrigger();
 });
-$('#c_next').click(function() {
+$('#zoom_next').click(function() {
     dbkjs.naviHis.nextTrigger();
 });
-$('#search_input').click(
-    function() {
-        $(this).val('');
+
+$('#zoom_extent').click(function() {
+    if (dbkjs.modules.regio) {
+        dbkjs.modules.regio.zoomExtent();
+    } else {
+        dbkjs.map.zoomToMaxExtent();
     }
+});
+$('#search_input').click(
+        function() {
+            $(this).val('');
+        }
 );
 
 $('div.btn-group ul.dropdown-menu li a').click(function(e) {
