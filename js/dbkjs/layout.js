@@ -54,11 +54,11 @@ $('div.btn-group ul.dropdown-menu li a').click(function(e) {
     } else if ($(this).text() === " DBK") {
         mbtn.html('<i class="icon-building"></i>');
         minp.attr("placeholder", "zoek dbk");
-        dbkfeature.search_dbk();
+        dbkjs.modules.feature.search_dbk();
     } else if ($(this).text() === " OMS") {
         mbtn.html('<i class="icon-bell"></i>');
         minp.attr("placeholder", "zoek oms");
-        dbkfeature.search_oms();
+        dbkjs.modules.feature.search_oms();
     }
     mdiv.removeClass('open');
     mdiv.removeClass('active');

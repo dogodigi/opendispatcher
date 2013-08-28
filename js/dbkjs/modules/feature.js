@@ -434,7 +434,7 @@ dbkjs.modules.feature = {
         var _obj = dbkjs.modules.feature;
         var dbk_naam_array = [];
 
-        $.each(_obj, function(key, value) {
+        $.each(_obj.features, function(key, value) {
             //alert(value.properties.formelenaam + ' (' + value.properties.identificatie_id + ')');
             if (!dbkjs.util.isJsonNull(value.attributes.OMSnummer)) {
                 dbk_naam_array.push({
