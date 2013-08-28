@@ -163,28 +163,26 @@ dbkjs.modules.bag = {
         });
     },
     featureInfohtml: function(feature) {
-        var ret_title = $('<table></table>');
+        var ret_title = $('<div class="tab-pane active" id="collapse_algemeen_' + feature.id + '"></div>');
+        var ret_table_div = $('<div class="table-responsive"></div>');
+        var ret_table = $('<table class="table table-hover"></table>');
+        ret_table.append('<tr><th>veld</th><th>waarde</th></tr>');
         for (var j in feature.attributes) {
             if ($.inArray(j, ['identificatie', 'bouwjaar', 'status', 'gebruiksdoel', 'aantal_verblijfsobjecten', 'oppervlakte', 'openbare_ruimte',
                 'huisnummer', 'huisletter', 'toevoeging', 'postcode', 'woonplaats']) > -1) {
                 if (!dbkjs.util.isJsonNull(feature.attributes[j])) {
-                    ret_title.append('<tr><td><span class="infofieldtitle">' + j + "</span>: </td><td>" + feature.attributes[j] + "</td></tr>");
+                    ret_table.append('<tr><td>' + j + "</td><td>" + feature.attributes[j] + "</td></tr>");
                 }
             }
         }
+        ret_table_div.append(ret_table);
+        ret_title.append(ret_table_div);
         return ret_title;
     },
     getfeatureinfo: function(e) {
         var _obj = dbkjs.modules.bag;
         if (typeof(e.feature) !== "undefined") {
-            if ($('#baginfo').length === 0) {
-                $('#infopanel_b').append('<div id="baginfo" class="tab-content"><h2>BAG gegevens</h2></div>');
-            }
-            var mybaginfo = $('#baginfo');
-            var mytable = $('<table></table>');
-            mytable.append(_obj.featureInfohtml(e.feature));
-            mybaginfo.append(mytable);
-
+            $('#infopanel').append(_obj.featureInfohtml(e.feature));
             $('#infopanel').toggle(true);
         } else {
             _obj.pand_layer.destroyFeatures();
