@@ -404,9 +404,8 @@ dbkjs.modules.feature = {
         var dbk_naam_array = [];
 
         $.each(_obj.features, function(key, value) {
-            //alert(value.properties.formelenaam + ' (' + value.properties.identificatie_id + ')');
             dbk_naam_array.push({
-                value: value.attributes.formelenaam + ' ' + value.attributes.identificatie_id,
+                value: value.attributes.formelenaam,
                 geometry: value.geometry,
                 id: value.attributes.id
             });
@@ -437,7 +436,7 @@ dbkjs.modules.feature = {
 
         $.each(_obj, function(key, value) {
             //alert(value.properties.formelenaam + ' (' + value.properties.identificatie_id + ')');
-            if (!isJsonNull(value.attributes.OMSnummer)) {
+            if (!dbkjs.util.isJsonNull(value.attributes.OMSnummer)) {
                 dbk_naam_array.push({
                     value: '' + value.attributes.OMSnummer + ' - ' + value.attributes.formelenaam,
                     geometry: value.geometry,

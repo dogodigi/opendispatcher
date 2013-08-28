@@ -47,7 +47,6 @@ dbkjs.protocol.imdbk21 = {
                 if (xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]) {
                     _obj.feature.div = $('<div class="tabbable"></div>');
                     if (_obj.constructAlgemeen(xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"])) {
-                        _obj.constructAdres(xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:adres"]);
                         _obj.constructBijzonderheid(
                                 xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:bijzonderheid"]
                                 );
@@ -73,7 +72,7 @@ dbkjs.protocol.imdbk21 = {
     },
     constructRow: function(val, caption) {
         if (!dbkjs.util.isJsonNull(val)) {
-            var output = '<div class="row">' + '<div class="col-xs-3">' + caption + '</div><div class="col-xs-9">' + val + '</div>' + '</div>';
+            var output = '<tr><td>' + caption + '</td><td>' + val + '</td></tr>';
             return output;
         } else {
             return '';
@@ -84,15 +83,22 @@ dbkjs.protocol.imdbk21 = {
         /** Algemene dbk info **/
         if (DBKObject) {
             var formelenaam = DBKObject["dbk:formeleNaam"].value;
-            var informelenaam = DBKObject["dbk:informeleNaam"].value;
-            $("#infopanel_h").html('<span class="h4">' + formelenaam + '</span><span class="h5">&nbsp;' + informelenaam + '</span>');
+            $("#infopanel_h").html('<span class="h4">' + formelenaam + '</span>');
             var controledatum = '<span class="label label-warning">Niet bekend</span>';
             var bhvaanwezig = '<span class="label label-warning">Geen BHV aanwezig of onbekend</span>';
+            var informelenaam = '';
+            var woonplaatsnaam = '';
+            var postcode = '';
+            var huisnummer = '';
+            var openbareruimtenaam = '';
             var omsnummer = '';
             var gebruikstype = '';
             var bouwlaag = '';
             var laagste;
             var hoogste;
+            if (DBKObject["dbk:informeleNaam"]) {
+                informelenaam = DBKObject["dbk:informeleNaam"].value;
+            }
             if (DBKObject["dbk:controleDatum"]) {
                 controledatum = DBKObject["dbk:controleDatum"].value;
             }
@@ -120,18 +126,81 @@ dbkjs.protocol.imdbk21 = {
             } else if (hoogste && !laagste) {
                 bouwlaag = 'Hoogste bouwlaag: ' + hoogste + '';
             }
-            _obj.panel_algemeen = $('<div class="tab-pane active" id="collapse_algemeen_' + _obj.feature.id + '">' +
-                    _obj.constructRow(controledatum, 'Controledatum') +
-                    _obj.constructRow(bhvaanwezig, 'BHV') +
-                    _obj.constructRow(omsnummer, 'OMS nummer') +
-                    _obj.constructRow(gebruikstype, 'Gebruik') +
-                    _obj.constructRow(bouwlaag, 'Bouwlagen') +
-                    '</div>');
-            _obj.panel_group.html(_obj.panel_algemeen);
-            _obj.panel_tabs.html('<li class="active"><a data-toggle="tab" href="#collapse_algemeen_' + _obj.feature.id + '">Algemeen</a></li>');
-            return true;
-        } else {
-            return false;
+            _obj.panel_algemeen = $('<div class="tab-pane active" id="collapse_algemeen_' + _obj.feature.id + '"></div>');
+            var algemeen_table_div = $('<div class="table-responsive"></div>');
+            var algemeen_table = $('<table class="table table-hover"></table>');
+            algemeen_table.append(_obj.constructRow(informelenaam, 'Informele naam'));
+            algemeen_table.append(_obj.constructRow(controledatum, 'Controledatum'));
+            algemeen_table.append(_obj.constructRow(bhvaanwezig, 'BHV'));
+            algemeen_table.append(_obj.constructRow(omsnummer, 'OMS nummer'));
+            algemeen_table.append(_obj.constructRow(gebruikstype, 'Gebruik'));
+            algemeen_table.append(_obj.constructRow(bouwlaag, 'Bouwlagen'));
+            var adres = DBKObject["dbk:adres"];
+            if (adres) {
+                //var adres_div = $('<div class="tab-pane" id="collapse_adres_' + _obj.feature.id + '"></div>');\
+
+                if (adres["dbk:Adres"]) {
+                    var temp = adres;
+                    adres = [];
+                    adres.push(temp);
+                }
+                $.each(adres, function(adres_index, waarde) {
+                    var adres_row = $('<tr></tr>');
+                    var adres_div = $('<td></td>');
+                    var bag_div = $('<td></td>');
+                    if (waarde["dbk:Adres"]["dbk:huisnummer"]) {
+                        huisnummer = waarde["dbk:Adres"]["dbk:huisnummer"].value;
+                    }
+                    if (waarde["dbk:Adres"]["dbk:postcode"]) {
+                        postcode = waarde["dbk:Adres"]["dbk:postcode"].value;
+                    }
+                    if (waarde["dbk:Adres"]["dbk:woonplaatsNaam"]) {
+                        woonplaatsnaam = waarde["dbk:Adres"]["dbk:woonplaatsNaam"].value;
+                    }
+                    if (waarde["dbk:Adres"]["dbk:openbareRuimteNaam"]) {
+                        openbareruimtenaam = waarde["dbk:Adres"]["dbk:openbareRuimteNaam"].value;
+                    }
+                    adres_div.append('' +
+                            openbareruimtenaam + ' ' + huisnummer + '<br/>' +
+                            woonplaatsnaam + ' ' + postcode +
+                            '');
+                    if (waarde["dbk:Adres"]["dbk:bagId"]) {
+                        var bag_p = $('<p></p>');
+                        var bag_button = $('<button type="button" class="btn btn-primary">BAG raadplegen</button>')
+                        bag_p.append(bag_button);
+                        bag_button.click(function() {
+                            if (dbkjs.modules.bag) {
+                                dbkjs.modules.bag.getVBO(waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value, function(result) {
+                                    if (result.length === 0) {
+                                        $('#collapse_algemeen_' + _obj.feature.id).append(
+                                                '<div class="alert alert-warning">' +
+                                                '<strong>Mislukt!</strong>' +
+                                                ' verblijfsobject ' + waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value + ' niet gevonden.' +
+                                                '</div>'
+                                                );
+                                    } else {
+
+                                    }
+
+                                });
+                            } else {
+                                alert(waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value);
+                            }
+                        });
+                        bag_div.append(bag_p);
+                    }
+                    adres_row.append(adres_div);
+                    adres_row.append(bag_div);
+                    algemeen_table.append(adres_row);
+                });
+                algemeen_table_div.append(algemeen_table);
+                _obj.panel_algemeen.append(algemeen_table_div);
+                _obj.panel_group.html(_obj.panel_algemeen);
+                _obj.panel_tabs.html('<li class="active"><a data-toggle="tab" href="#collapse_algemeen_' + _obj.feature.id + '">Algemeen</a></li>');
+                return true;
+            } else {
+                return false;
+            }
         }
     },
     constructBijzonderheid: function(bijzonderheid) {
@@ -139,78 +208,28 @@ dbkjs.protocol.imdbk21 = {
         if (bijzonderheid) {
             var bijzonderheid_div = $('<div class="tab-pane" id="collapse_bijzonderheid_' + _obj.feature.id + '"></div>');
             if (bijzonderheid["dbk:Bijzonderheid"]) {
-                bijzonderheid_div.append(
-                        //bijzonderheid["dbk:Bijzonderheid"]["dbk:volgnummer"].value + '. ' + 
-                        '<h4>' + bijzonderheid["dbk:Bijzonderheid"]["dbk:soort"].value + '</h4><p>' +
-                        bijzonderheid["dbk:Bijzonderheid"]["dbk:tekst"].value + '</p>');
-            } else {
-                var bijzonderheid_ul = $('<ul></ul>');
-                $.each(bijzonderheid, function(bijzonderheid_index, waarde) {
-                    bijzonderheid_ul.append('<li>' +
-                            //waarde["dbk:Bijzonderheid"]["dbk:volgnummer"].value + '. ' + 
-                            '<i>' + waarde["dbk:Bijzonderheid"]["dbk:soort"].value + ' - </i> ' +
-                            waarde["dbk:Bijzonderheid"]["dbk:tekst"].value +
-                            '</li>');
-                });
-                bijzonderheid_div.append(bijzonderheid_ul);
+                var temp = bijzonderheid;
+                bijzonderheid = [];
+                bijzonderheid.push(temp);
             }
+            var bijzonderheid_table_div = $('<div class="table-responsive"></div>');
+            var bijzonderheid_table = $('<table class="table table-hover"></table>');
+            bijzonderheid_table.append('<tr><th>#</th><th>soort</th><th>informatie</th></tr>');
+            $.each(bijzonderheid, function(bijzonderheid_index, waarde) {
+                bijzonderheid_table.append(
+                        '<tr>' +
+                        '<td>' + waarde["dbk:Bijzonderheid"]["dbk:volgnummer"].value + '</td>' +
+                        '<td>' + waarde["dbk:Bijzonderheid"]["dbk:soort"].value + '</td>' +
+                        '<td>' + waarde["dbk:Bijzonderheid"]["dbk:tekst"].value + '</td>'
+                        + '</tr>'
+                        );
+            });
+            bijzonderheid_table_div.append(bijzonderheid_table);
+            bijzonderheid_div.append(bijzonderheid_table_div);
             _obj.panel_group.append(bijzonderheid_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_bijzonderheid_' + _obj.feature.id + '">Bijzonderheden</a></li>');
         } else {
             _obj.panel_tabs.append('<li class="disabled"><a href="#collapse_bijzonderheid_' + _obj.feature.id + '">Bijzonderheden</a></li>');
-        }
-    },
-    constructAdres: function(adres) {
-        var _obj = dbkjs.protocol.imdbk21;
-        var huisnummer = '';
-        var openbareruimtenaam = '';
-        var postcode = '';
-        var woonplaatsnaam = '';
-        if (adres) {
-            //var adres_div = $('<div class="tab-pane" id="collapse_adres_' + _obj.feature.id + '"></div>');\
-            var adres_row = $('<div class="row"></div>');
-            var adres_div = $('<div class="col-xs-12"></div>');
-            if (adres["dbk:Adres"]) {
-                if (adres["dbk:Adres"]["dbk:huisnummer"]) {
-                    huisnummer = adres["dbk:Adres"]["dbk:huisnummer"].value;
-                }
-                if (adres["dbk:Adres"]["dbk:postcode"]) {
-                    postcode = adres["dbk:Adres"]["dbk:postcode"].value;
-                }
-                if (adres["dbk:Adres"]["dbk:woonplaatsNaam"]) {
-                    woonplaatsnaam = adres["dbk:Adres"]["dbk:woonplaatsNaam"].value;
-                }
-                if (adres["dbk:Adres"]["dbk:openbareRuimteNaam"]) {
-                    openbareruimtenaam = adres["dbk:Adres"]["dbk:openbareRuimteNaam"].value;
-                }
-                adres_div.append(
-                        openbareruimtenaam + ' ' + huisnummer + '<br/>' +
-                        woonplaatsnaam + ' ' + postcode
-                        );
-            } else {
-                var adres_ul = $('<ul></ul>');
-                $.each(adres, function(adres_index, waarde) {
-                    if (adres["dbk:Adres"]["dbk:huisnummer"]) {
-                        huisnummer = waarde["dbk:Adres"]["dbk:huisnummer"].value;
-                    }
-                    if (adres["dbk:Adres"]["dbk:postcode"]) {
-                        postcode = waarde["dbk:Adres"]["dbk:postcode"].value;
-                    }
-                    if (adres["dbk:Adres"]["dbk:woonplaatsNaam"]) {
-                        woonplaatsnaam = waarde["dbk:Adres"]["dbk:woonplaatsNaam"].value;
-                    }
-                    if (adres["dbk:Adres"]["dbk:openbareRuimteNaam"]) {
-                        openbareruimtenaam = waarde["dbk:Adres"]["dbk:openbareRuimteNaam"].value;
-                    }
-                    adres_ul.append('<li>' +
-                            openbareruimtenaam + ' ' + huisnummer + '<br/>' +
-                            woonplaatsnaam + ' ' + postcode +
-                            '</li>');
-                });
-            }
-            adres_div.append(adres_ul);
-            adres_row.append(adres_div);
-            _obj.panel_algemeen.append(adres_row);
         }
     },
     constructMedia: function(foto) {
@@ -219,29 +238,31 @@ dbkjs.protocol.imdbk21 = {
             var foto_div = $('<div class="tab-pane" id="collapse_foto_' + _obj.feature.id + '"></div>');
             var image_carousel = $('<div id="carousel_foto_' + _obj.feature.id + '" class="carousel slide" data-interval="false"></div>');
             var image_carousel_inner = $('<div class="carousel-inner"></div>');
+            //if (foto["dbk:Foto"]) {
             if (foto["dbk:Foto"]) {
-                var url = foto["dbk:Foto"]["dbk:URL"].value;
-                image_carousel_inner.append('<div class="item active"><img src="' + url + '"><div class="carousel-caption">' + foto["dbk:Foto"]["dbk:naam"].value) + '</div></div>';
-                image_carousel.append(image_carousel_inner);
-            } else {
-                var image_carousel_nav = $('<ol class="carousel-indicators"></ol>');
-                $.each(foto, function(foto_index, waarde) {
-                    var url = waarde["dbk:Foto"]["dbk:URL"].value;
-                    if (foto_index === 0) {
-                        active = 'active';
-                    } else {
-                        active = '';
-                    }
-                    image_carousel_inner.append('<div class="item ' + active + '"><img src="' + url + '"><div class="carousel-caption">' + waarde["dbk:Foto"]["dbk:naam"].value) + '</div></div>';
-                    image_carousel_nav.append('<li data-target="#carousel_foto_' + _obj.feature.id + '" data-slide-to="' + foto_index + '" class="' + active + '"></li>');
-                });
-                image_carousel.append(image_carousel_nav);
-                image_carousel.append(image_carousel_inner);
-                image_carousel.append('<a class="left carousel-control" href="#carousel_foto_' + _obj.feature.id + '" data-slide="prev">' +
-                        '<span class="icon-prev"></span></a>');
-                image_carousel.append('<a class="right carousel-control" href="#carousel_foto_' + _obj.feature.id + '" data-slide="next">' +
-                        '<span class="icon-next"></span></a>');
+                var temp = foto;
+                foto = [];
+                foto.push(temp);
             }
+
+            var image_carousel_nav = $('<ol class="carousel-indicators"></ol>');
+            $.each(foto, function(foto_index, waarde) {
+                var url = waarde["dbk:Foto"]["dbk:URL"].value;
+                if (foto_index === 0) {
+                    active = 'active';
+                } else {
+                    active = '';
+                }
+                image_carousel_inner.append('<div class="item ' + active + '"><img src="' + url + '"><div class="carousel-caption">' + waarde["dbk:Foto"]["dbk:naam"].value) + '</div></div>';
+                image_carousel_nav.append('<li data-target="#carousel_foto_' + _obj.feature.id + '" data-slide-to="' + foto_index + '" class="' + active + '"></li>');
+            });
+            image_carousel.append(image_carousel_nav);
+            image_carousel.append(image_carousel_inner);
+            image_carousel.append('<a class="left carousel-control" href="#carousel_foto_' + _obj.feature.id + '" data-slide="prev">' +
+                    '<span class="icon-prev"></span></a>');
+            image_carousel.append('<a class="right carousel-control" href="#carousel_foto_' + _obj.feature.id + '" data-slide="next">' +
+                    '<span class="icon-next"></span></a>');
+
             foto_div.append(image_carousel);
             _obj.panel_group.append(foto_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_foto_' + _obj.feature.id + '">Media</a></li>');
@@ -253,23 +274,25 @@ dbkjs.protocol.imdbk21 = {
         var _obj = dbkjs.protocol.imdbk21;
         if (verblijf) {
             var verblijf_div = $('<div class="tab-pane" id="collapse_verblijf_' + _obj.feature.id + '"></div>');
+            //if (verblijf["dbk:AantalPersonen"]) {
             if (verblijf["dbk:AantalPersonen"]) {
-                verblijf_div.append(verblijf["dbk:AantalPersonen"]["dbk:tijdvakBegintijd"].value.replace(":00Z", '').replace('Z', '') + ' tot ' +
-                        verblijf["dbk:AantalPersonen"]["dbk:tijdvakEindtijd"].value.replace(":00Z", '').replace('Z', '') + ' ' +
-                        verblijf["dbk:AantalPersonen"]["dbk:aantal"].value + ' ' +
-                        verblijf["dbk:AantalPersonen"]["dbk:typeAanwezigheidsgroep"].value);
-            } else {
-                var verblijf_ul = $('<ul></ul>');
-                $.each(verblijf, function(verblijf_index, waarde) {
-                    verblijf_ul.append('<li>' +
-                            waarde["dbk:AantalPersonen"]["dbk:tijdvakBegintijd"].value.replace(":00Z", '').replace('Z', '') + ' tot ' +
-                            waarde["dbk:AantalPersonen"]["dbk:tijdvakEindtijd"].value.replace(":00Z", '').replace('Z', '') + ' ' +
-                            waarde["dbk:AantalPersonen"]["dbk:aantal"].value + ' ' +
-                            waarde["dbk:AantalPersonen"]["dbk:typeAanwezigheidsgroep"].value +
-                            '</li>');
-                });
-                verblijf_div.append(verblijf_ul);
+                var temp = verblijf;
+                verblijf = [];
+                verblijf.push(temp);
             }
+            var verblijf_table_div = $('<div class="table-responsive"></div>');
+            var verblijf_table = $('<table class="table table-hover"></table>');
+            verblijf_table.append('<tr><th>van</th><th>tot</th><th>aantal</th><th>groep</th></tr>');
+            $.each(verblijf, function(verblijf_index, waarde) {
+                verblijf_table.append('<tr>' +
+                        '<td>' + waarde["dbk:AantalPersonen"]["dbk:tijdvakBegintijd"].value.replace(":00Z", '').replace('Z', '') + '</td>' +
+                        '<td>' + waarde["dbk:AantalPersonen"]["dbk:tijdvakEindtijd"].value.replace(":00Z", '').replace('Z', '') + '</td>' +
+                        '<td>' + waarde["dbk:AantalPersonen"]["dbk:aantal"].value + '</td>' +
+                        '<td>' + waarde["dbk:AantalPersonen"]["dbk:typeAanwezigheidsgroep"].value + '</td>' +
+                        '</tr>');
+            });
+            verblijf_table_div.append(verblijf_table);
+            verblijf_div.append(verblijf_table_div);
             _obj.panel_group.append(verblijf_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_verblijf_' + _obj.feature.id + '">Verblijf</a></li>');
         } else {
@@ -282,9 +305,12 @@ dbkjs.protocol.imdbk21 = {
             version: '2.0',
             typename: 'dbk:DBKObject',
             outputFormat: 'gml32',
-            featureID: 'DBKObject.' + id
+            featureID: 'DBKObject.' + id,
         };
-        OpenLayers.Request.GET({url: dbkjs.protocol.imdbk21.url, "params": params, callback: dbkjs.protocol.imdbk21.info});
+        OpenLayers.Request.GET({
+            url: dbkjs.protocol.imdbk21.url,
+            //url: 'http://dbk.mapcache.nl/data/DBKObject_1371547912.xml', 
+            "params": params, callback: dbkjs.protocol.imdbk21.info});
     },
     getGebied: function(id) {
         var params = {

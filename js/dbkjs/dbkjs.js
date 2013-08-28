@@ -278,7 +278,6 @@ dbkjs.successAuth = function(region) {
             module.register({namespace: dbkjs.options.regio.id, url: dbkjs.options.regio.safetymaps_url, visible: true});
         }
     });
-
     dbkjs.activateClick();
 };
 

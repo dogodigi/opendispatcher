@@ -123,7 +123,7 @@ dbkjs.modules.bag = {
             _obj.layer
         ]);
         dbkjs.map.setLayerIndex(_obj.layer, 0);
-        
+
         // vinkje op webpagina aan/uitzetten
         var dv_panel = $('<div class="panel"></div>');
         var dv_panel_heading = $('<div class="panel-heading"></div>');
@@ -137,7 +137,7 @@ dbkjs.modules.bag = {
         dv_panel.append(dv_panel_content);
         $('#overlaypanel_b').append(dv_panel);
         $('input[name="box_' + _obj.id + '"]').click(function() {
-            if($(this).is(':checked')) {
+            if ($(this).is(':checked')) {
                 _obj.layer.setVisibility(true);
             } else {
                 _obj.layer.setVisibility(false);
@@ -148,10 +148,10 @@ dbkjs.modules.bag = {
                 _obj.layer.setVisibility(false);
                 var bagpand_lyr = dbkjs.map.getLayersByName('BAG panden')[0];
                 var bagvbo_lyr = dbkjs.map.getLayersByName('BAG verblijfsobjecten')[0];
-                if (bagpand_lyr){
+                if (bagpand_lyr) {
                     dbkjs.map.removeLayer(bagpand_lyr);
                 }
-                if (bagvbo_lyr){
+                if (bagvbo_lyr) {
                     dbkjs.map.removeLayer(bagvbo_lyr);
                 }
                 $(this).removeClass('active');
@@ -167,7 +167,7 @@ dbkjs.modules.bag = {
         for (var j in feature.attributes) {
             if ($.inArray(j, ['identificatie', 'bouwjaar', 'status', 'gebruiksdoel', 'aantal_verblijfsobjecten', 'oppervlakte', 'openbare_ruimte',
                 'huisnummer', 'huisletter', 'toevoeging', 'postcode', 'woonplaats']) > -1) {
-                if (!isJsonNull(feature.attributes[j])) {
+                if (!dbkjs.util.isJsonNull(feature.attributes[j])) {
                     ret_title.append('<tr><td><span class="infofieldtitle">' + j + "</span>: </td><td>" + feature.attributes[j] + "</td></tr>");
                 }
             }
@@ -198,6 +198,33 @@ dbkjs.modules.bag = {
             _obj.pand_layer.refresh({force: true});
             return false;
         }
+    },
+    getVBO: function(bagvboid, callback) {
+
+        var verblijfsobjectprotocol = new OpenLayers.Protocol.WFS({
+            url: "/bag/wfs",
+            featurePrefix: 'bagviewer',
+            featureType: "verblijfsobject",
+            featureNS: "http://bagviewer.geonovum.nl",
+            geometryName: "geometrie",
+            srsName: "EPSG:28992",
+            outputFormat: 'json',
+            defaultFilter: null,
+            handleRead: function(response) {
+                var features = new OpenLayers.Format.GeoJSON().read(JSON.parse(response.priv.responseText));
+                //_obj.vbo_layer.addFeatures(features);
+                return callback(features);
+                //for (var feat in features) {
+                //    var e = {};
+                //    e.feature = features[feat];
+                //    _obj.getfeatureinfo(e);
+                //}
+            }
+        });
+        verblijfsobjectprotocol.read({filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "identificatie",
+                value: bagvboid})});
     },
     panel: function() {
         $('#infopanel_b').html('');

@@ -9,7 +9,7 @@ dbkjs.modules.updateFilter = function(id){
   });  
 };
 dbkjs.modules.search = {
-    register: function() {
+    activate: function() {
         $('#search_input').typeahead({
             name: 'address',
             remote: {
