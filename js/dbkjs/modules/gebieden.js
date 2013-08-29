@@ -22,7 +22,7 @@ dbkjs.modules.gebieden = {
         _obj.namespace = options.namespace || _obj.namespace;
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
-        _obj.layer = new OpenLayers.Layer.WMS("gebieden", 'http://geo.safetymaps.nl/map/mapserv',
+        _obj.layer = new OpenLayers.Layer.WMS("Grenzen", 'http://geo.safetymaps.nl/map/mapserv',
                 {map: '/home/mapserver/doiv.map' ,layers: 'gebieden', format: 'image/png', transparent: true},
         {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: _obj.visibility, attribution: "BRWBN"});
         dbkjs.map.addLayers([_obj.layer]);

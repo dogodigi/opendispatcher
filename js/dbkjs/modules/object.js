@@ -36,7 +36,7 @@ dbkjs.modules.object = {
         _obj.namespace = options.namespace || _obj.namespace;
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
-        _obj.layer = new OpenLayers.Layer.WMS("Objecten", _obj.url,
+        _obj.layer = new OpenLayers.Layer.WMS("DBK Objecten en Gebieden", _obj.url,
                 {layers: _obj.namespace + ':WMS_Pandgeometrie,'+ _obj.namespace + ':WMS_Gebied,' + _obj.namespace + ':WMS_ToegangTerrein', format: 'image/png', transparent: true},
         {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: _obj.visibility, attribution: "Falck", maxResolution: 6.71});
         dbkjs.map.addLayers([_obj.layer]);
@@ -55,6 +55,8 @@ dbkjs.modules.object = {
         '<div class="row"><div class="col-xs-2 text-center"><i class="icon-long-arrow-right" style="color:#00ff00;"></i></div><div class="col-xs-10"> Secundaire uitrukroutes</div></div>' +
         '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#82FA58;border:2px solid #00ff00;">&nbsp;</div></div><div class="col-xs-10"> Objecten</div></div>' +
         '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#ffffff;border:2px solid #FFFF00;">&nbsp;</div></div><div class="col-xs-10"> Objectcontouren (ver ingezoomd)</div></div>' +
+        '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#F7BE81;border:2px solid #B45F04;">&nbsp;</div></div><div class="col-xs-10"> Gebieden</div></div>' +
+        '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#ffffff;border:2px solid #B45F04;">&nbsp;</div></div><div class="col-xs-10"> Gebiedcontouren (ver ingezoomd)</div></div>' +
         '</p></div>');
         dv_panel.append(dv_panel_content);
         $('#overlaypanel_b').append(dv_panel);
