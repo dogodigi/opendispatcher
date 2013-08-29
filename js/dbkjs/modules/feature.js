@@ -301,19 +301,19 @@ dbkjs.modules.feature = {
             _search_field = 'id';
             _search_value = dbkjs.options.dbk;
         } else if (!dbkjs.util.isJsonNull(dbkjs.options.omsnummer)) {
-            _search_field = 'OMSnummer';
+            _search_field = 'OMSNummer';
             _search_value = dbkjs.options.omsnummer;
         }
 
         $.each(_obj.layer.features, function(fi, fv) {
             if (fv.cluster) {
                 $.each(fv.cluster, function(ci, cv) {
-                    if (cv.attributes[_search_field].toString() === _search_value) {
+                    if (cv.attributes[_search_field] === _search_value) {
                         feature = cv;
                     }
                 });
             } else {
-                if (fv.attributes[_search_field].toString() === _search_value) {
+                if (fv.attributes[_search_field] === _search_value) {
                     feature = fv;
                 }
             }

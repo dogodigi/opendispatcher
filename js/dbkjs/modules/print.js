@@ -35,35 +35,7 @@ dbkjs.modules.print = {
     dpi: null,
     layout: null,
     encoding: document.charset || document.characterSet || "UTF-8",
-    options: {
-        "title": "mapfish print",
-        "units": "degrees",
-        "srs": "EPSG:4326",
-        "layout": "A4 portrait",
-        "dpi": 300,
-        "layers": [
-            {
-                "baseURL": "http://demo.opengeo.org/geoserver/wms",
-                "opacity": 1,
-                "singleTile": false,
-                "type": "WMS",
-                "layers": [
-                    "ne:ne"
-                ],
-                "format": "image/png;"
-
-
-            }
-        ],
-        "pages": [
-            {
-                "title": "Mapfish Print",
-                "rotation": 0,
-                "mapTitle": "Mapfish Map",
-                "comment": "This is a Mapfish map."
-            }
-        ]
-    },
+    //{"units":"degrees","srs":"EPSG:4326","layout":"A4 portrait","dpi":75,"layers":[{"baseURL":"http://demo.opengeo.org/geoserver/wms","opacity":1,"singleTile":false,"type":"WMS","layers":["ne:ne"],"format":"image/jpeg","styles":[""],"customParams":{}},{"type":"Vector","styles":{"1":{"externalGraphic":"http://openlayers.org/dev/img/marker-blue.png","strokeColor":"red","fillColor":"red","fillOpacity":0.7,"strokeWidth":2,"pointRadius":12}},"styleProperty":"_gx_style","geoJson":{"type":"FeatureCollection","features":[{"type":"Feature","id":"OpenLayers.Feature.Vector_52","properties":{"_gx_style":1},"geometry":{"type":"Polygon","coordinates":[[[15,47],[16,48],[14,49],[15,47]]]}},{"type":"Feature","id":"OpenLayers.Feature.Vector_61","properties":{"_gx_style":1},"geometry":{"type":"LineString","coordinates":[[15,48],[16,47],[17,46]]}},{"type":"Feature","id":"OpenLayers.Feature.Vector_64","properties":{"_gx_style":1},"geometry":{"type":"Point","coordinates":[16,46]}}]},"name":"vector","opacity":1}],"pages":[{"center":[15.999999999998,48],"scale":4000000,"rotation":-17,"mapTitle":"A custom title","comment":"A custom comment"}]},
     timeout: 30000,
     setLayout: function(layout) {
         this.layout = layout;

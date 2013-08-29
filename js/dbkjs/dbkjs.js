@@ -140,14 +140,6 @@ dbkjs.init = function() {
     dbkjs.options.omsnummer = dbkjs.util.getQueryVariable('omsnummer');
     dbkjs.options.dbk = dbkjs.util.getQueryVariable('dbk');
 
-    if (typeof(dbkjs.options.adres) !== "undefined") {
-        //zoek het adres op en gebruik dit om in te zoomen.
-    }
-    if (typeof(dbkjs.options.omsnummer) !== "undefined") {
-        //zoek de oms op en gebruik dit om in te zoomen.
-
-    }
-
     $.getJSON('data/regios.json', function(data) {
         if (data.type === "regiocollectie") {
             $.each(data.regios, function(key, val) {
