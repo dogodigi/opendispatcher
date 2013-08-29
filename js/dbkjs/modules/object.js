@@ -23,7 +23,7 @@ dbkjs.modules.object = {
         var cql_filter = "";
         if(typeof(dbk_id) !== "undefined"){
             //de cql filter moet worden losgelaten op ALLE lagen voor de WMS request
-            cql_filter = "dbkfeature_id=" + dbk_id + ';dbkfeature_id=' + dbk_id;
+            cql_filter = "dbkfeature_id=" + dbk_id + ';dbkfeature_id=' + dbk_id + ';dbkfeature_id=' + dbk_id;
             _obj.layer.mergeNewParams({'CQL_FILTER': cql_filter });
         } else {
             delete _obj.layer.params.CQL_FILTER;
@@ -37,7 +37,7 @@ dbkjs.modules.object = {
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
         _obj.layer = new OpenLayers.Layer.WMS("Objecten", _obj.url,
-                {layers: _obj.namespace + ':WMS_Pandgeometrie,' + _obj.namespace + ':WMS_ToegangTerrein', format: 'image/png', transparent: true},
+                {layers: _obj.namespace + ':WMS_Pandgeometrie,'+ _obj.namespace + ':WMS_Gebied,' + _obj.namespace + ':WMS_ToegangTerrein', format: 'image/png', transparent: true},
         {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: _obj.visibility, attribution: "Falck", maxResolution: 6.71});
         dbkjs.map.addLayers([_obj.layer]);
 

@@ -37,24 +37,32 @@ dbkjs.modules.feature = {
             mygraphicheight: function(feature) {
                 if (feature.cluster) {
                     if (feature.cluster.length < 10) {
-                        return feature.cluster.length + 38;
+                        return feature.cluster.length + 64;
                     } else if (feature.cluster.length > 10) {
-                        return 49;
+                        return 65;
                     }
                 } else {
-                    return 38;
+                    if (feature.attributes.typeFeature === 'Object') {
+                        return 38;
+                    } else {
+                        return 65;
+                    }
                 }
 
             },
             mygraphicwidth: function(feature) {
                 if (feature.cluster) {
                     if (feature.cluster.length < 10) {
-                        return feature.cluster.length + 24;
+                        return feature.cluster.length + 84;
                     } else if (feature.cluster.length > 10) {
-                        return 35;
+                        return 85;
                     }
                 } else {
-                    return 24;
+                    if (feature.attributes.typeFeature === 'Object') {
+                        return 24;
+                    } else {
+                        return 85;
+                    }
                 }
             },
             myfontweight: function(feature) {
@@ -97,12 +105,12 @@ dbkjs.modules.feature = {
             },
             myicon: function(feature) {
                 if (feature.cluster) {
-                    return "images/building_1.png";
+                    return "images/jcartier_city_3.png";
                 } else {
-                    if (dbkjs.map.zoom < 10) {
-                        return "images/building_1.png";
+                    if (feature.attributes.typeFeature === 'Object') {
+                        return "images/jcartier_building_1.png";
                     } else {
-                        return "images/building_1.png";
+                        return "images/jcartier_event_1.png";
                     }
                 }
             },
@@ -160,24 +168,32 @@ dbkjs.modules.feature = {
             mygraphicheight: function(feature) {
                 if (feature.cluster) {
                     if (feature.cluster.length < 10) {
-                        return feature.cluster.length + 38;
+                        return feature.cluster.length + 64;
                     } else if (feature.cluster.length > 10) {
-                        return 49;
+                        return 65;
                     }
                 } else {
-                    return 38;
+                    if (feature.attributes.typeFeature === 'Object') {
+                        return 38;
+                    } else {
+                        return 65;
+                    }
                 }
 
             },
             mygraphicwidth: function(feature) {
                 if (feature.cluster) {
                     if (feature.cluster.length < 10) {
-                        return feature.cluster.length + 24;
+                        return feature.cluster.length + 84;
                     } else if (feature.cluster.length > 10) {
-                        return 35;
+                        return 85;
                     }
                 } else {
-                    return 24;
+                    if (feature.attributes.typeFeature === 'Object') {
+                        return 24;
+                    } else {
+                        return 85;
+                    }
                 }
             },
             myfontweight: function(feature) {
@@ -220,9 +236,13 @@ dbkjs.modules.feature = {
             },
             myicon: function(feature) {
                 if (feature.cluster) {
-                    return "images/building_1.png";
+                    return "images/jcartier_city_3.png";
                 } else {
-                    return "images/building_1.png";
+                    if (feature.attributes.typeFeature === 'Object') {
+                        return "images/jcartier_building_1.png";
+                    } else {
+                        return "images/jcartier_event_1.png";
+                    }
                 }
             },
             labelbackground: function(feature) {
@@ -320,7 +340,7 @@ dbkjs.modules.feature = {
             },
             strategies: [
                 new OpenLayers.Strategy.Cluster({
-                    distance: 60,
+                    distance: 100,
                     threshold: 2
                 })
             ],

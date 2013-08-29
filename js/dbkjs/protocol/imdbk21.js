@@ -246,15 +246,26 @@ dbkjs.protocol.imdbk21 = {
             }
             var bijzonderheid_table_div = $('<div class="table-responsive"></div>');
             var bijzonderheid_table = $('<table class="table table-hover"></table>');
-            bijzonderheid_table.append('<tr><th>#</th><th>soort</th><th>informatie</th></tr>');
+            bijzonderheid_table.append('<tr><th>soort</th><th>informatie</th></tr>');
+            var set = {
+                Algemeen: {titel: 'Algemeen', waarde: ''},
+                Preparatie: {titel: 'Preparatie', waarde: ''},
+                Preventie: {titel: 'Preventie', waarde: ''},
+                Repressie: {titel: 'Repressie', waarde: ''}
+            };
             $.each(bijzonderheid, function(bijzonderheid_index, waarde) {
-                bijzonderheid_table.append(
-                        '<tr>' +
-                        '<td>' + waarde["dbk:Bijzonderheid"]["dbk:volgnummer"].value + '</td>' +
-                        '<td>' + waarde["dbk:Bijzonderheid"]["dbk:soort"].value + '</td>' +
-                        '<td>' + waarde["dbk:Bijzonderheid"]["dbk:tekst"].value + '</td>'
-                        + '</tr>'
-                        );
+                var lu = waarde["dbk:Bijzonderheid"]["dbk:soort"].value;
+                set[lu].waarde += waarde["dbk:Bijzonderheid"]["dbk:tekst"].value + '<br>';
+            });
+            $.each(set, function(set_idx, set_entry) {
+                if (set_entry.waarde !== '') {
+                    bijzonderheid_table.append(
+                            '<tr>' +
+                            '<td>' + set_entry.titel + '</td>' +
+                            '<td>' + set_entry.waarde + '</td>' +
+                            +'</tr>'
+                            );
+                }
             });
             bijzonderheid_table_div.append(bijzonderheid_table);
             bijzonderheid_div.append(bijzonderheid_table_div);
@@ -293,7 +304,7 @@ dbkjs.protocol.imdbk21 = {
                 } else {
                     image_carousel_inner.append('<div class="item ' + active + '"><img src="' + url + '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' + naam + '</h3><p></p></div></div>');
                 }
-                
+
                 if (foto.length > 1) {
                     image_carousel_nav.append('<li data-target="#carousel_foto_' + _obj.feature.id + '" data-slide-to="' + foto_index + '" class="' + active + '"></li>');
                 }
