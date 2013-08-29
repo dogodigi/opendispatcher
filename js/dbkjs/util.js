@@ -17,7 +17,6 @@ dbkjs.util = {
             alert('layer niet gevonden (of meer dan 1)');
         }
     },
-            
     onClick: function(e) {
         $('#infopanel_b').html('');
         $('#infopanel_f').html('');
@@ -25,8 +24,8 @@ dbkjs.util = {
             $.each(dbkjs.modules, function(mod_index, module) {
                 if (typeof(module.layer) !== "undefined" && module.layer.visibility) {
                     // Controleer of het een van de dbk layers is waar op is geklikt.
-                    if (dbkjs.protocol) { 
-                        if(dbkjs.protocol.imdbk21) {
+                    if (dbkjs.protocol) {
+                        if (dbkjs.protocol.imdbk21) {
                             if ($.inArray(module.id, ["dbko", "dbkf", "dbkgev", "dbkprep", "dbkprev"]) !== -1) {
                                 dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
                             } else {
@@ -142,42 +141,49 @@ dbkjs.util = {
             return false;
         }
     },
+    mediaError: function(e) {
+        var msg = $($(e).parent().find('p')[0]);
+        if(msg){
+            msg.html('<a href="' + e.src + '">' + e.src + '</a><br>is geen geldige afbeelding');
+        }
+        e.src = "images/missing.gif";
+        e.onerror = "";
+        return true;
+    },
     exportTableToCSV: function($table, filename) {
         var $rows = $table.find('tr:has(td)'),
-            // Temporary delimiter characters unlikely to be typed by keyboard
-            // This is to avoid accidentally splitting the actual contents
-            tmpColDelim = String.fromCharCode(11), // vertical tab character
-            tmpRowDelim = String.fromCharCode(0), // null character
+                // Temporary delimiter characters unlikely to be typed by keyboard
+                // This is to avoid accidentally splitting the actual contents
+                tmpColDelim = String.fromCharCode(11), // vertical tab character
+                tmpRowDelim = String.fromCharCode(0), // null character
 
-            // actual delimiter characters for CSV format
-            colDelim = '","',
-            rowDelim = '"\r\n"',
-
-            // Grab text from table into CSV formatted string
-            csv = '"' + $rows.map(function (i, row) {
-                var $row = $(row),
+                // actual delimiter characters for CSV format
+                colDelim = '","',
+                rowDelim = '"\r\n"',
+                // Grab text from table into CSV formatted string
+                csv = '"' + $rows.map(function(i, row) {
+            var $row = $(row),
                     $cols = $row.find('td');
 
-                return $cols.map(function (j, col) {
-                    var $col = $(col),
+            return $cols.map(function(j, col) {
+                var $col = $(col),
                         text = $col.text();
 
-                    return text.replace('"', '""'); // escape double quotes
+                return text.replace('"', '""'); // escape double quotes
 
-                }).get().join(tmpColDelim);
+            }).get().join(tmpColDelim);
 
-            }).get().join(tmpRowDelim)
+        }).get().join(tmpRowDelim)
                 .split(tmpRowDelim).join(rowDelim)
                 .split(tmpColDelim).join(colDelim) + '"',
-
-            // Data URI
-            csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csv);
+                // Data URI
+                csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csv);
 
         $(this)
-            .attr({
+                .attr({
             'download': filename,
-                'href': csvData,
-                'target': '_blank'
+            'href': csvData,
+            'target': '_blank'
         });
     }
 };

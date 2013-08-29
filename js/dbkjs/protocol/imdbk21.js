@@ -280,6 +280,7 @@ dbkjs.protocol.imdbk21 = {
             var image_carousel_nav = $('<ol class="carousel-indicators"></ol>');
             $.each(foto, function(foto_index, waarde) {
                 var url = waarde["dbk:Foto"]["dbk:URL"].value;
+                var naam = waarde["dbk:Foto"]["dbk:naam"].value;
                 if (foto_index === 0) {
                     active = 'active';
                 } else {
@@ -290,8 +291,9 @@ dbkjs.protocol.imdbk21 = {
                 if (extension === "pdf" || extension === "doc" || extension === "docx") {
                     image_carousel_inner.append('<div class="item ' + active + '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + url + '" target="_blank"><h1><i class="icon-download icon-large"></h1></i></a><h3>' + waarde["dbk:Foto"]["dbk:naam"].value + '</h3><a href="' + url + '" target="_blank"><h2>Download bestand</h2></a></div></div>');
                 } else {
-                    image_carousel_inner.append('<div class="item ' + active + '"><img src="' + url + '"><div class="carousel-caption"><h3>' + waarde["dbk:Foto"]["dbk:naam"].value + '</h3></div></div>');
+                    image_carousel_inner.append('<div class="item ' + active + '"><img src="' + url + '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' + naam + '</h3><p></p></div></div>');
                 }
+                
                 if (foto.length > 1) {
                     image_carousel_nav.append('<li data-target="#carousel_foto_' + _obj.feature.id + '" data-slide-to="' + foto_index + '" class="' + active + '"></li>');
                 }
