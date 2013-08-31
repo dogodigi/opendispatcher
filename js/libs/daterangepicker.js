@@ -32,14 +32,15 @@
         this.applyClass = 'btn-success';
         this.cancelClass = 'btn-default';
 
-        this.format = 'MM/DD/YYYY';
-        this.separator = ' - ';
+        //this.format = 'MM/DD/YYYY';
+        this.format = 'YYYY-MM-DD';
+        this.separator = '/';
 
         this.locale = {
-            applyLabel: 'Apply',
-            cancelLabel: 'Cancel',
-            fromLabel: 'From',
-            toLabel: 'To',
+            applyLabel: 'OK',
+            cancelLabel: 'Annuleren',
+            fromLabel: 'Van',
+            toLabel: 'Tot',
             weekLabel: 'W',
             customRangeLabel: 'Custom Range',
             daysOfWeek: moment()._lang._weekdaysMin.slice(),
