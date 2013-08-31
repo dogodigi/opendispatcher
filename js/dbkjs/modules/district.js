@@ -44,7 +44,6 @@ dbkjs.modules.district = {
                     $('#geselecteerd_district').html(_obj.features[n].attributes.naam);
                     var bounds = _obj.features[n].geometry.getBounds().clone();
                     dbkjs.map.zoomToExtent(bounds, false);
-                    //_obj.ul = _obj.ul.detach();
                     $('#regio_selectie').hide();
                     $('#district_selectie').show();
                 });
@@ -58,8 +57,6 @@ dbkjs.modules.district = {
                         $('#geselecteerd_district').html(_obj.features[n].attributes.naam);
                         var bounds = _obj.features[n].geometry.getBounds().clone();
                         dbkjs.map.zoomToExtent(bounds, false);
-                        //_obj.ul = _obj.ul.detach();
-                        //$('#geselecteerd_gebied').append(dbkjs.modules.gemeente.ul);
                     });
                 }
                 _obj.ul.append('<li class="divider"></li>');

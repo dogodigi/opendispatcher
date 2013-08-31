@@ -295,37 +295,38 @@ dbkjs.modules.feature = {
     getActive: function() {
         var _obj = dbkjs.modules.feature;
         var feature;
-        var _search_field = 'id';
+        var _search_field = 'identificatie';
         var _search_value;
         if (!dbkjs.util.isJsonNull(dbkjs.options.dbk)) {
-            _search_field = 'id';
+            _search_field = 'identificatie';
             _search_value = dbkjs.options.dbk;
         } else if (!dbkjs.util.isJsonNull(dbkjs.options.omsnummer)) {
             _search_field = 'OMSNummer';
             _search_value = dbkjs.options.omsnummer;
         }
-
-        $.each(_obj.layer.features, function(fi, fv) {
-            if (fv.cluster) {
-                $.each(fv.cluster, function(ci, cv) {
-                    if (cv.attributes[_search_field] === _search_value) {
-                        feature = cv;
+        if (_search_value) {
+            $.each(_obj.layer.features, function(fi, fv) {
+                if (fv.cluster) {
+                    $.each(fv.cluster, function(ci, cv) {
+                        if (cv.attributes[_search_field].toString() === _search_value.toString()) {
+                            feature = cv;
+                        }
+                    });
+                } else {
+                    if (fv.attributes[_search_field].toString() === _search_value.toString()) {
+                        feature = fv;
                     }
-                });
-            } else {
-                if (fv.attributes[_search_field] === _search_value) {
-                    feature = fv;
                 }
-            }
-        });
+            });
 
-        if (feature) {
-            dbkjs.options.dbk = feature.attributes.id;
-            dbkjs.modules.updateFilter(dbkjs.options.dbk);
-            if (dbkjs.map.zoom < 13) {
-                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
-            } else {
-                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+            if (feature) {
+                dbkjs.options.dbk = feature.attributes.identificatie;
+                dbkjs.modules.updateFilter(dbkjs.options.dbk);
+                if (dbkjs.map.zoom < 13) {
+                    dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
+                } else {
+                    dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+                }
             }
         }
     },
@@ -407,8 +408,8 @@ dbkjs.modules.feature = {
         //ret_tr.append(ret_val);
 
         $(ret_title).click(function() {
-            dbkjs.options.dbk = feature.attributes.id;
-            dbkjs.modules.updateFilter(feature.attributes.id);
+            dbkjs.options.dbk = feature.attributes.identificatie;
+            dbkjs.modules.updateFilter(feature.attributes.identificatie);
             if (dbkjs.map.zoom < 13) {
                 dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
             } else {
@@ -427,19 +428,15 @@ dbkjs.modules.feature = {
             dbk_naam_array.push({
                 value: value.attributes.formeleNaam + ' ' + value.attributes.informeleNaam,
                 geometry: value.geometry,
-                id: value.attributes.id
+                id: value.attributes.identificatie
             });
         });
         $('#search_input').typeahead({
             name: 'dbk',
-            //prefetch: '../data/countries.json',
             local: dbk_naam_array,
             limit: 10
-                    //template: '<p class="repo-language">{{name}}&nbsp;<i>({{identificatie}})</i></p>',
         });
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
-            //console.log(obj);
-            //console.log(datum);
             dbkjs.options.dbk = datum.id;
             dbkjs.modules.updateFilter(datum.id);
 
@@ -460,20 +457,16 @@ dbkjs.modules.feature = {
                 dbk_naam_array.push({
                     value: value.attributes.OMSnummer + ' - ' + value.attributes.formeleNaam,
                     geometry: value.geometry,
-                    id: value.attributes.id
+                    id: value.attributes.identificatie
                 });
             }
         });
         $('#search_input').typeahead({
             name: 'oms',
-            //prefetch: '../data/countries.json',
             local: dbk_naam_array,
             limit: 10
-                    //template: '<p class="repo-language">{{name}}&nbsp;<i>({{identificatie}})</i></p>',
         });
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
-            //console.log(obj);
-            //console.log(datum);
             dbkjs.modules.updateFilter(datum.id);
 
             if (dbkjs.map.zoom < 13) {
@@ -484,8 +477,8 @@ dbkjs.modules.feature = {
         });
     },
     zoomToFeature: function(feature) {
-        dbkjs.options.dbk = feature.attributes.id;
-        dbkjs.modules.updateFilter(feature.attributes.id);
+        dbkjs.options.dbk = feature.attributes.identificatie;
+        dbkjs.modules.updateFilter(feature.attributes.identificatie);
         if (dbkjs.map.zoom < 13) {
             dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
         } else {
@@ -506,16 +499,11 @@ dbkjs.modules.feature = {
                     $("#Pagination").pagination(e.feature.cluster.length, {
                         items_per_page: 10,
                         callback: function(page_index, jq) {
-                            // Get number of elements per pagionation page from form
                             var items_per_page = 10;
                             var max_elem = Math.min((page_index + 1) * items_per_page, _obj.currentCluster.length);
-
-                            // Iterate through a selection of the content and build an HTML string
                             var item_ul = $('<ul class="nav nav-pills nav-stacked"></ul>');
                             $('#infopanel_b').html('');
-
-                            for (var i = page_index * items_per_page; i < max_elem; i++)
-                            {
+                            for (var i = page_index * items_per_page; i < max_elem; i++) {
                                 item_ul.append(_obj.featureInfohtml(_obj.currentCluster[i]));
                             }
                             $('#infopanel_b').append(item_ul);

@@ -84,7 +84,7 @@
             "workspace": "dbk",
             "titel": "Brabant Noord",
             "omschrijving": "Veiligheidsregio Brabant Noord",
-            "safetymaps_url": "gs2/dbk/wms?",
+            "safetymaps_url": "/imdbk/wms?",
             "gebied": {
                 "geometry": {
                     "type": "Point",

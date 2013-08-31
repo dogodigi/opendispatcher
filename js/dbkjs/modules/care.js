@@ -59,6 +59,7 @@ dbkjs.modules.care = {
         _obj.sel_array = [];
         _obj.sel_care = $('<input id="sel_care" name="sel_care" type="text" class="form-control" placeholder="Verfijn selectie">');
         dv_panel_body.append(_obj.sel_care);
+        _obj.sel_care.daterangepicker();
         dv_panel_content.append(dv_panel_body);
         dv_panel.append(dv_panel_content);
         $('#overlaypanel_b').append(dv_panel);

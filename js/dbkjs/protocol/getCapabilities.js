@@ -34,7 +34,7 @@ dbkjs.protocol.getCapabilities = {
 //                map.addLayer(layer);
                 // Here is result, do whatever you want with it
                 // @TODO do something with the result!
-                console.log(c);
+                //console.log(c);
             },
             failure: function(r) {
                 dbkjs.protocol.getCapabilities.onLayerLoadError();

@@ -113,8 +113,6 @@ dbkjs.modules.object = {
         if (features.length > 0) {
             html = '<div class="infocontent">';
             for (var feat in features) {
-                //html += "Feature: Geometry: "+ features[feat].geometry+",";
-                //map.zoomToExtent(features[feat].geometry.getBounds());
                 html += '<h2>Object</h2>';
                 html += "<table>";
                 for (var j in features[feat].attributes) {

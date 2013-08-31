@@ -162,8 +162,6 @@ dbkjs.modules.print = {
             data: "",
             success: function(response) {
                 _obj.capabilities = response;
-                console.log(_obj.capabilities);
-                //_obj.loadStores();
                 if (callback) {
                     callback.call();
                 }

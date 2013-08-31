@@ -3,7 +3,7 @@ window.dbkjs = dbkjs;
 dbkjs.protocol = dbkjs.protocol || {};
 dbkjs.protocol.imdbk21 = {
     feature: null,
-    url: 'http://dbk.mapcache.nl/wfs?',
+    url: '/wfs?',
     processing: false,
     panel_group: null,
     panel_tabs: null,
@@ -40,9 +40,6 @@ dbkjs.protocol.imdbk21 = {
         var _obj = dbkjs.protocol.imdbk21;
         if (response && response.responseXML) {
             var xmldoc = $.xml2json(response.responseXML);
-            console.log(xmldoc);
-            //en nu de foto er uit halen bij wijze van proef.
-            //fotocollection = xmldoc.getElementsByTagName("dbk:Foto");
             if (xmldoc["wfs:FeatureCollection"]["wfs:member"]) {
                 _obj.panel_group = $('<div class="tab-content"></div>');
                 _obj.panel_tabs = $('<ul class="nav nav-pills"></ul>');

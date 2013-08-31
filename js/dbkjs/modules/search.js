@@ -30,7 +30,6 @@ dbkjs.modules.search = {
                             geometry: pnt
                         });
                     }
-                    console.log(dataset);
                     return dataset;
                 }
             }
