@@ -133,14 +133,19 @@ dbkjs.modules.bag = {
         dv_panel_heading.append(dv_panel_title);
         dv_panel.append(dv_panel_heading);
         var dv_panel_content = $('<div id="collapse_' + _obj.id + '" class="panel-collapse collapse"></div>');
-        dv_panel_content.append('<div class="panel-body"><p>Toont de panden uit de BAG en geeft de mogelijkheid op een pand te klikken om vervolgens informatie te krijgen over de panden en verblijfsobjecten.' + 
+        dv_panel_content.append('<div class="panel-body"><p>Toont de panden uit de BAG en geeft de mogelijkheid op een pand te klikken om vervolgens informatie te krijgen over de panden en verblijfsobjecten.' +
                 'Deze laag wordt direct betrokken bij PDOK.</p><p>' +
-        '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#cccccc;border:3px solid #000000;">&nbsp;</div></div><div class="col-xs-10"> Panden</div></div>' +
-        '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#D7DF01;border:2px solid #ff0000;">&nbsp;</div></div><div class="col-xs-10"> Geselecteerd pand</div></div>' +
-        '<div class="row"><div class="col-xs-2 text-center"><i class="icon-circle" style="color:#610B21;"></i></div><div class="col-xs-10"> Verblijfsobject(en) in geselecteerd pand</div></div>' +
-        '</p></div>');
+                '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#cccccc;border:3px solid #000000;">&nbsp;</div></div><div class="col-xs-10"> Panden</div></div>' +
+                '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#D7DF01;border:2px solid #ff0000;">&nbsp;</div></div><div class="col-xs-10"> Geselecteerd pand</div></div>' +
+                '<div class="row"><div class="col-xs-2 text-center"><i class="icon-circle" style="color:#610B21;"></i></div><div class="col-xs-10"> Verblijfsobject(en) in geselecteerd pand</div></div>' +
+                '</p></div>');
         dv_panel.append(dv_panel_content);
         $('#overlaypanel_b').append(dv_panel);
+        if (_obj.layer.getVisibility()) {
+            //checkbox aan
+            $('input[name="box_' + _obj.id + '"]').attr('checked', 'checked');
+            _obj.activateVectors();
+        }
         $('input[name="box_' + _obj.id + '"]').click(function() {
             if ($(this).is(':checked')) {
                 _obj.layer.setVisibility(true);
@@ -186,20 +191,25 @@ dbkjs.modules.bag = {
     },
     getfeatureinfo: function(e) {
         var _obj = dbkjs.modules.bag;
-        if (typeof(e.feature) !== "undefined") {
-            $('#infopanel').html(_obj.featureInfohtml(e.feature));
-            $('#infopanel').toggle(true);
+        if (_obj.layer.getVisibility()) {
+            if (typeof(e.feature) !== "undefined") {
+                $('#infopanel').html(_obj.featureInfohtml(e.feature));
+                $('#infopanel').toggle(true);
+            } else {
+                _obj.pand_layer.destroyFeatures();
+                _obj.vbo_layer.destroyFeatures();
+                var lonLat = dbkjs.map.getLonLatFromViewPortPx(new OpenLayers.Pixel(e.xy.x, e.xy.y));
+                _obj.pand_layer.filter = new OpenLayers.Filter.Spatial({
+                    type: OpenLayers.Filter.Spatial.CONTAINS,
+                    property: "geometrie",
+                    value: new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat)
+                });
+                _obj.pand_layer.refresh({force: true});
+                return false;
+            }
         } else {
             _obj.pand_layer.destroyFeatures();
             _obj.vbo_layer.destroyFeatures();
-            var lonLat = dbkjs.map.getLonLatFromViewPortPx(new OpenLayers.Pixel(e.xy.x, e.xy.y));
-            _obj.pand_layer.filter = new OpenLayers.Filter.Spatial({
-                type: OpenLayers.Filter.Spatial.CONTAINS,
-                property: "geometrie",
-                value: new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat)
-            });
-            _obj.pand_layer.refresh({force: true});
-            return false;
         }
     },
     getVBO: function(bagvboid, callback) {

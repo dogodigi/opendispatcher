@@ -19,7 +19,7 @@ dbkjs.options = {
         }
     }
 };
-dbkjs.options.VERSION = "0.9-SNAPSHOT";
+dbkjs.options.VERSION = "0.9-SNAPSHOT1";
 dbkjs.options.RELEASEDATE = '01-09-2013 vrijgave voor test en acceptatie onder voorbehoud van openstaande issues.';
 dbkjs.options.info = "";
 

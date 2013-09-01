@@ -34,7 +34,7 @@ $('div.btn-group ul.dropdown-menu li a').click(function(e) {
     if ($(this).text() === " Adres") {
         mbtn.html('<i class="icon-home"></i>');
         minp.attr("placeholder", "zoek adres of POI");
-        dbkjs.search.activate();
+        dbkjs.modules.search.activate();
     } else if ($(this).text() === " Coördinaat") {
         mbtn.html('<i class="icon-pushpin"></i>');
         minp.attr("placeholder", "lon,lat of X,Y punt voor decimaal");
