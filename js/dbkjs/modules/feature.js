@@ -360,9 +360,7 @@ dbkjs.modules.feature = {
         dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.layer));
         _obj.layer.events.on({
             "featureselected": _obj.getfeatureinfo,
-            "featuresadded": function() {
-                dbkjs.modules.feature.getActive();
-            },
+            "featuresadded": function() {},
             "featureunselected": function(e) {
                 $('#infopanel').hide();
             }
@@ -391,6 +389,7 @@ dbkjs.modules.feature = {
                 _obj.features = geojson_format.read(data);
                 _obj.layer.addFeatures(_obj.features);
                 _obj.search_dbk();
+                _obj.getActive();
             },
             error: function() {
                 return false;
@@ -439,7 +438,6 @@ dbkjs.modules.feature = {
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             dbkjs.options.dbk = datum.id;
             dbkjs.modules.updateFilter(datum.id);
-
             if (dbkjs.map.zoom < 13) {
                 dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
             } else {
@@ -468,7 +466,6 @@ dbkjs.modules.feature = {
         });
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             dbkjs.modules.updateFilter(datum.id);
-
             if (dbkjs.map.zoom < 13) {
                 dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
             } else {

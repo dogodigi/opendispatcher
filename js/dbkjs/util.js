@@ -171,7 +171,9 @@ dbkjs.util = {
             alert.show();
         } else {
             alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass(type);
-            alert.html(content);
+            alert.html('');
+            alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+            alert.append(content);
             alert.show();
         }
     },

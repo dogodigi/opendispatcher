@@ -103,71 +103,73 @@ dbkjs.modules.care = {
         $(download_button).click(function() {
             var _obj = dbkjs.modules.care;
             _obj.url;
-            var mydata = {};
-            //mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
-            mydata.service = "WFS";
-            mydata.version = "1.0.0";
-            mydata.request = "GetFeature";
-            mydata.typename = _obj.namespace + ":incidents";
-            mydata.maxFeatures = 100;
-            mydata.outputFormat = "csv";
+            var params = {
+                //mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
+                service: "WFS",
+                version: "1.0.0",
+                request: "GetFeature",
+                typename: _obj.namespace + ":incidents",
+                maxFeatures: 100,
+                outputFormat: "csv",
+            };
             if (_obj.layer.params.CQL_FILTER) {
-                mydata.CQL_FILTER = _obj.layer.params.CQL_FILTER;
+                params.CQL_FILTER = _obj.layer.params.CQL_FILTER;
             }
             if (_obj.layer.params.TIME) {
                 var time_col = 'datetimereported';
                 var time_arr = _obj.layer.params.TIME.split('/');
                 var cql_string = time_col + " >='" + time_arr[0] + "' AND " + time_col + " <='" + time_arr[1] + "'";
-                if(mydata.CQL_FILTER){
-                    mydata.CQL_FILTER += ' AND ' + cql_string;
+                if (params.CQL_FILTER) {
+                    params.CQL_FILTER += ' AND ' + cql_string;
                 } else {
-                    mydata.CQL_FILTER = cql_string;
+                    params.CQL_FILTER = cql_string;
                 }
-                //DATE_COL > '01.01.2012' AND DATE_COL < '31.12.2012'
             }
-            var downloadstring = _obj.url + decodeURIComponent($.param(mydata));
-            //http://safetymaps.nl/geoserver/brabantnoord/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=brabantnoord:gemeente_box&maxFeatures=50&outputFormat=application/json
-            console.log(downloadstring);
+            var downloadstring = _obj.url + decodeURIComponent($.param(params));
             window.location = downloadstring;
         });
         $('#care_dialog_b').append(download_button);
     },
     getfeatureinfo: function(e) {
         var _obj = dbkjs.modules.care;
+        var llMin = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x - 5, e.xy.y + 5));
+        var llMax = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x + 5, e.xy.y - 5));
+
         var params = {
-            REQUEST: "GetFeatureInfo",
-            EXCEPTIONS: "application/vnd.ogc.se_xml",
-            BBOX: dbkjs.map.getExtent().toBBOX(),
-            SERVICE: "WMS",
-            INFO_FORMAT: 'application/vnd.ogc.gml',
-            QUERY_LAYERS: _obj.layer.params.LAYERS,
-            FEATURE_COUNT: 20,
-            Layers: _obj.layer.params.LAYERS,
-            WIDTH: dbkjs.map.size.w,
-            HEIGHT: dbkjs.map.size.h,
-            format: 'image/png',
-            styles: _obj.layer.params.STYLES,
-            srs: _obj.layer.params.SRS
+            //mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
+            srs: _obj.layer.params.SRS,
+            service: "WFS",
+            version: "1.0.0",
+            request: "GetFeature",
+            typename: _obj.namespace + ":incidents",
+            maxFeatures: 1,
+            outputFormat: "json"
         };
 
-        // handle the wms 1.3 vs wms 1.1 madness
-        if (_obj.layer.params.VERSION === "1.3.0") {
-            params.version = "1.3.0";
-            params.j = e.xy.x;
-            params.i = e.xy.y;
-        } else {
-            params.version = "1.1.1";
-            params.x = e.xy.x;
-            params.y = e.xy.y;
+        if (_obj.layer.params.CQL_FILTER) {
+            params.CQL_FILTER = _obj.layer.params.CQL_FILTER;
         }
+        if (_obj.layer.params.TIME) {
+            var time_col = 'datetimereported';
+            var time_arr = _obj.layer.params.TIME.split('/');
+            var cql_string = time_col + " >='" + time_arr[0] + "' AND " + time_col + " <='" + time_arr[1] + "'";
+            if (params.CQL_FILTER) {
+                params.CQL_FILTER += ' AND ' + cql_string;
+            } else {
+                params.CQL_FILTER = cql_string;
+            }
+            //DATE_COL > '01.01.2012' AND DATE_COL < '31.12.2012'
+        }
+        params.CQL_FILTER += ' AND ' + 'BBOX(the_geom,' + llMin.lon + "," + llMin.lat + "," + llMax.lon + "," + llMax.lat + ",'EPSG:28992')";
         OpenLayers.Request.GET({url: _obj.url, "params": params, callback: _obj.panel});
         //OpenLayers.Event.stop(e);
     },
     panel: function(response) {
+        var _obj = dbkjs.modules.care;
         //verwerk de featureinformatie
-        g = new OpenLayers.Format.GML.v3();
-
-        features = g.read(response.responseText);
+        //g = new OpenLayers.Format.GML.v3();
+        var geojson_format = new OpenLayers.Format.GeoJSON();
+        var features = geojson_format.read(response.responseText);
         if (features.length > 0) {
             $('#infopanel_b').html('');
             var hide_us = ['Name', 'No', 'Latitude', 'Longitude', 'addressx', 'addressy', 'id'];
@@ -187,37 +189,26 @@ dbkjs.modules.care = {
                 "sit3maxtimespanarrivalfirstunit": "norm sit3",
                 "sit3timespanarrivalfirstunit": "opkomst Sit3"
             };
-            dbkjs.util.changeDialogTitle('Resultaat' + '<a href="#" class="export"><i class="icon-download"></i></a>');
             var ft_div = $('<div class="table-responsive"></div>');
             var ft_tbl = $('<table id="normen_export" class="table table-hover table-condensed table-bordered"></table>');
-            var th_row = $('<tr></tr>');
-            for (var j in features[0].attributes) {
-                if ($.inArray(j, hide_us) === -1) {
-                    if (rename_us[j]) {
-                        th_row.append('<th>' + rename_us[j] + "</th>");
-                    } else {
-                        th_row.append('<th>' + j + "</th>");
-                    }
-                }
-            }
-            ft_tbl.append(th_row);
             for (var feat in features) {
-                var ft_tr = $('<tr></tr>');
-                for (var j in features[feat].attributes) {
-                    if ($.inArray(j, hide_us) === -1) {
-                        if (!dbkjs.util.isJsonNull(features[feat].attributes[j])) {
-                            ft_tr.append('<td>' + features[feat].attributes[j] + '</td>');
+                $.each(features[feat].attributes, function(key, value) {
+                    var title;
+                    if ($.inArray(key, hide_us) === -1) {
+                        if (rename_us[key]) {
+                            title = rename_us[key];
                         } else {
-                            ft_tr.append('<td>&nbsp;</td>');
+                            title = key;
+                        }
+                        if (!dbkjs.util.isJsonNull(value) && value !== 0) {
+                            ft_tbl.append('<tr><th>' + title + '</th><td>' + value + '</td></tr>');
                         }
                     }
-                }
-                ft_tbl.append(ft_tr);
-
+                });
             }
             ft_div.append(ft_tbl);
             // This must be a hyperlink
-
+            dbkjs.util.changeDialogTitle(features[0].attributes.incidentnr + ' - ' + features[0].attributes.priority);
 
             // IF CSV, don't do event.preventDefault() or return false
             // We actually need this to be a typical hyperlink
@@ -225,6 +216,7 @@ dbkjs.modules.care = {
 
         $('#infopanel_b').append(ft_div);
         $('#infopanel_f').html('');
+        $('#infopanel').show('');
         $(".export").on('click', function() {
             // CSV
             dbkjs.util.exportTableToCSV.apply(this, [$('#normen_export'), 'export.csv']);

@@ -11,30 +11,32 @@ dbkjs.protocol.imdbk21 = {
     process: function(selection_id) {
 //controleer of de currentFeature id gelijk is aan de dbk,
 //http://dbk.mapcache.nl/wfs?request=GetFeature&version=2.0&typename=dbk:DBKFeature&outputFormat=gml32&featureID=DBKFeature.1367827139
-        if (!this.feature) {
-            if (!dbkjs.protocol.imdbk21.processing) {
-                $('#infopanel').hide();
-                dbkjs.protocol.imdbk21.processing = true;
-                dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>',' Objectinformatie wordt opgehaald...','alert-info');
-                dbkjs.protocol.imdbk21.feature = {id: selection_id, div: ''};
-                dbkjs.protocol.imdbk21.getObject(selection_id);
-            }
-        } else if (selection_id === dbkjs.protocol.imdbk21.feature.id) {
-            //doe niks
-            $('#infopanel_b').html(dbkjs.protocol.imdbk21.feature.div);
-            if(!dbkjs.protocol.imdbk21.processing){
-                $('#infopanel').show();
-                //reset naar eerste tab
-            }
-            
-        } else {
-            //anders opnieuw ophalen.    
-            if (!dbkjs.protocol.imdbk21.processing) {
-                $('#infopanel').hide();
-                dbkjs.protocol.imdbk21.processing = true;
-                dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>',' Objectinformatie wordt opgehaald...','alert-info');
-                dbkjs.protocol.imdbk21.feature = {id: selection_id, div: ''};
-                dbkjs.protocol.imdbk21.getObject(selection_id);
+        if (selection_id) {
+            if (!this.feature) {
+                if (!dbkjs.protocol.imdbk21.processing) {
+                    $('#infopanel').hide();
+                    dbkjs.protocol.imdbk21.processing = true;
+                    dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>', ' Objectinformatie wordt opgehaald...', 'alert-info');
+                    dbkjs.protocol.imdbk21.feature = {id: selection_id, div: ''};
+                    dbkjs.protocol.imdbk21.getObject(selection_id);
+                }
+            } else if (selection_id === dbkjs.protocol.imdbk21.feature.id) {
+                //doe niks
+                if (!dbkjs.protocol.imdbk21.processing) {
+                    $('#infopanel_b').html(dbkjs.protocol.imdbk21.feature.div);
+                    $('#infopanel').show();
+                    //reset naar eerste tab
+                }
+
+            } else {
+                //anders opnieuw ophalen.    
+                if (!dbkjs.protocol.imdbk21.processing) {
+                    $('#infopanel').hide();
+                    dbkjs.protocol.imdbk21.processing = true;
+                    dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>', ' Objectinformatie wordt opgehaald...', 'alert-info');
+                    dbkjs.protocol.imdbk21.feature = {id: selection_id, div: ''};
+                    dbkjs.protocol.imdbk21.getObject(selection_id);
+                }
             }
         }
     },
@@ -65,12 +67,11 @@ dbkjs.protocol.imdbk21 = {
                     $('#infopanel_b').html(div);
                     $('#systeem_meldingen').hide();
                 }
+                $('#infopanel').show();
             } else {
                 _obj.feature = {};
-                dbkjs.util.alert('Fout',' Geen informatie gevonden','alert-info');
+                dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
             }
-            $('#infopanel_f').hide();
-            $('#infopanel').show();
             _obj.processing = false;
         }
     },

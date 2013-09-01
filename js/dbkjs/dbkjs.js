@@ -19,6 +19,8 @@ dbkjs.options = {
         }
     }
 };
+dbkjs.options.VERSION = "0.9-SNAPSHOT";
+dbkjs.options.RELEASEDATE = '01-09-2013 vrijgave voor test en acceptatie onder voorbehoud van openstaande issues.';
 dbkjs.options.info = "";
 
 
@@ -48,7 +50,7 @@ if (dbkjs.options.projection.code === 'EPSG:28992') {
     for (var i = 0; i < 15; ++i) {
         dbkjs.options.pdok.matrixIds[i] = dbkjs.options.projection.code + ':' + i;
     }
-    dbkjs.options.pdok.resolutions = [3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84, 0.42, 0.21];
+    dbkjs.options.pdok.resolutions = [3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84, 0.42, 0.210, 0.105, 0.0525, 0.02625, 0.013125, 0.0065625];
     dbkjs.options.pdok.maxExtent = new OpenLayers.Bounds(-65200.96, 242799.04, 375200.96, 68320096);
     dbkjs.options.pdok.units = "m";
 }
@@ -126,7 +128,8 @@ dbkjs.init = function() {
         theme: null,
         div: 'mapc1map1',
         projection: new OpenLayers.Projection(dbkjs.options.projection.code),
-        resolutions: [3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84, 0.42, 0.21],
+        resolutions: [3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84, 0.42, 0.210, 0.105, 0.0525, 0.02625, 0.013125, 0.0065625],
+        xy_precision: 3,
         maxExtent: new OpenLayers.Bounds(-65200.96, 242799.04, 375200.96, 68320096),
         units: "m"
     };
@@ -285,7 +288,7 @@ $(document).ready(function() {
     $('body').append(dbkjs.util.createDialog('infopanel','<i class="icon-info-sign"></i> Informatie','right:0;bottom:0;'));
     $('body').append(dbkjs.util.createDialog('minimappanel','<i class="icon-picture"></i> Referentiekaart','bottom:0;'));
     $('.dialog').drags({handle:'.panel-heading'});
-    
+    $('.btn-group').drags({handle:'.drag-handle'});
     dbkjs.init();
     $('#infopanel_b').html(dbkjs.options.info);
 
