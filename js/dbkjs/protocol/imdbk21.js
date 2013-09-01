@@ -13,25 +13,27 @@ dbkjs.protocol.imdbk21 = {
 //http://dbk.mapcache.nl/wfs?request=GetFeature&version=2.0&typename=dbk:DBKFeature&outputFormat=gml32&featureID=DBKFeature.1367827139
         if (!this.feature) {
             if (!dbkjs.protocol.imdbk21.processing) {
+                $('#infopanel').hide();
                 dbkjs.protocol.imdbk21.processing = true;
-                $("#infopanel_h").html('<span class="h4"><i class="icon-spinner icon-spin"></i>&nbspBezig..</span>');
-                dbkjs.protocol.imdbk21.feature = {id: selection_id, div: '<div>bezig met ophalen...</div>'};
-                $('#infopanel_b').html(dbkjs.protocol.imdbk21.feature.div);
-                $('#infopanel').show();
+                dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>',' Objectinformatie wordt opgehaald...','alert-info');
+                dbkjs.protocol.imdbk21.feature = {id: selection_id, div: ''};
                 dbkjs.protocol.imdbk21.getObject(selection_id);
             }
         } else if (selection_id === dbkjs.protocol.imdbk21.feature.id) {
-//doe niks
+            //doe niks
             $('#infopanel_b').html(dbkjs.protocol.imdbk21.feature.div);
-            $('#infopanel').show();
-        } else {
-//anders opnieuw ophalen.    
-            if (!dbkjs.protocol.imdbk21.processing) {
-                dbkjs.protocol.imdbk21.processing = true;
-                $("#infopanel_h").html('<span class="h4"><i class="icon-spinner icon-spin"></i>&nbspBezig..</span>');
-                dbkjs.protocol.imdbk21.feature = {id: selection_id, div: '<div>bezig met ophalen...</div>'};
-                $('#infopanel_b').html(dbkjs.protocol.imdbk21.feature.div);
+            if(!dbkjs.protocol.imdbk21.processing){
                 $('#infopanel').show();
+                //reset naar eerste tab
+            }
+            
+        } else {
+            //anders opnieuw ophalen.    
+            if (!dbkjs.protocol.imdbk21.processing) {
+                $('#infopanel').hide();
+                dbkjs.protocol.imdbk21.processing = true;
+                dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>',' Objectinformatie wordt opgehaald...','alert-info');
+                dbkjs.protocol.imdbk21.feature = {id: selection_id, div: ''};
                 dbkjs.protocol.imdbk21.getObject(selection_id);
             }
         }
@@ -44,7 +46,7 @@ dbkjs.protocol.imdbk21 = {
                 _obj.panel_group = $('<div class="tab-content"></div>');
                 _obj.panel_tabs = $('<ul class="nav nav-pills"></ul>');
                 if (xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]) {
-                    _obj.feature.div = $('<div class="tabbable"></div>');
+                    var div = $('<div class="tabbable"></div>');
                     if (_obj.constructAlgemeen(xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"])) {
                         _obj.constructBijzonderheid(
                                 xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:bijzonderheid"]
@@ -57,15 +59,18 @@ dbkjs.protocol.imdbk21 = {
                                 );
                     }
                     ;
-                    _obj.feature.div.append(_obj.panel_group);
-                    _obj.feature.div.append(_obj.panel_tabs);
-                    $('#infopanel_b').html(_obj.feature.div);
+                    div.append(_obj.panel_group);
+                    div.append(_obj.panel_tabs);
+                    dbkjs.protocol.imdbk21.feature.div = div;
+                    $('#infopanel_b').html(div);
+                    $('#systeem_meldingen').hide();
                 }
             } else {
                 _obj.feature = {};
-                $('#infopanel_b').html('Geen informatie gevonden');
+                dbkjs.util.alert('Fout',' Geen informatie gevonden','alert-info');
             }
             $('#infopanel_f').hide();
+            $('#infopanel').show();
             _obj.processing = false;
         }
     },
@@ -82,7 +87,7 @@ dbkjs.protocol.imdbk21 = {
         /** Algemene dbk info **/
         if (DBKObject) {
             var formelenaam = DBKObject["dbk:formeleNaam"].value;
-            $("#infopanel_h").html('<span class="h4">' + formelenaam + '</span>');
+            dbkjs.util.changeDialogTitle('<i class="icon-building"></i> ' + formelenaam);
             var controledatum = '<span class="label label-warning">Niet bekend</span>';
             var bhvaanwezig = '<span class="label label-warning">Geen BHV aanwezig of onbekend</span>';
             var informelenaam = '';

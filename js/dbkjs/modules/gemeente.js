@@ -46,16 +46,10 @@ dbkjs.modules.gemeente = {
                     dbkjs.map.zoomToExtent(bounds, false);
                 });
                 _obj.ul.append(gem_li);
-                if(dbkjs.modules.care){
-                    dbkjs.modules.care.updateSelection(_obj.features[0].attributes.naam);
-                }
                 for (var i = 1; i < _obj.features.length; i++) {
                     _obj.bounds.extend(_obj.features[i].geometry.getBounds());
                     gem_li = $('<li><a href="#gem_' + i + '">' + _obj.features[i].attributes.naam + '</a></li>');
                     _obj.ul.append(gem_li);
-                    if(dbkjs.modules.care){
-                        dbkjs.modules.care.updateSelection(_obj.features[i].attributes.naam);
-                    }
                     gem_li.click(function() {
                         var n = parseInt($(this).children('a:first').attr('href').replace("#gem_", ""));
                         $('#geselecteerde_gemeente').html(_obj.features[n].attributes.naam);

@@ -49,7 +49,10 @@ dbkjs.modules.preparatie = {
         dv_panel_heading.append(dv_panel_title);
         dv_panel.append(dv_panel_heading);
         var dv_panel_content = $('<div id="collapse_' + _obj.id + '" class="panel-collapse collapse"></div>');
-        dv_panel_content.append('<div class="panel-body">Bladiebla</div>');
+        
+        //legenda..
+        dv_panel_content.append('<div class="panel-body">Informatie over de preparatieve voorzieningen en de <strong>NEN1414</strong> symbolen vind je op een aparte <a href="nen1414.html#bouwkundige_kenmerken" target="_blank">pagina</a></div>');
+        
         dv_panel.append(dv_panel_content);
         $('#overlaypanel_b').append(dv_panel);
         if (_obj.layer.getVisibility()) {

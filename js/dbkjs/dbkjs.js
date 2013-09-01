@@ -282,6 +282,10 @@ dbkjs.successAuth = function() {
 };
 
 $(document).ready(function() {
+    $('body').append(dbkjs.util.createDialog('infopanel','<i class="icon-info-sign"></i> Informatie','right:0;bottom:0;'));
+    $('body').append(dbkjs.util.createDialog('minimappanel','<i class="icon-picture"></i> Referentiekaart','bottom:0;'));
+    $('.dialog').drags({handle:'.panel-heading'});
+    
     dbkjs.init();
     $('#infopanel_b').html(dbkjs.options.info);
 

@@ -143,12 +143,68 @@ dbkjs.util = {
     },
     mediaError: function(e) {
         var msg = $($(e).parent().find('p')[0]);
-        if(msg){
+        if (msg) {
             msg.html('<a href="' + e.src + '">' + e.src + '</a><br>is geen geldige afbeelding');
         }
         e.src = "images/missing.gif";
         e.onerror = "";
         return true;
+    },
+    createListGroup: function(item_array) {
+        var listgroup = $('<ul class="list-group"></ul>');
+        $.each(item_array, function(item_idx, item) {
+            listgroup.append('<li class="list-group-item">' + item + '</li>');
+        });
+        return listgroup;
+    },
+    alert: function(title, tekst, type) {
+        if (!type) {
+            type = 'alert-info';
+        }
+        var content = '<strong>' + title + '</strong> ' + tekst;
+        var alert = $('#systeem_meldingen');
+        if (!alert[0]) {
+            var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable ' + type + '"></div>');
+            alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+            alert.append(content);
+            $('body').append(alert);
+            alert.show();
+        } else {
+            alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass(type);
+            alert.html(content);
+            alert.show();
+        }
+    },
+    changeDialogTitle: function(title, dialogid) {
+        var dialog;
+        if (!dialogid) {
+            //asume it is the infopanel.
+            dialog = $('#infopanel_h');
+        } else {
+            dialog = $(dialogid + '_h');
+        }
+        if (title) {
+            $(dialog.children('span')[0]).html(title);
+        }
+    },
+    createDialog: function(id, title, styleoptions) {
+        if (!styleoptions) {
+            styleoptions = '';
+        }
+        var dialog = $('<div class="panel dialog" id="' + id + '" style="display:none;' + styleoptions + '"></div>');
+        var heading = $('<div id="' + id + '_h" class="panel-heading"></div>');
+        var close_button = $('<button type="button" class="close" aria-hidden="true">&times;</button>');
+        heading.append(close_button);
+        heading.append('<span class="h4">' + title + '</span>');
+        var dg_body = $('<div id="' + id + '_b" class="panel-body"></div>');
+        var dg_footer = $('<div id="' + id + '_f" class="panel-footer"></div>');
+        dialog.append(heading);
+        dialog.append(dg_body);
+        dialog.append(dg_footer);
+        close_button.click(function() {
+            dialog.hide();
+        });
+        return dialog;
     },
     exportTableToCSV: function($table, filename) {
         var $rows = $table.find('tr:has(td)'),

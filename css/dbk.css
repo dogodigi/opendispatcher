@@ -30,6 +30,15 @@ body {
 .daterangepicker {
     z-index: 2000 !important;
 }
+#systeem_meldingen {
+    position:absolute;
+    width:400px;
+    margin-left:-200px;
+    bottom:0;
+    left:50%;
+    z-index:2001;
+    margin-bottom: 0 !important;
+}
 #header {
     z-index: 1001;
     position: absolute;
@@ -38,17 +47,21 @@ body {
 #search_input {
     background-color: #ffffff !important;
 }
-#infopanel{
-    position: absolute;
-    right: 1em;
+.dialog{
     z-index: 300;
-    bottom: 0;
+    position: absolute;
+}
+.h4 {
+    padding-right: 1em;
+}
+input[type="radio"], input[type="checkbox"] {
+    line-height: normal;
+    margin: 0 1em 0 0 !important;
+}
+#infopanel{
     margin-bottom: 0 !important;
 }
 #minimappanel{
-    position: absolute;
-    z-index: 300;
-    bottom: 0;
     margin-bottom: 0 !important;
 }
 .layActive {
