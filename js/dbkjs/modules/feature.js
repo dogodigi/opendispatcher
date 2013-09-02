@@ -308,13 +308,17 @@ dbkjs.modules.feature = {
             $.each(_obj.layer.features, function(fi, fv) {
                 if (fv.cluster) {
                     $.each(fv.cluster, function(ci, cv) {
-                        if (cv.attributes[_search_field].toString() === _search_value.toString()) {
-                            feature = cv;
+                        if (cv.attributes[_search_field]) {
+                            if (cv.attributes[_search_field].toString() === _search_value.toString()) {
+                                feature = cv;
+                            }
                         }
                     });
                 } else {
-                    if (fv.attributes[_search_field].toString() === _search_value.toString()) {
-                        feature = fv;
+                    if (fv.attributes[_search_field]) {
+                        if (fv.attributes[_search_field].toString() === _search_value.toString()) {
+                            feature = fv;
+                        }
                     }
                 }
             });
@@ -360,7 +364,8 @@ dbkjs.modules.feature = {
         dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.layer));
         _obj.layer.events.on({
             "featureselected": _obj.getfeatureinfo,
-            "featuresadded": function() {},
+            "featuresadded": function() {
+            },
             "featureunselected": function(e) {
                 $('#infopanel').hide();
             }
@@ -451,9 +456,9 @@ dbkjs.modules.feature = {
 
         $.each(_obj.features, function(key, value) {
             //alert(value.properties.formeleNaam + ' (' + value.properties.identificatie_id + ')');
-            if (!dbkjs.util.isJsonNull(value.attributes.OMSnummer)) {
+            if (!dbkjs.util.isJsonNull(value.attributes.OMSNummer)) {
                 dbk_naam_array.push({
-                    value: value.attributes.OMSnummer + ' - ' + value.attributes.formeleNaam,
+                    value: value.attributes.OMSNummer + ' - ' + value.attributes.formeleNaam,
                     geometry: value.geometry,
                     id: value.attributes.identificatie
                 });
