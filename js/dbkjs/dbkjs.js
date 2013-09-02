@@ -20,7 +20,9 @@ dbkjs.options = {
     }
 };
 dbkjs.options.VERSION = "0.9-SNAPSHOT1";
-dbkjs.options.RELEASEDATE = '01-09-2013 vrijgave voor test en acceptatie onder voorbehoud van openstaande issues.';
+dbkjs.options.RELEASEDATE = '01-09-2013';
+dbkjs.options.APPLICATION = 'DOIV 1';
+dbkjs.options.REMARKS = 'vrijgave voor test en acceptatie onder voorbehoud van openstaande issues.';
 dbkjs.options.info = "";
 
 
@@ -210,10 +212,10 @@ dbkjs.init = function() {
     });
     dbkjs.map.addControl(dbkjs.overview);
     dbkjs.map.addControl(new OpenLayers.Control.Zoom({
-            zoomInId: "zoom_in",
-            zoomOutId: "zoom_out"
-        })
-    );
+        zoomInId: "zoom_in",
+        zoomOutId: "zoom_out"
+    })
+            );
 };
 
 /**
@@ -278,23 +280,34 @@ dbkjs.successAuth = function() {
             module.register({namespace: dbkjs.options.regio.workspace, url: dbkjs.options.regio.safetymaps_url, visible: true});
         }
     });
-    if(dbkjs.ui.gui){
+    if (dbkjs.ui.gui) {
         dbkjs.ui.gui.activate();
     }
     dbkjs.activateClick();
 };
 
 $(document).ready(function() {
-    $('body').append(dbkjs.util.createDialog('infopanel','<i class="icon-info-sign"></i> Informatie','right:0;bottom:0;'));
-    $('body').append(dbkjs.util.createDialog('bagpanel','<i class="icon-home"></i> BAG','right:0;bottom:0;'));
-    $('body').append(dbkjs.util.createDialog('minimappanel','<i class="icon-picture"></i> Referentiekaart','bottom:0;'));
-    $('.dialog').drags({handle:'.panel-heading'});
-    $('.btn-group').drags({handle:'.drag-handle'});
-    dbkjs.util.setModalTitle('overlaypanel','Lagen');
-    dbkjs.util.setModalTitle('baselayerpanel','Basiskaarten');
+    document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
+    $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> Informatie', 'right:0;bottom:0;'));
+    $('body').append(dbkjs.util.createDialog('bagpanel', '<i class="icon-home"></i> BAG', 'right:0;bottom:0;'));
+    $('body').append(dbkjs.util.createDialog('minimappanel', '<i class="icon-picture"></i> Referentiekaart', 'bottom:0;'));
+    $('.dialog').drags({handle: '.panel-heading'});
+    $('.btn-group').drags({handle: '.drag-handle'});
+    dbkjs.util.setModalTitle('overlaypanel', 'Lagen');
+    dbkjs.util.setModalTitle('baselayerpanel', 'Basiskaarten');
     dbkjs.init();
-    $('#infopanel_b').html(dbkjs.options.info);
 
+
+    // Foutknop //
+    var reciever = 'mailto:doiv@brwbn.nl';
+    var subject = 'subject=' + dbkjs.options.APPLICATION + ' Melding' + dbkjs.options.VERSION + ' (' + dbkjs.options.RELEASEDATE + ')';
+    var body = 'body=' + location.href + ' (deze link wordt door de beheerder gecontroleerd)';
+    var sMailTo = dbkjs.util.htmlEncode(reciever + '?' + subject);
+    sMailTo += '&' + dbkjs.util.htmlEncode(body);
+    $('#foutknop').find('a').attr('href', sMailTo);
+
+
+    $('#infopanel_b').html(dbkjs.options.info);
     $('.btn').click(function() {
         if (this.id === "tb03") {
             $('#infopanel').toggle();

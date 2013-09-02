@@ -185,6 +185,13 @@ dbkjs.util = {
             alert.show();
         }
     },
+    htmlEncode: function(value) {
+        if (value) {
+            return $('<div/>').text(value).html();
+        } else {
+            return '';
+        }
+    },
     changeDialogTitle: function(title, dialogid) {
         var dialog;
         if (!dialogid) {

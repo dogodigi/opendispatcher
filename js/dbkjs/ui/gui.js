@@ -21,12 +21,10 @@ dbkjs.ui.gui = {
         dbkjs.protocol.getCapabilities.get();
         $(parent).append('');
         $(parent).append('<hr>');
-        $(parent).append('<h4>Vragen, opmerkingen of fouten</h4>' +
-                '<p>Je kunt per e-mail contact opnemen: <a href="mailto:doiv@brwbn.nl">doiv@brwbn.nl</a></p>' +
-                '<p>Of telefonisch bij Falck AVD: <strong>+31(0)183 50 81 50</strong></p>' +
-                '<hr>' +
-                '<p> <strong>Dbk viewer</strong> <a href="https://bitbucket.org/milovanderlinden/dbk/issues">' + dbkjs.options.VERSION + '</a></p><p>' + dbkjs.options.RELEASEDATE + '</p>'
-                );
+        $(parent).append(
+                '<p><strong>' + dbkjs.options.APPLICATION + '</strong> ' + dbkjs.options.VERSION + ' (' + dbkjs.options.RELEASEDATE + ')' + '</p>' + 
+                '<p>' + dbkjs.options.REMARKS +'</p>'
+        );
 
         $('#input_contrast').val(parseFloat(dbkjs.map.baseLayer.opacity).toFixed(1));
         $('#input_contrast').keypress(function(event) {
