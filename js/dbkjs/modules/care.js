@@ -216,7 +216,7 @@ dbkjs.modules.care = {
 
         $('#infopanel_b').append(ft_div);
         $('#infopanel_f').html('');
-        $('#infopanel').show('');
+        $('#infopanel').show();
         $(".export").on('click', function() {
             // CSV
             dbkjs.util.exportTableToCSV.apply(this, [$('#normen_export'), 'export.csv']);

@@ -17,6 +17,14 @@ dbkjs.util = {
             alert('layer niet gevonden (of meer dan 1)');
         }
     },
+    setModalTitle: function(modal_id, title) {
+        if (title instanceof jQuery) {
+            $('#' + modal_id).find('div.modal-header:first').html(title);
+        } else if (typeof(title) === "string") {
+            $('#' + modal_id).find('div.modal-header:first').html('<h4 class="modal-title">' + title + '</h4>');
+        }
+
+    },
     onClick: function(e) {
         $('#infopanel_b').html('');
         $('#infopanel_f').html('');

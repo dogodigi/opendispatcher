@@ -22,28 +22,28 @@ dbkjs.ui.gui = {
         $(parent).append('');
         $(parent).append('<hr>');
         $(parent).append('<h4>Vragen, opmerkingen of fouten</h4>' +
-                '<p>Je kunt per e-mail contact opnemen: <a href="mailto:doiv@brwbn.nl">doiv@brwbn.nl</a></p>' + 
-                '<p>Of telefonisch bij Falck AVD: <strong>+31(0)183 50 81 50</strong></p>' + 
-                '<hr>' + 
+                '<p>Je kunt per e-mail contact opnemen: <a href="mailto:doiv@brwbn.nl">doiv@brwbn.nl</a></p>' +
+                '<p>Of telefonisch bij Falck AVD: <strong>+31(0)183 50 81 50</strong></p>' +
+                '<hr>' +
                 '<p> <strong>Dbk viewer</strong> <a href="https://bitbucket.org/milovanderlinden/dbk/issues">' + dbkjs.options.VERSION + '</a></p><p>' + dbkjs.options.RELEASEDATE + '</p>'
-                );            
-                    
+                );
+
         $('#input_contrast').val(parseFloat(dbkjs.map.baseLayer.opacity).toFixed(1));
         $('#input_contrast').keypress(function(event) {
-        if (event.keyCode === 13) {
-            var newOpacity = parseFloat($('#input_contrast').val()) .toFixed(1);
-            if (newOpacity > 1.0) {
-                $('#input_contrast').val(1.0);
-                dbkjs.map.baseLayer.setOpacity(1.0);
-            } else if (newOpacity > 1.0) {
-                $('#input_contrast').val(1.0);
-                dbkjs.map.baseLayer.setOpacity(1.0);
-            } else {
-                $('#input_contrast').val(parseFloat($('#input_contrast').val()).toFixed(1));
-                dbkjs.map.baseLayer.setOpacity(newOpacity);
+            if (event.keyCode === 13) {
+                var newOpacity = parseFloat($('#input_contrast').val()).toFixed(1);
+                if (newOpacity > 1.0) {
+                    $('#input_contrast').val(1.0);
+                    dbkjs.map.baseLayer.setOpacity(1.0);
+                } else if (newOpacity > 1.0) {
+                    $('#input_contrast').val(1.0);
+                    dbkjs.map.baseLayer.setOpacity(1.0);
+                } else {
+                    $('#input_contrast').val(parseFloat($('#input_contrast').val()).toFixed(1));
+                    dbkjs.map.baseLayer.setOpacity(newOpacity);
+                }
             }
-        }
-    });
+        });
         $('#click_contrast_up').click(function() {
             var newOpacity = parseFloat(($('#input_contrast').val()) + 0.1).toFixed(1);
             if (newOpacity > 1.0) {
