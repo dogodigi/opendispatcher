@@ -14,6 +14,11 @@ dbkjs.modules.preventie = {
      */
     layer: null,
     highlightlayer: null,
+    /**
+     * Functie waarmee de filter op deze laag wordt geactiveerd zodat niet
+     * buiten het geselecteerde DBK object kan worden geklikt
+     * @param {string} dbk_id
+     */
     updateFilter: function(dbk_id) {
         var _obj = dbkjs.modules.preventie;
         var cql_filter = "";
