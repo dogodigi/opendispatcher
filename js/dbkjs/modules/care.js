@@ -84,7 +84,7 @@ dbkjs.modules.care = {
             });
             _obj.layer.mergeNewParams({'cql_filter': "priority IN (" + arr.join() + ")"});
         });
-        _obj.dialog.show();
+        //_obj.dialog.show();
         var incidenten_button = $('<button class="btn btn-block" type="button">Incidenten aan</button>');
         if (_obj.layer.getVisibility()) {
             incidenten_button.addClass('btn-primary').html('Incidenten uit');

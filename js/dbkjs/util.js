@@ -279,6 +279,12 @@ dbkjs.util = {
         }
         return id;
     },
+    removeTab: function(parent_id, id) {
+        $('#' + id + '_tab').remove();
+        $('#' + id).remove();
+        $('#' + parent_id + ' ul:first').children().first().addClass('active');
+        $('#' + parent_id + ' .tab-content:first').children().first().addClass('active');
+    },
     createDialog: function(id, title, styleoptions) {
         if (!styleoptions) {
             styleoptions = '';

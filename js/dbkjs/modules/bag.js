@@ -31,12 +31,12 @@ dbkjs.modules.bag = {
             strokeWidth: 1,
             pointRadius: 3
         });
-        var pandfilter = new OpenLayers.Filter.Comparison({
-            type: OpenLayers.Filter.Comparison.EQUAL_TO,
-            property: "identificatie",
-            value: 0
-        });
-        var pandprotocol = new OpenLayers.Protocol.WFS({
+//        var pandfilter = new OpenLayers.Filter.Comparison({
+//            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+//            property: "identificatie",
+//            value: 0
+//        });
+        _obj.pandprotocol = new OpenLayers.Protocol.WFS({
             url: "/bag/wfs",
             featurePrefix: 'bagviewer',
             featureType: "pand",
@@ -66,12 +66,12 @@ dbkjs.modules.bag = {
                 }
             }
         });
-        var verblijfsobjectfilter = new OpenLayers.Filter.Comparison({
-            type: OpenLayers.Filter.Comparison.EQUAL_TO,
-            property: "pandidentificatie",
-            value: 0
-        });
-        var verblijfsobjectprotocol = new OpenLayers.Protocol.WFS({
+//        var verblijfsobjectfilter = new OpenLayers.Filter.Comparison({
+//            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+//            property: "pandidentificatie",
+//            value: 0
+//        });
+        _obj.verblijfsobjectprotocol = new OpenLayers.Protocol.WFS({
             url: "/bag/wfs",
             featurePrefix: 'bagviewer',
             featureType: "verblijfsobject",
@@ -87,26 +87,25 @@ dbkjs.modules.bag = {
 //                  e.feature = features[feat];
                     _obj.vboinfo(features[feat]);
                 }
+                //so we have read, now deactivate refresh.
             }
         });
 
         _obj.pand_layer = new OpenLayers.Layer.Vector("BAG panden", {
-            strategies: [new OpenLayers.Strategy.BBOX()],
-            protocol: pandprotocol,
-            filter: pandfilter,
+            //protocol: pandprotocol,
+            //filter: pandfilter,
             styleMap: pandstylemap
         });
 
         _obj.vbo_layer = new OpenLayers.Layer.Vector("BAG verblijfsobjecten", {
-            strategies: [new OpenLayers.Strategy.BBOX()],
-            protocol: verblijfsobjectprotocol,
-            filter: verblijfsobjectfilter,
+            //protocol: verblijfsobjectprotocol,
+            //filter: verblijfsobjectfilter,
             styleMap: vbostylemap
         });
         dbkjs.map.addLayers([_obj.pand_layer, _obj.vbo_layer]);
-        _obj.pand_layer.events.on({
-            "featureselected": _obj.getfeatureinfo
-        });
+//        _obj.pand_layer.events.on({
+//            "featureselected": _obj.getfeatureinfo
+//        });
 //        _obj.vbo_layer.events.on({
 //            "featureselected": _obj.getvboinfo
 //        });
@@ -267,12 +266,12 @@ dbkjs.modules.bag = {
                 _obj.pand_layer.destroyFeatures();
                 _obj.vbo_layer.destroyFeatures();
                 var lonLat = dbkjs.map.getLonLatFromViewPortPx(new OpenLayers.Pixel(e.xy.x, e.xy.y));
-                _obj.pand_layer.filter = new OpenLayers.Filter.Spatial({
+                var filter = new OpenLayers.Filter.Spatial({
                     type: OpenLayers.Filter.Spatial.CONTAINS,
                     property: "geometrie",
                     value: new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat)
                 });
-                _obj.pand_layer.refresh({force: true});
+                _obj.pandprotocol.read({filter: filter});
                 return false;
             }
         } else {
@@ -280,33 +279,33 @@ dbkjs.modules.bag = {
             _obj.vbo_layer.destroyFeatures();
         }
     },
-    getVBO: function(bagvboid, callback) {
-
-        var verblijfsobjectprotocol = new OpenLayers.Protocol.WFS({
-            url: "/bag/wfs",
-            featurePrefix: 'bagviewer',
-            featureType: "verblijfsobject",
-            featureNS: "http://bagviewer.geonovum.nl",
-            geometryName: "geometrie",
-            srsName: "EPSG:28992",
-            outputFormat: 'json',
-            defaultFilter: null,
-            handleRead: function(response) {
-                var features = new OpenLayers.Format.GeoJSON().read(JSON.parse(response.priv.responseText));
-                //_obj.vbo_layer.addFeatures(features);
-                return callback(features);
-                //for (var feat in features) {
-                //    var e = {};
-                //    e.feature = features[feat];
-                //    _obj.getfeatureinfo(e);
-                //}
-            }
-        });
-        verblijfsobjectprotocol.read({filter: new OpenLayers.Filter.Comparison({
-                type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                property: "identificatie",
-                value: bagvboid})});
-    },
+//    getVBO: function(bagvboid, callback) {
+//
+//        var verblijfsobjectprotocol = new OpenLayers.Protocol.WFS({
+//            url: "/bag/wfs",
+//            featurePrefix: 'bagviewer',
+//            featureType: "verblijfsobject",
+//            featureNS: "http://bagviewer.geonovum.nl",
+//            geometryName: "geometrie",
+//            srsName: "EPSG:28992",
+//            outputFormat: 'json',
+//            defaultFilter: null,
+//            handleRead: function(response) {
+//                var features = new OpenLayers.Format.GeoJSON().read(JSON.parse(response.priv.responseText));
+//                //_obj.vbo_layer.addFeatures(features);
+//                return callback(features);
+//                //for (var feat in features) {
+//                //    var e = {};
+//                //    e.feature = features[feat];
+//                //    _obj.getfeatureinfo(e);
+//                //}
+//            }
+//        });
+//        verblijfsobjectprotocol.read({filter: new OpenLayers.Filter.Comparison({
+//                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+//                property: "identificatie",
+//                value: bagvboid})});
+//    },
     panel: function() {
         $('#bagpanel').hide();
     }
