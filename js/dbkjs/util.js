@@ -30,21 +30,23 @@ dbkjs.util = {
         $('#infopanel_f').html('');
         if (dbkjs.modules) {
             $.each(dbkjs.modules, function(mod_index, module) {
-                if (typeof(module.layer) !== "undefined" && module.layer.visibility) {
-                    // Controleer of het een van de dbk layers is waar op is geklikt.
-                    if (dbkjs.protocol) {
-                        if (dbkjs.protocol.imdbk21) {
-                            if ($.inArray(module.id, ["dbko", "dbkf", "dbkgev", "dbkprep", "dbkprev"]) !== -1) {
-                                dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
-                            } else {
-                                if (typeof(module.getfeatureinfo) !== "undefined") {
-                                    module.getfeatureinfo(e);
+                if ($.inArray(mod_index, dbkjs.options.regio.modules) > -1) {
+                    if (typeof(module.layer) !== "undefined" && module.layer.visibility) {
+                        // Controleer of het een van de dbk layers is waar op is geklikt.
+                        if (dbkjs.protocol) {
+                            if (dbkjs.protocol.imdbk21) {
+                                if ($.inArray(module.id, ["dbko", "dbkf", "dbkgev", "dbkprep", "dbkprev"]) !== -1) {
+                                    dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
+                                } else {
+                                    if (typeof(module.getfeatureinfo) !== "undefined") {
+                                        module.getfeatureinfo(e);
+                                    }
                                 }
                             }
-                        }
-                    } else {
-                        if (typeof(module.getfeatureinfo) !== "undefined") {
-                            module.getfeatureinfo(e);
+                        } else {
+                            if (typeof(module.getfeatureinfo) !== "undefined") {
+                                module.getfeatureinfo(e);
+                            }
                         }
                     }
                 }

@@ -1,7 +1,8 @@
-// @TODO: Add localization options
+// @todo Add localization options
 
 OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 OpenLayers.Util.onImageLoadErrorColor = "transparent";
+OpenLayers.Lang["nl"] = OpenLayers.Util.applyDefaults({'Scale = 1 : ${scaleDenom}': "Schaal 1 : ${scaleDenom}"});
 OpenLayers.Lang.setCode("nl");
 
 Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <>";
@@ -19,8 +20,8 @@ dbkjs.options = {
         }
     }
 };
-dbkjs.options.VERSION = "0.9-SNAPSHOT2";
-dbkjs.options.RELEASEDATE = '02-09-2013';
+dbkjs.options.VERSION = "0.9-SNAPSHOT3";
+dbkjs.options.RELEASEDATE = '04-09-2013';
 dbkjs.options.APPLICATION = 'DOIV 1';
 dbkjs.options.REMARKS = 'vrijgave voor test en acceptatie onder voorbehoud van openstaande issues.';
 dbkjs.options.info = "";
@@ -71,7 +72,8 @@ dbkjs.options.baselayers = [
                 units: "m",
                 maxExtent: new OpenLayers.Bounds(-285401.92, 22598.08, 595401.92, 903401.92),
                 projection: new OpenLayers.Projection("EPSG:28992"),
-                sphericalMercator: false
+                sphericalMercator: false,
+                attribution: "OpenStreetMap"
             }
     ),
     new OpenLayers.Layer.WMS(
@@ -103,7 +105,8 @@ dbkjs.options.baselayers = [
                 matrixIds: dbkjs.options.pdok.matrixIds,
                 tileOrigin: dbkjs.options.pdok.tms.tileOrigin,
                 serverResolutions: dbkjs.options.pdok.tms.serverResolutions,
-                tileFullExtent: dbkjs.options.pdok.tms.tileFullExtent
+                tileFullExtent: dbkjs.options.pdok.tms.tileFullExtent,
+                attribution: "PDOK"
             }
     ),
     new OpenLayers.Layer.TMS(
@@ -118,7 +121,8 @@ dbkjs.options.baselayers = [
                 matrixIds: dbkjs.options.pdok.matrixIds,
                 tileOrigin: dbkjs.options.pdok.tms.tileOrigin,
                 serverResolutions: dbkjs.options.pdok.tms.serverResolutions,
-                tileFullExtent: dbkjs.options.pdok.tms.tileFullExtent
+                tileFullExtent: dbkjs.options.pdok.tms.tileFullExtent,
+                attribution: "PDOK"
             }
     )
 ];
@@ -128,6 +132,7 @@ dbkjs.map = dbkjs.map || null;
 dbkjs.init = function() {
     var options = {
         theme: null,
+        controls: [new OpenLayers.Control.Navigation()],
         div: 'mapc1map1',
         projection: new OpenLayers.Projection(dbkjs.options.projection.code),
         resolutions: [3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84, 0.42, 0.210, 0.105, 0.0525, 0.02625, 0.013125, 0.0065625],
@@ -173,8 +178,12 @@ dbkjs.init = function() {
         numDigits: dbkjs.options.projection.coordinates.numDigits,
         div: OpenLayers.Util.getElement('coords')
     });
-
     dbkjs.map.addControl(mousePos);
+    var attribution = new OpenLayers.Control.Attribution({
+        div: OpenLayers.Util.getElement('attribution')
+    });
+    dbkjs.map.addControl(attribution);
+    
     var scalebar = new OpenLayers.Control.Scale(OpenLayers.Util.getElement('scale'));
     dbkjs.map.addControl(scalebar);
     dbkjs.naviHis = new OpenLayers.Control.NavigationHistory();
@@ -245,12 +254,22 @@ dbkjs.activateClick = function() {
 dbkjs.challengeAuth = function() {
     $.ajax({
         //perform a dummy request to trigger authentication
-        url: dbkjs.options.regio.safetymaps_url + "layers=" + dbkjs.options.regio.workspace + ":WMS_TekstObject&styles=&bbox=0,0,1,1&width=1&height=1&srs=" + dbkjs.options.projection.code + "&format=image/png",
-        data: {"service": "wms", "version": "1.3.0", "request": "GetMap"},
-        method: 'GET',
-        error: function(jqXHR, textStatus, errorThrown) {
-            //@TODO what to do when auth fails?
+        url: dbkjs.options.regio.safetymaps_url + 'wms',
+        data: {
+            width: 1,
+            height: 1,
+            srs: dbkjs.options.projection.code,
+            bbox: "0,0,1,1",
+            styles: "",
+            layers: dbkjs.options.regio.workspace + ":WMS_TekstObject",
+            service: "wms",
+            version: "1.3.0",
+            request: "GetMap",
+            format: "image/png"
         },
+        method: 'GET',
+        //error: function(jqXHR, textStatus, errorThrown) {
+        //},
         success: function() {
             dbkjs.successAuth();
         }
@@ -276,8 +295,14 @@ dbkjs.successAuth = function() {
 
     //register modules
     $.each(dbkjs.modules, function(mod_index, module) {
-        if (module.register) {
-            module.register({namespace: dbkjs.options.regio.workspace, url: dbkjs.options.regio.safetymaps_url, visible: true});
+        //Controleer of de regio een eigen logo heeft gedefinieerd
+        if (dbkjs.options.regio.logo){
+            $('#logo').css('background-image', 'url(' + dbkjs.options.regio.logo + ')');
+        }
+        if ($.inArray(mod_index, dbkjs.options.regio.modules) > -1) {
+            if (module.register) {
+                module.register({namespace: dbkjs.options.regio.workspace, url: dbkjs.options.regio.safetymaps_url, visible: true});
+            }
         }
     });
     if (dbkjs.ui.gui) {
@@ -296,16 +321,6 @@ $(document).ready(function() {
     dbkjs.util.setModalTitle('overlaypanel', 'Lagen');
     dbkjs.util.setModalTitle('baselayerpanel', 'Basiskaarten');
     dbkjs.init();
-
-
-    // Foutknop //
-    var reciever = 'mailto:doiv@brwbn.nl';
-    var subject = 'subject=' + dbkjs.options.APPLICATION + ' Melding' + dbkjs.options.VERSION + ' (' + dbkjs.options.RELEASEDATE + ')';
-    var body = 'body=' + location.href + ' (deze link wordt door de beheerder gecontroleerd)';
-    var sMailTo = dbkjs.util.htmlEncode(reciever + '?' + subject);
-    sMailTo += '&' + dbkjs.util.htmlEncode(body);
-    $('#foutknop').find('a').attr('href', sMailTo);
-
 
     $('#infopanel_b').html(dbkjs.options.info);
     $('.btn').click(function() {

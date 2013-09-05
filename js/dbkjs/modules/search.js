@@ -1,12 +1,15 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
-dbkjs.modules.updateFilter = function(id){
-  $.each(dbkjs.modules, function(mod_index, module) {
-      if(module.updateFilter){
-          module.updateFilter(id);
-      }
-  });  
+dbkjs.modules.updateFilter = function(id) {
+
+    $.each(dbkjs.modules, function(mod_index, module) {
+        if ($.inArray(mod_index, dbkjs.options.regio.modules) > -1) {
+            if (module.updateFilter) {
+                module.updateFilter(id);
+            }
+        }
+    });
 };
 dbkjs.modules.search = {
     activate: function() {
@@ -19,11 +22,11 @@ dbkjs.modules.search = {
 
                     for (i = 0; i < parsedResponse.length; i++) {
                         var pnt = new OpenLayers.Geometry.Point(
-                            parsedResponse[i].lon, 
-                            parsedResponse[i].lat).transform(
-                                new OpenLayers.Projection("EPSG:4326"), 
+                                parsedResponse[i].lon,
+                                parsedResponse[i].lat).transform(
+                                new OpenLayers.Projection("EPSG:4326"),
                                 dbkjs.map.getProjectionObject()
-                            );
+                                );
                         dataset.push({
                             value: parsedResponse[i].display_name,
                             id: parsedResponse[i].osm_id,

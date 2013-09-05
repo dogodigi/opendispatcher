@@ -38,7 +38,7 @@ dbkjs.modules.gevaren = {
         
         _obj.layer = new OpenLayers.Layer.WMS(
             "Onderkende gevaren en inzetbijzonderheden", 
-            _obj.url, {
+            _obj.url + 'wms', {
                 layers: this.namespace + ':WMS_GevaarlijkeStof', 
                 format: 'image/png', 
                 transparent: true
@@ -60,16 +60,15 @@ dbkjs.modules.gevaren = {
         var dv_panel_title = $('<h4 class="panel-title"></div>');
         dv_panel_title.append('<input type="checkbox" name="box_' + _obj.id + '"/>&nbsp;');
         dv_panel_title.append(_obj.layer.name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' + 
-                _obj.id + '" data-parent="#overlaypanel_b" ><i class="icon-info-sign"></i></a>');
+                _obj.id + '" data-parent="#overlaypanel_b1" ><i class="icon-info-sign"></i></a>');
         dv_panel_heading.append(dv_panel_title);
         dv_panel.append(dv_panel_heading);
         var dv_panel_content = $('<div id="collapse_' + _obj.id + '" class="panel-collapse collapse"></div>');
-        http://geo.safetymaps.nl/geoserver/dbk/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=GevaarlijkeStof
         dv_panel_content.append('<div class="panel-body">' +
-                '<img src="' + _obj.url + 'REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=GevaarlijkeStof&legend_options=fontAntiAliasing:true;fontSize:14;dpi:90' + '"></img>' +
+                '<img src="' + _obj.url + 'wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=GevaarlijkeStof&legend_options=fontAntiAliasing:true;fontSize:14;dpi:90' + '"></img>' +
         '</div>');
         dv_panel.append(dv_panel_content);
-        $('#overlaypanel_b').append(dv_panel);
+        $('#overlaypanel_b1').append(dv_panel);
         if (_obj.layer.getVisibility()) {
             //checkbox aan
             $('input[name="box_' + _obj.id + '"]').attr('checked','checked');

@@ -18,13 +18,49 @@ dbkjs.ui.gui = {
                 '</span></div></div></p><hr>'
                 );
         $(parent).append('<h4>Lagen toevoegen</h4><p>De volgende lagen zijn aanwezig op het systeem:</p>');
-        dbkjs.protocol.getCapabilities.get();
+        if (dbkjs.protocol.getCapabilities) {
+            //dbkjs.protocol.getCapabilities.get();
+            // even een laag testen, brabantwater? komt ie
+            var lufo2 = new dbkjs.Layer({
+                name: 'Hoge resolutie luchtfoto',
+                url: 'http://geo.safetymaps.nl/map/mapserv',
+                map: dbkjs.map,
+                layerOptions: {map: '/home/mapserver/doiv.map', layers: 'luchtfoto'},
+                parent: '#overlaypanel_b3',
+                index: 0
+            });
+            var gbkn = new dbkjs.Layer({
+                name: 'GBKN',
+                url: 'http://geo.safetymaps.nl/map/mapserv',
+                map: dbkjs.map,
+                layerOptions: {map: '/home/mapserver/doiv.map', layers: 'gbkn_panden,gbkn_topografie'},
+                parent: '#overlaypanel_b3',
+                index: 0
+            });
+
+            var brabantwater = new dbkjs.Layer({
+                name: 'Water',
+                url: '/brabantnoord/wms',
+                map: dbkjs.map,
+                layerOptions: {layers: 'brwbn:Water'},
+                parent: '#overlaypanel_b2',
+                index:4
+            });
+            var gebieden = new dbkjs.Layer({
+                name: 'Gebieden',
+                url: 'http://geo.safetymaps.nl/map/mapserv',
+                map: dbkjs.map,
+                layerOptions: {map: '/home/mapserver/doiv.map', layers: 'gebieden'},
+                parent: '#overlaypanel_b3',
+                index: 6
+            });
+        }
         $(parent).append('');
         $(parent).append('<hr>');
         $(parent).append(
-                '<p><strong>' + dbkjs.options.APPLICATION + '</strong> ' + dbkjs.options.VERSION + ' (' + dbkjs.options.RELEASEDATE + ')' + '</p>' + 
-                '<p>' + dbkjs.options.REMARKS +'</p>'
-        );
+                '<p><strong>' + dbkjs.options.APPLICATION + '</strong> ' + dbkjs.options.VERSION + ' (' + dbkjs.options.RELEASEDATE + ')' + '</p>' +
+                '<p>' + dbkjs.options.REMARKS + '</p>'
+                );
 
         $('#input_contrast').val(parseFloat(dbkjs.map.baseLayer.opacity).toFixed(1));
         $('#input_contrast').keypress(function(event) {

@@ -3,7 +3,7 @@ window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.care = {
     id: "care",
-    url: "/geoserver/zeeland/wms?",
+    url: "/zeeland/",
     namespace: "zeeland",
     visibility: false,
     layer: null,
@@ -28,7 +28,7 @@ dbkjs.modules.care = {
 
         _obj.layer = new OpenLayers.Layer.WMS(
                 "Normtijden op verblijfsobjecten",
-                _obj.url, {
+                _obj.url + 'dbk/wms', {
             layers: _obj.namespace + ':incidents',
             format: 'image/png',
             transparent: true,
@@ -125,7 +125,7 @@ dbkjs.modules.care = {
                     params.CQL_FILTER = cql_string;
                 }
             }
-            var downloadstring = _obj.url + decodeURIComponent($.param(params));
+            var downloadstring = _obj.url + 'wfs'+ decodeURIComponent($.param(params));
             window.location = downloadstring;
         });
         $('#care_dialog_b').append(download_button);
@@ -161,7 +161,7 @@ dbkjs.modules.care = {
             //DATE_COL > '01.01.2012' AND DATE_COL < '31.12.2012'
         }
         params.CQL_FILTER += ' AND ' + 'BBOX(the_geom,' + llMin.lon + "," + llMin.lat + "," + llMax.lon + "," + llMax.lat + ",'EPSG:28992')";
-        OpenLayers.Request.GET({url: _obj.url, "params": params, callback: _obj.panel});
+        OpenLayers.Request.GET({url: _obj.url + 'wfs', "params": params, callback: _obj.panel});
         //OpenLayers.Event.stop(e);
     },
     panel: function(response) {

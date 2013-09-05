@@ -34,7 +34,9 @@ $('div.btn-group ul.dropdown-menu li a').click(function(e) {
     if ($(this).text() === " Adres") {
         mbtn.html('<i class="icon-home"></i>');
         minp.attr("placeholder", "zoek adres of POI");
-        dbkjs.modules.search.activate();
+        if(dbkjs.modules.search){
+            dbkjs.modules.search.activate();
+        }
     } else if ($(this).text() === " Coördinaat") {
         mbtn.html('<i class="icon-pushpin"></i>');
         minp.attr("placeholder", "lon,lat of X,Y punt voor decimaal");
@@ -54,7 +56,7 @@ $('div.btn-group ul.dropdown-menu li a').click(function(e) {
                     dbkjs.modules.updateFilter(0);
                     dbkjs.map.setCenter(loc, 11);
                 } else {
-                    // @TODO build function to handle map fault
+                    // @todo build function to handle map fault
                 }
             }
             return false;

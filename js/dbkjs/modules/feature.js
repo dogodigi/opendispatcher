@@ -374,20 +374,19 @@ dbkjs.modules.feature = {
     },
     get: function() {
         var _obj = dbkjs.modules.feature;
-        var mydata = {};
-        mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
-        mydata.time = new Date().getTime();
-        mydata.service = "WFS";
-        mydata.version = "1.0.0";
-        mydata.request = "GetFeature";
-        mydata.typename = _obj.namespace + ":WMS_DBKFeature";
-        mydata.maxFeatures = 500;
-        mydata.outputFormat = "json";
-        //http://safetymaps.nl/geoserver/brabantnoord/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=brabantnoord:dbkfeature_centroid&maxFeatures=50&outputFormat=json
+        var params = {
+            bbox: dbkjs.map.getExtent().toBBOX(0),
+            service: "WFS",
+            version: "1.0.0",
+            request: "GetFeature",
+            typename: _obj.namespace + ":WMS_DBKFeature",
+            maxFeatures: 500, // todo let op; deze max kan in de toekomst problemen geven
+            outputFormat:"application/json"
+        };
         $.ajax({
             type: "GET",
-            url: _obj.url,
-            data: mydata,
+            url: _obj.url + 'ows',
+            data: params,
             dataType: "json",
             success: function(data) {
                 var geojson_format = new OpenLayers.Format.GeoJSON();

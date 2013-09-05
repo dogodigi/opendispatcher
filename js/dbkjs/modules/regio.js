@@ -7,7 +7,7 @@ dbkjs.modules.regio = {
      * URL naar een statisch boringen bestand in gml formaat
      */
     features: [],
-    url: "/geoserver/zeeland/ows?",
+    url: "/zeeland/",
     namespace: "zeeland",
     register: function(options) {
         var _obj = dbkjs.modules.regio;
@@ -15,23 +15,33 @@ dbkjs.modules.regio = {
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
         _obj.get();
+//        $('#btn-grp-search').before('<div id="regio_selectie" class="btn-group">' +
+//                '<button id="geselecteerd_district" type="button" class="btn btn-default">Regio</button>' +
+//                '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' +
+//                '<span class="caret"></span>' +
+//                '</button>' +
+//                '</div>' +
+//                '<div id="district_selectie" class="btn-group" style="display:none;">' +
+//                '<button id="geselecteerde_gemeente" type="button" class="btn btn-default"></button>' +
+//                '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' +
+//                '<span class="caret"></span>' +
+//                '</button>' +
+//                '</div>');
     },
     get: function() {
-        //http://safetymaps.nl/geoserver/brabantnoord/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=brabantnoord:district_box&maxFeatures=50&outputFormat=application/json
         var _obj = dbkjs.modules.regio;
-        var mydata = {};
-        mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
-        mydata.time = new Date().getTime();
-        mydata.service = "WFS";
-        mydata.version = "1.0.0";
-        mydata.request = "GetFeature";
-        mydata.typename = _obj.namespace + ":regio_box";
-        mydata.maxFeatures = 1;
-        mydata.outputFormat = "application/json";
+        var params = {
+            bbox: dbkjs.map.getExtent().toBBOX(0),
+            service: "WFS",
+            version: "1.0.0",
+            request: "GetFeature",
+            typename: _obj.namespace + ":regio_box",
+            outputFormat: "application/json"
+        };
         $.ajax({
             type: "GET",
-            url: _obj.url,
-            data: mydata,
+            url: _obj.url + 'ows',
+            data: params,
             dataType: "json",
             success: function(data) {
                 var geojson_format = new OpenLayers.Format.GeoJSON();

@@ -134,7 +134,7 @@ dbkjs.modules.bag = {
         dv_panel_title.append(
                 _obj.layer.name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
                 _obj.id +
-                '" data-parent="#overlaypanel_b" ><i class="icon-info-sign"></i></a>'
+                '" data-parent="#overlaypanel_b2" ><i class="icon-info-sign"></i></a>'
                 );
         dv_panel_heading.append(dv_panel_title);
         dv_panel.append(dv_panel_heading);
@@ -149,7 +149,7 @@ dbkjs.modules.bag = {
                 '<div class="row"><div class="col-xs-2 text-center"><i class="icon-circle" style="color:#610B21;"></i></div><div class="col-xs-10"> Verblijfsobject(en) in geselecteerd pand</div></div>' +
                 '</p></div>');
         dv_panel.append(dv_panel_content);
-        $('#overlaypanel_b').append(dv_panel);
+        $('#overlaypanel_b2').append(dv_panel);
         if (_obj.layer.getVisibility()) {
             //checkbox aan
             $('input[name="box_' + _obj.id + '"]').attr('checked', 'checked');

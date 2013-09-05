@@ -17,21 +17,19 @@ dbkjs.modules.district = {
         _obj.get();
     },
     get: function() {
-        //http://safetymaps.nl/geoserver/brabantnoord/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=brabantnoord:district_box&maxFeatures=50&outputFormat=application/json
         var _obj = dbkjs.modules.district;
-        var mydata = {};
-        mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
-        mydata.time = new Date().getTime();
-        mydata.service = "WFS";
-        mydata.version = "1.0.0";
-        mydata.request = "GetFeature";
-        mydata.typename = _obj.namespace + ":district_box";
-        mydata.maxFeatures = 6;
-        mydata.outputFormat = "application/json";
+        var params = {
+            bbox: dbkjs.map.getExtent().toBBOX(0),
+            service: "WFS",
+            version: "1.0.0",
+            request: "GetFeature",
+            typename: _obj.namespace + ":district_box",
+            outputFormat:"application/json"
+        };
         $.ajax({
             type: "GET",
-            url: _obj.url,
-            data: mydata,
+            url: _obj.url + 'ows',
+            data: params,
             dataType: "json",
             success: function(data) {
                 var geojson_format = new OpenLayers.Format.GeoJSON();

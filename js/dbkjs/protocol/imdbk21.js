@@ -3,7 +3,6 @@ window.dbkjs = dbkjs;
 dbkjs.protocol = dbkjs.protocol || {};
 dbkjs.protocol.imdbk21 = {
     feature: null,
-    url: '/wfs?',
     processing: false,
     panel_group: null,
     panel_tabs: null,
@@ -365,7 +364,7 @@ dbkjs.protocol.imdbk21 = {
             featureID: 'DBKObject.' + id
         };
         OpenLayers.Request.GET({
-            url: dbkjs.protocol.imdbk21.url,
+            url: dbkjs.options.regio.safetymaps_url + 'wfs',
             //url: 'http://dbk.mapcache.nl/data/DBKObject_1371547912.xml', 
             "params": params, callback: dbkjs.protocol.imdbk21.info});
     },

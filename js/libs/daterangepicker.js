@@ -358,7 +358,7 @@
         move: function () {
             var minWidth = $(this.container).find('.ranges').outerWidth();
             if ($(this.container).find('.calendar').is(':visible')) {
-                var padding = 24; // FIXME: this works for the default styling, but isn't flexible
+                var padding = 24; // @todo this works for the default styling, but isn't flexible
                 minWidth += $(this.container).find('.calendar').outerWidth() * 2 + padding;
             }
             if (this.opens == 'left') {
