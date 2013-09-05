@@ -95,7 +95,7 @@ dbkjs.modules.preventie = {
             params.x = e.xy.x;
             params.y = e.xy.y;
         }
-        OpenLayers.Request.GET({url: _obj.url, "params": params, callback: _obj.panel});
+        OpenLayers.Request.GET({url: _obj.url + 'wms', "params": params, callback: _obj.panel});
         OpenLayers.Event.stop(e);
     },
     panel: function(response) {
@@ -104,21 +104,26 @@ dbkjs.modules.preventie = {
 
         features = g.read(response.responseText);
         if (features.length > 0) {
-            html = '<div class="infocontent">';
+            html = '<div class="table-responsive">';
             for (var feat in features) {
-                html += '<h2>Preventie</h2>';
-                html += "<table>";
-                for (var j in features[feat].attributes) {
-                    if (typeof(features[feat].attributes[j]) !== "undefined" && features[feat].attributes[j] !== "") {
-                        html += '<tr><td><span class="infofieldtitle">' + j + "</span>: </td><td>" + features[feat].attributes[j] + "</td></tr>";
-                    }
-                }
+                html += '<table class="table table-hover">';
+                //for (var j in features[feat].attributes) {
+                    //if ($.inArray(j, ['Omschrijving', 'GEVIcode', 'UNnr', 'Hoeveelheid', 'NaamStof']) > -1) {
+                        if (!dbkjs.util.isJsonNull(features[feat].attributes.typeVoorziening)) {
+                            html += '<tr><td>Type</td><td><a href="nen1414.html#' + 
+                                    features[feat].attributes.typeVoorziening + '" target="_blank">' + 
+                                    features[feat].attributes.typeVoorziening + '</a><td></tr>';
+                        }
+                         if (!dbkjs.util.isJsonNull(features[feat].attributes.aanvullendeInformatie)) {
+                            html += '<tr><td colspan="2">' + features[feat].attributes.aanvullendeInformatie + '<td></tr>';
+                        }
+                    //}
+                //}
                 html += "</table>";
             }
             html += '</div>';
-            $('#infopanel_b').append(html);
-            $('#infopanel_f').html('');
-            $('#infopanel').toggle(true);
+            dbkjs.util.appendTab(dbkjs.wms_panel.attr("id"),'Brandweervoorziening',html, true, 'br_voorz_tab');
+            $('#wmsclickpanel').show();
         }
     }
 };

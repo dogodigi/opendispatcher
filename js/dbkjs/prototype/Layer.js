@@ -23,7 +23,7 @@ dbkjs.Layer = dbkjs.Class({
         //let op, de map moet worden meegegeven in de opties
         options.map.addLayers([this.layer]);
         // @todo functie maken om layerindex dynamisch te toveren 0 is onderop de stapel
-        if (options.index){
+        if (options.index) {
             options.map.setLayerIndex(this.layer, options.index);
         } else {
             options.map.setLayerIndex(this.layer, 0);
@@ -40,18 +40,20 @@ dbkjs.Layer = dbkjs.Class({
         //dv_panel_content.append('');
         this.div.append(dv_panel_content);
         $(options.parent).append(this.div);
-        if (this.layer.getVisibility()) {
-            //checkbox aan
-            $('input[name="box_' + this.id + '"]').attr('checked', 'checked');
-        }
-        var that = this;
-        $('input[name="box_' + this.id + '"]').click(function() {
-            if ($(this).is(':checked')) {
-                that.layer.setVisibility(true);
-            } else {
-                that.layer.setVisibility(false);
+        if (this.layer) {
+            if (this.layer.getVisibility()) {
+                //checkbox aan
+                $('input[name="box_' + this.id + '"]').attr('checked', 'checked');
             }
-        });
+            var that = this;
+            $('input[name="box_' + this.id + '"]').click(function() {
+                if ($(this).is(':checked')) {
+                    that.layer.setVisibility(true);
+                } else {
+                    that.layer.setVisibility(false);
+                }
+            });
+        }
     },
     getfeatureinfo: function(e) {
         var params = {

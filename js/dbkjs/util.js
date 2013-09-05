@@ -35,7 +35,7 @@ dbkjs.util = {
                         // Controleer of het een van de dbk layers is waar op is geklikt.
                         if (dbkjs.protocol) {
                             if (dbkjs.protocol.imdbk21) {
-                                if ($.inArray(module.id, ["dbko", "dbkf", "dbkgev", "dbkprep", "dbkprev"]) !== -1) {
+                                if ($.inArray(module.id, ["dbko", "dbkf"]) !== -1) {
                                     dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
                                 } else {
                                     if (typeof(module.getfeatureinfo) !== "undefined") {
@@ -194,6 +194,12 @@ dbkjs.util = {
             return '';
         }
     },
+    /**
+     * Verander de titel van de opgegeven panel
+     * 
+     * @param {string} title
+     * @param {string} dialogid
+     */
     changeDialogTitle: function(title, dialogid) {
         var dialog;
         if (!dialogid) {
@@ -205,6 +211,73 @@ dbkjs.util = {
         if (title) {
             $(dialog.children('span')[0]).html(title);
         }
+    },
+    /**
+     * 
+     * @param {string} id (optioneel)
+     * @returns {jQuery.DOMElement} de nieuwe tabtabel
+     */
+    createTabbable: function(id) {
+        if (!id) {
+            id = OpenLayers.Util.createUniqueID("dbkjs.tabbable_");
+        }
+        var tabbable = $('<div id="' + id + '" class="tabbable"></div>');
+        var ul = $('<ul class="nav nav-tabs"></ul>');
+        var tab = $('<div class="tab-content"></div>');
+        // @todo voor nu alleen tabs boven. Wellicht in de toekomst wat flexibeler maken
+        tabbable.append(ul);
+        tabbable.append(tab);
+        return tabbable;
+    },
+    /**
+     * Retourneert de tab_content id placeholder zodat hierop 
+     * kan worden ingevoerd, kan eventueel met een bestaande id worden
+     * aangeroepen.
+     * 
+     * @param {string} parent_id
+     * @param {string} tab_title
+     * @param {string} tab_content
+     * @param {boolean} active tab aan of uit.
+     * @param {string} id (optional)
+     * @returns {string}
+     */
+    appendTab: function(parent_id, tab_title, tab_content, active, id) {
+        var parent_ul = $('#' + parent_id + ' ul:first');
+        var parent_tab = $('#' + parent_id + ' .tab-content:first');
+        var li;
+        var ref;
+        var pane;
+        if (id) {
+            //controleer of de tab wel bestaat..
+        }
+        if (!id) {
+            var id = OpenLayers.Util.createUniqueID("dbkjs.tab_pane_");
+        }
+
+        li = $('#' + id + '_tab');
+        pane = $('#' + id);
+        if (li.length === 0) {
+            li = $('<li id="' + id + '_tab"></li>');
+            ref = $('<a href="#' + id + '" data-toggle="tab"></a>');
+            li.append(ref);
+            parent_ul.append(li);
+        }
+        ref = li.children().first();
+
+        if (pane.length === 0) {
+            pane = $('<div class="tab-pane active" id="' + id + '"></div>');
+            parent_tab.append(pane);
+        }
+        ref.html(tab_title);
+        pane.html(tab_content);
+        if (active) {
+            //verwijder van alle andere tabs de active state!
+            parent_ul.children().removeClass('active');
+            parent_tab.children().removeClass('active');
+            li.addClass('active');
+            pane.addClass('active');
+        }
+        return id;
     },
     createDialog: function(id, title, styleoptions) {
         if (!styleoptions) {

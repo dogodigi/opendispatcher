@@ -315,6 +315,10 @@ $(document).ready(function() {
     document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
     $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> Informatie', 'right:0;bottom:0;'));
     $('body').append(dbkjs.util.createDialog('bagpanel', '<i class="icon-home"></i> BAG', 'right:0;bottom:0;'));
+    $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="icon-info-sign"></i> Klik informatie', 'right:0;bottom:0;'));
+    // tab er aan hangen.
+    dbkjs.wms_panel = dbkjs.util.createTabbable();
+    $('#wmsclickpanel_b').append(dbkjs.wms_panel);
     $('body').append(dbkjs.util.createDialog('minimappanel', '<i class="icon-picture"></i> Referentiekaart', 'bottom:0;'));
     $('.dialog').drags({handle: '.panel-heading'});
     $('.btn-group').drags({handle: '.drag-handle'});
