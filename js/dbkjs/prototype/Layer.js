@@ -103,7 +103,7 @@ dbkjs.Layer = dbkjs.Class({
                 html += "</table>";
             }
             html += '</div>';
-            console.log(html);
+            //console.log(html);
         }
     }
 });

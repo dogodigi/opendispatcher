@@ -41,8 +41,17 @@ dbkjs.protocol.imdbk21 = {
     },
     info: function(response) {
         var _obj = dbkjs.protocol.imdbk21;
-        if (response && response.responseXML) {
-            var xmldoc = $.xml2json(response.responseXML);
+        if (response) {
+            if (response.responseXML){
+                var xmldoc = $.xml2json(response.responseXML);
+            } else {
+                // let op; internet explorer retourneert altijd null voor responseXML
+                // proberen om responseText op te vangen
+                // if ($.browser.msie) {
+                var parser = new DOMParser();
+                var xmlDoc = parser.parseFromString(response.responseText, "application/xml");
+                var xmldoc = $.xml2json(xmlDoc);
+            }
             if (xmldoc["wfs:FeatureCollection"]["wfs:member"]) {
                 _obj.panel_group = $('<div class="tab-content"></div>');
                 _obj.panel_tabs = $('<ul class="nav nav-pills"></ul>');
