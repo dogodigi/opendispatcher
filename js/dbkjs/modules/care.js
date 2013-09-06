@@ -27,7 +27,7 @@ dbkjs.modules.care = {
         // moment.js, wat een mooie javascript bibliotheek
 
         _obj.layer = new OpenLayers.Layer.WMS(
-                "Normtijden op verblijfsobjecten",
+                "Incidenten",
                 _obj.url + 'dbk/wms', {
             layers: _obj.namespace + ':incidents',
             format: 'image/png',
@@ -45,16 +45,39 @@ dbkjs.modules.care = {
             attribution: "Falck"
         }
         );
-        dbkjs.map.addLayers([_obj.layer]);
+            _obj.layer2 = new OpenLayers.Layer.WMS(
+                "Normen",
+                _obj.url + 'dbk/wms', {
+            layers: _obj.namespace + ':normen',
+            format: 'image/png',
+            transparent: true,
+            time: '',
+            styles: 'Overschrijding',
+            cql_filter: "sit1timespanarrivalfirstunit = 382"
+        }, {
+            transitionEffect: 'none',
+            singleTile: true,
+            buffer: 0,
+            isBaseLayer: false,
+            visibility: false,
+            attribution: "Falck"
+        }
+        );
+        dbkjs.map.addLayers([_obj.layer, _obj.layer2]);
 
         //Care heeft zijn eigen panel:
         _obj.dialog = dbkjs.util.createDialog('care_dialog', '<i class="icon-fire"></i> Incidenten en normen');
         $('body').append(_obj.dialog);
-        _obj.sel_array = [];
         _obj.sel_care = $('<input id="sel_care" name="sel_care" type="text" class="form-control" placeholder="Kies een periode">');
         $('.dialog').drags({handle: '.panel-heading'});
-        $('#care_dialog_b').append('<h5>Datumbereik</h5>');
-        $('#care_dialog_b').append(_obj.sel_care);
+        
+        //_obj.updateLayer(moment().format('YYYY-MM-DD'));
+        var incidentSel = $('<div id="incidentSel" style="display:none;"></div>');
+        var normSel = $('<div id="normSel" style="display:none;"></div>');
+        var normSel_minuten = $('<input id="sel_care" name="normSel_minuten" type="text" class="form-control" placeholder="Overschrijding in minuten">');
+        normSel.append(normSel_minuten);
+        incidentSel.append('<h5>Datumbereik</h5>');
+        incidentSel.append(_obj.sel_care);
         var default_range = moment().startOf('week').format('YYYY-MM-DD') + '/' + moment().endOf('week').format('YYYY-MM-DD');
         _obj.sel_care.daterangepicker({
             format: 'YYYY-MM-DD',
@@ -66,9 +89,8 @@ dbkjs.modules.care = {
         });
         _obj.sel_care.val(default_range);
         _obj.updateLayer(default_range);
-        //_obj.updateLayer(moment().format('YYYY-MM-DD'));
-        $('#care_dialog_b').append('<h5>Prioriteit</h5>');
-        $('#care_dialog_b').append(dbkjs.util.createListGroup(
+        incidentSel.append('<h5>Prioriteit</h5>');
+        incidentSel.append(dbkjs.util.createListGroup(
                 [
                     '<input name="chk_prio" type="checkbox" checked="checked"/><span>Prio 1</span>',
                     '<input name="chk_prio" type="checkbox" checked="checked"/><span>Prio 2</span>',
@@ -86,17 +108,36 @@ dbkjs.modules.care = {
         });
         //_obj.dialog.show();
         var incidenten_button = $('<button class="btn btn-block" type="button">Incidenten aan</button>');
+        var normen_button = $('<button class="btn btn-block" type="button">Normen aan</button>');
         if (_obj.layer.getVisibility()) {
+            incidentSel.show();
             incidenten_button.addClass('btn-primary').html('Incidenten uit');
+            
         }
-        $('#care_dialog_b').append(incidenten_button);
+        if(_obj.layer2.getVisibility()){
+            normSel.show();
+            normen_button.addClass('btn-primary').html('Normen uit');
+        }
+            
+        
         $(incidenten_button).click(function() {
+            incidentSel.toggle();
             if (_obj.layer.getVisibility()) {
                 incidenten_button.removeClass('btn-primary').html('Incidenten aan');
                 _obj.layer.setVisibility(false);
             } else {
                 incidenten_button.addClass('btn-primary').html('Incidenten uit');
                 _obj.layer.setVisibility(true);
+            }
+        });
+        $(normen_button).click(function() {
+            normSel.toggle();
+            if (_obj.layer2.getVisibility()) {
+                normen_button.removeClass('btn-primary').html('Normen aan');
+                _obj.layer2.setVisibility(false);
+            } else {
+                normen_button.addClass('btn-primary').html('Normen uit');
+                _obj.layer2.setVisibility(true);
             }
         });
         var download_button = $('<button class="btn btn-block btn-primary" type="button">Download</button>');
@@ -128,7 +169,11 @@ dbkjs.modules.care = {
             var downloadstring = _obj.url + 'wfs'+ decodeURIComponent($.param(params));
             window.location = downloadstring;
         });
-        $('#care_dialog_b').append(download_button);
+        incidentSel.append(download_button);
+        $('#care_dialog_b').append(incidentSel);
+        $('#care_dialog_b').append(incidenten_button);
+        $('#care_dialog_b').append(normSel);
+        $('#care_dialog_b').append(normen_button);
     },
     getfeatureinfo: function(e) {
         var _obj = dbkjs.modules.care;
