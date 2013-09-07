@@ -6,17 +6,18 @@ dbkjs.modules.care = {
     url: "/zeeland/",
     namespace: "zeeland",
     visibility: false,
-    layer: null,
+    layer: {visibility: true},
     sel_array: [],
     sel_care: null,
     cql_array: ["'Prio 1'", "'Prio 2'", "'Prio 3'"],
-    updateLayer: function(string) {
+    updateLayerIncident: function(string) {
         var _obj = dbkjs.modules.care;
-        _obj.layer.mergeNewParams({'time': string});
+        _obj.layerIncident.mergeNewParams({'time': string});
     },
     register: function(options) {
         var _obj = dbkjs.modules.care;
         $('#btngrp_3').append('<a id="btn_care" class="btn btn-default navbar-btn" href="#"><i class="icon-fire"></i></a>');
+        $('body').append(dbkjs.util.createDialog('carepanel', '<i class="icon-fire"></i> Details', 'right:0;bottom:0;'));
         $('#btn_care').click(function() {
             $('#care_dialog').toggle();
         });
@@ -26,7 +27,7 @@ dbkjs.modules.care = {
         //current year, current month, current day
         // moment.js, wat een mooie javascript bibliotheek
 
-        _obj.layer = new OpenLayers.Layer.WMS(
+        _obj.layerIncident = new OpenLayers.Layer.WMS(
                 "Incidenten",
                 _obj.url + 'dbk/wms', {
             layers: _obj.namespace + ':incidents',
@@ -45,8 +46,8 @@ dbkjs.modules.care = {
             attribution: "Falck"
         }
         );
-        _obj.layer2 = new OpenLayers.Layer.WMS(
-                "Normen",
+        _obj.layerNorm = new OpenLayers.Layer.WMS(
+                "Dekkingsplan",
                 _obj.url + 'dbk/wms', {
             layers: _obj.namespace + ':normen',
             format: 'image/png',
@@ -62,11 +63,24 @@ dbkjs.modules.care = {
             attribution: "Falck"
         }
         );
-        this.updateLayer();
-        dbkjs.map.addLayers([_obj.layer, _obj.layer2]);
+        this.updateLayerIncident();
+        _obj.layerIncident.events.register("loadstart", _obj.layerIncident, function() {
+            dbkjs.util.loadingStart(_obj.layerIncident);
+        });
+        
+        _obj.layerIncident.events.register("loadend", _obj.layerIncident, function() {
+            dbkjs.util.loadingEnd(_obj.layerIncident);
+        });
+        _obj.layerNorm.events.register("loadstart", _obj.layerNorm, function() {
+            dbkjs.util.loadingStart(_obj.layerNorm);
+        });
+        _obj.layerNorm.events.register("loadend", _obj.layerNorm, function() {
+            dbkjs.util.loadingEnd(_obj.layerNorm);
+        });
+        dbkjs.map.addLayers([_obj.layerIncident, _obj.layerNorm]);
 
         //Care heeft zijn eigen panel:
-        _obj.dialog = dbkjs.util.createDialog('care_dialog', '<i class="icon-fire"></i> Incidenten en normen');
+        _obj.dialog = dbkjs.util.createDialog('care_dialog', '<i class="icon-fire"></i> Incidenten en dekkingsplan');
         $('body').append(_obj.dialog);
         _obj.sel_care = $('<input id="sel_care" name="sel_care" type="text" class="form-control" placeholder="Kies een periode">');
         $('.dialog').drags({handle: '.panel-heading'});
@@ -85,10 +99,10 @@ dbkjs.modules.care = {
             endDate: moment().endOf('week').format('YYYY-MM-DD')
         },
         function(start, end) {
-            _obj.updateLayer(start.format('YYYY-MM-DD') + '/' + end.format('YYYY-MM-DD'));
+            _obj.updateLayerIncident(start.format('YYYY-MM-DD') + '/' + end.format('YYYY-MM-DD'));
         });
         _obj.sel_care.val(default_range);
-        _obj.updateLayer(default_range);
+        _obj.updateLayerIncident(default_range);
         incidentSel.append('<h5>Prioriteit</h5>');
         incidentSel.append(dbkjs.util.createListGroup(
                 [
@@ -104,40 +118,40 @@ dbkjs.modules.care = {
                     arr.push("'" + $(chk).next().text() + "'");
                 }
             });
-            _obj.layer.mergeNewParams({'cql_filter': "priority IN (" + arr.join() + ")"});
+            _obj.layerIncident.mergeNewParams({'cql_filter': "priority IN (" + arr.join() + ")"});
         });
         //_obj.dialog.show();
         var incidenten_button = $('<button class="btn btn-block" type="button">Incidenten aan</button>');
-        var normen_button = $('<button class="btn btn-block" type="button">Normen aan</button>');
-        if (_obj.layer.getVisibility()) {
+        var dekkingsplan_button = $('<button class="btn btn-block" type="button">Dekkingsplan aan</button>');
+        if (_obj.layerIncident.getVisibility()) {
             incidentSel.show();
             incidenten_button.addClass('btn-primary').html('Incidenten uit');
 
         }
-        if (_obj.layer2.getVisibility()) {
+        if (_obj.layerNorm.getVisibility()) {
             normSel.show();
-            normen_button.addClass('btn-primary').html('Normen uit');
+            dekkingsplan_button.addClass('btn-primary').html('Dekkingsplan uit');
         }
 
 
         $(incidenten_button).click(function() {
             incidentSel.toggle();
-            if (_obj.layer.getVisibility()) {
+            if (_obj.layerIncident.getVisibility()) {
                 incidenten_button.removeClass('btn-primary').html('Incidenten aan');
-                _obj.layer.setVisibility(false);
+                _obj.layerIncident.setVisibility(false);
             } else {
                 incidenten_button.addClass('btn-primary').html('Incidenten uit');
-                _obj.layer.setVisibility(true);
+                _obj.layerIncident.setVisibility(true);
             }
         });
-        $(normen_button).click(function() {
+        $(dekkingsplan_button).click(function() {
             normSel.toggle();
-            if (_obj.layer2.getVisibility()) {
-                normen_button.removeClass('btn-primary').html('Normen aan');
-                _obj.layer2.setVisibility(false);
+            if (_obj.layerNorm.getVisibility()) {
+                dekkingsplan_button.removeClass('btn-primary').html('Dekkingsplan aan');
+                _obj.layerNorm.setVisibility(false);
             } else {
-                normen_button.addClass('btn-primary').html('Normen uit');
-                _obj.layer2.setVisibility(true);
+                dekkingsplan_button.addClass('btn-primary').html('Dekkingsplan uit');
+                _obj.layerNorm.setVisibility(true);
             }
         });
         var download_button = $('<button class="btn btn-block btn-primary" type="button">Download</button>');
@@ -152,12 +166,12 @@ dbkjs.modules.care = {
                 typename: _obj.namespace + ":incidents",
                 outputFormat: "csv"
             };
-            if (_obj.layer.params.CQL_FILTER) {
-                params.CQL_FILTER = _obj.layer.params.CQL_FILTER;
+            if (_obj.layerIncident.params.CQL_FILTER) {
+                params.CQL_FILTER = _obj.layerIncident.params.CQL_FILTER;
             }
-            if (_obj.layer.params.TIME) {
+            if (_obj.layerIncident.params.TIME) {
                 var time_col = 'datetimereported';
-                var time_arr = _obj.layer.params.TIME.split('/');
+                var time_arr = _obj.layerIncident.params.TIME.split('/');
                 var cql_string = time_col + " >='" + time_arr[0] + "' AND " + time_col + " <='" + time_arr[1] + "'";
                 if (params.CQL_FILTER) {
                     params.CQL_FILTER += ' AND ' + cql_string;
@@ -172,16 +186,51 @@ dbkjs.modules.care = {
         $('#care_dialog_b').append(incidentSel);
         $('#care_dialog_b').append(incidenten_button);
         $('#care_dialog_b').append(normSel);
-        $('#care_dialog_b').append(normen_button);
+        $('#care_dialog_b').append(dekkingsplan_button);
     },
     getfeatureinfo: function(e) {
+        if (this.layerIncident.getVisibility()) {
+            this.getIncidentInfo(e);
+        }
+        if (this.layerNorm.getVisibility()) {
+            this.getNormInfo(e);
+        }
+    },
+    getNormInfo: function(e) {
         var _obj = dbkjs.modules.care;
         var llMin = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x - 12, e.xy.y + 12));
         var llMax = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x + 12, e.xy.y - 12));
 
         var params = {
             //mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
-            srs: _obj.layer.params.SRS,
+            srs: _obj.layerNorm.params.SRS,
+            service: "WFS",
+            version: "1.0.0",
+            request: "GetFeature",
+            typename: _obj.namespace + ":normen",
+            maxFeatures: 1,
+            outputFormat: "json"
+        };
+
+        if (_obj.layerNorm.params.CQL_FILTER) {
+            params.CQL_FILTER = _obj.layerNorm.params.CQL_FILTER;
+            params.CQL_FILTER += ' AND ' + 'BBOX(the_geom,' + llMin.lon + "," + llMin.lat + "," + llMax.lon + "," + llMax.lat + ",'EPSG:28992')";
+        } else {
+            params.CQL_FILTER = 'BBOX(the_geom,' + llMin.lon + "," + llMin.lat + "," + llMax.lon + "," + llMax.lat + ",'EPSG:28992')";
+        }
+
+
+        OpenLayers.Request.GET({url: _obj.url + 'wfs', "params": params, callback: _obj.panelNorm});
+        //OpenLayers.Event.stop(e);
+    },
+    getIncidentInfo: function(e) {
+        var _obj = dbkjs.modules.care;
+        var llMin = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x - 12, e.xy.y + 12));
+        var llMax = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x + 12, e.xy.y - 12));
+
+        var params = {
+            //mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
+            srs: _obj.layerIncident.params.SRS,
             service: "WFS",
             version: "1.0.0",
             request: "GetFeature",
@@ -190,32 +239,32 @@ dbkjs.modules.care = {
             outputFormat: "json"
         };
 
-        if (_obj.layer.params.CQL_FILTER) {
-            params.CQL_FILTER = _obj.layer.params.CQL_FILTER;
+        if (_obj.layerIncident.params.CQL_FILTER) {
+            params.CQL_FILTER = _obj.layerIncident.params.CQL_FILTER;
+            params.CQL_FILTER += ' AND ' + 'BBOX(the_geom,' + llMin.lon + "," + llMin.lat + "," + llMax.lon + "," + llMax.lat + ",'EPSG:28992')";
+        } else {
+            params.CQL_FILTER = 'BBOX(the_geom,' + llMin.lon + "," + llMin.lat + "," + llMax.lon + "," + llMax.lat + ",'EPSG:28992')";
         }
-        if (_obj.layer.params.TIME) {
+        if (_obj.layerIncident.params.TIME) {
             var time_col = 'datetimereported';
-            var time_arr = _obj.layer.params.TIME.split('/');
+            var time_arr = _obj.layerIncident.params.TIME.split('/');
             var cql_string = time_col + " >='" + time_arr[0] + "' AND " + time_col + " <='" + time_arr[1] + "'";
             if (params.CQL_FILTER) {
                 params.CQL_FILTER += ' AND ' + cql_string;
             } else {
                 params.CQL_FILTER = cql_string;
             }
-            //DATE_COL > '01.01.2012' AND DATE_COL < '31.12.2012'
         }
-        params.CQL_FILTER += ' AND ' + 'BBOX(the_geom,' + llMin.lon + "," + llMin.lat + "," + llMax.lon + "," + llMax.lat + ",'EPSG:28992')";
-        OpenLayers.Request.GET({url: _obj.url + 'wfs', "params": params, callback: _obj.panel});
-        //OpenLayers.Event.stop(e);
+        OpenLayers.Request.GET({url: _obj.url + 'wfs', "params": params, callback: _obj.panelIncident});
     },
-    panel: function(response) {
+    panelIncident: function(response) {
         var _obj = dbkjs.modules.care;
         //verwerk de featureinformatie
         //g = new OpenLayers.Format.GML.v3();
         var geojson_format = new OpenLayers.Format.GeoJSON();
         var features = geojson_format.read(response.responseText);
         if (features.length > 0) {
-            $('#infopanel_b').html('');
+            $('#carepanel_b').html('');
             dbkjs.util.changeDialogTitle('Incidenten');
             var ft_div = $('<div class="table-responsive"></div>');
             var ft_tbl = $('<table id="incidenten_export" class="table table-hover table-condensed"></table>');
@@ -245,37 +294,97 @@ dbkjs.modules.care = {
                 ft_tbl.append('<tr><td>Datum/tijd</td><td>' + datumtijd.format('YYYY-MM-DD HH:mm:ss') + '</td></tr>');
 
                 if (features[feat].attributes.timespanintake !== 0) {
-                    ft_tbl.append('<tr><td>Intake</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanintake, "seconds")) + '</td></tr>');
-                }
-                if (features[feat].attributes.timespanprocessing !== 0) {
-                    ft_tbl.append('<tr><td>Verwerking</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanprocessing, "seconds")) + '</td></tr>');
+                    ft_tbl.append('<tr><td>Aannametijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanintake, "seconds")) + '</td></tr>');
                 }
                 if (features[feat].attributes.timespanissued !== 0) {
-                    ft_tbl.append('<tr><td>Alarmering</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanissued, "seconds")) + '</td></tr>');
+                    ft_tbl.append('<tr><td>Uitgiftetijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanissued, "seconds")) + '</td></tr>');
                 }
-                if (features[feat].attributes.timespandrivetime !== 0) {
-                    ft_tbl.append('<tr><td>Aanrijdend</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespandrivetime, "seconds")) + '</td></tr>');
-                }
-                if (features[feat].attributes.timespanonscene !== 0) {
-                    ft_tbl.append('<tr><td>Terplaatse</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanonscene, "seconds")) + '</td></tr>');
-                }
-                if (features[feat].attributes.timespanattended !== 0) {
-                    ft_tbl.append('<tr><td>Timespanattended</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanattended, "seconds")) + '</td></tr>');
+                if (features[feat].attributes.timespanprocessing !== 0) {
+                    ft_tbl.append('<tr><td>Verwerkingstijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanprocessing, "seconds")) + '</td></tr>');
                 }
                 if (features[feat].attributes.timespandeparted !== 0) {
-                    ft_tbl.append('<tr><td>Timespandeparted</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespandeparted, "seconds")) + '</td></tr>');
+                    ft_tbl.append('<tr><td>Uitruktijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespandeparted, "seconds")) + '</td></tr>');
                 }
+
+                if (features[feat].attributes.timespandrivetime !== 0) {
+                    ft_tbl.append('<tr><td>Aanrijdtijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespandrivetime, "seconds")) + '</td></tr>');
+                }
+                if (features[feat].attributes.timespanattended !== 0) {
+                    ft_tbl.append('<tr><td>Opkomsttijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanattended, "seconds")) + '</td></tr>');
+                }
+                if (features[feat].attributes.timespanonscene !== 0) {
+                    ft_tbl.append('<tr><td>Inzettijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanonscene, "seconds")) + '</td></tr>');
+                }
+
+
             }
             ft_div.append(ft_tbl);
-            $('#infopanel_b').append(ft_div);
-            $('#infopanel_f').html('');
-            $('#infopanel').show();
+            $('#carepanel_b').append(ft_div);
+            $('#carepanel_f').html('');
+            $('#carepanel').show();
             $(".export").on('click', function() {
                 // CSV
-                dbkjs.util.exportTableToCSV.apply(this, [$('#normen_export'), 'export.csv']);
-                //dbkjs.util.exportTableToCSV($('#normen_export'), 'normen.csv');
-                $('#infopanel').toggle(true);
+                dbkjs.util.exportTableToCSV.apply(this, [$('#incidenten_export'), 'export.csv']);
+                $('#carepanel').toggle(true);
             });
+        } else {
+            //$('#carepanel').hide();
+        }
+
+
+    },
+    panelNorm: function(response) {
+        var _obj = dbkjs.modules.care;
+        //verwerk de featureinformatie
+        //g = new OpenLayers.Format.GML.v3();
+        var geojson_format = new OpenLayers.Format.GeoJSON();
+        var features = geojson_format.read(response.responseText);
+        if (features.length > 0) {
+            $('#carepanel_b').html('');
+            dbkjs.util.changeDialogTitle('Dekkingsplan');
+            var ft_div = $('<div class="table-responsive"></div>');
+            var ft_tbl = $('<table id="incidenten_export" class="table table-hover table-condensed"></table>');
+
+            for (var feat in features) {
+                ft_tbl.append('<tr><td colspan="2">' + dbkjs.util.createAddress(
+                        features[feat].attributes.addresscity,
+                        features[feat].attributes.addressmunicipality,
+                        features[feat].attributes.addressstreet,
+                        features[feat].attributes.addresshousenr,
+                        features[feat].attributes.addresshousenradd,
+                        features[feat].attributes.addressname,
+                        features[feat].attributes.addresszipcode
+                        ).html() +
+                        '</td></tr>');
+                ft_tbl.append('<tr><td>Functie</td><td>' + features[feat].attributes.objecttype + '</td></tr>');
+                ft_tbl.append('<tr><td>Bouwjaar</td><td>' + features[feat].attributes.objectyearconstructed + '</td></tr>');
+                ft_tbl.append(dbkjs.util.createNorm(
+                        features[feat].attributes.sit1name,
+                        features[feat].attributes.sit1timespanarrivalfirstunit,
+                        features[feat].attributes.sit1maxtimespanarrivalfirstunit
+                        ));
+                ft_tbl.append(dbkjs.util.createNorm(
+                        features[feat].attributes.sit2name,
+                        features[feat].attributes.sit2timespanarrivalfirstunit,
+                        features[feat].attributes.sit2maxtimespanarrivalfirstunit
+                        ));
+                ft_tbl.append(dbkjs.util.createNorm(
+                        features[feat].attributes.sit3name,
+                        features[feat].attributes.sit3timespanarrivalfirstunit,
+                        features[feat].attributes.sit3maxtimespanarrivalfirstunit
+                        ));
+            }
+            ft_div.append(ft_tbl);
+            $('#carepanel_b').append(ft_div);
+            $('#carepanel_f').html('');
+            $('#carepanel').show();
+            $(".export").on('click', function() {
+                // CSV
+                dbkjs.util.exportTableToCSV.apply(this, [$('#dekkingsplan_export'), 'export.csv']);
+                $('#carepanel').toggle(true);
+            });
+        } else {
+            //$('#carepanel').hide();
         }
 
 

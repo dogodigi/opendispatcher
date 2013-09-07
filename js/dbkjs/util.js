@@ -1,6 +1,7 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.util = {
+    layersLoading: [],
     /**
      * script voor updaten zichtbaarheid van overlays 
      * @param {<OpenLayers.Layer>} obj
@@ -191,6 +192,34 @@ dbkjs.util = {
         return $.trim(incidentnr + ' <span class="label ' + labelclass + '">' + prio + '</span>' + ' ' + description);
 
     },
+    createNorm: function(name, real, norm) {
+        name = dbkjs.util.isJsonNull(name) ? '' : '<i>' + name + '</i>';
+        if (real === 0 || norm === 0) {
+            return '';
+        } else {
+            var diff = Math.abs(real - norm);
+            if (real - norm > 0) {
+                sign = '+';
+            } else {
+                sign = '-';
+            }
+            if (real > norm) {
+                if (real - norm > 300) {
+                    labelclass = "label-danger";
+                    color = "#D9534F";
+                } else {
+                    labelclass = "label-warning";
+                    color = "#F0AD4E";
+                }
+            } else {
+                labelclass = "label-success";
+                color = "#5CB85C";
+            }
+            var output = '<tr><td colspan="2">Situatie: ' + name + ' - norm: ' + dbkjs.util.parseSeconds(moment.duration(norm, "seconds")) + '<td></tr>';
+            output += '<tr><td colspan="2">Opkomsttijd: <span class="label ' + labelclass + '">' + dbkjs.util.parseSeconds(moment.duration(real, "seconds")) + '</span><i style="color:' + color + ';"> ' + sign + dbkjs.util.parseSeconds(moment.duration(diff, "seconds")) + '</i><td></tr>';
+            return output;
+        }
+    },
     createClassification: function(c1, c2, c3) {
         lc1 = dbkjs.util.isJsonNull(c1) ? '' : '<li><a href="#">' + c1 + '</a></li>';
         lc2 = dbkjs.util.isJsonNull(c2) ? '' : '<li><a href="#">' + c2 + '</a></li>';
@@ -224,6 +253,61 @@ dbkjs.util = {
             listgroup.append('<li class="list-group-item">' + item + '</li>');
         });
         return listgroup;
+    },
+    loadingStart: function(layer) {
+        var arr_index = $.inArray(layer.name, this.layersLoading);
+        if (arr_index === -1) {
+            this.layersLoading.push(layer.name);
+        }
+
+        var alert = $('#systeem_meldingen');
+        if (!alert[0]) {
+            var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
+            alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+            alert.append('<i class="icon-spinner icon-spin"></i> Bezig met laden van ' + this.layersLoading.join(', ') + '...');
+            $('body').append(alert);
+            alert.show();
+        } else {
+            alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass('alert-info');
+            alert.html('');
+            alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+            alert.append('<i class="icon-spinner icon-spin"></i> Bezig met laden van ' + this.layersLoading.join(', ') + '...');
+            alert.show();
+        }
+
+    },
+    loadingEnd: function(layer) {
+        var alert = $('#systeem_meldingen');
+        if (this.layersLoading.length !== 0) {
+            var arr_index = $.inArray(layer.name, this.layersLoading);
+            if (arr_index !== -1) {
+                this.layersLoading.splice(arr_index, 1);
+            }
+            
+            if (!alert[0]) {
+                if (this.layersLoading.length === 0) {
+                    alert.hide();
+                } else {
+                    var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
+                    alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+                    alert.append('<i class="icon-spinner icon-spin"></i> Bezig met laden van ' + this.layersLoading.join(', ') + '...');
+                    $('body').append(alert);
+                    alert.show();
+                }
+            } else {
+                if (this.layersLoading.length === 0) {
+                    alert.hide();
+                } else {
+                    alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass('alert-info');
+                    alert.html('');
+                    alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+                    alert.append('<i class="icon-spinner icon-spin"></i> Bezig met laden van ' + this.layersLoading.join(', ') + '...');
+                    alert.show();
+                }
+            }
+        } else {
+            alert.hide();
+        }
     },
     alert: function(title, tekst, type) {
         if (!type) {

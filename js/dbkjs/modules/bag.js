@@ -101,6 +101,13 @@ dbkjs.modules.bag = {
         dbkjs.map.addLayers([
             _obj.layer
         ]);
+        _obj.layer.events.register("loadstart", _obj.layer, function() {
+            dbkjs.util.loadingStart(_obj.layer);
+        });
+        
+        _obj.layer.events.register("loadend", _obj.layer, function() {
+            dbkjs.util.loadingEnd(_obj.layer);
+        });
         dbkjs.map.setLayerIndex(_obj.layer, 0);
 
         // vinkje op webpagina aan/uitzetten
@@ -238,7 +245,7 @@ dbkjs.modules.bag = {
     },
     getfeatureinfo: function(e) {
         var _obj = dbkjs.modules.bag;
-        if (_obj.layer.getVisibility() && dbkjs.map.zoom > 14) {
+        if (_obj.layer.getVisibility() && dbkjs.map.zoom > 10) {
             if (typeof(e.feature) !== "undefined") {
                 dbkjs.util.changeDialogTitle('<i class="icon-home"></i> Pand ' + e.feature.attributes.identificatie, '#bagpanel');
                 _obj.pandInfo(e.feature);
