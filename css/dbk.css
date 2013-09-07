@@ -6,6 +6,10 @@ html, body {
 a {
    outline: 0 !important;
 }
+.classification {
+    margin-bottom: 0 !important;
+    padding: 4px 4px !important;
+}
 .gevicode{
     border: 3px solid #000000;
     background-color: #FF6600;

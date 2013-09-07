@@ -31,11 +31,7 @@ dbkjs.modules.bag = {
             strokeWidth: 1,
             pointRadius: 3
         });
-//        var pandfilter = new OpenLayers.Filter.Comparison({
-//            type: OpenLayers.Filter.Comparison.EQUAL_TO,
-//            property: "identificatie",
-//            value: 0
-//        });
+
         _obj.pandprotocol = new OpenLayers.Protocol.WFS({
             url: "/bag/wfs",
             featurePrefix: 'bagviewer',
@@ -56,21 +52,16 @@ dbkjs.modules.bag = {
                     var e = {};
                     e.feature = features[feat];
                     _obj.getfeatureinfo(e);
-                    _obj.vbo_layer.filter = new OpenLayers.Filter.Comparison({
+                    var filter = new OpenLayers.Filter.Comparison({
                         type: OpenLayers.Filter.Comparison.EQUAL_TO,
                         property: "pandidentificatie",
                         value: features[feat].attributes.identificatie
                     });
-                    _obj.vbo_layer.refresh({force: true});
+                    _obj.verblijfsobjectprotocol.read({filter: filter});
                     return false;
                 }
             }
         });
-//        var verblijfsobjectfilter = new OpenLayers.Filter.Comparison({
-//            type: OpenLayers.Filter.Comparison.EQUAL_TO,
-//            property: "pandidentificatie",
-//            value: 0
-//        });
         _obj.verblijfsobjectprotocol = new OpenLayers.Protocol.WFS({
             url: "/bag/wfs",
             featurePrefix: 'bagviewer',
@@ -83,32 +74,19 @@ dbkjs.modules.bag = {
                 var features = new OpenLayers.Format.GeoJSON().read(JSON.parse(response.priv.responseText));
                 _obj.vbo_layer.addFeatures(features);
                 for (var feat in features) {
-//                  var e = {};
-//                  e.feature = features[feat];
-                    _obj.vboinfo(features[feat]);
+                    _obj.vboInfo(features[feat]);
                 }
-                //so we have read, now deactivate refresh.
             }
         });
 
         _obj.pand_layer = new OpenLayers.Layer.Vector("BAG panden", {
-            //protocol: pandprotocol,
-            //filter: pandfilter,
             styleMap: pandstylemap
         });
 
         _obj.vbo_layer = new OpenLayers.Layer.Vector("BAG verblijfsobjecten", {
-            //protocol: verblijfsobjectprotocol,
-            //filter: verblijfsobjectfilter,
             styleMap: vbostylemap
         });
         dbkjs.map.addLayers([_obj.pand_layer, _obj.vbo_layer]);
-//        _obj.pand_layer.events.on({
-//            "featureselected": _obj.getfeatureinfo
-//        });
-//        _obj.vbo_layer.events.on({
-//            "featureselected": _obj.getvboinfo
-//        });
     },
     /**
      * Initialisatie functie om objecten toe te voegen aan de kaart
@@ -177,28 +155,27 @@ dbkjs.modules.bag = {
             }
         });
     },
-    vboinfo: function(feature) {
+    vboInfo: function(feature) {
         var _obj = dbkjs.modules.bag;
         if (feature) {
             var vbo_div = $('<div class="tab-pane" id="collapse_vbo_' + feature.attributes.identificatie + '"></div>');
             var vbo_table_div = $('<div class="table-responsive"></div>');
             var vbo_table = $('<table class="table table-hover"></table>');
-            //huisnummer, huisletter, toevoeging
-            var huisnummer = '';
-            var huisletter = '';
-            var toevoeging = '';
-            if (!dbkjs.util.isJsonNull(feature.attributes.huisnummer)) {
-                huisnummer = feature.attributes.huisnummer;
-            }
-            if (!dbkjs.util.isJsonNull(feature.attributes.huisletter)) {
-                huisletter = feature.attributes.huisletter;
-            }
-            if (!dbkjs.util.isJsonNull(feature.attributes.toevoeging)) {
-                toevoeging = feature.attributes.toevoeging;
-            }
-            var huisnr_str = $.trim(huisnummer + ' ' + huisletter + ' ' + toevoeging);
+            var huisnummer = dbkjs.util.isJsonNull(feature.attributes.huisnummer) ? '' : feature.attributes.huisnummer;
+            var huisletter = dbkjs.util.isJsonNull(feature.attributes.huisletter) ? '' : feature.attributes.huisletter;
+            var toevoeging = dbkjs.util.isJsonNull(feature.attributes.toevoeging) ? '' : feature.attributes.toevoeging;
+
             vbo_table.append('<tr><td>Identificatie</td><td>' + feature.attributes.identificatie + "</td></tr>");
-            vbo_table.append('<tr><td>Adres</td><td>' + feature.attributes.openbare_ruimte + ' ' + huisnr_str + '<br>' + feature.attributes.postcode + '  ' + feature.attributes.woonplaats + '</td></tr>');
+            vbo_table.append('<tr><td>Adres</td><td>' + dbkjs.util.createAddress(
+                    '',
+                    feature.attributes.woonplaats,
+                    feature.attributes.openbare_ruimte,
+                    huisnummer,
+                    $.trim(huisletter + ' ' + toevoeging),
+                    '',
+                    feature.attributes.postcode
+                    ).html() +
+                    '</td></tr>');
             if (!dbkjs.util.isJsonNull(feature.attributes.bouwjaar)) {
                 vbo_table.append('<tr><td>Bouwjaar</td><td>' + feature.attributes.bouwjaar + "</td></tr>");
             }
@@ -214,7 +191,11 @@ dbkjs.modules.bag = {
             vbo_table_div.append(vbo_table);
             vbo_div.append(vbo_table_div);
             _obj.panel_group.append(vbo_div);
-            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_vbo_' + feature.attributes.identificatie + '">#' + huisnr_str + '</a></li>');
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_vbo_' + 
+                    feature.attributes.identificatie + 
+                    '">#' + 
+                    $.trim(huisnummer + ' ' + huisletter + ' ' + toevoeging) + 
+                '</a></li>');
         }
     },
     pandInfo: function(feature) {
@@ -257,7 +238,7 @@ dbkjs.modules.bag = {
     },
     getfeatureinfo: function(e) {
         var _obj = dbkjs.modules.bag;
-        if (_obj.layer.getVisibility()) {
+        if (_obj.layer.getVisibility() && dbkjs.map.zoom > 14) {
             if (typeof(e.feature) !== "undefined") {
                 dbkjs.util.changeDialogTitle('<i class="icon-home"></i> Pand ' + e.feature.attributes.identificatie, '#bagpanel');
                 _obj.pandInfo(e.feature);

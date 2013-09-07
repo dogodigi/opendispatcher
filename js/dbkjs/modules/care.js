@@ -45,15 +45,14 @@ dbkjs.modules.care = {
             attribution: "Falck"
         }
         );
-            _obj.layer2 = new OpenLayers.Layer.WMS(
+        _obj.layer2 = new OpenLayers.Layer.WMS(
                 "Normen",
                 _obj.url + 'dbk/wms', {
             layers: _obj.namespace + ':normen',
             format: 'image/png',
             transparent: true,
             time: '',
-            styles: 'Overschrijding',
-            cql_filter: "sit1timespanarrivalfirstunit = 382"
+            styles: 'Normen'
         }, {
             transitionEffect: 'none',
             singleTile: true,
@@ -63,6 +62,7 @@ dbkjs.modules.care = {
             attribution: "Falck"
         }
         );
+        this.updateLayer();
         dbkjs.map.addLayers([_obj.layer, _obj.layer2]);
 
         //Care heeft zijn eigen panel:
@@ -70,7 +70,7 @@ dbkjs.modules.care = {
         $('body').append(_obj.dialog);
         _obj.sel_care = $('<input id="sel_care" name="sel_care" type="text" class="form-control" placeholder="Kies een periode">');
         $('.dialog').drags({handle: '.panel-heading'});
-        
+
         //_obj.updateLayer(moment().format('YYYY-MM-DD'));
         var incidentSel = $('<div id="incidentSel" style="display:none;"></div>');
         var normSel = $('<div id="normSel" style="display:none;"></div>');
@@ -112,14 +112,14 @@ dbkjs.modules.care = {
         if (_obj.layer.getVisibility()) {
             incidentSel.show();
             incidenten_button.addClass('btn-primary').html('Incidenten uit');
-            
+
         }
-        if(_obj.layer2.getVisibility()){
+        if (_obj.layer2.getVisibility()) {
             normSel.show();
             normen_button.addClass('btn-primary').html('Normen uit');
         }
-            
-        
+
+
         $(incidenten_button).click(function() {
             incidentSel.toggle();
             if (_obj.layer.getVisibility()) {
@@ -150,8 +150,7 @@ dbkjs.modules.care = {
                 version: "1.0.0",
                 request: "GetFeature",
                 typename: _obj.namespace + ":incidents",
-                maxFeatures: 100,
-                outputFormat: "csv",
+                outputFormat: "csv"
             };
             if (_obj.layer.params.CQL_FILTER) {
                 params.CQL_FILTER = _obj.layer.params.CQL_FILTER;
@@ -166,7 +165,7 @@ dbkjs.modules.care = {
                     params.CQL_FILTER = cql_string;
                 }
             }
-            var downloadstring = _obj.url + 'wfs'+ decodeURIComponent($.param(params));
+            var downloadstring = _obj.url + 'wfs' + decodeURIComponent($.param(params));
             window.location = downloadstring;
         });
         incidentSel.append(download_button);
@@ -177,8 +176,8 @@ dbkjs.modules.care = {
     },
     getfeatureinfo: function(e) {
         var _obj = dbkjs.modules.care;
-        var llMin = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x - 5, e.xy.y + 5));
-        var llMax = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x + 5, e.xy.y - 5));
+        var llMin = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x - 12, e.xy.y + 12));
+        var llMax = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x + 12, e.xy.y - 12));
 
         var params = {
             //mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
@@ -217,56 +216,68 @@ dbkjs.modules.care = {
         var features = geojson_format.read(response.responseText);
         if (features.length > 0) {
             $('#infopanel_b').html('');
-            var hide_us = ['Name', 'No', 'Latitude', 'Longitude', 'addressx', 'addressy', 'id'];
-            var rename_us = {
-                "addresshousenr": "huisnr",
-                "addresscity": "gemeente",
-                "addressmunicipality": "woonplaats",
-                "addressstreet": "straat",
-                "addresszipcode": "postcode",
-                "objectyearconstructed": "bouwjr",
-                "sit1maxtimespanarrivalfirstunit": "norm sit1",
-                "sit1timespanarrivalfirstunit": "opkomst sit1",
-                "sit1name": "sit1",
-                "sit2maxtimespanarrivalfirstunit": "norm sit2",
-                "sit2timespanarrivalfirstunit": "opkomst sit2",
-                "sit2name": "sit2",
-                "sit3maxtimespanarrivalfirstunit": "norm sit3",
-                "sit3timespanarrivalfirstunit": "opkomst Sit3"
-            };
+            dbkjs.util.changeDialogTitle('Incidenten');
             var ft_div = $('<div class="table-responsive"></div>');
-            var ft_tbl = $('<table id="normen_export" class="table table-hover table-condensed table-bordered"></table>');
+            var ft_tbl = $('<table id="incidenten_export" class="table table-hover table-condensed"></table>');
             for (var feat in features) {
-                $.each(features[feat].attributes, function(key, value) {
-                    var title;
-                    if ($.inArray(key, hide_us) === -1) {
-                        if (rename_us[key]) {
-                            title = rename_us[key];
-                        } else {
-                            title = key;
-                        }
-                        if (!dbkjs.util.isJsonNull(value) && value !== 0) {
-                            ft_tbl.append('<tr><th>' + title + '</th><td>' + value + '</td></tr>');
-                        }
-                    }
-                });
+                ft_tbl.append('<tr><td colspan="2">' + dbkjs.util.createPriority(
+                        features[feat].attributes.incidentnr,
+                        features[feat].attributes.locationdescription,
+                        features[feat].attributes.priority
+                        ) + '</td></tr>'
+                        );
+                ft_tbl.append('<tr><td colspan="2">' + dbkjs.util.createClassification(
+                        features[feat].attributes.classification1,
+                        features[feat].attributes.classification2,
+                        features[feat].attributes.classification3
+                        ) + '</td></tr>');
+                var datumtijd = moment(features[feat].attributes.datetimereported);
+                ft_tbl.append('<tr><td colspan="2">' + dbkjs.util.createAddress(
+                        features[feat].attributes.addresscity,
+                        features[feat].attributes.addressmunicipality,
+                        features[feat].attributes.addressstreet,
+                        features[feat].attributes.addresshousenr,
+                        features[feat].attributes.addresshousenradd,
+                        features[feat].attributes.addressname,
+                        features[feat].attributes.addresszipcode
+                        ).html() +
+                        '</td></tr>');
+                ft_tbl.append('<tr><td>Datum/tijd</td><td>' + datumtijd.format('YYYY-MM-DD HH:mm:ss') + '</td></tr>');
+
+                if (features[feat].attributes.timespanintake !== 0) {
+                    ft_tbl.append('<tr><td>Intake</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanintake, "seconds")) + '</td></tr>');
+                }
+                if (features[feat].attributes.timespanprocessing !== 0) {
+                    ft_tbl.append('<tr><td>Verwerking</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanprocessing, "seconds")) + '</td></tr>');
+                }
+                if (features[feat].attributes.timespanissued !== 0) {
+                    ft_tbl.append('<tr><td>Alarmering</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanissued, "seconds")) + '</td></tr>');
+                }
+                if (features[feat].attributes.timespandrivetime !== 0) {
+                    ft_tbl.append('<tr><td>Aanrijdend</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespandrivetime, "seconds")) + '</td></tr>');
+                }
+                if (features[feat].attributes.timespanonscene !== 0) {
+                    ft_tbl.append('<tr><td>Terplaatse</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanonscene, "seconds")) + '</td></tr>');
+                }
+                if (features[feat].attributes.timespanattended !== 0) {
+                    ft_tbl.append('<tr><td>Timespanattended</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanattended, "seconds")) + '</td></tr>');
+                }
+                if (features[feat].attributes.timespandeparted !== 0) {
+                    ft_tbl.append('<tr><td>Timespandeparted</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespandeparted, "seconds")) + '</td></tr>');
+                }
             }
             ft_div.append(ft_tbl);
-            // This must be a hyperlink
-            dbkjs.util.changeDialogTitle(features[0].attributes.incidentnr + ' - ' + features[0].attributes.priority);
-
-            // IF CSV, don't do event.preventDefault() or return false
-            // We actually need this to be a typical hyperlink
+            $('#infopanel_b').append(ft_div);
+            $('#infopanel_f').html('');
+            $('#infopanel').show();
+            $(".export").on('click', function() {
+                // CSV
+                dbkjs.util.exportTableToCSV.apply(this, [$('#normen_export'), 'export.csv']);
+                //dbkjs.util.exportTableToCSV($('#normen_export'), 'normen.csv');
+                $('#infopanel').toggle(true);
+            });
         }
 
-        $('#infopanel_b').append(ft_div);
-        $('#infopanel_f').html('');
-        $('#infopanel').show();
-        $(".export").on('click', function() {
-            // CSV
-            dbkjs.util.exportTableToCSV.apply(this, [$('#normen_export'), 'export.csv']);
-            //dbkjs.util.exportTableToCSV($('#normen_export'), 'normen.csv');
-            $('#infopanel').toggle(true);
-        });
+
     }
 };
