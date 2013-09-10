@@ -42,7 +42,7 @@ dbkjs.protocol.imdbk21 = {
     info: function(response) {
         var _obj = dbkjs.protocol.imdbk21;
         if (response) {
-            if (response.responseXML){
+            if (response.responseXML) {
                 var xmldoc = $.xml2json(response.responseXML);
             } else {
                 // let op; internet explorer retourneert altijd null voor responseXML
@@ -52,33 +52,38 @@ dbkjs.protocol.imdbk21 = {
                 var xmlDoc = parser.parseFromString(response.responseText, "application/xml");
                 var xmldoc = $.xml2json(xmlDoc);
             }
-            if (xmldoc["wfs:FeatureCollection"]["wfs:member"]) {
-                _obj.panel_group = $('<div class="tab-content"></div>');
-                _obj.panel_tabs = $('<ul class="nav nav-pills"></ul>');
-                if (xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]) {
-                    var div = $('<div class="tabbable"></div>');
-                    if (_obj.constructAlgemeen(xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"])) {
-                        _obj.constructBijzonderheid(
-                                xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:bijzonderheid"]
-                                );
-                        _obj.constructVerblijf(
-                                xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:verblijf"]
-                                );
-                        _obj.constructMedia(
-                                xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:foto"]
-                                );
-                    }
-                    ;
-                    div.append(_obj.panel_group);
-                    div.append(_obj.panel_tabs);
-                    dbkjs.protocol.imdbk21.feature.div = div;
-                    $('#infopanel_b').html(div);
-                    $('#systeem_meldingen').hide();
-                }
-                $('#infopanel').show();
-            } else {
+            if (xmldoc["ows:ExceptionReport"]) {
                 _obj.feature = {};
-                dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
+                dbkjs.util.alert('Fout', ' Er is een systeemfout opgetreden. Neem contact op met de beheerder', 'alert-danger');
+            } else {
+                if (xmldoc["wfs:FeatureCollection"]["wfs:member"]) {
+                    _obj.panel_group = $('<div class="tab-content"></div>');
+                    _obj.panel_tabs = $('<ul class="nav nav-pills"></ul>');
+                    if (xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]) {
+                        var div = $('<div class="tabbable"></div>');
+                        if (_obj.constructAlgemeen(xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"])) {
+                            _obj.constructBijzonderheid(
+                                    xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:bijzonderheid"]
+                                    );
+                            _obj.constructVerblijf(
+                                    xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:verblijf"]
+                                    );
+                            _obj.constructMedia(
+                                    xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:foto"]
+                                    );
+                        }
+                        ;
+                        div.append(_obj.panel_group);
+                        div.append(_obj.panel_tabs);
+                        dbkjs.protocol.imdbk21.feature.div = div;
+                        $('#infopanel_b').html(div);
+                        $('#systeem_meldingen').hide();
+                    }
+                    $('#infopanel').show();
+                } else {
+                    _obj.feature = {};
+                    dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
+                }
             }
             _obj.processing = false;
         }

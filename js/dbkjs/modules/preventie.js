@@ -23,8 +23,8 @@ dbkjs.modules.preventie = {
         var _obj = dbkjs.modules.preventie;
         var cql_filter = "";
         if (typeof(dbk_id) !== "undefined") {
-            cql_filter = "dbkfeature_id=" + dbk_id + ';' + 
-            'dbkfeature_id=' + dbk_id + ';dbkfeature_id=' + dbk_id;
+            cql_filter = "dbkfeature_id=" + dbk_id + ';' +
+                    'dbkfeature_id=' + dbk_id + ';dbkfeature_id=' + dbk_id;
             _obj.layer.mergeNewParams({'CQL_FILTER': cql_filter});
         } else {
             delete _obj.layer.params.CQL_FILTER;
@@ -39,7 +39,7 @@ dbkjs.modules.preventie = {
         _obj.visibility = options.visible || _obj.visibility;
         _obj.layer = new OpenLayers.Layer.WMS(_obj.title, _obj.url + 'wms',
                 {layers:
-                            _obj.namespace + ':WMS_Hulplijn,' + 
+                            _obj.namespace + ':WMS_Hulplijn,' +
                             _obj.namespace + ':WMS_Brandweervoorziening,' + _obj.namespace + ':WMS_TekstObject', format: 'image/png', transparent: true},
         {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck", maxResolution: 6.71});
         dbkjs.map.addLayers([_obj.layer]);
@@ -54,7 +54,7 @@ dbkjs.modules.preventie = {
         dv_panel.append(dv_panel_heading);
         var dv_panel_content = $('<div id="collapse_' + _obj.id + '" class="panel-collapse collapse"></div>');
         dv_panel_content.append('<div class="panel-body">Informatie over de preventieve voorzieningen en de <strong>NEN1414</strong> symbolen vind je op een aparte <a href="nen1414.html#brandveiligheid" target="_blank">pagina</a></div>');
-        
+
         dv_panel.append(dv_panel_content);
         $('#overlaypanel_b1').append(dv_panel);
         if (_obj.layer.getVisibility()) {
@@ -77,9 +77,11 @@ dbkjs.modules.preventie = {
             BBOX: dbkjs.map.getExtent().toBBOX(),
             SERVICE: "WMS",
             INFO_FORMAT: 'application/vnd.ogc.gml',
-            QUERY_LAYERS: _obj.layer.params.LAYERS,
+            //QUERY_LAYERS: _obj.layer.params.LAYERS,
             FEATURE_COUNT: 50,
-            Layers: _obj.layer.params.LAYERS,
+            //Layers: _obj.layer.params.LAYERS,
+            Layers: "dbk:WMS_Brandweervoorziening",
+            QUERY_LAYERS: "dbk:WMS_Brandweervoorziening",
             WIDTH: dbkjs.map.size.w,
             HEIGHT: dbkjs.map.size.h,
             format: 'image/png',
@@ -109,26 +111,38 @@ dbkjs.modules.preventie = {
 
         features = g.read(response.responseText);
         if (features.length > 0) {
-            html = '<div class="table-responsive">';
+            html = '<div class="table-responsive"><table class="table table-hover">';
             for (var feat in features) {
-                html += '<table class="table table-hover">';
+
                 //for (var j in features[feat].attributes) {
-                    //if ($.inArray(j, ['Omschrijving', 'GEVIcode', 'UNnr', 'Hoeveelheid', 'NaamStof']) > -1) {
-                        if (!dbkjs.util.isJsonNull(features[feat].attributes.typeVoorziening)) {
-                            html += '<tr><td>Type</td><td><a href="nen1414.html#' + 
-                                    features[feat].attributes.typeVoorziening + '" target="_blank">' + 
-                                    features[feat].attributes.typeVoorziening + '</a><td></tr>';
-                        }
-                         if (!dbkjs.util.isJsonNull(features[feat].attributes.aanvullendeInformatie)) {
-                            html += '<tr><td colspan="2">' + features[feat].attributes.aanvullendeInformatie + '<td></tr>';
-                        }
-                    //}
-                //}
-                html += "</table>";
+                //if ($.inArray(j, ['Omschrijving', 'GEVIcode', 'UNnr', 'Hoeveelheid', 'NaamStof']) > -1) {
+                var typevoorziening = '';
+                var naamvoorziening = '';
+                var aanvullendeinformatie = '';
+                if (!dbkjs.util.isJsonNull(features[feat].attributes.typeVoorziening)) {
+                    typevoorziening = features[feat].attributes.typeVoorziening;
+                }
+                if (!dbkjs.util.isJsonNull(features[feat].attributes.naamVoorziening)) {
+                    naamvoorziening = features[feat].attributes.naamVoorziening;
+                }
+                if (naamvoorziening + typevoorziening !== '') {
+                    html += '<tr><td>' + naamvoorziening + '</td><td><a href="nen1414.html#' +
+                            typevoorziening + '" target="_blank">' +
+                            typevoorziening + '</a><td></tr>';
+                }
+                if (!dbkjs.util.isJsonNull(features[feat].attributes.aanvullendeInformatie)) {
+                    html += '<tr><td colspan="2">' + features[feat].attributes.aanvullendeInformatie + '<td></tr>'
+                }
+                
+
+
+
             }
-            html += '</div>';
-            dbkjs.util.appendTab(dbkjs.wms_panel.attr("id"),'Brandweervoorziening',html, true, 'br_voorz_tab');
+            html += '</table></div>';
+            dbkjs.util.appendTab(dbkjs.wms_panel.attr("id"), 'Brandweervoorziening', html, true, 'br_voorz_tab');
             $('#wmsclickpanel').show();
+        } else {
+            dbkjs.util.removeTab(dbkjs.wms_panel.attr("id"), 'br_voorz_tab');
         }
     }
 };

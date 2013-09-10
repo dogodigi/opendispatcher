@@ -1,6 +1,7 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.util = {
+    layersLoading: [],
     /**
      * script voor updaten zichtbaarheid van overlays 
      * @param {<OpenLayers.Layer>} obj
@@ -32,7 +33,7 @@ dbkjs.util = {
             $.each(dbkjs.modules, function(mod_index, module) {
                 if ($.inArray(mod_index, dbkjs.options.regio.modules) > -1) {
                     if (typeof(module.layer) !== "undefined" && module.layer.visibility) {
-                        // Controleer of het een van de dbk layers is waar op is geklikt.
+// Controleer of het een van de dbk layers is waar op is geklikt.
                         if (dbkjs.protocol) {
                             if (dbkjs.protocol.imdbk21) {
                                 if ($.inArray(module.id, ["dbko", "dbkf"]) !== -1) {
@@ -59,6 +60,22 @@ dbkjs.util = {
         } else {
             return false;
         }
+    },
+    pad: function(num, size) {
+        var s = num + "";
+        while (s.length < size)
+            s = "0" + s;
+        return s;
+    },
+    parseSeconds: function(duration) {
+        //duration is a momentjs object
+        var x = duration.asSeconds();
+        var seconds = Math.round(x % 60);
+        x /= 60;
+        var minutes = Math.round(x % 60);
+        x /= 60;
+        var hours = Math.round(x % 24);
+        return this.pad(hours, 2) + ':' + this.pad(minutes, 2) + ':' + this.pad(seconds, 2);
     },
     /**
      * 
@@ -160,12 +177,137 @@ dbkjs.util = {
         e.onerror = "";
         return true;
     },
+    createPriority: function(incidentnr, description, prio) {
+        description = dbkjs.util.isJsonNull(description) ? '' : '<i>' + description + '</i>';
+        incidentnr = dbkjs.util.isJsonNull(incidentnr) ? '' : '<strong>' + incidentnr + '</strong>';
+        var labelclass = "label-default";
+        if (prio) {
+            if (prio === "Prio 1") {
+                labelclass = "label-danger";
+            }
+            if (prio === "Prio 2") {
+                labelclass = "label-warning";
+            }
+        }
+        return $.trim(incidentnr + ' <span class="label ' + labelclass + '">' + prio + '</span>' + ' ' + description);
+
+    },
+    createNorm: function(name, real, norm) {
+        name = dbkjs.util.isJsonNull(name) ? '' : '<i>' + name + '</i>';
+        if (real === 0 || norm === 0) {
+            return '';
+        } else {
+            var diff = Math.abs(real - norm);
+            if (real - norm > 0) {
+                sign = '+';
+            } else {
+                sign = '-';
+            }
+            if (real > norm) {
+                if (real - norm > 300) {
+                    labelclass = "label-danger";
+                    color = "#D9534F";
+                } else {
+                    labelclass = "label-warning";
+                    color = "#F0AD4E";
+                }
+            } else {
+                labelclass = "label-success";
+                color = "#5CB85C";
+            }
+            var output = '<tr><td colspan="2">Situatie: ' + name + ' - norm: ' + dbkjs.util.parseSeconds(moment.duration(norm, "seconds")) + '<td></tr>';
+            output += '<tr><td colspan="2">Opkomsttijd: <span class="label ' + labelclass + '">' + dbkjs.util.parseSeconds(moment.duration(real, "seconds")) + '</span><i style="color:' + color + ';"> ' + sign + dbkjs.util.parseSeconds(moment.duration(diff, "seconds")) + '</i><td></tr>';
+            return output;
+        }
+    },
+    createClassification: function(c1, c2, c3) {
+        lc1 = dbkjs.util.isJsonNull(c1) ? '' : '<li><a href="#">' + c1 + '</a></li>';
+        lc2 = dbkjs.util.isJsonNull(c2) ? '' : '<li><a href="#">' + c2 + '</a></li>';
+        lc3 = dbkjs.util.isJsonNull(c3) ? '' : '<li><a href="#">' + c3 + '</a></li>';
+        return '<ol class="breadcrumb classification">' +
+                lc1 + lc2 + lc3 +
+                '</ol>';
+    },
+    createAddress: function(city, municipality, street, housenr, housenradd, housename, zipcode) {
+        city = dbkjs.util.isJsonNull(city) ? '' : city;
+        municipality = dbkjs.util.isJsonNull(municipality) ? '' : municipality;
+        street = dbkjs.util.isJsonNull(street) ? '' : street;
+        housenr = dbkjs.util.isJsonNull(housenr) ? '' : housenr;
+        housenr = housenr !== 0 ? housenr : '';
+        housenradd = dbkjs.util.isJsonNull(housenradd) ? '' : housenradd;
+        housename = dbkjs.util.isJsonNull(housename) ? '' : '<strong>' + housename + '</strong><br>';
+        zipcode = dbkjs.util.isJsonNull(zipcode) ? '' : zipcode;
+        municipality = (city === municipality) ? '' : municipality;
+        var addressline1 = $.trim(street + ' ' + housenr + '  ' + housenradd);
+        var addressline2 = $.trim(zipcode + '  ' + city + ' ' + municipality);
+        var address_set = dbkjs.util.isJsonNull(addressline1) ? addressline2 : addressline1 + '<br>' + addressline2;
+        var address = $('<address>' +
+                housename +
+                address_set +
+                '</address>');
+        return address;
+    },
     createListGroup: function(item_array) {
         var listgroup = $('<ul class="list-group"></ul>');
         $.each(item_array, function(item_idx, item) {
             listgroup.append('<li class="list-group-item">' + item + '</li>');
         });
         return listgroup;
+    },
+    loadingStart: function(layer) {
+        var arr_index = $.inArray(layer.name, this.layersLoading);
+        if (arr_index === -1) {
+            this.layersLoading.push(layer.name);
+        }
+
+        var alert = $('#systeem_meldingen');
+        if (!alert[0]) {
+            var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
+            alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+            alert.append('<i class="icon-spinner icon-spin"></i> Bezig met laden van ' + this.layersLoading.join(', ') + '...');
+            $('body').append(alert);
+            alert.show();
+        } else {
+            alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass('alert-info');
+            alert.html('');
+            alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+            alert.append('<i class="icon-spinner icon-spin"></i> Bezig met laden van ' + this.layersLoading.join(', ') + '...');
+            alert.show();
+        }
+
+    },
+    loadingEnd: function(layer) {
+        var alert = $('#systeem_meldingen');
+        if (this.layersLoading.length !== 0) {
+            var arr_index = $.inArray(layer.name, this.layersLoading);
+            if (arr_index !== -1) {
+                this.layersLoading.splice(arr_index, 1);
+            }
+            
+            if (!alert[0]) {
+                if (this.layersLoading.length === 0) {
+                    alert.hide();
+                } else {
+                    var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
+                    alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+                    alert.append('<i class="icon-spinner icon-spin"></i> Bezig met laden van ' + this.layersLoading.join(', ') + '...');
+                    $('body').append(alert);
+                    alert.show();
+                }
+            } else {
+                if (this.layersLoading.length === 0) {
+                    alert.hide();
+                } else {
+                    alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass('alert-info');
+                    alert.html('');
+                    alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+                    alert.append('<i class="icon-spinner icon-spin"></i> Bezig met laden van ' + this.layersLoading.join(', ') + '...');
+                    alert.show();
+                }
+            }
+        } else {
+            alert.hide();
+        }
     },
     alert: function(title, tekst, type) {
         if (!type) {
@@ -203,7 +345,7 @@ dbkjs.util = {
     changeDialogTitle: function(title, dialogid) {
         var dialog;
         if (!dialogid) {
-            //asume it is the infopanel.
+//asume it is the infopanel.
             dialog = $('#infopanel_h');
         } else {
             dialog = $(dialogid + '_h');
@@ -248,7 +390,7 @@ dbkjs.util = {
         var ref;
         var pane;
         if (id) {
-            //controleer of de tab wel bestaat..
+//controleer of de tab wel bestaat..
         }
         if (!id) {
             var id = OpenLayers.Util.createUniqueID("dbkjs.tab_pane_");
@@ -263,7 +405,6 @@ dbkjs.util = {
             parent_ul.append(li);
         }
         ref = li.children().first();
-
         if (pane.length === 0) {
             pane = $('<div class="tab-pane active" id="' + id + '"></div>');
             parent_tab.append(pane);
@@ -271,13 +412,19 @@ dbkjs.util = {
         ref.html(tab_title);
         pane.html(tab_content);
         if (active) {
-            //verwijder van alle andere tabs de active state!
+//verwijder van alle andere tabs de active state!
             parent_ul.children().removeClass('active');
             parent_tab.children().removeClass('active');
             li.addClass('active');
             pane.addClass('active');
         }
         return id;
+    },
+    removeTab: function(parent_id, id) {
+        $('#' + id + '_tab').remove();
+        $('#' + id).remove();
+        $('#' + parent_id + ' ul:first').children().first().addClass('active');
+        $('#' + parent_id + ' .tab-content:first').children().first().addClass('active');
     },
     createDialog: function(id, title, styleoptions) {
         if (!styleoptions) {
@@ -312,21 +459,17 @@ dbkjs.util = {
                 csv = '"' + $rows.map(function(i, row) {
             var $row = $(row),
                     $cols = $row.find('td');
-
             return $cols.map(function(j, col) {
                 var $col = $(col),
                         text = $col.text();
-
                 return text.replace('"', '""'); // escape double quotes
 
             }).get().join(tmpColDelim);
-
         }).get().join(tmpRowDelim)
                 .split(tmpRowDelim).join(rowDelim)
                 .split(tmpColDelim).join(colDelim) + '"',
                 // Data URI
                 csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csv);
-
         $(this)
                 .attr({
             'download': filename,
