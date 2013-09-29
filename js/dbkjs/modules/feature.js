@@ -105,12 +105,12 @@ dbkjs.modules.feature = {
             },
             myicon: function(feature) {
                 if (feature.cluster) {
-                    return "images/jcartier_city_3.png";
+                    return "http://view.safetymaps.nl/images/jcartier_city_3.png";
                 } else {
                     if (feature.attributes.typeFeature === 'Object') {
-                        return "images/jcartier_building_1.png";
+                        return "http://view.safetymaps.nl/images/jcartier_building_1.png";
                     } else {
-                        return "images/jcartier_event_1.png";
+                        return "http://view.safetymaps.nl/images/jcartier_event_1.png";
                     }
                 }
             },
@@ -236,12 +236,12 @@ dbkjs.modules.feature = {
             },
             myicon: function(feature) {
                 if (feature.cluster) {
-                    return "images/jcartier_city_3.png";
+                    return "http://view.safetymaps.nl/images/jcartier_city_3.png";
                 } else {
                     if (feature.attributes.typeFeature === 'Object') {
-                        return "images/jcartier_building_1.png";
+                        return "http://view.safetymaps.nl/images/jcartier_building_1.png";
                     } else {
-                        return "images/jcartier_event_1.png";
+                        return "http://view.safetymaps.nl/images/jcartier_event_1.png";
                     }
                 }
             },

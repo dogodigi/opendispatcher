@@ -9,131 +9,25 @@ dbkjs.modules.print = {
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
         $('#btngrp_3').append('<a id="btn_print" class="btn btn-default navbar-btn" href="#" title="Afdrukken"><i class="icon-print"></i></a>');
-        
+
         $('#btn_print').click(function() {
             var testObject = {
+                "mapTitle": "Foo",
                 "units": "degrees",
-                "srs": "EPSG:4326",
+                "srs": "EPSG:28992",
                 "layout": "A4 portrait",
                 "dpi": 75,
-                "layers": [
-                    {
-                        "baseURL": "http://demo.opengeo.org/geoserver/wms",
-                        "opacity": 1,
-                        "singleTile": false,
-                        "type": "WMS",
-                        "layers": [
-                            "ne:ne"
-                        ],
-                        "format": "image/jpeg",
-                        "styles": [
-                            ""
-                        ],
-                        "customParams": {}
-                    },
-                    {
-                        "type": "Vector",
-                        "styles": {
-                            "1": {
-                                "externalGraphic": "http://openlayers.org/dev/img/marker-blue.png",
-                                "strokeColor": "red",
-                                "fillColor": "red",
-                                "fillOpacity": 0.7,
-                                "strokeWidth": 2,
-                                "pointRadius": 12
-                            }
-                        },
-                        "styleProperty": "_gx_style",
-                        "geoJson": {
-                            "type": "FeatureCollection",
-                            "features": [
-                                {
-                                    "type": "Feature",
-                                    "id": "OpenLayers.Feature.Vector_52",
-                                    "properties": {
-                                        "_gx_style": 1
-                                    },
-                                    "geometry": {
-                                        "type": "Polygon",
-                                        "coordinates": [
-                                            [
-                                                [
-                                                    15,
-                                                    47
-                                                ],
-                                                [
-                                                    16,
-                                                    48
-                                                ],
-                                                [
-                                                    14,
-                                                    49
-                                                ],
-                                                [
-                                                    15,
-                                                    47
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                },
-                                {
-                                    "type": "Feature",
-                                    "id": "OpenLayers.Feature.Vector_61",
-                                    "properties": {
-                                        "_gx_style": 1
-                                    },
-                                    "geometry": {
-                                        "type": "LineString",
-                                        "coordinates": [
-                                            [
-                                                15,
-                                                48
-                                            ],
-                                            [
-                                                16,
-                                                47
-                                            ],
-                                            [
-                                                17,
-                                                46
-                                            ]
-                                        ]
-                                    }
-                                },
-                                {
-                                    "type": "Feature",
-                                    "id": "OpenLayers.Feature.Vector_64",
-                                    "properties": {
-                                        "_gx_style": 1
-                                    },
-                                    "geometry": {
-                                        "type": "Point",
-                                        "coordinates": [
-                                            16,
-                                            46
-                                        ]
-                                    }
-                                }
-                            ]
-                        },
-                        "name": "vector",
-                        "opacity": 1
-                    }
-                ],
                 "pages": [
                     {
-                        "center": [
-                            15.999999999998,
-                            48
-                        ],
-                        "scale": 4000000,
-                        "rotation": -17,
-                        "mapTitle": "A custom title",
-                        "comment": "A custom comment"
+                        "mapTitle": "DOIV Afdruk",
+                        "mapComment": "Testregel"
                     }
                 ]
             };
+            var center = dbkjs.map.getCenter();
+            testObject.pages[0].center = [center.lon, center.lat];
+            testObject.pages[0].scale = dbkjs.map.getScale();
+            testObject.pages[0].rotation = 0;
             dbkjs.modules.print.printdirect(dbkjs.map, testObject.pages);
         });
     },
@@ -155,7 +49,7 @@ dbkjs.modules.print = {
     },
     printdirect: function(map, pages, options) {
         dbkjs.modules.print.loadCapabilities(function(capabilities) {
-            dbkjs.modules.print.setLayout(dbkjs.modules.print.capabilities.layouts[0]);
+            dbkjs.modules.print.setLayout(dbkjs.modules.print.capabilities.layouts[3]);
             dbkjs.modules.print.setDpi(dbkjs.modules.print.capabilities.dpis[0]);
             dbkjs.modules.print.print(map, pages, options);
         });
@@ -165,12 +59,15 @@ dbkjs.modules.print = {
         var _obj = dbkjs.modules.print;
         pages = pages instanceof Array ? pages : [pages];
         options = options || {};
-        var jsonData = $.extend({
+        var jsonData = $.extend(_obj.customParams, {
             units: map.getUnits(),
             srs: map.baseLayer.projection.getCode(),
             layout: _obj.layout.name,
-            dpi: _obj.dpi.value
-        }, _obj.customParams);
+            dpi: _obj.dpi.value,
+            mapTitle: "Titel",
+            mapComment: "Commentaar",
+            mapFooter: "Footer"
+        });
 
         // feature wordt gebruikt voor de extent van de kaart.. Ik moet nog even uitvinden hoe..
         //var pagesLayer = pages[0].feature.layer;
@@ -194,13 +91,12 @@ dbkjs.modules.print = {
         var encodedPages = [];
         $.each(pages, function(page_idx, page) {
             encodedPages.push(
-                    $.extend({
-                center: [page.center[0], page.center[1]],
-                scale: page.scale,
-                rotation: page.rotation,
-                mapTitle: page.mapTitle
-            }, page.customParams)
-                    );
+                $.extend(page.customParams, {
+                    center: [page.center[0], page.center[1]],
+                    scale: page.scale,
+                    rotation: page.rotation
+                })
+            );
         });
         jsonData.pages = encodedPages;
 
@@ -243,7 +139,7 @@ dbkjs.modules.print = {
             data: JSON.stringify(jsonData),
             dataType: "json",
             success: function(response) {
-                window.location = response.getURL;
+                _obj.download(response.getURL);
             },
             error: function(response) {
                 alert(response.responseText);
@@ -251,7 +147,14 @@ dbkjs.modules.print = {
         });
     },
     download: function(url) {
-        window.open(url);
+        var _obj = dbkjs.modules.print;
+        // Er zit een bug in de manier waarop de PDF wordt aangeboden. Deze houdt geen rekening met proxies die serverside zijn ingesteld
+        // De oplossing is om de bestandsnaam uit de URL te halen en de juiste relatieve URL er van te maken.
+        //var url = _obj.url + "pdf/" + "info.json";
+        var url_arr = url.split('/');
+        var filename = url_arr[url_arr.length - 1];
+
+        window.open(_obj.url + "pdf/" + filename);
     },
     loadCapabilities: function(callback) {
         var _obj = dbkjs.modules.print;
@@ -308,13 +211,13 @@ dbkjs.modules.print = {
             "WMS": function(layer) {
                 var enc = dbkjs.modules.print.encoders.layers.HTTPRequest.call(dbkjs.modules.print, layer);
                 enc.singleTile = layer.singleTile;
-                $.extend({
+                $.extend(enc, {
                     type: 'WMS',
                     layers: [layer.params.LAYERS].join(",").split(","),
                     format: layer.params.FORMAT,
                     styles: [layer.params.STYLES].join(",").split(","),
                     singleTile: layer.singleTile
-                }, enc);
+                });
                 var param;
                 for (var p in layer.params) {
                     param = p.toLowerCase();
@@ -330,33 +233,33 @@ dbkjs.modules.print = {
             },
             "OSM": function(layer) {
                 var enc = dbkjs.modules.print.encoders.layers.TileCache.call(dbkjs.modules.print, layer);
-                return $.extend({
+                return $.extend(enc, {
                     type: 'OSM',
                     baseURL: enc.baseURL.substr(0, enc.baseURL.indexOf("$")),
                     extension: "png"
-                }, enc);
+                });
             },
             "TMS": function(layer) {
                 var enc = dbkjs.modules.print.encoders.layers.TileCache.call(dbkjs.modules.print, layer);
-                return $.extend({
+                return $.extend(enc, {
                     type: 'TMS',
                     format: layer.type
-                }, enc);
+                });
             },
             "TileCache": function(layer) {
                 var enc = dbkjs.modules.print.encoders.layers.HTTPRequest.call(dbkjs.modules.print, layer);
-                return $.extend({
+                return $.extend(enc, {
                     type: 'TileCache',
                     layer: layer.layername,
                     maxExtent: layer.maxExtent.toArray(),
                     tileSize: [layer.tileSize.w, layer.tileSize.h],
-                    extension: layer.extension,
+                    extension: "png",
                     resolutions: layer.serverResolutions || layer.resolutions
-                }, enc);
+                });
             },
             "WMTS": function(layer) {
                 var enc = dbkjs.modules.print.encoders.layers.HTTPRequest.call(dbkjs.modules.print, layer);
-                enc = $.extend({
+                enc = $.extend(enc, {
                     type: 'WMTS',
                     layer: layer.layer,
                     version: layer.version,
@@ -365,7 +268,7 @@ dbkjs.modules.print = {
                     dimensions: layer.dimensions,
                     params: layer.params,
                     matrixSet: layer.matrixSet
-                }, enc);
+                });
                 if (layer.matrixIds) {
                     if (layer.requestEncoding === "KVP") {
                         enc.format = layer.format;
@@ -383,29 +286,29 @@ dbkjs.modules.print = {
                     return enc;
                 }
                 else {
-                    return $.extend({
+                    return $.extend(enc, {
                         formatSuffix: layer.formatSuffix,
                         tileOrigin: [layer.tileOrigin.lon, layer.tileOrigin.lat],
                         tileSize: [layer.tileSize.w, layer.tileSize.h],
                         maxExtent: (layer.tileFullExtent !== null) ? layer.tileFullExtent.toArray() : layer.maxExtent.toArray(),
                         zoomOffset: layer.zoomOffset,
                         resolutions: layer.serverResolutions || layer.resolutions
-                    }, enc);
+                    });
                 }
             },
             "KaMapCache": function(layer) {
                 var enc = dbkjs.modules.print.encoders.layers.KaMap.call(dbkjs.modules.print, layer);
-                return $.extend({
+                return $.extend(enc, {
                     type: 'KaMapCache',
                     // group param is mandatory when using KaMapCache
                     group: layer.params['g'],
                     metaTileWidth: layer.params['metaTileSize']['w'],
                     metaTileHeight: layer.params['metaTileSize']['h']
-                }, enc);
+                });
             },
             "KaMap": function(layer) {
                 var enc = dbkjs.modules.print.encoders.layers.HTTPRequest.call(dbkjs.modules.print, layer);
-                return $.extend({
+                return $.extend(enc, {
                     type: 'KaMap',
                     map: layer.params['map'],
                     extension: layer.params['i'],
@@ -414,26 +317,26 @@ dbkjs.modules.print = {
                     maxExtent: layer.maxExtent.toArray(),
                     tileSize: [layer.tileSize.w, layer.tileSize.h],
                     resolutions: layer.serverResolutions || layer.resolutions
-                }, enc);
+                });
             },
             "HTTPRequest": function(layer) {
                 var enc = dbkjs.modules.print.encoders.layers.Layer.call(dbkjs.modules.print, layer);
-                return $.extend({
+                return $.extend(enc, {
                     baseURL: dbkjs.modules.print.getAbsoluteUrl(layer.url instanceof Array ?
                             layer.url[0] : layer.url),
                     opacity: (layer.opacity !== null) ? layer.opacity : 1.0
-                }, enc);
+                });
             },
             "Image": function(layer) {
                 var enc = dbkjs.modules.print.encoders.layers.Layer.call(dbkjs.modules.print, layer);
-                return $.extend({
+                return $.extend(enc, {
                     type: 'Image',
                     baseURL: dbkjs.modules.print.getAbsoluteUrl(layer.getURL(layer.extent)),
                     opacity: (layer.opacity !== null) ? layer.opacity : 1.0,
                     extent: layer.extent.toArray(),
                     pixelSize: [layer.size.w, layer.size.h],
                     name: layer.name
-                }, enc);
+                });
             },
             "Vector": function(layer) {
                 if (!layer.features.length) {
@@ -468,34 +371,28 @@ dbkjs.modules.print = {
                         //new style
                         styleDict[dictKey] = styleName = nextId++;
                         if (style.externalGraphic) {
-                            encStyles[styleName] = $.extend({
+                            encStyles[styleName] = $.extend(style, {
                                 externalGraphic: dbkjs.modules.print.getAbsoluteUrl(style.externalGraphic)
-                            }, style);
+                            });
                         } else {
                             encStyles[styleName] = style;
                         }
                     }
                     var featureGeoJson = featureFormat.extract.feature.call(
                             featureFormat, feature);
-
-                    featureGeoJson.properties = OpenLayers.Util.extend({
-                        _gx_style: styleName
-                    }, featureGeoJson.properties);
-
                     encFeatures.push(featureGeoJson);
                 }
                 var enc = dbkjs.modules.print.encoders.layers.Layer.call(dbkjs.modules.print, layer);
-                return $.extend({
+                return $.extend(enc, {
                     type: 'Vector',
                     styles: encStyles,
-                    styleProperty: '_gx_style',
                     geoJson: {
                         type: "FeatureCollection",
                         features: encFeatures
                     },
                     name: layer.name,
                     opacity: (layer.opacity !== null) ? layer.opacity : 1.0
-                }, enc);
+                });
             },
             "Markers": function(layer) {
                 var features = [];

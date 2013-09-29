@@ -37,9 +37,16 @@ dbkjs.ui.gui = {
                 parent: '#overlaypanel_b3',
                 index: 0
             });
-
+            var hydranten = new dbkjs.Layer({
+                name: 'Hydranten',
+                url: '/brabantnoord/wms',
+                map: dbkjs.map,
+                layerOptions: {layers: 'brwbn:Brandkranen'},
+                parent: '#overlaypanel_b2',
+                index:4
+            });
             var brabantwater = new dbkjs.Layer({
-                name: 'Water',
+                name: 'Leidingen',
                 url: '/brabantnoord/wms',
                 map: dbkjs.map,
                 layerOptions: {layers: 'brwbn:Water'},
