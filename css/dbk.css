@@ -9,6 +9,9 @@ a {
 .btn_5px {
     margin-bottom: 5px !important;
 }
+.rotate_45:before{
+    transform: rotate(45deg);
+}
 .classification {
     margin-bottom: 0 !important;
     padding: 4px 4px !important;
