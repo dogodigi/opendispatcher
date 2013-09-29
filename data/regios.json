@@ -49,6 +49,7 @@
                 "preparatie",
                 "preventie",
                 "regio",
+                "print",
                 "search","help"],
             "gebied": {
                 "geometry": {

@@ -92,10 +92,14 @@ dbkjs.modules.bag = {
      * Initialisatie functie om objecten toe te voegen aan de kaart
      */
     register: function() {
+        var _visibility = true;
+        if ($.browser.device){
+            _visibility = false;
+        }
         var _obj = dbkjs.modules.bag;
         _obj.layer = new OpenLayers.Layer.WMS("BAG", "/bag/wms?",
                 {layers: 'pand,standplaats,ligplaats', format: 'image/png', transparent: true, maxScale: 5000},
-        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true});
+        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: _visibility});
 
 
         dbkjs.map.addLayers([

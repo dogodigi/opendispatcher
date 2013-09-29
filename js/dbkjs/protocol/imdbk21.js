@@ -378,8 +378,8 @@ dbkjs.protocol.imdbk21 = {
             featureID: 'DBKObject.' + id
         };
         OpenLayers.Request.GET({
-            url: dbkjs.options.regio.safetymaps_url + 'wfs',
-            //url: 'http://dbk.mapcache.nl/data/DBKObject_1371547912.xml', 
+            //url: dbkjs.options.regio.safetymaps_url + 'wfs',
+            url: 'http://dbk.mapcache.nl/data/' + id + '.xml', 
             "params": params, callback: dbkjs.protocol.imdbk21.info});
     },
     getGebied: function(id) {

@@ -1,3 +1,9 @@
+$.browser = {};
+$.browser.mozilla = /mozilla/.test(navigator.userAgent.toLowerCase()) && !/webkit    /.test(navigator.userAgent.toLowerCase());
+$.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
+$.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
+$.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
+$.browser.device = (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase()));
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.util = {
@@ -345,7 +351,7 @@ dbkjs.util = {
     changeDialogTitle: function(title, dialogid) {
         var dialog;
         if (!dialogid) {
-//asume it is the infopanel.
+            //asume it is the infopanel.
             dialog = $('#infopanel_h');
         } else {
             dialog = $(dialogid + '_h');

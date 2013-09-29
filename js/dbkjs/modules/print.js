@@ -1,30 +1,140 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
-$.browser = {};
-$.browser.mozilla = /mozilla/.test(navigator.userAgent.toLowerCase()) && !/webkit    /.test(navigator.userAgent.toLowerCase());
-$.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
-$.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
-$.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
+
 dbkjs.modules.print = {
-    url: "/geoserver/pdf/",
-    options: {
-        "units": "degrees",
-        "srs": "EPSG:4326",
-        "layout": "A4 portrait",
-        "dpi": 75,
-        "mapTitle": "Printing Demo",
-        "comment": "This is a map printed from GeoExt.",
-        "layers": [{
-                "baseURL": "http://demo.opengeo.org/geoserver/wms",
-                "opacity": 1,
-                "singleTile": true, "type": "WMS", "layers": ["topp:tasmania_state_boundaries"],
-                "format": "image/jpeg", "styles": [""]}],
-        "pages": [{"center": [146.56, -41.56], "scale": 4000000, "rotation": 0}]},
-    register: function(){
-        //$('#btngrp_3').append('<a id="btn_print" class="btn btn-default navbar-btn" href="#"><i class="icon-print"></i></a>');
-        //$('#btn_print').click(function(){
-        //    dbkjs.modules.print.printdirect();
-        //});
+    url: "/zeeland/",
+    register: function(options) {
+        var _obj = dbkjs.modules.print;
+        _obj.namespace = options.namespace || _obj.namespace;
+        _obj.url = options.url || _obj.url;
+        _obj.visibility = options.visible || _obj.visibility;
+        $('#btngrp_3').append('<a id="btn_print" class="btn btn-default navbar-btn" href="#"><i class="icon-print"></i></a>');
+        $('#btn_print').click(function() {
+            var testObject = {
+                "units": "degrees",
+                "srs": "EPSG:4326",
+                "layout": "A4 portrait",
+                "dpi": 75,
+                "layers": [
+                    {
+                        "baseURL": "http://demo.opengeo.org/geoserver/wms",
+                        "opacity": 1,
+                        "singleTile": false,
+                        "type": "WMS",
+                        "layers": [
+                            "ne:ne"
+                        ],
+                        "format": "image/jpeg",
+                        "styles": [
+                            ""
+                        ],
+                        "customParams": {}
+                    },
+                    {
+                        "type": "Vector",
+                        "styles": {
+                            "1": {
+                                "externalGraphic": "http://openlayers.org/dev/img/marker-blue.png",
+                                "strokeColor": "red",
+                                "fillColor": "red",
+                                "fillOpacity": 0.7,
+                                "strokeWidth": 2,
+                                "pointRadius": 12
+                            }
+                        },
+                        "styleProperty": "_gx_style",
+                        "geoJson": {
+                            "type": "FeatureCollection",
+                            "features": [
+                                {
+                                    "type": "Feature",
+                                    "id": "OpenLayers.Feature.Vector_52",
+                                    "properties": {
+                                        "_gx_style": 1
+                                    },
+                                    "geometry": {
+                                        "type": "Polygon",
+                                        "coordinates": [
+                                            [
+                                                [
+                                                    15,
+                                                    47
+                                                ],
+                                                [
+                                                    16,
+                                                    48
+                                                ],
+                                                [
+                                                    14,
+                                                    49
+                                                ],
+                                                [
+                                                    15,
+                                                    47
+                                                ]
+                                            ]
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": "Feature",
+                                    "id": "OpenLayers.Feature.Vector_61",
+                                    "properties": {
+                                        "_gx_style": 1
+                                    },
+                                    "geometry": {
+                                        "type": "LineString",
+                                        "coordinates": [
+                                            [
+                                                15,
+                                                48
+                                            ],
+                                            [
+                                                16,
+                                                47
+                                            ],
+                                            [
+                                                17,
+                                                46
+                                            ]
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": "Feature",
+                                    "id": "OpenLayers.Feature.Vector_64",
+                                    "properties": {
+                                        "_gx_style": 1
+                                    },
+                                    "geometry": {
+                                        "type": "Point",
+                                        "coordinates": [
+                                            16,
+                                            46
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "name": "vector",
+                        "opacity": 1
+                    }
+                ],
+                "pages": [
+                    {
+                        "center": [
+                            15.999999999998,
+                            48
+                        ],
+                        "scale": 4000000,
+                        "rotation": -17,
+                        "mapTitle": "A custom title",
+                        "comment": "A custom comment"
+                    }
+                ]
+            };
+            dbkjs.modules.print.printdirect(dbkjs.map, testObject.pages);
+        });
     },
     capabilities: null,
     method: "POST",
@@ -35,7 +145,6 @@ dbkjs.modules.print = {
     dpi: null,
     layout: null,
     encoding: document.charset || document.characterSet || "UTF-8",
-    //{"units":"degrees","srs":"EPSG:4326","layout":"A4 portrait","dpi":75,"layers":[{"baseURL":"http://demo.opengeo.org/geoserver/wms","opacity":1,"singleTile":false,"type":"WMS","layers":["ne:ne"],"format":"image/jpeg","styles":[""],"customParams":{}},{"type":"Vector","styles":{"1":{"externalGraphic":"http://openlayers.org/dev/img/marker-blue.png","strokeColor":"red","fillColor":"red","fillOpacity":0.7,"strokeWidth":2,"pointRadius":12}},"styleProperty":"_gx_style","geoJson":{"type":"FeatureCollection","features":[{"type":"Feature","id":"OpenLayers.Feature.Vector_52","properties":{"_gx_style":1},"geometry":{"type":"Polygon","coordinates":[[[15,47],[16,48],[14,49],[15,47]]]}},{"type":"Feature","id":"OpenLayers.Feature.Vector_61","properties":{"_gx_style":1},"geometry":{"type":"LineString","coordinates":[[15,48],[16,47],[17,46]]}},{"type":"Feature","id":"OpenLayers.Feature.Vector_64","properties":{"_gx_style":1},"geometry":{"type":"Point","coordinates":[16,46]}}]},"name":"vector","opacity":1}],"pages":[{"center":[15.999999999998,48],"scale":4000000,"rotation":-17,"mapTitle":"A custom title","comment":"A custom comment"}]},
     timeout: 30000,
     setLayout: function(layout) {
         this.layout = layout;
@@ -44,14 +153,6 @@ dbkjs.modules.print = {
         this.dpi = dpi;
     },
     printdirect: function(map, pages, options) {
-        var pages = pages || [
-            {
-                "title": "Mapfish Print",
-                "rotation": 0,
-                "mapTitle": "Mapfish Map",
-                "comment": "This is a Mapfish map."
-            }
-        ];
         dbkjs.modules.print.loadCapabilities(function(capabilities) {
             dbkjs.modules.print.setLayout(dbkjs.modules.print.capabilities.layouts[0]);
             dbkjs.modules.print.setDpi(dbkjs.modules.print.capabilities.dpis[0]);
@@ -82,7 +183,7 @@ dbkjs.modules.print = {
         $.each(layers, function(layer_idx, layer) {
             if (
                     //layer !== pagesLayer && 
-            layer.getVisibility() === true) {
+                    layer.getVisibility() === true) {
                 var enc = _obj.encodeLayer(layer);
                 enc && encodedLayers.push(enc);
             }
@@ -93,9 +194,10 @@ dbkjs.modules.print = {
         $.each(pages, function(page_idx, page) {
             encodedPages.push(
                     $.extend({
-                center: [page.center.lon, page.center.lat],
-                scale: page.scale.get("value"),
-                rotation: page.rotation
+                center: [page.center[0], page.center[1]],
+                scale: page.scale,
+                rotation: page.rotation,
+                mapTitle: page.mapTitle
             }, page.customParams)
                     );
         });
@@ -135,9 +237,9 @@ dbkjs.modules.print = {
 //        }
         $.ajax({
             type: _obj.method,
-            url: _obj.url + "create.json",
-            contentType: "application/json",
-            data: jsonData,
+            url: _obj.url + "pdf/" + "create.json",
+            contentType: "application/json; charset=UTF-8",
+            data: JSON.stringify(jsonData),
             dataType: "json",
             success: function(response) {
                 window.location = response.getURL;
@@ -155,7 +257,7 @@ dbkjs.modules.print = {
         if (!_obj.url) {
             return;
         }
-        var url = _obj.url + "info.json";
+        var url = _obj.url + "pdf/" + "info.json";
         $.ajax({
             url: url,
             type: "GET",
@@ -172,18 +274,11 @@ dbkjs.modules.print = {
         });
 
     },
-    /** private: method[loadStores]
+    /**
+     * 
+     * @param {type} layer
+     * @returns {dbkjs.modules.print.encodeLayer.encLayer|@exp;encLayer@pro;type}
      */
-//    loadStores: function() {
-//        var _obj = dbkjs.modules.print;
-//        _obj.scales.loadData(_obj.capabilities);
-//        _obj.dpis.loadData(_obj.capabilities);
-//        _obj.layouts.loadData(_obj.capabilities);
-//
-//        _obj.setLayout(_obj.layouts.getAt(0));
-//        _obj.setDpi(_obj.dpis.getAt(0));
-//        this.fireEvent("loadcapabilities", this, this.capabilities);
-//    },
     encodeLayer: function(layer) {
         var _obj = dbkjs.modules.print;
         var encLayer;
@@ -419,43 +514,6 @@ dbkjs.modules.print = {
                 return output;
             }
         }
-//        "legends": {
-//            "gx_wmslegend": function(legend, scale) {
-//                var enc = this.encoders.legends.base.call(this, legend);
-//                var icons = [];
-//                for (var i = 1, len = legend.items.getCount(); i < len; ++i) {
-//                    var url = legend.items.get(i).url;
-//                    if (legend.useScaleParameter === true &&
-//                            url.toLowerCase().indexOf(
-//                            'request=getlegendgraphic') !== -1) {
-//                        var split = url.split("?");
-//                        var params = Ext.urlDecode(split[1]);
-//                        params['SCALE'] = scale;
-//                        url = split[0] + "?" + Ext.urlEncode(params);
-//                    }
-//                    icons.push(this.getAbsoluteUrl(url));
-//                }
-//                enc[0].classes[0] = {
-//                    name: "",
-//                    icons: icons
-//                };
-//                return enc;
-//            },
-//            "gx_urllegend": function(legend) {
-//                var enc = this.encoders.legends.base.call(this, legend);
-//                enc[0].classes.push({
-//                    name: "",
-//                    icon: this.getAbsoluteUrl(legend.items.get(1).url)
-//                });
-//                return enc;
-//            },
-//            "base": function(legend) {
-//                return [{
-//                        name: legend.getLabel(),
-//                        classes: []
-//                    }];
-//            }
-//        }
     },
     getAbsoluteUrl: function(url) {
         if ($.browser.safari) {
@@ -467,7 +525,6 @@ dbkjs.modules.print = {
             a = document.createElement("<a href='" + url + "'/>");
             a.style.display = "none";
             document.body.appendChild(a);
-            a.href = a.href;
             document.body.removeChild(a);
         } else {
             a = document.createElement("a");
@@ -476,37 +533,3 @@ dbkjs.modules.print = {
         return a.href;
     }
 };
-
-/** api: method[print]
- *  :param map: ``GeoExt.MapPanel`` or ``OpenLayers.Map`` The map to print.
- *  :param pages: ``Array`` of :class:`GeoExt.data.PrintPage` or
- *      :class:`GeoExt.data.PrintPage` page(s) to print.
- *  :param options: ``Object`` of additional options, see below.
- *  
- *  Sends the print command to the print service and opens a new window
- *  with the resulting PDF.
- *  
- *  Valid properties for the ``options`` argument:
- *
- *      * ``legend`` - :class:`GeoExt.LegendPanel` If provided, the legend
- *        will be added to the print document. For the printed result to
- *        look like the LegendPanel, the following ``!legends`` block
- *        should be included in the ``items`` of your page layout in the
- *        print module's configuration file:
- *        
- *        .. code-block:: none
- *        
- *          - !legends
- *              maxIconWidth: 0
- *              maxIconHeight: 0
- *              classIndentation: 0
- *              layerSpace: 5
- *              layerFontSize: 10
- *
- *      * ``overview`` - :class:`OpenLayers.Control.OverviewMap` If provided,
- *        the layers for the overview map in the printout will be taken from
- *        the OverviewMap control. If not provided, the print service will
- *        use the main map's layers for the overview map. Applies only for
- *        layouts configured to print an overview map.
- */
-//dbkjs.modules.print.capabilities = {"scales": [{"name": "1:25,000", "value": "25000"}, {"name": "1:50,000", "value": "50000"}, {"name": "1:100,000", "value": "100000"}, {"name": "1:200,000", "value": "200000"}, {"name": "1:500,000", "value": "500000"}, {"name": "1:1,000,000", "value": "1000000"}, {"name": "1:2,000,000", "value": "2000000"}, {"name": "1:4,000,000", "value": "4000000"}], "dpis": [{"name": "75", "value": "75"}, {"name": "150", "value": "150"}, {"name": "300", "value": "300"}], "layouts": [{"name": "A4 portrait", "map": {"width": 440, "height": 483}, "rotation": true}, {"name": "Legal", "map": {"width": 440, "height": 483}, "rotation": false}], "printURL": "http://demo.opengeo.org/geoserver/pdf/print.pdf", "createURL": "http://demo.opengeo.org/geoserver/pdf/create.json"};

@@ -123,10 +123,10 @@ dbkjs.modules.care = {
         //_obj.dialog.show();
         var incidenten_button = $('<button class="btn btn-block" type="button">Incidenten aan</button>');
         var dekkingsplan_button = $('<button class="btn btn-block" type="button">Dekkingsplan aan</button>');
+        var rapportage_button = $('<button class="btn btn-block" type="button">Rapportage</button>');
         if (_obj.layerIncident.getVisibility()) {
             incidentSel.show();
             incidenten_button.addClass('btn-primary').html('Incidenten uit');
-
         }
         if (_obj.layerNorm.getVisibility()) {
             normSel.show();
@@ -187,6 +187,7 @@ dbkjs.modules.care = {
         $('#care_dialog_b').append(incidenten_button);
         $('#care_dialog_b').append(normSel);
         $('#care_dialog_b').append(dekkingsplan_button);
+        $('#care_dialog_b').append(rapportage_button);
     },
     getfeatureinfo: function(e) {
         if (this.layerIncident.getVisibility()) {
@@ -265,7 +266,7 @@ dbkjs.modules.care = {
         var features = geojson_format.read(response.responseText);
         if (features.length > 0) {
             $('#carepanel_b').html('');
-            dbkjs.util.changeDialogTitle('Incidenten');
+            dbkjs.util.changeDialogTitle('Incidenten', '#carepanel');
             var ft_div = $('<div class="table-responsive"></div>');
             var ft_tbl = $('<table id="incidenten_export" class="table table-hover table-condensed"></table>');
             for (var feat in features) {
