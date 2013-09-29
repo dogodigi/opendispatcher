@@ -121,9 +121,9 @@ dbkjs.modules.care = {
             _obj.layerIncident.mergeNewParams({'cql_filter': "priority IN (" + arr.join() + ")"});
         });
         //_obj.dialog.show();
-        var incidenten_button = $('<button class="btn btn-block" type="button">Incidenten aan</button>');
-        var dekkingsplan_button = $('<button class="btn btn-block" type="button">Dekkingsplan aan</button>');
-        var rapportage_button = $('<button class="btn btn-block" type="button">Rapportage</button>');
+        var incidenten_button = $('<button class="btn btn-block btn_5px" type="button">Incidenten aan</button>');
+        var dekkingsplan_button = $('<button class="btn btn-block btn_5px" type="button">Dekkingsplan aan</button>');
+        var rapportage_button = $('<button class="btn btn-block btn_5px" type="button">Rapportage</button>');
         if (_obj.layerIncident.getVisibility()) {
             incidentSel.show();
             incidenten_button.addClass('btn-primary').html('Incidenten uit');
@@ -133,7 +133,10 @@ dbkjs.modules.care = {
             dekkingsplan_button.addClass('btn-primary').html('Dekkingsplan uit');
         }
 
-
+        $(rapportage_button).click(function(){
+            window.open('https://brwbn.safetyportal.nl/');
+            return false; 
+        });
         $(incidenten_button).click(function() {
             incidentSel.toggle();
             if (_obj.layerIncident.getVisibility()) {
@@ -183,10 +186,10 @@ dbkjs.modules.care = {
             window.location = downloadstring;
         });
         incidentSel.append(download_button);
-        $('#care_dialog_b').append(incidentSel);
         $('#care_dialog_b').append(incidenten_button);
-        $('#care_dialog_b').append(normSel);
+        $('#care_dialog_b').append(incidentSel);
         $('#care_dialog_b').append(dekkingsplan_button);
+        $('#care_dialog_b').append(normSel);
         $('#care_dialog_b').append(rapportage_button);
     },
     getfeatureinfo: function(e) {

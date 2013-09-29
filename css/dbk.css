@@ -6,6 +6,9 @@ html, body {
 a {
    outline: 0 !important;
 }
+.btn_5px {
+    margin-bottom: 5px !important;
+}
 .classification {
     margin-bottom: 0 !important;
     padding: 4px 4px !important;
