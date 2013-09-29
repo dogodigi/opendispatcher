@@ -76,12 +76,18 @@ dbkjs.util = {
     parseSeconds: function(duration) {
         //duration is a momentjs object
         var x = duration.asSeconds();
-        var seconds = Math.round(x % 60);
-        x /= 60;
-        var minutes = Math.round(x % 60);
-        x /= 60;
-        var hours = Math.round(x % 24);
-        return this.pad(hours, 2) + ':' + this.pad(minutes, 2) + ':' + this.pad(seconds, 2);
+        var hr = Math.floor(x / 3600);
+        var min = Math.floor((x - (hr * 3600)) / 60);
+        var sec = x - (hr * 3600) - (min * 60);
+        while (min.length < 2) {
+            min = '0' + min;
+        }
+        while (sec.length < 2) {
+            sec = '0' + min;
+        }
+        if (hr)
+            hr += ':';
+        return hr + min + ':' + sec;
     },
     /**
      * 

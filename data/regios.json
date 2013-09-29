@@ -50,7 +50,9 @@
                 "preventie",
                 "regio",
                 "print",
-                "search","help"],
+                "search",
+                "help"
+            ],
             "gebied": {
                 "geometry": {
                     "type": "Point",

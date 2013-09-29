@@ -16,7 +16,7 @@ dbkjs.modules.care = {
     },
     register: function(options) {
         var _obj = dbkjs.modules.care;
-        $('#btngrp_3').append('<a id="btn_care" class="btn btn-default navbar-btn" href="#"><i class="icon-fire"></i></a>');
+        $('#btngrp_3').append('<a id="btn_care" class="btn btn-default navbar-btn" href="#" title="Management informatie"><i class="icon-fire"></i></a>');
         $('body').append(dbkjs.util.createDialog('carepanel', '<i class="icon-fire"></i> Details', 'right:0;bottom:0;'));
         $('#btn_care').click(function() {
             $('#care_dialog').toggle();
