@@ -67,7 +67,7 @@ dbkjs.modules.care = {
         _obj.layerIncident.events.register("loadstart", _obj.layerIncident, function() {
             dbkjs.util.loadingStart(_obj.layerIncident);
         });
-        
+
         _obj.layerIncident.events.register("loadend", _obj.layerIncident, function() {
             dbkjs.util.loadingEnd(_obj.layerIncident);
         });
@@ -111,15 +111,7 @@ dbkjs.modules.care = {
                     '<input name="chk_prio" type="checkbox" checked="checked"/><span>Prio 3</span>'
                 ]
                 ));
-        $('input[name="chk_prio"]').click(function() {
-            var arr = [];
-            $.each($('input[name="chk_prio"]'), function(chk_idx, chk) {
-                if ($(chk).is(':checked')) {
-                    arr.push("'" + $(chk).next().text() + "'");
-                }
-            });
-            _obj.layerIncident.mergeNewParams({'cql_filter': "priority IN (" + arr.join() + ")"});
-        });
+
         //_obj.dialog.show();
         var incidenten_button = $('<button class="btn btn-block btn_5px" type="button">Incidenten aan</button>');
         var dekkingsplan_button = $('<button class="btn btn-block btn_5px" type="button">Dekkingsplan aan</button>');
@@ -133,9 +125,9 @@ dbkjs.modules.care = {
             dekkingsplan_button.addClass('btn-primary').html('Dekkingsplan uit');
         }
 
-        $(rapportage_button).click(function(){
+        $(rapportage_button).click(function() {
             window.open('https://brwbn.safetyportal.nl/');
-            return false; 
+            return false;
         });
         $(incidenten_button).click(function() {
             incidentSel.toggle();
@@ -191,6 +183,16 @@ dbkjs.modules.care = {
         $('#care_dialog_b').append(dekkingsplan_button);
         $('#care_dialog_b').append(normSel);
         $('#care_dialog_b').append(rapportage_button);
+        $('input[name="chk_prio"]').click(function() {
+            var arr = [];
+            $.each($('input[name="chk_prio"]'), function(chk_idx, chk) {
+                if ($(chk).is(':checked')) {
+                    arr.push("'" + $(chk).next().text() + "'");
+                }
+            });
+            _obj.cql_array = arr;
+            _obj.layerIncident.mergeNewParams({'cql_filter': "priority IN (" + _obj.cql_array.join() + ")"});
+        });
     },
     getfeatureinfo: function(e) {
         if (this.layerIncident.getVisibility()) {
