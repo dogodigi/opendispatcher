@@ -297,8 +297,11 @@ dbkjs.modules.care = {
                         features[feat].attributes.addresszipcode
                         ).html() +
                         '</td></tr>');
+                
                 ft_tbl.append('<tr><td>Datum/tijd</td><td>' + datumtijd.format('YYYY-MM-DD HH:mm:ss') + '</td></tr>');
-
+                if (!dbkjs.util.isJsonNull(features[feat].attributes.firestation)) {
+                    ft_tbl.append('<tr><td>Post</td><td>' + features[feat].attributes.firestation + '</td></tr>');
+                }
                 if (features[feat].attributes.timespanintake !== 0) {
                     ft_tbl.append('<tr><td>Aannametijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanintake, "seconds")) + '</td></tr>');
                 }
