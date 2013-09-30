@@ -271,7 +271,9 @@ dbkjs.protocol.imdbk21 = {
             };
             $.each(bijzonderheid, function(bijzonderheid_index, waarde) {
                 var lu = waarde["dbk:Bijzonderheid"]["dbk:soort"].value;
-                set[lu].waarde += waarde["dbk:Bijzonderheid"]["dbk:tekst"].value + '<br>';
+                if (lu) {
+                    set[lu].waarde += waarde["dbk:Bijzonderheid"]["dbk:tekst"].value + '<br>';
+                }
             });
             $.each(set, function(set_idx, set_entry) {
                 if (set_entry.waarde !== '') {
@@ -379,7 +381,7 @@ dbkjs.protocol.imdbk21 = {
         };
         OpenLayers.Request.GET({
             //url: dbkjs.options.regio.safetymaps_url + 'wfs',
-            url: 'http://dbk.mapcache.nl/data/' + id + '.xml', 
+            url: 'http://dbk.mapcache.nl/data/' + id + '.xml',
             "params": params, callback: dbkjs.protocol.imdbk21.info});
     },
     getGebied: function(id) {
