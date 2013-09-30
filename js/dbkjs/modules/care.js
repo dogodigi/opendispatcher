@@ -188,7 +188,14 @@ dbkjs.modules.care = {
         $('#care_dialog_b').append(normSel);
         $('#care_dialog_b').append(rapportage_button);
         $('input[name="chk_koppel"]').click(function() {
-            _obj.layerIncident.mergeNewParams({typename: _obj.namespace + ":incidentscare"});
+            $.each($('input[name="chk_koppel"]'), function(chk_idx, chk) {
+                if ($(chk).is(':checked')) {
+                    _obj.layerIncident.mergeNewParams({typename: _obj.namespace + ":incidentscare",layers: _obj.namespace + ":incidentscare", styles: 'careincidenten'});
+                } else {
+                    _obj.layerIncident.mergeNewParams({typename: _obj.namespace + ":incidents",layers: _obj.namespace + ":incidents", styles: 'prio'});
+                }
+            });
+            
         });
         $('input[name="chk_prio"]').click(function() {
             var arr = [];
