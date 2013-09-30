@@ -111,7 +111,11 @@ dbkjs.modules.care = {
                     '<input name="chk_prio" type="checkbox" checked="checked"/><span>Prio 3</span>'
                 ]
                 ));
-
+        incidentSel.append(dbkjs.util.createListGroup(
+                [
+                    '<input name="chk_koppel" type="checkbox"/><span>Gekoppeld aan dekkingsplan</span>'
+                ]
+                ));
         //_obj.dialog.show();
         var incidenten_button = $('<button class="btn btn-block btn_5px" type="button">Incidenten aan</button>');
         var dekkingsplan_button = $('<button class="btn btn-block btn_5px" type="button">Dekkingsplan aan</button>');
@@ -183,6 +187,9 @@ dbkjs.modules.care = {
         $('#care_dialog_b').append(dekkingsplan_button);
         $('#care_dialog_b').append(normSel);
         $('#care_dialog_b').append(rapportage_button);
+        $('input[name="chk_koppel"]').click(function() {
+            _obj.layerIncident.mergeNewParams({typename: _obj.namespace + ":incidentscare"});
+        });
         $('input[name="chk_prio"]').click(function() {
             var arr = [];
             $.each($('input[name="chk_prio"]'), function(chk_idx, chk) {
@@ -233,14 +240,16 @@ dbkjs.modules.care = {
         var _obj = dbkjs.modules.care;
         var llMin = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x - 12, e.xy.y + 12));
         var llMax = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x + 12, e.xy.y - 12));
-
+        if(dbkjs.util.isJsonNull(_obj.layerIncident.params.TYPENAME)){
+            _obj.layerIncident.params.TYPENAME = _obj.namespace + ':incidents';
+        }
         var params = {
             //mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
             srs: _obj.layerIncident.params.SRS,
             service: "WFS",
             version: "1.0.0",
             request: "GetFeature",
-            typename: _obj.namespace + ":incidents",
+            typename: _obj.layerIncident.params.TYPENAME,
             maxFeatures: 1,
             outputFormat: "json"
         };
@@ -324,8 +333,6 @@ dbkjs.modules.care = {
                 if (features[feat].attributes.timespanonscene !== 0) {
                     ft_tbl.append('<tr><td>Inzettijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanonscene, "seconds")) + '</td></tr>');
                 }
-
-
             }
             ft_div.append(ft_tbl);
             $('#carepanel_b').append(ft_div);
