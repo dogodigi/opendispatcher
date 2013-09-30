@@ -333,6 +333,33 @@ dbkjs.modules.care = {
                 if (features[feat].attributes.timespanonscene !== 0) {
                     ft_tbl.append('<tr><td>Inzettijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanonscene, "seconds")) + '</td></tr>');
                 }
+                if(!dbkjs.util.isJsonNull(features[feat].attributes.objecttype)){
+                    ft_tbl.append('<tr><td>Functie</td><td>' + features[feat].attributes.objecttype + '</td></tr>');
+                }
+                if(!dbkjs.util.isJsonNull(features[feat].attributes.objectyearconstructed)){
+                    ft_tbl.append('<tr><td>Bouwjaar</td><td>' + features[feat].attributes.objectyearconstructed + '</td></tr>');
+                }
+                if(!dbkjs.util.isJsonNull(features[feat].attributes.sit1name)){
+                    ft_tbl.append(dbkjs.util.createNorm(
+                        features[feat].attributes.sit1name,
+                        features[feat].attributes.sit1timespanarrivalfirstunit,
+                        features[feat].attributes.sit1maxtimespanarrivalfirstunit
+                        ));
+                }
+                if(!dbkjs.util.isJsonNull(features[feat].attributes.sit2name)){
+                    ft_tbl.append(dbkjs.util.createNorm(
+                        features[feat].attributes.sit2name,
+                        features[feat].attributes.sit2timespanarrivalfirstunit,
+                        features[feat].attributes.sit2maxtimespanarrivalfirstunit
+                        ));
+                }
+                if(!dbkjs.util.isJsonNull(features[feat].attributes.sit3name)){
+                    ft_tbl.append(dbkjs.util.createNorm(
+                        features[feat].attributes.sit3name,
+                        features[feat].attributes.sit3timespanarrivalfirstunit,
+                        features[feat].attributes.sit3maxtimespanarrivalfirstunit
+                        ));
+                }
             }
             ft_div.append(ft_tbl);
             $('#carepanel_b').append(ft_div);

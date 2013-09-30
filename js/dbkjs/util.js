@@ -78,15 +78,18 @@ dbkjs.util = {
         var x = duration.asSeconds();
         var hr = Math.floor(x / 3600);
         var min = Math.floor((x - (hr * 3600)) / 60);
-        var sec = x - (hr * 3600) - (min * 60);
-        while (min.length < 2) {
+        var sec = Math.floor(x - (hr * 3600) - (min * 60));
+        if (min < 10) {
             min = '0' + min;
         }
-        while (sec.length < 2) {
-            sec = '0' + min;
+        if (sec < 10) {
+            sec = '0' + sec;
         }
-        if (hr)
+        if (hr > 0) {
             hr += ':';
+        } else {
+            hr = '';
+        }
         return hr + min + ':' + sec;
     },
     /**
@@ -228,7 +231,7 @@ dbkjs.util = {
                 color = "#5CB85C";
             }
             var output = '<tr><td colspan="2">Situatie: ' + name + ' - norm: ' + dbkjs.util.parseSeconds(moment.duration(norm, "seconds")) + '<td></tr>';
-            output += '<tr><td colspan="2">Opkomsttijd: <span class="label ' + labelclass + '">' + dbkjs.util.parseSeconds(moment.duration(real, "seconds")) + '</span><i style="color:' + color + ';"> ' + sign + dbkjs.util.parseSeconds(moment.duration(diff, "seconds")) + '</i><td></tr>';
+            output += '<tr><td colspan="2">Berekende opkomsttijd: <span class="label ' + labelclass + '">' + dbkjs.util.parseSeconds(moment.duration(real, "seconds")) + '</span><i style="color:' + color + ';"> ' + sign + dbkjs.util.parseSeconds(moment.duration(diff, "seconds")) + '</i><td></tr>';
             return output;
         }
     },
