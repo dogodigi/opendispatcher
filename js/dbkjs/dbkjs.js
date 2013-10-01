@@ -20,10 +20,10 @@ dbkjs.options = {
         }
     }
 };
-dbkjs.options.VERSION = "1.0-RC2";
-dbkjs.options.RELEASEDATE = '05-09-2013';
-dbkjs.options.APPLICATION = 'DOIV 1';
-dbkjs.options.REMARKS = 'Release candidate 2';
+dbkjs.options.VERSION = "1.0-RC1";
+dbkjs.options.RELEASEDATE = '01-10-2013';
+dbkjs.options.APPLICATION = 'DOIV';
+dbkjs.options.REMARKS = 'Release candidate 1';
 dbkjs.options.info = "";
 
 
