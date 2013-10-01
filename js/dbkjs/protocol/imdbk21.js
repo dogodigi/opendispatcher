@@ -381,7 +381,7 @@ dbkjs.protocol.imdbk21 = {
         };
         OpenLayers.Request.GET({
             //url: dbkjs.options.regio.safetymaps_url + 'wfs',
-            url: 'http://dbk.mapcache.nl/data/' + id + '.xml',
+            url: 'data/' + id + '.xml',
             "params": params, callback: dbkjs.protocol.imdbk21.info});
     },
     getGebied: function(id) {

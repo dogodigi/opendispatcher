@@ -30,12 +30,12 @@ dbkjs.modules.care = {
         _obj.layerIncident = new OpenLayers.Layer.WMS(
                 "Incidenten",
                 _obj.url + 'dbk/wms', {
-            layers: _obj.namespace + ':incidents',
+            layers: _obj.namespace + ':incidentsgebied',
             format: 'image/png',
             transparent: true,
             time: '',
             styles: 'prio',
-            cql_filter: "priority IN (" + _obj.cql_array.join() + ")"
+            cql_filter: "priority IN (" + _obj.cql_array.join() + ") "
 
         }, {
             transitionEffect: 'none',
@@ -162,7 +162,7 @@ dbkjs.modules.care = {
                 service: "WFS",
                 version: "1.0.0",
                 request: "GetFeature",
-                typename: _obj.namespace + ":incidents",
+                typename: _obj.namespace + ":incidentsgebied",
                 outputFormat: "csv"
             };
             if (_obj.layerIncident.params.CQL_FILTER) {
@@ -177,6 +177,12 @@ dbkjs.modules.care = {
                 } else {
                     params.CQL_FILTER = cql_string;
                 }
+//                if (_obj.layerIncident.params.CQL_FILTER) {
+//                    params.CQL_FILTER = _obj.layerIncident.params.CQL_FILTER;
+//                    params.CQL_FILTER += ' AND ' + 'district_nr = 1';
+//                } else {
+//                    params.CQL_FILTER = 'district_nr = 1';
+//                }
             }
             var downloadstring = _obj.url + 'wfs' + decodeURIComponent($.param(params));
             window.location = downloadstring;
@@ -190,12 +196,12 @@ dbkjs.modules.care = {
         $('input[name="chk_koppel"]').click(function() {
             $.each($('input[name="chk_koppel"]'), function(chk_idx, chk) {
                 if ($(chk).is(':checked')) {
-                    _obj.layerIncident.mergeNewParams({typename: _obj.namespace + ":incidentscare",layers: _obj.namespace + ":incidentscare", styles: 'careincidenten'});
+                    _obj.layerIncident.mergeNewParams({typename: _obj.namespace + ":incidentscare", layers: _obj.namespace + ":incidentscare", styles: 'careincidenten'});
                 } else {
-                    _obj.layerIncident.mergeNewParams({typename: _obj.namespace + ":incidents",layers: _obj.namespace + ":incidents", styles: 'prio'});
+                    _obj.layerIncident.mergeNewParams({typename: _obj.namespace + ":incidentsgebied", layers: _obj.namespace + ":incidentsgebied", styles: 'prio'});
                 }
             });
-            
+
         });
         $('input[name="chk_prio"]').click(function() {
             var arr = [];
@@ -247,8 +253,8 @@ dbkjs.modules.care = {
         var _obj = dbkjs.modules.care;
         var llMin = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x - 12, e.xy.y + 12));
         var llMax = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x + 12, e.xy.y - 12));
-        if(dbkjs.util.isJsonNull(_obj.layerIncident.params.TYPENAME)){
-            _obj.layerIncident.params.TYPENAME = _obj.namespace + ':incidents';
+        if (dbkjs.util.isJsonNull(_obj.layerIncident.params.TYPENAME)) {
+            _obj.layerIncident.params.TYPENAME = _obj.namespace + ':incidentsgebied';
         }
         var params = {
             //mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
@@ -267,6 +273,12 @@ dbkjs.modules.care = {
         } else {
             params.CQL_FILTER = 'BBOX(the_geom,' + llMin.lon + "," + llMin.lat + "," + llMax.lon + "," + llMax.lat + ",'EPSG:28992')";
         }
+//        if (_obj.layerIncident.params.CQL_FILTER) {
+//            params.CQL_FILTER = _obj.layerIncident.params.CQL_FILTER;
+//            params.CQL_FILTER += ' AND ' + 'district_nr = 1';
+//        } else {
+//            params.CQL_FILTER = 'district_nr = 1';
+//        }
         if (_obj.layerIncident.params.TIME) {
             var time_col = 'datetimereported';
             var time_arr = _obj.layerIncident.params.TIME.split('/');
@@ -313,7 +325,7 @@ dbkjs.modules.care = {
                         features[feat].attributes.addresszipcode
                         ).html() +
                         '</td></tr>');
-                
+
                 ft_tbl.append('<tr><td>Datum/tijd</td><td>' + datumtijd.format('YYYY-MM-DD HH:mm:ss') + '</td></tr>');
                 if (!dbkjs.util.isJsonNull(features[feat].attributes.firestation)) {
                     ft_tbl.append('<tr><td>Post</td><td>' + features[feat].attributes.firestation + '</td></tr>');
@@ -340,32 +352,32 @@ dbkjs.modules.care = {
                 if (features[feat].attributes.timespanonscene !== 0) {
                     ft_tbl.append('<tr><td>Inzettijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanonscene, "seconds")) + '</td></tr>');
                 }
-                if(!dbkjs.util.isJsonNull(features[feat].attributes.objecttype)){
+                if (!dbkjs.util.isJsonNull(features[feat].attributes.objecttype)) {
                     ft_tbl.append('<tr><td>Functie</td><td>' + features[feat].attributes.objecttype + '</td></tr>');
                 }
-                if(!dbkjs.util.isJsonNull(features[feat].attributes.objectyearconstructed)){
+                if (!dbkjs.util.isJsonNull(features[feat].attributes.objectyearconstructed)) {
                     ft_tbl.append('<tr><td>Bouwjaar</td><td>' + features[feat].attributes.objectyearconstructed + '</td></tr>');
                 }
-                if(!dbkjs.util.isJsonNull(features[feat].attributes.sit1name)){
+                if (!dbkjs.util.isJsonNull(features[feat].attributes.sit1name)) {
                     ft_tbl.append(dbkjs.util.createNorm(
-                        features[feat].attributes.sit1name,
-                        features[feat].attributes.sit1timespanarrivalfirstunit,
-                        features[feat].attributes.sit1maxtimespanarrivalfirstunit
-                        ));
+                            features[feat].attributes.sit1name,
+                            features[feat].attributes.sit1timespanarrivalfirstunit,
+                            features[feat].attributes.sit1maxtimespanarrivalfirstunit
+                            ));
                 }
-                if(!dbkjs.util.isJsonNull(features[feat].attributes.sit2name)){
+                if (!dbkjs.util.isJsonNull(features[feat].attributes.sit2name)) {
                     ft_tbl.append(dbkjs.util.createNorm(
-                        features[feat].attributes.sit2name,
-                        features[feat].attributes.sit2timespanarrivalfirstunit,
-                        features[feat].attributes.sit2maxtimespanarrivalfirstunit
-                        ));
+                            features[feat].attributes.sit2name,
+                            features[feat].attributes.sit2timespanarrivalfirstunit,
+                            features[feat].attributes.sit2maxtimespanarrivalfirstunit
+                            ));
                 }
-                if(!dbkjs.util.isJsonNull(features[feat].attributes.sit3name)){
+                if (!dbkjs.util.isJsonNull(features[feat].attributes.sit3name)) {
                     ft_tbl.append(dbkjs.util.createNorm(
-                        features[feat].attributes.sit3name,
-                        features[feat].attributes.sit3timespanarrivalfirstunit,
-                        features[feat].attributes.sit3maxtimespanarrivalfirstunit
-                        ));
+                            features[feat].attributes.sit3name,
+                            features[feat].attributes.sit3timespanarrivalfirstunit,
+                            features[feat].attributes.sit3maxtimespanarrivalfirstunit
+                            ));
                 }
             }
             ft_div.append(ft_tbl);
