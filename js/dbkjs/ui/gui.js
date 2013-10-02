@@ -57,6 +57,7 @@ dbkjs.ui.gui = {
                 name: 'Gebieden',
                 url: 'http://geo.safetymaps.nl/map/mapserv',
                 map: dbkjs.map,
+                visibility: true,
                 layerOptions: {map: '/home/mapserver/doiv.map', layers: 'gebieden'},
                 parent: '#overlaypanel_b3',
                 index: 6
