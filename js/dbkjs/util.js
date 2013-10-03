@@ -61,7 +61,7 @@ dbkjs.util = {
         }
     },
     isJsonNull: function(val) {
-        if (val === "null" || val === null || val === "" || typeof(val) === "undefined") {
+        if (val === "null" || val === null || val === "" || typeof(val) === "undefined" || val === "undefined") {
             return true;
         } else {
             return false;

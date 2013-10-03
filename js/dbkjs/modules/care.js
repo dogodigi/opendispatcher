@@ -153,41 +153,41 @@ dbkjs.modules.care = {
                 _obj.layerNorm.setVisibility(true);
             }
         });
-        var download_button = $('<button class="btn btn-block btn-primary" type="button">Download</button>');
-        $(download_button).click(function() {
-            var _obj = dbkjs.modules.care;
-            _obj.url;
-            var params = {
-                //mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
-                service: "WFS",
-                version: "1.0.0",
-                request: "GetFeature",
-                typename: _obj.namespace + ":incidentsgebied",
-                outputFormat: "csv"
-            };
-            if (_obj.layerIncident.params.CQL_FILTER) {
-                params.CQL_FILTER = _obj.layerIncident.params.CQL_FILTER;
-            }
-            if (_obj.layerIncident.params.TIME) {
-                var time_col = 'datetimereported';
-                var time_arr = _obj.layerIncident.params.TIME.split('/');
-                var cql_string = time_col + " >='" + time_arr[0] + "' AND " + time_col + " <='" + time_arr[1] + "'";
-                if (params.CQL_FILTER) {
-                    params.CQL_FILTER += ' AND ' + cql_string;
-                } else {
-                    params.CQL_FILTER = cql_string;
-                }
-//                if (_obj.layerIncident.params.CQL_FILTER) {
-//                    params.CQL_FILTER = _obj.layerIncident.params.CQL_FILTER;
-//                    params.CQL_FILTER += ' AND ' + 'district_nr = 1';
+//        var download_button = $('<button class="btn btn-block btn-primary" type="button">Download</button>');
+//        $(download_button).click(function() {
+//            var _obj = dbkjs.modules.care;
+//            _obj.url;
+//            var params = {
+//                //mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
+//                service: "WFS",
+//                version: "1.0.0",
+//                request: "GetFeature",
+//                typename: _obj.namespace + ":incidentsgebied",
+//                outputFormat: "csv"
+//            };
+//            if (_obj.layerIncident.params.CQL_FILTER) {
+//                params.CQL_FILTER = _obj.layerIncident.params.CQL_FILTER;
+//            }
+//            if (_obj.layerIncident.params.TIME) {
+//                var time_col = 'datetimereported';
+//                var time_arr = _obj.layerIncident.params.TIME.split('/');
+//                var cql_string = time_col + " >='" + time_arr[0] + "' AND " + time_col + " <='" + time_arr[1] + "'";
+//                if (params.CQL_FILTER) {
+//                    params.CQL_FILTER += ' AND ' + cql_string;
 //                } else {
-//                    params.CQL_FILTER = 'district_nr = 1';
+//                    params.CQL_FILTER = cql_string;
 //                }
-            }
-            var downloadstring = _obj.url + 'wfs' + decodeURIComponent($.param(params));
-            window.location = downloadstring;
-        });
-        incidentSel.append(download_button);
+////                if (_obj.layerIncident.params.CQL_FILTER) {
+////                    params.CQL_FILTER = _obj.layerIncident.params.CQL_FILTER;
+////                    params.CQL_FILTER += ' AND ' + 'district_nr = 1';
+////                } else {
+////                    params.CQL_FILTER = 'district_nr = 1';
+////                }
+//            }
+//            var downloadstring = _obj.url + 'wfs' + decodeURIComponent($.param(params));
+//            window.location = downloadstring;
+//        });
+//        incidentSel.append(download_button);
         $('#care_dialog_b').append(incidenten_button);
         $('#care_dialog_b').append(incidentSel);
         $('#care_dialog_b').append(dekkingsplan_button);
