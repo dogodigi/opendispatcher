@@ -56,8 +56,8 @@ dbkjs.modules.object = {
         dbkjs.map.addLayers([_obj.layer]);
 
         // vinkje op webpagina aan/uitzetten
-        var dv_panel = $('<div class="panel"></div>');
-        var dv_panel_heading = $('<div class="panel-heading" draggable="true"></div>');
+        var dv_panel = $('<div class="panel" draggable="true"></div>');
+        var dv_panel_heading = $('<div class="panel-heading"></div>');
         var dv_panel_title = $('<h4 class="panel-title"></div>');
         dv_panel_title.append('<input type="checkbox" name="box_' + _obj.id + '"/>&nbsp;');
         dv_panel_title.append(_obj.layer.name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' + _obj.id + '" data-parent="#overlaypanel_b1" ><i class="icon-info-sign"></i></a>');

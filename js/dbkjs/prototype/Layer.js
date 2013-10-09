@@ -40,6 +40,7 @@ dbkjs.Layer = dbkjs.Class({
         //dv_panel_content.append('');
         this.div.append(dv_panel_content);
         $(options.parent).append(this.div);
+        $(options.parent).sortable({handle: '.panel'});
         if (this.layer) {
             if (this.layer.getVisibility()) {
                 //checkbox aan
