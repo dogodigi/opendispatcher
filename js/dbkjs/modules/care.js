@@ -331,10 +331,10 @@ dbkjs.modules.care = {
                     ft_tbl.append('<tr><td>Post</td><td>' + features[feat].attributes.firestation + '</td></tr>');
                 }
                 if (features[feat].attributes.timespanintake !== 0) {
-                    ft_tbl.append('<tr><td>Aannametijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanintake, "seconds")) + '</td></tr>');
+                    ft_tbl.append('<tr><td>Aannametijd multi</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanintake, "seconds")) + '</td></tr>');
                 }
                 if (features[feat].attributes.timespanissued !== 0) {
-                    ft_tbl.append('<tr><td>Uitgiftetijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanissued, "seconds")) + '</td></tr>');
+                    ft_tbl.append('<tr><td>Aanname en uitgiftetijd BRW</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanissued, "seconds")) + '</td></tr>');
                 }
                 if (features[feat].attributes.timespanprocessing !== 0) {
                     ft_tbl.append('<tr><td>Verwerkingstijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanprocessing, "seconds")) + '</td></tr>');

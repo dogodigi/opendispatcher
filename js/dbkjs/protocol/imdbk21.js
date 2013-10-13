@@ -10,6 +10,7 @@ dbkjs.protocol.imdbk21 = {
     process: function(selection_id) {
 //controleer of de currentFeature id gelijk is aan de dbk,
 //http://dbk.mapcache.nl/wfs?request=GetFeature&version=2.0&typename=dbk:DBKFeature&outputFormat=gml32&featureID=DBKFeature.1367827139
+        $('#infopanel_f').html('');
         if (selection_id) {
             if (!this.feature) {
                 if (!dbkjs.protocol.imdbk21.processing) {
@@ -23,6 +24,7 @@ dbkjs.protocol.imdbk21 = {
                 //doe niks
                 if (!dbkjs.protocol.imdbk21.processing) {
                     $('#infopanel_b').html(dbkjs.protocol.imdbk21.feature.div);
+                    $('#infopanel_f').html('');
                     $('#infopanel').show();
                     //reset naar eerste tab
                 }

@@ -39,11 +39,11 @@ dbkjs.util = {
             $.each(dbkjs.modules, function(mod_index, module) {
                 if ($.inArray(mod_index, dbkjs.options.regio.modules) > -1) {
                     if (typeof(module.layer) !== "undefined" && module.layer.visibility) {
-// Controleer of het een van de dbk layers is waar op is geklikt.
+                        // Controleer of het een van de dbk layers is waar op is geklikt.
                         if (dbkjs.protocol) {
                             if (dbkjs.protocol.imdbk21) {
                                 if ($.inArray(module.id, ["dbko", "dbkf"]) !== -1) {
-                                    dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
+                                    //dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
                                 } else {
                                     if (typeof(module.getfeatureinfo) !== "undefined") {
                                         module.getfeatureinfo(e);
