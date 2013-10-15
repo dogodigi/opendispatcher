@@ -90,6 +90,12 @@ dbkjs.modules.care = {
         var normSel = $('<div id="normSel" style="display:none;"></div>');
         var normSel_minuten = $('<input id="sel_care" name="normSel_minuten" type="text" class="form-control" placeholder="Overschrijding in minuten">');
         normSel.append(normSel_minuten);
+        incidentSel.append('<h5>District(en)</h5>');
+        
+        _obj.sel_district = $('<select id="sel_district" multiple class="form-control"><select>');
+        incidentSel.append(_obj.sel_district);
+        //loop through districts.
+        //_obj.sel_district.append('<option>1</option>');
         incidentSel.append('<h5>Datumbereik</h5>');
         incidentSel.append(_obj.sel_care);
         var default_range = moment().startOf('week').format('YYYY-MM-DD') + '/' + moment().endOf('week').format('YYYY-MM-DD');
@@ -153,41 +159,6 @@ dbkjs.modules.care = {
                 _obj.layerNorm.setVisibility(true);
             }
         });
-//        var download_button = $('<button class="btn btn-block btn-primary" type="button">Download</button>');
-//        $(download_button).click(function() {
-//            var _obj = dbkjs.modules.care;
-//            _obj.url;
-//            var params = {
-//                //mydata.bbox = dbkjs.map.getExtent().toBBOX(0);
-//                service: "WFS",
-//                version: "1.0.0",
-//                request: "GetFeature",
-//                typename: _obj.namespace + ":incidentsgebied",
-//                outputFormat: "csv"
-//            };
-//            if (_obj.layerIncident.params.CQL_FILTER) {
-//                params.CQL_FILTER = _obj.layerIncident.params.CQL_FILTER;
-//            }
-//            if (_obj.layerIncident.params.TIME) {
-//                var time_col = 'datetimereported';
-//                var time_arr = _obj.layerIncident.params.TIME.split('/');
-//                var cql_string = time_col + " >='" + time_arr[0] + "' AND " + time_col + " <='" + time_arr[1] + "'";
-//                if (params.CQL_FILTER) {
-//                    params.CQL_FILTER += ' AND ' + cql_string;
-//                } else {
-//                    params.CQL_FILTER = cql_string;
-//                }
-////                if (_obj.layerIncident.params.CQL_FILTER) {
-////                    params.CQL_FILTER = _obj.layerIncident.params.CQL_FILTER;
-////                    params.CQL_FILTER += ' AND ' + 'district_nr = 1';
-////                } else {
-////                    params.CQL_FILTER = 'district_nr = 1';
-////                }
-//            }
-//            var downloadstring = _obj.url + 'wfs' + decodeURIComponent($.param(params));
-//            window.location = downloadstring;
-//        });
-//        incidentSel.append(download_button);
         $('#care_dialog_b').append(incidenten_button);
         $('#care_dialog_b').append(incidentSel);
         $('#care_dialog_b').append(dekkingsplan_button);
@@ -213,6 +184,7 @@ dbkjs.modules.care = {
             _obj.cql_array = arr;
             _obj.layerIncident.mergeNewParams({'cql_filter': "priority IN (" + _obj.cql_array.join() + ")"});
         });
+        _obj.getDistricten();
     },
     getfeatureinfo: function(e) {
         if (this.layerIncident.getVisibility()) {
@@ -249,6 +221,38 @@ dbkjs.modules.care = {
         OpenLayers.Request.GET({url: _obj.url + 'wfs', "params": params, callback: _obj.panelNorm});
         //OpenLayers.Event.stop(e);
     },
+    getDistricten: function(){
+        var _obj = dbkjs.modules.care;
+        var params = {
+            bbox: dbkjs.map.getExtent().toBBOX(0),
+            service: "WFS",
+            version: "1.0.0",
+            request: "GetFeature",
+            typename: _obj.namespace + ":district_box",
+            outputFormat: "application/json"
+        };
+        $.ajax({
+            type: "GET",
+            url: _obj.url + 'ows',
+            data: params,
+            dataType: "json",
+            success: function(data) {
+                var geojson_format = new OpenLayers.Format.GeoJSON();
+                var districten = geojson_format.read(data);
+                $.each(districten, function(district_idx, district){
+                    _obj.sel_district.append('<option>' + district.attributes.naam + '</option>');
+                });
+            },
+            error: function() {
+                return false;
+            },
+            complete: function() {
+                return false;
+            }
+        });
+    
+        
+            },
     getIncidentInfo: function(e) {
         var _obj = dbkjs.modules.care;
         var llMin = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x - 12, e.xy.y + 12));
