@@ -26,7 +26,7 @@ dbkjs.modules.print = {
             };
             var center = dbkjs.map.getCenter();
             testObject.pages[0].center = [center.lon, center.lat];
-            testObject.pages[0].scale = dbkjs.map.getScale();
+            testObject.pages[0].scale = Math.ceil(dbkjs.map.getScale());
             testObject.pages[0].rotation = 0;
             dbkjs.modules.print.printdirect(dbkjs.map, testObject.pages);
         });
