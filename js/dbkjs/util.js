@@ -33,8 +33,6 @@ dbkjs.util = {
 
     },
     onClick: function(e) {
-        $('#infopanel_b').html('');
-        $('#infopanel_f').html('');
         if (dbkjs.modules) {
             $.each(dbkjs.modules, function(mod_index, module) {
                 if ($.inArray(mod_index, dbkjs.options.regio.modules) > -1) {

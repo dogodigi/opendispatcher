@@ -139,7 +139,7 @@ dbkjs.modules.object = {
             html += '</div>';
             $('#infopanel_b').append(html);
             $('#infopanel_f').html('');
-            $('#infopanel').toggle(true);
+            $('#infopanel').show();
         }
     }
 };
