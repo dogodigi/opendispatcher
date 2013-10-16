@@ -2,7 +2,6 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 
 dbkjs.modules.print = {
-    url: "/zeeland/",
     register: function(options) {
         var _obj = dbkjs.modules.print;
         _obj.namespace = options.namespace || _obj.namespace;
@@ -134,7 +133,7 @@ dbkjs.modules.print = {
 //        }
         $.ajax({
             type: _obj.method,
-            url: _obj.url + "pdf/" + "create.json",
+            url: "/print/pdf/" + "create.json",
             contentType: "application/json; charset=UTF-8",
             data: JSON.stringify(jsonData),
             dataType: "json",
@@ -154,14 +153,14 @@ dbkjs.modules.print = {
         var url_arr = url.split('/');
         var filename = url_arr[url_arr.length - 1];
 
-        window.open(_obj.url + "pdf/" + filename);
+        window.open("/print/pdf/" + filename);
     },
     loadCapabilities: function(callback) {
         var _obj = dbkjs.modules.print;
         if (!_obj.url) {
             return;
         }
-        var url = _obj.url + "pdf/" + "info.json";
+        var url = "/print/pdf/" + "info.json";
         $.ajax({
             url: url,
             type: "GET",
