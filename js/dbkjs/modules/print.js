@@ -347,7 +347,7 @@ dbkjs.modules.print = {
                 var features = layer.features;
                 var featureFormat = new OpenLayers.Format.GeoJSON();
                 var styleFormat = new OpenLayers.Format.JSON();
-                var nextId = 1;
+                var nextId = 0;
                 var styleDict = {};
                 var feature, style, dictKey, dictItem, styleName;
                 for (var i = 0, len = features.length; i < len; ++i) {
@@ -377,6 +377,7 @@ dbkjs.modules.print = {
                             encStyles[styleName] = style;
                         }
                     }
+                    feature.attributes['_style'] = styleName;
                     var featureGeoJson = featureFormat.extract.feature.call(
                             featureFormat, feature);
                     encFeatures.push(featureGeoJson);

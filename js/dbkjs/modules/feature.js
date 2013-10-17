@@ -28,8 +28,6 @@ dbkjs.modules.feature = {
         label: "${labeltext}",
         labelSelect: true,
         labelAlign: "${mylabelalign}",
-        labelBackgroundColor: "${labelbackground}",
-        labelBorderColor: "${labelborder}",
         labelXOffset: "${mylabelxoffset}",
         labelYOffset: "${mylabelyoffset}"
     }, {
@@ -114,20 +112,6 @@ dbkjs.modules.feature = {
                     }
                 }
             },
-            labelbackground: function(feature) {
-                if (feature.cluster) {
-                    return;
-                } else {
-                    return "#ffeeff";
-                }
-            },
-            labelborder: function(feature) {
-                if (feature.cluster) {
-                    return;
-                } else {
-                    return "#ff9999";
-                }
-            },
             labeltext: function(feature) {
                 if (dbkjs.modules.feature.showlabels) {
                     if (feature.cluster) {
@@ -159,8 +143,6 @@ dbkjs.modules.feature = {
         label: "${labeltext}",
         labelSelect: true,
         labelAlign: "${mylabelalign}",
-        labelBackgroundColor: "${labelbackground}",
-        labelBorderColor: "${labelborder}",
         labelXOffset: "${mylabelxoffset}",
         labelYOffset: "${mylabelyoffset}"
     }, {
@@ -243,20 +225,6 @@ dbkjs.modules.feature = {
                     } else {
                         return "http://view.safetymaps.nl/images/jcartier_event_1.png";
                     }
-                }
-            },
-            labelbackground: function(feature) {
-                if (feature.cluster) {
-                    return;
-                } else {
-                    return "#0048a0";
-                }
-            },
-            labelborder: function(feature) {
-                if (feature.cluster) {
-                    return;
-                } else {
-                    return "#d3e7ff";
                 }
             },
             labeltext: function(feature) {
