@@ -224,31 +224,31 @@ dbkjs.protocol.imdbk21 = {
     },
     constructContact: function(contact) {
         var _obj = dbkjs.protocol.imdbk21;
-        if (bijzonderheid) {
-            var bijzonderheid_div = $('<div class="tab-pane" id="collapse_bijzonderheid_' + _obj.feature.id + '"></div>');
-            if (bijzonderheid["dbk:Bijzonderheid"]) {
-                var temp = bijzonderheid;
-                bijzonderheid = [];
-                bijzonderheid.push(temp);
+        if (contact) {
+            var contact_div = $('<div class="tab-pane" id="collapse_contact_' + _obj.feature.id + '"></div>');
+            if (contact["dbk:Contact"]) {
+                var temp = contact;
+                contact = [];
+                contact.push(temp);
             }
-            var bijzonderheid_table_div = $('<div class="table-responsive"></div>');
-            var bijzonderheid_table = $('<table class="table table-hover"></table>');
-            bijzonderheid_table.append('<tr><th>#</th><th>soort</th><th>informatie</th></tr>');
-            $.each(bijzonderheid, function(bijzonderheid_index, waarde) {
-                bijzonderheid_table.append(
+            var contact_table_div = $('<div class="table-responsive"></div>');
+            var contact_table = $('<table class="table table-hover"></table>');
+            contact_table.append('<tr><th>#</th><th>soort</th><th>informatie</th></tr>');
+            $.each(contact, function(contact_index, waarde) {
+                contact_table.append(
                         '<tr>' +
-                        '<td>' + waarde["dbk:Bijzonderheid"]["dbk:volgnummer"].value + '</td>' +
-                        '<td>' + waarde["dbk:Bijzonderheid"]["dbk:soort"].value + '</td>' +
-                        '<td>' + waarde["dbk:Bijzonderheid"]["dbk:tekst"].value + '</td>'
+                        '<td>' + waarde["dbk:Contact"]["dbk:volgnummer"].value + '</td>' +
+                        '<td>' + waarde["dbk:Contact"]["dbk:soort"].value + '</td>' +
+                        '<td>' + waarde["dbk:Contact"]["dbk:tekst"].value + '</td>'
                         + '</tr>'
                         );
             });
-            bijzonderheid_table_div.append(bijzonderheid_table);
-            bijzonderheid_div.append(bijzonderheid_table_div);
-            _obj.panel_group.append(bijzonderheid_div);
-            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_bijzonderheid_' + _obj.feature.id + '">Bijzonderheden</a></li>');
+            contact_table_div.append(contact_table);
+            contact_div.append(contact_table_div);
+            _obj.panel_group.append(contact_div);
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_contact_' + _obj.feature.id + '">Contact</a></li>');
         } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#collapse_bijzonderheid_' + _obj.feature.id + '">Bijzonderheden</a></li>');
+            _obj.panel_tabs.append('<li class="disabled"><a href="#collapse_contact_' + _obj.feature.id + '">Contact</a></li>');
         }
     },
     constructBijzonderheid: function(bijzonderheid) {
