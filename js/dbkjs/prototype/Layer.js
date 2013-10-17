@@ -22,6 +22,14 @@ dbkjs.Layer = dbkjs.Class({
                 {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: options.visibility});
         //let op, de map moet worden meegegeven in de opties
         options.map.addLayers([this.layer]);
+        var _obj = this;
+        this.layer.events.register("loadstart", this.layer, function() {
+            dbkjs.util.loadingStart(_obj.layer);
+        });
+        
+        this.layer.events.register("loadend", this.layer, function() {
+            dbkjs.util.loadingEnd(_obj.layer);
+        });
         // @todo functie maken om layerindex dynamisch te toveren 0 is onderop de stapel
         if (options.index) {
             options.map.setLayerIndex(this.layer, options.index);
@@ -40,6 +48,7 @@ dbkjs.Layer = dbkjs.Class({
         //dv_panel_content.append('');
         this.div.append(dv_panel_content);
         $(options.parent).append(this.div);
+        $(options.parent).sortable({handle: '.panel'});
         if (this.layer) {
             if (this.layer.getVisibility()) {
                 //checkbox aan

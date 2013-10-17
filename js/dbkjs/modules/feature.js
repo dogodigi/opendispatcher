@@ -405,7 +405,7 @@ dbkjs.modules.feature = {
     },
     featureInfohtml: function(feature) {
         var ret_title = $('<li></li>');
-        ret_title.append('<a href="?regio=' + dbkjs.options.regio.id + '&dbk=' + feature.attributes.id + '">' + feature.attributes.formeleNaam + '</a>');
+        ret_title.append('<a href="#">' + feature.attributes.formeleNaam + '</a>');
         //var ret_val = $('<td class="dbk_feature" id="dbk_' + feature.attributes.id + '"></td>');
         //ret_val.html(feature.attributes.formeleNaam);
         //ret_tr.append(ret_val);
@@ -413,6 +413,7 @@ dbkjs.modules.feature = {
         $(ret_title).click(function() {
             dbkjs.options.dbk = feature.attributes.identificatie;
             dbkjs.modules.updateFilter(feature.attributes.identificatie);
+            dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
             if (dbkjs.map.zoom < 13) {
                 dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
             } else {
@@ -442,6 +443,7 @@ dbkjs.modules.feature = {
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             dbkjs.options.dbk = datum.id;
             dbkjs.modules.updateFilter(datum.id);
+            dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
             if (dbkjs.map.zoom < 13) {
                 dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
             } else {
@@ -470,6 +472,7 @@ dbkjs.modules.feature = {
         });
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             dbkjs.modules.updateFilter(datum.id);
+            dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
             if (dbkjs.map.zoom < 13) {
                 dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
             } else {
@@ -514,6 +517,7 @@ dbkjs.modules.feature = {
                 }
             } else {
                 _obj.currentCluster = [];
+                dbkjs.protocol.imdbk21.process(e.feature.attributes.identificatie);
                 _obj.zoomToFeature(e.feature);
                 $('#infopanel').hide();
             }

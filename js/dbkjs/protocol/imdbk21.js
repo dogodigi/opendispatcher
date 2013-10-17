@@ -10,6 +10,7 @@ dbkjs.protocol.imdbk21 = {
     process: function(selection_id) {
 //controleer of de currentFeature id gelijk is aan de dbk,
 //http://dbk.mapcache.nl/wfs?request=GetFeature&version=2.0&typename=dbk:DBKFeature&outputFormat=gml32&featureID=DBKFeature.1367827139
+        $('#infopanel_f').html('');
         if (selection_id) {
             if (!this.feature) {
                 if (!dbkjs.protocol.imdbk21.processing) {
@@ -23,6 +24,7 @@ dbkjs.protocol.imdbk21 = {
                 //doe niks
                 if (!dbkjs.protocol.imdbk21.processing) {
                     $('#infopanel_b').html(dbkjs.protocol.imdbk21.feature.div);
+                    $('#infopanel_f').html('');
                     $('#infopanel').show();
                     //reset naar eerste tab
                 }
@@ -164,7 +166,7 @@ dbkjs.protocol.imdbk21 = {
                 }
                 $.each(adres, function(adres_index, waarde) {
                     var adres_row = $('<tr></tr>');
-                    var adres_div = $('<td></td>');
+                    var adres_div = $('<td colspan="2"></td>');
                     var bag_div = $('<td></td>');
                     if (waarde["dbk:Adres"]["dbk:huisnummer"]) {
                         huisnummer = waarde["dbk:Adres"]["dbk:huisnummer"].value;
@@ -182,34 +184,34 @@ dbkjs.protocol.imdbk21 = {
                             openbareruimtenaam + ' ' + huisnummer + '<br/>' +
                             woonplaatsnaam + ' ' + postcode +
                             '');
-                    if (waarde["dbk:Adres"]["dbk:bagId"]) {
-                        var bag_p = $('<p></p>');
-                        var bag_button = $('<button type="button" class="btn btn-primary">BAG raadplegen</button>');
-                        bag_p.append(bag_button);
-                        bag_button.click(function() {
-                            if (dbkjs.modules.bag) {
-                                dbkjs.modules.bag.getVBO(waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value, function(result) {
-                                    if (result.length === 0) {
-                                        $('#collapse_algemeen_' + _obj.feature.id).append(
-                                                '<div class="alert alert-warning alert-dismissable">' +
-                                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-                                                '<strong>Mislukt!</strong>' +
-                                                ' verblijfsobject ' + waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value + ' niet gevonden.' +
-                                                '</div>'
-                                                );
-                                    } else {
-
-                                    }
-
-                                });
-                            } else {
-                                alert(waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value);
-                            }
-                        });
-                        bag_div.append(bag_p);
-                    }
+//                    if (waarde["dbk:Adres"]["dbk:bagId"]) {
+//                        var bag_p = $('<p></p>');
+//                        var bag_button = $('<button type="button" class="btn btn-primary">BAG raadplegen</button>');
+//                        bag_p.append(bag_button);
+//                        bag_button.click(function() {
+//                            if (dbkjs.modules.bag) {
+//                                dbkjs.modules.bag.getVBO(waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value, function(result) {
+//                                    if (result.length === 0) {
+//                                        $('#collapse_algemeen_' + _obj.feature.id).append(
+//                                                '<div class="alert alert-warning alert-dismissable">' +
+//                                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+//                                                '<strong>Mislukt!</strong>' +
+//                                                ' verblijfsobject ' + waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value + ' niet gevonden.' +
+//                                                '</div>'
+//                                                );
+//                                    } else {
+//
+//                                    }
+//
+//                                });
+//                            } else {
+//                                alert(waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value);
+//                            }
+//                        });
+//                        bag_div.append(bag_p);
+//                    }
                     adres_row.append(adres_div);
-                    adres_row.append(bag_div);
+                    //adres_row.append(bag_div);
                     algemeen_table.append(adres_row);
                 });
                 algemeen_table_div.append(algemeen_table);

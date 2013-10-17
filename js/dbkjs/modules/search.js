@@ -2,7 +2,7 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.updateFilter = function(id) {
-
+    //Is er een DBK geselecteerd of is de id leeg?
     $.each(dbkjs.modules, function(mod_index, module) {
         if ($.inArray(mod_index, dbkjs.options.regio.modules) > -1) {
             if (module.updateFilter) {

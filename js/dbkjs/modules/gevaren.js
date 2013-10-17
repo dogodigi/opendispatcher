@@ -25,6 +25,7 @@ dbkjs.modules.gevaren = {
             cql_filter = "dbkfeature_id=" + dbk_id;
             _obj.layer.mergeNewParams({'CQL_FILTER': cql_filter});
         } else {
+            //verberg de layer!
             delete _obj.layer.params.CQL_FILTER;
         }
         _obj.layer.redraw();

@@ -1,7 +1,6 @@
 // @todo Add localization options
 
 OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
-OpenLayers.Util.onImageLoadErrorColor = "transparent";
 OpenLayers.Lang["nl"] = OpenLayers.Util.applyDefaults({'Scale = 1 : ${scaleDenom}': "Schaal 1 : ${scaleDenom}"});
 OpenLayers.Lang.setCode("nl");
 
@@ -330,6 +329,10 @@ $(document).ready(function() {
     $('.btn').click(function() {
         if (this.id === "tb03") {
             $('#infopanel').toggle();
+            //check of de infopanel visible of hidden is
+            if ($('#infopanel').is(":visible")){
+                dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
+            }
         } else if (this.id === "c_minimap") {
             $('#minimappanel').toggle();
         } else if (this.id === "c_print") {
