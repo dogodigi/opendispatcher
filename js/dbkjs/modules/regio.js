@@ -15,18 +15,6 @@ dbkjs.modules.regio = {
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
         _obj.get();
-//        $('#btn-grp-search').before('<div id="regio_selectie" class="btn-group">' +
-//                '<button id="geselecteerd_district" type="button" class="btn btn-default">Regio</button>' +
-//                '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' +
-//                '<span class="caret"></span>' +
-//                '</button>' +
-//                '</div>' +
-//                '<div id="district_selectie" class="btn-group" style="display:none;">' +
-//                '<button id="geselecteerde_gemeente" type="button" class="btn btn-default"></button>' +
-//                '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' +
-//                '<span class="caret"></span>' +
-//                '</button>' +
-//                '</div>');
     },
     get: function() {
         var _obj = dbkjs.modules.regio;

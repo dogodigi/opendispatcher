@@ -403,6 +403,8 @@ dbkjs.modules.feature = {
                 id: value.attributes.identificatie
             });
         });
+        $('#search_input').typeahead('destroy');
+        $('#search_input').val('');
         $('#search_input').typeahead({
             name: 'dbk',
             local: dbk_naam_array,
@@ -433,6 +435,8 @@ dbkjs.modules.feature = {
                 });
             }
         });
+        $('#search_input').typeahead('destroy');
+        $('#search_input').val('');
         $('#search_input').typeahead({
             name: 'oms',
             local: dbk_naam_array,

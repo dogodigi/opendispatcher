@@ -10,24 +10,75 @@ dbkjs.modules.print = {
         $('#btngrp_3').append('<a id="btn_print" class="btn btn-default navbar-btn" href="#" title="Afdrukken"><i class="icon-print"></i></a>');
 
         $('#btn_print').click(function() {
-            var testObject = {
-                "mapTitle": "Foo",
-                "units": "degrees",
-                "srs": "EPSG:28992",
-                "layout": "A4 portrait",
-                "dpi": 75,
-                "pages": [
-                    {
-                        "mapTitle": "DOIV Afdruk",
-                        "mapComment": "Testregel"
+            if (!dbkjs.util.isJsonNull(dbkjs.options.dbk) && dbkjs.options.dbk !== 0) {
+                var currentFeature = dbkjs.protocol.imdbk21.feature;
+                var testObject = {
+                    "options": {
+                        "units": "m",
+                        "srs": "EPSG:28992",
+                        "layout": "A3 DBK",
+                        "dpi": 150,
+                        "title": " Voorblad",
+                        "title_text": "Deze tekst wordt denk ik getoond",
+                        "mapTitle": dbkjs.options.dbk,
+                        "mapComment": "Nieuw commentaar, dit is vooral om te testen.",
+                        "informelenaam": currentFeature.informelenaam,
+                        "formelenaam": currentFeature.formelenaam,
+                        "bouwlaag": currentFeature.bouwlaag,
+                        "objectgegevens": currentFeature.informelenaam + '\n' + currentFeature.formelenaam + '\n' + currentFeature.bouwlaag + '\n\n',
+                    },
+                    "pages": [{}]
+                };
+                if (currentFeature.images) {
+                    if (currentFeature.images.length > 0) {
+                        $.each(currentFeature.images, function(img_index, img) {
+                            testObject.options["image" + (img_index + 1)] = encodeURI(img);
+                        });
                     }
-                ]
-            };
-            var center = dbkjs.map.getCenter();
-            testObject.pages[0].center = [center.lon, center.lat];
-            testObject.pages[0].scale = Math.ceil(dbkjs.map.getScale());
-            testObject.pages[0].rotation = 0;
-            dbkjs.modules.print.printdirect(dbkjs.map, testObject.pages);
+                }
+                if (currentFeature.adres) {
+                    if (currentFeature.adres.length > 0) {
+                        var adr_str = '';
+                        $.each(currentFeature.adres, function(adr_index, adr) {
+                            adr_str += adr + '\n\n';
+                        });
+                        testObject.options.adres = adr_str;
+                    } else {
+                        testObject.options.adres = '';
+                    }
+                }
+                if (currentFeature.bijzonderheden) {
+                    if (currentFeature.bijzonderheden.length > 0) {
+                        var adr_str = '';
+                        $.each(currentFeature.bijzonderheden, function(adr_index, adr) {
+                            adr_str += adr.soort + ': ' + adr.tekst + '\n\n';
+                        });
+                        testObject.options.bijzonderheden = adr_str;
+                    } else {
+                        testObject.options.bijzonderheden = '';
+                    }
+                }
+                
+                if (currentFeature.verblijf) {
+                    if (currentFeature.verblijf.length > 0) {
+                        var adr_str = '';
+                        $.each(currentFeature.verblijf, function(adr_index, adr) {
+                            adr_str += adr.typeaanwezigheidsgroep + ': ' + adr.aantal + ' ' + adr.tijdvakbegintijd + ' - ' + adr.tijdvakeindtijd + '\n\n';
+                        });
+                        testObject.options.verblijf = adr_str;
+                    } else {
+                        testObject.options.verblijf = '';
+                    }
+                }
+                
+                var center = dbkjs.map.getCenter();
+                testObject.pages[0].center = [center.lon, center.lat];
+                testObject.pages[0].scale = Math.ceil(dbkjs.map.getScale());
+                testObject.pages[0].rotation = 0;
+                dbkjs.modules.print.printdirect(dbkjs.map, testObject.pages, testObject.options);
+            } else {
+                alert("Activeer eerst een dbk");
+            }
         });
     },
     capabilities: null,
@@ -47,25 +98,32 @@ dbkjs.modules.print = {
         this.dpi = dpi;
     },
     printdirect: function(map, pages, options) {
+
+
         dbkjs.modules.print.loadCapabilities(function(capabilities) {
-            dbkjs.modules.print.setLayout(dbkjs.modules.print.capabilities.layouts[3]);
-            dbkjs.modules.print.setDpi(dbkjs.modules.print.capabilities.dpis[0]);
+            dbkjs.modules.print.setLayout({
+                name: "A3 Landscape",
+                rotation: true,
+                map: {
+                    height: 776,
+                    width: 1130
+                }
+            });
+
+            dbkjs.modules.print.setDpi(150);
             dbkjs.modules.print.print(map, pages, options);
         });
-
     },
     print: function(map, pages, options) {
         var _obj = dbkjs.modules.print;
         pages = pages instanceof Array ? pages : [pages];
         options = options || {};
-        var jsonData = $.extend(_obj.customParams, {
+        var jsonData = $.extend(_obj.customParams, options);
+        jsonData = $.extend(jsonData, {
             units: map.getUnits(),
             srs: map.baseLayer.projection.getCode(),
             layout: _obj.layout.name,
-            dpi: _obj.dpi.value,
-            mapTitle: "Titel",
-            mapComment: "Commentaar",
-            mapFooter: "Footer"
+            dpi: _obj.dpi.value
         });
 
         // feature wordt gebruikt voor de extent van de kaart.. Ik moet nog even uitvinden hoe..
@@ -78,11 +136,13 @@ dbkjs.modules.print = {
         //layers.unshift(map.baseLayer);
 
         $.each(layers, function(layer_idx, layer) {
-            if (
-                    //layer !== pagesLayer && 
-                    layer.getVisibility() === true) {
-                var enc = _obj.encodeLayer(layer);
-                enc && encodedLayers.push(enc);
+            if (layer.name !== null && "Feature,feature_sketch".indexOf(layer.name) === -1) {
+                if (
+                        //layer !== pagesLayer && 
+                        layer.getVisibility() === true) {
+                    var enc = _obj.encodeLayer(layer);
+                    enc && encodedLayers.push(enc);
+                }
             }
         });
         jsonData.layers = encodedLayers;
@@ -90,12 +150,12 @@ dbkjs.modules.print = {
         var encodedPages = [];
         $.each(pages, function(page_idx, page) {
             encodedPages.push(
-                $.extend(page.customParams, {
-                    center: [page.center[0], page.center[1]],
-                    scale: page.scale,
-                    rotation: page.rotation
-                })
-            );
+                    $.extend(page.customParams, {
+                center: [page.center[0], page.center[1]],
+                scale: page.scale,
+                rotation: page.rotation
+            })
+                    );
         });
         jsonData.pages = encodedPages;
 
@@ -107,30 +167,7 @@ dbkjs.modules.print = {
             });
             jsonData.overviewLayers = encodedOverviewLayers;
         }
-//        if (options.legend) {
-//            var legend = options.legend;
-//            var rendered = legend.rendered;
-//            if (!rendered) {
-//                legend = legend.cloneConfig({
-//                    renderTo: document.body,
-//                    hidden: true
-//                });
-//            }
-//            var encodedLegends = [];
-//            legend.items && legend.items.each(function(cmp) {
-//                if (!cmp.hidden) {
-//                    var encFn = this.encoders.legends[cmp.getXType()];
-//                    // MapFish Print doesn't currently support per-page
-//                    // legends, so we use the scale of the first page.
-//                    encodedLegends = encodedLegends.concat(
-//                            encFn.call(this, cmp, jsonData.pages[0].scale));
-//                }
-//            }, this);
-//            if (!rendered) {
-//                legend.destroy();
-//            }
-//            jsonData.legends = encodedLegends;
-//        }
+        console.log(jsonData);
         $.ajax({
             type: _obj.method,
             url: "/print/pdf/" + "create.json",
@@ -218,16 +255,16 @@ dbkjs.modules.print = {
                     singleTile: layer.singleTile
                 });
                 var param;
-                for (var p in layer.params) {
-                    param = p.toLowerCase();
-                    if (layer.params[p] !== null && !layer.DEFAULT_PARAMS[param] &&
-                            "layers,styles,width,height,srs".indexOf(param) === -1) {
-                        if (!enc.customParams) {
-                            enc.customParams = {};
-                        }
-                        enc.customParams[p] = layer.params[p];
-                    }
-                }
+//                for (var p in layer.params) {
+//                    param = p.toLowerCase();
+//                    if (layer.params[p] !== null && !layer.DEFAULT_PARAMS[param] &&
+//                            "layers,styles,width,height,srs".indexOf(param) === -1) {
+//                        if (!enc.customParams) {
+//                            enc.customParams = {};
+//                        }
+//                        enc.customParams[p] = layer.params[p];
+//                    }
+//                }
                 return enc;
             },
             "OSM": function(layer) {
@@ -242,7 +279,8 @@ dbkjs.modules.print = {
                 var enc = dbkjs.modules.print.encoders.layers.TileCache.call(dbkjs.modules.print, layer);
                 return $.extend(enc, {
                     type: 'TMS',
-                    format: layer.type
+                    format: layer.type,
+                    "tileOrigin": {"x": -285401.920, "y": 22598.080}
                 });
             },
             "TileCache": function(layer) {

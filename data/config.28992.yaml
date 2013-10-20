@@ -35,7 +35,7 @@ connectionTimeout: 60000
 socketTimeout: 360000
 
 #outputFilename: '${outputFilename}'
-outputFilename: 'HERONPRINT-${yyyy-MM-dd}T${HHmmss}'
+outputFilename: 'DOIV-afdruk-${yyyy-MM-dd}T${HHmmss}'
 
 #path to non-default fonts
 #slows down initial start so unused.
@@ -397,7 +397,7 @@ layouts:
               classFont: Helvetica
               classFontSize: 8
               backgroundColor: white
-              inline:true
+              inline: true
 
         #Attribution
         - !columns
@@ -645,7 +645,7 @@ layouts:
               classFont: Helvetica
               classFontSize: 10
               backgroundColor: white
-              inline:true
+              inline: true
 
         #Attribution
         - !columns

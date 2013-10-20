@@ -12,6 +12,29 @@ dbkjs.modules.updateFilter = function(id) {
     });
 };
 dbkjs.modules.search = {
+    register: function() {
+        var search_div = $('#btn-grp-search');
+        var search_group = $('<div class="input-group navbar-btn"></div>');
+        var search_pre = $('<span id="search-add-on" class="input-group-addon"><i class="icon-building"></i></span>');
+        var search_input = $('<input id="search_input" name="search_input" type="text" class="form-control" placeholder="zoek DBK">');
+        var search_btn_grp = $(
+                '<div class="input-group-btn pull-right">' +
+                '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Zoek <span class="caret"></span></button>' +
+                '<ul class="dropdown-menu pull-right">' +
+                '<li><a href="#" id="s_dbk"><i class="icon-building"></i> DBK</a></li>' +
+                '<li><a href="#" id="s_oms"><i class="icon-bell"></i> OMS</a></li>' +
+                '<li><a href="#" id="s_adres"><i class="icon-home"></i> Adres</a></li>' +
+                '<li><a href="#" id="s_coord"><i class="icon-pushpin"></i> Co&ouml;rdinaat</a></li>' +
+                '</ul>' +
+                '</div>'
+                );
+        search_group.append(search_pre);
+        search_group.append(search_input);
+        search_group.append(search_btn_grp);
+        search_div.append(search_group);
+        this.activate();
+        search_div.show();
+    },
     activate: function() {
         $('#search_input').typeahead({
             name: 'address',
@@ -44,6 +67,61 @@ dbkjs.modules.search = {
             } else {
                 dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat());
             }
+        });
+        $('#search_input').click(
+                function() {
+                    $(this).val('');
+                }
+        );
+        $('div.btn-group ul.dropdown-menu li a').click(function(e) {
+            $('#search_input').typeahead('destroy');
+            $('#search_input').val('');
+            var mdiv = $(this).parent().parent().parent();
+            var mbtn = $('#search-add-on');
+            var minp = mdiv.parent().find('input');
+            if ($(this).text() === " Adres") {
+                mbtn.html('<i class="icon-home"></i>');
+                minp.attr("placeholder", "zoek adres of POI");
+                if (dbkjs.modules.search) {
+                    dbkjs.modules.search.activate();
+                }
+            } else if ($(this).text() === " Coördinaat") {
+                mbtn.html('<i class="icon-pushpin"></i>');
+                minp.attr("placeholder", "lon,lat of X,Y punt voor decimaal");
+                $('#search_input').change(function() {
+                    var ruwe_input = $('#search_input').val();
+                    var loc;
+                    var coords = ruwe_input.split(',');
+                    coords[0] = parseFloat(coords[0]);
+                    coords[1] = parseFloat(coords[1]);
+                    if (coords.length === 2) {
+                        if (coords[0] > 2.0 && coords[0] < 8.0 && coords[1] > 50.0 && coords[0] < 54.0) { //wgs84
+                            loc = new OpenLayers.LonLat(coords[0], coords[1]).transform(new OpenLayers.Projection("EPSG:4326"), dbkjs.map.getProjectionObject());
+                            dbkjs.modules.updateFilter(0);
+                            dbkjs.map.setCenter(loc, 11);
+                        } else if (coords[0] > -14000.0 && coords[0] < 293100.0 && coords[1] > 293100.0 && coords[0] < 650000.0) { //rd
+                            loc = new OpenLayers.LonLat(coords[0], coords[1]).transform(new OpenLayers.Projection("EPSG:28992"), dbkjs.map.getProjectionObject());
+                            dbkjs.modules.updateFilter(0);
+                            dbkjs.map.setCenter(loc, 11);
+                        } else {
+                            // @todo build function to handle map fault
+                        }
+                    }
+                    return false;
+                });
+            } else if ($(this).text() === " DBK") {
+                mbtn.html('<i class="icon-building"></i>');
+                minp.attr("placeholder", "zoek dbk");
+                dbkjs.modules.feature.search_dbk();
+            } else if ($(this).text() === " OMS") {
+                mbtn.html('<i class="icon-bell"></i>');
+                minp.attr("placeholder", "zoek oms");
+                dbkjs.modules.feature.search_oms();
+            }
+            mdiv.removeClass('open');
+            mdiv.removeClass('active');
+            e.preventDefault();
+            return false;
         });
     }
 };

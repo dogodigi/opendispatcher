@@ -81,6 +81,7 @@ dbkjs.protocol.imdbk21 = {
                         $('#infopanel_b').html(div);
                         $('#systeem_meldingen').hide();
                     }
+                    console.log(_obj.feature);
                     $('#infopanel').show();
                 } else {
                     _obj.feature = {};
@@ -102,8 +103,9 @@ dbkjs.protocol.imdbk21 = {
         var _obj = dbkjs.protocol.imdbk21;
         /** Algemene dbk info **/
         if (DBKObject) {
-            var formelenaam = DBKObject["dbk:formeleNaam"].value;
-            dbkjs.util.changeDialogTitle('<i class="icon-building"></i> ' + formelenaam);
+            _obj.feature.formelenaam = DBKObject["dbk:formeleNaam"].value;
+            var formelenaam = _obj.feature.formelenaam;
+            dbkjs.util.changeDialogTitle('<i class="icon-building"></i> ' + _obj.feature.formelenaam);
             var controledatum = '<span class="label label-warning">Niet bekend</span>';
             var bhvaanwezig = '<span class="label label-warning">Geen BHV aanwezig of onbekend</span>';
             var informelenaam = '';
@@ -117,19 +119,24 @@ dbkjs.protocol.imdbk21 = {
             var laagste;
             var hoogste;
             if (DBKObject["dbk:informeleNaam"]) {
-                informelenaam = DBKObject["dbk:informeleNaam"].value;
+                _obj.feature.informelenaam = DBKObject["dbk:informeleNaam"].value;
+                informelenaam  = _obj.feature.informelenaam;
             }
             if (DBKObject["dbk:controleDatum"]) {
-                controledatum = DBKObject["dbk:controleDatum"].value;
+                _obj.feature.controledatum = DBKObject["dbk:controleDatum"].value;
+                controledatum = _obj.feature.controledatum;
             }
             if (DBKObject["dbk:BHVAanwezig"]) {
+                _obj.feature.bvhaanwezig = DBKObject["dbk:BHVAanwezig"].value;
                 bhvaanwezig = '<span class="label label-success">BHV aanwezig</span>';
             }
             if (DBKObject["dbk:OMSnummer"]) {
+                _obj.feature.omsnummer = DBKObject["dbk:OMSnummer"].value;
                 omsnummer = '' + DBKObject["dbk:OMSnummer"].value + '';
             }
 
             if (DBKObject["dbk:gebruikstype"]) {
+                _obj.feature.gebruikstype = DBKObject["dbk:gebruikstype"].value;
                 gebruikstype = '' + DBKObject["dbk:gebruikstype"].value + '';
             }
 
@@ -140,12 +147,14 @@ dbkjs.protocol.imdbk21 = {
                 hoogste = '' + DBKObject["dbk:hoogsteBouwlaag"].value + '';
             }
             if (laagste && hoogste) {
-                bouwlaag = '' + laagste + ' t/m ' + hoogste + '';
+                bouwlaag = 'Bouwlaag:' + laagste + ' t/m ' + hoogste + '';
             } else if (laagste && !hoogste) {
                 bouwlaag = 'Laagste bouwlaag: ' + laagste + '';
             } else if (hoogste && !laagste) {
                 bouwlaag = 'Hoogste bouwlaag: ' + hoogste + '';
             }
+            _obj.feature.bouwlaag = bouwlaag;
+            
             _obj.panel_algemeen = $('<div class="tab-pane active" id="collapse_algemeen_' + _obj.feature.id + '"></div>');
             var algemeen_table_div = $('<div class="table-responsive"></div>');
             var algemeen_table = $('<table class="table table-hover"></table>');
@@ -157,6 +166,7 @@ dbkjs.protocol.imdbk21 = {
             algemeen_table.append(_obj.constructRow(bouwlaag, 'Bouwlagen'));
             var adres = DBKObject["dbk:adres"];
             if (adres) {
+                _obj.feature.adres = [];
                 //var adres_div = $('<div class="tab-pane" id="collapse_adres_' + _obj.feature.id + '"></div>');\
 
                 if (adres["dbk:Adres"]) {
@@ -184,6 +194,7 @@ dbkjs.protocol.imdbk21 = {
                             openbareruimtenaam + ' ' + huisnummer + '<br/>' +
                             woonplaatsnaam + ' ' + postcode +
                             '');
+                    _obj.feature.adres.push(openbareruimtenaam + ' ' + huisnummer + '\n' + woonplaatsnaam + '  ' + postcode);
 //                    if (waarde["dbk:Adres"]["dbk:bagId"]) {
 //                        var bag_p = $('<p></p>');
 //                        var bag_button = $('<button type="button" class="btn btn-primary">BAG raadplegen</button>');
@@ -227,6 +238,7 @@ dbkjs.protocol.imdbk21 = {
     constructContact: function(contact) {
         var _obj = dbkjs.protocol.imdbk21;
         if (contact) {
+            _obj.feature.contact = [];
             var contact_div = $('<div class="tab-pane" id="collapse_contact_' + _obj.feature.id + '"></div>');
             if (contact["dbk:Contact"]) {
                 var temp = contact;
@@ -237,11 +249,16 @@ dbkjs.protocol.imdbk21 = {
             var contact_table = $('<table class="table table-hover"></table>');
             contact_table.append('<tr><th>#</th><th>soort</th><th>informatie</th></tr>');
             $.each(contact, function(contact_index, waarde) {
+                var cnt = {
+                    volgnummer: waarde["dbk:Contact"]["dbk:volgnummer"].value,
+                    soort: waarde["dbk:Contact"]["dbk:soort"].value,
+                    tekst: waarde["dbk:Contact"]["dbk:tekst"].value
+                };
                 contact_table.append(
                         '<tr>' +
-                        '<td>' + waarde["dbk:Contact"]["dbk:volgnummer"].value + '</td>' +
-                        '<td>' + waarde["dbk:Contact"]["dbk:soort"].value + '</td>' +
-                        '<td>' + waarde["dbk:Contact"]["dbk:tekst"].value + '</td>'
+                        '<td>' + cnt.volgnummer + '</td>' +
+                        '<td>' + cnt.soort + '</td>' +
+                        '<td>' + cnt.tekst + '</td>'
                         + '</tr>'
                         );
             });
@@ -256,6 +273,7 @@ dbkjs.protocol.imdbk21 = {
     constructBijzonderheid: function(bijzonderheid) {
         var _obj = dbkjs.protocol.imdbk21;
         if (bijzonderheid) {
+            _obj.feature.bijzonderheden = [];
             var bijzonderheid_div = $('<div class="tab-pane" id="collapse_bijzonderheid_' + _obj.feature.id + '"></div>');
             if (bijzonderheid["dbk:Bijzonderheid"]) {
                 var temp = bijzonderheid;
@@ -272,9 +290,11 @@ dbkjs.protocol.imdbk21 = {
                 Repressie: {titel: 'Repressie', waarde: ''}
             };
             $.each(bijzonderheid, function(bijzonderheid_index, waarde) {
-                var lu = waarde["dbk:Bijzonderheid"]["dbk:soort"].value;
-                if (lu) {
-                    set[lu].waarde += waarde["dbk:Bijzonderheid"]["dbk:tekst"].value + '<br>';
+                var soort = waarde["dbk:Bijzonderheid"]["dbk:soort"].value;
+                if (soort) {
+                    var bijz = {soort: soort, tekst: waarde["dbk:Bijzonderheid"]["dbk:tekst"].value};
+                    _obj.feature.bijzonderheden.push(bijz);
+                    set[soort].waarde += bijz.tekst + '<br>';
                 }
             });
             $.each(set, function(set_idx, set_entry) {
@@ -298,6 +318,7 @@ dbkjs.protocol.imdbk21 = {
     constructMedia: function(foto) {
         var _obj = dbkjs.protocol.imdbk21;
         if (foto) {
+            _obj.feature.images = [];
             var foto_div = $('<div class="tab-pane" id="collapse_foto_' + _obj.feature.id + '"></div>');
             var image_carousel = $('<div id="carousel_foto_' + _obj.feature.id + '" class="carousel slide" data-interval="false"></div>');
             var image_carousel_inner = $('<div class="carousel-inner"></div>');
@@ -323,6 +344,7 @@ dbkjs.protocol.imdbk21 = {
                     image_carousel_inner.append('<div class="item ' + active + '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + url + '" target="_blank"><h1><i class="icon-download icon-large"></h1></i></a><h3>' + waarde["dbk:Foto"]["dbk:naam"].value + '</h3><a href="' + url + '" target="_blank"><h2>Download bestand</h2></a></div></div>');
                 } else {
                     image_carousel_inner.append('<div class="item ' + active + '"><img src="' + url + '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' + naam + '</h3><p></p></div></div>');
+                    _obj.feature.images.push(url);
                 }
 
                 if (foto.length > 1) {
@@ -347,6 +369,7 @@ dbkjs.protocol.imdbk21 = {
     constructVerblijf: function(verblijf) {
         var _obj = dbkjs.protocol.imdbk21;
         if (verblijf) {
+            _obj.feature.verblijf = [];
             var verblijf_div = $('<div class="tab-pane" id="collapse_verblijf_' + _obj.feature.id + '"></div>');
             //if (verblijf["dbk:AantalPersonen"]) {
             if (verblijf["dbk:AantalPersonen"]) {
@@ -358,11 +381,18 @@ dbkjs.protocol.imdbk21 = {
             var verblijf_table = $('<table class="table table-hover"></table>');
             verblijf_table.append('<tr><th>van</th><th>tot</th><th>aantal</th><th>groep</th></tr>');
             $.each(verblijf, function(verblijf_index, waarde) {
+                var verb = {
+                    tijdvakbegintijd: waarde["dbk:AantalPersonen"]["dbk:tijdvakBegintijd"].value.replace(":00Z", '').replace('Z', ''),
+                    tijdvakeindtijd: waarde["dbk:AantalPersonen"]["dbk:tijdvakEindtijd"].value.replace(":00Z", '').replace('Z', ''),
+                    aantal: waarde["dbk:AantalPersonen"]["dbk:aantal"].value,
+                    typeaanwezigheidsgroep: waarde["dbk:AantalPersonen"]["dbk:typeAanwezigheidsgroep"].value
+                };
+                _obj.feature.verblijf.push(verb);
                 verblijf_table.append('<tr>' +
-                        '<td>' + waarde["dbk:AantalPersonen"]["dbk:tijdvakBegintijd"].value.replace(":00Z", '').replace('Z', '') + '</td>' +
-                        '<td>' + waarde["dbk:AantalPersonen"]["dbk:tijdvakEindtijd"].value.replace(":00Z", '').replace('Z', '') + '</td>' +
-                        '<td>' + waarde["dbk:AantalPersonen"]["dbk:aantal"].value + '</td>' +
-                        '<td>' + waarde["dbk:AantalPersonen"]["dbk:typeAanwezigheidsgroep"].value + '</td>' +
+                        '<td>' + verb.tijdvakbegintijd + '</td>' +
+                        '<td>' + verb.tijdvakeindtijd + '</td>' +
+                        '<td>' + verb.aantal + '</td>' +
+                        '<td>' + verb.typeaanwezigheidsgroep + '</td>' +
                         '</tr>');
             });
             verblijf_table_div.append(verblijf_table);
