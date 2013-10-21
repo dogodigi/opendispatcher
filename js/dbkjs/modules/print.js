@@ -36,6 +36,7 @@ dbkjs.modules.print = {
                         });
                     }
                 }
+                testObject.options.adres = ' ';
                 if (currentFeature.adres) {
                     if (currentFeature.adres.length > 0) {
                         var adr_str = '';
@@ -43,10 +44,9 @@ dbkjs.modules.print = {
                             adr_str += adr + '\n\n';
                         });
                         testObject.options.adres = adr_str;
-                    } else {
-                        testObject.options.adres = '';
                     }
                 }
+                testObject.options.bijzonderheden = ' ';
                 if (currentFeature.bijzonderheden) {
                     if (currentFeature.bijzonderheden.length > 0) {
                         var adr_str = '';
@@ -54,11 +54,10 @@ dbkjs.modules.print = {
                             adr_str += adr.soort + ': ' + adr.tekst + '\n\n';
                         });
                         testObject.options.bijzonderheden = adr_str;
-                    } else {
-                        testObject.options.bijzonderheden = '';
                     }
                 }
                 
+                testObject.options.verblijf = ' ';
                 if (currentFeature.verblijf) {
                     if (currentFeature.verblijf.length > 0) {
                         var adr_str = '';
@@ -66,8 +65,6 @@ dbkjs.modules.print = {
                             adr_str += adr.typeaanwezigheidsgroep + ': ' + adr.aantal + ' ' + adr.tijdvakbegintijd + ' - ' + adr.tijdvakeindtijd + '\n\n';
                         });
                         testObject.options.verblijf = adr_str;
-                    } else {
-                        testObject.options.verblijf = '';
                     }
                 }
                 
