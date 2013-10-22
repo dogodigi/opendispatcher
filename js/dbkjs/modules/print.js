@@ -25,10 +25,25 @@ dbkjs.modules.print = {
                         "informelenaam": currentFeature.informelenaam,
                         "formelenaam": currentFeature.formelenaam,
                         "bouwlaag": currentFeature.bouwlaag,
-                        "objectgegevens": currentFeature.informelenaam + '\n' + currentFeature.formelenaam + '\n' + currentFeature.bouwlaag + '\n\n',
+                        "objectgegevens": 'DBK ' + currentFeature.id + '\n\n' + currentFeature.informelenaam + '\n' + currentFeature.formelenaam + '\n' + currentFeature.bouwlaag + '\n\n'
                     },
                     "pages": [{}]
                 };
+                if (currentFeature.omsnummer){
+                    testObject.options.objectgegevens += 'OMS nummer: ' + currentFeature.omsnummer + '\n';
+                }
+                if (currentFeature.bhvaanwezig){
+                    testObject.options.objectgegevens += 'BHV: Aanwezig \n';
+                }
+                if (currentFeature.inzetprocedure){
+                    testObject.options.objectgegevens += 'Inzetprocedure: ' + currentFeature.inzetprocedure + '\n';
+                }
+                if (currentFeature.gebouwconstructie){
+                    testObject.options.objectgegevens += 'Gebouwconstructie: ' + currentFeature.gebouwconstructie + '\n';
+                }
+                if (currentFeature.gebruikstype){
+                    testObject.options.objectgegevens += 'Gebruikstype: ' + currentFeature.gebruikstype + '\n';
+                }
                 if (currentFeature.images) {
                     if (currentFeature.images.length > 0) {
                         $.each(currentFeature.images, function(img_index, img) {
@@ -36,24 +51,57 @@ dbkjs.modules.print = {
                         });
                     }
                 }
+                
                 testObject.options.adres = ' ';
                 if (currentFeature.adres) {
                     if (currentFeature.adres.length > 0) {
-                        var adr_str = '';
+                        var adr_str = 'Adres:\n';
                         $.each(currentFeature.adres, function(adr_index, adr) {
                             adr_str += adr + '\n\n';
                         });
                         testObject.options.adres = adr_str;
                     }
                 }
+                testObject.options.contact = ' ';
+                if (currentFeature.contact) {
+                    if (currentFeature.contact.length > 0) {
+                        var adr_str = 'Contact:\n';
+                        $.each(currentFeature.contact, function(adr_index, adr) {
+                            adr_str += adr.naam + ' ' + adr.telefoonnummer + ' (' + adr.functie + ')' + '\n';
+                        });
+                        testObject.options.objectgegevens += adr_str;
+                    }
+                }
                 testObject.options.bijzonderheden = ' ';
                 if (currentFeature.bijzonderheden) {
                     if (currentFeature.bijzonderheden.length > 0) {
-                        var adr_str = '';
+                        var adr_str = 'Bijzonderheden:\n';
+                        var set = {"Algemeen":'Algemeen -\n',"Preparatie":'Preparatie -\n', "Preventie":'Preventie -\n', "Repressie": 'Repressie -\n'};
                         $.each(currentFeature.bijzonderheden, function(adr_index, adr) {
-                            adr_str += adr.soort + ': ' + adr.tekst + '\n\n';
+                            set[adr.soort] += adr.tekst + '\n';
+                            //adr_str += adr.soort + ': ' + adr.tekst + '\n\n';
                         });
-                        testObject.options.bijzonderheden = adr_str;
+                        if(set.Algemeen === 'Algemeen -\n'){
+                            set.Algemeen = '';
+                        } else {
+                            set.Algemeen += '\n';
+                        }
+                        if(set.Preparatie === 'Preparatie -\n'){
+                            set.Preparatie = '';
+                        }else {
+                            set.Preparatie += '\n';
+                        }
+                        if(set.Preventie === 'Preventie -\n'){
+                            set.Preventie = '';
+                        } else {
+                            set.Preventie += '\n';
+                        }
+                        if(set.Repressie === 'Repressie -\n'){
+                            set.Repressie = '';
+                        } else {
+                            set.Repressie += '\n';
+                        }
+                        testObject.options.bijzonderheden = adr_str + set.Algemeen + set.Preparatie + set.Preventie + set.Repressie + '\n\n';
                     }
                 }
                 
@@ -252,16 +300,16 @@ dbkjs.modules.print = {
                     singleTile: layer.singleTile
                 });
                 var param;
-//                for (var p in layer.params) {
-//                    param = p.toLowerCase();
-//                    if (layer.params[p] !== null && !layer.DEFAULT_PARAMS[param] &&
-//                            "layers,styles,width,height,srs".indexOf(param) === -1) {
-//                        if (!enc.customParams) {
-//                            enc.customParams = {};
-//                        }
-//                        enc.customParams[p] = layer.params[p];
-//                    }
-//                }
+                for (var p in layer.params) {
+                    param = p.toLowerCase();
+                    if (layer.params[p] !== null && !layer.DEFAULT_PARAMS[param] &&
+                            "layers,styles,width,height,srs,cql_filter".indexOf(param) === -1) {
+                        if (!enc.customParams) {
+                            enc.customParams = {};
+                        }
+                        enc.customParams[p] = layer.params[p];
+                    }
+                }
                 return enc;
             },
             "OSM": function(layer) {

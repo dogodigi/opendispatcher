@@ -64,6 +64,9 @@ dbkjs.protocol.imdbk21 = {
                     if (xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]) {
                         var div = $('<div class="tabbable"></div>');
                         if (_obj.constructAlgemeen(xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"])) {
+                            _obj.constructContact(
+                                    xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:contactInfo"]
+                                    );
                             _obj.constructBijzonderheid(
                                     xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:bijzonderheid"]
                                     );
@@ -112,32 +115,43 @@ dbkjs.protocol.imdbk21 = {
             var woonplaatsnaam = '';
             var postcode = '';
             var huisnummer = '';
+            var vbo_id = '';
             var openbareruimtenaam = '';
             var omsnummer = '';
             var gebruikstype = '';
             var bouwlaag = '';
+            var inzetprocedure = '';
+            var gebouwconstructie = '';
             var laagste;
             var hoogste;
             if (DBKObject["dbk:informeleNaam"]) {
                 _obj.feature.informelenaam = DBKObject["dbk:informeleNaam"].value;
                 informelenaam  = _obj.feature.informelenaam;
             }
+            if (DBKObject["dbk:gebouwconstructie"]) {
+                _obj.feature.gebouwconstructie = DBKObject["dbk:gebouwconstructie"].value;
+                gebouwconstructie = _obj.feature.gebouwconstructie;
+            }
+            if (DBKObject["dbk:inzetprocedure"]) {
+                _obj.feature.inzetprocedure = DBKObject["dbk:inzetprocedure"].value;
+                inzetprocedure = _obj.feature.inzetprocedure;
+            }
             if (DBKObject["dbk:controleDatum"]) {
                 _obj.feature.controledatum = DBKObject["dbk:controleDatum"].value;
                 controledatum = _obj.feature.controledatum;
             }
             if (DBKObject["dbk:BHVAanwezig"]) {
-                _obj.feature.bvhaanwezig = DBKObject["dbk:BHVAanwezig"].value;
+                _obj.feature.bhvaanwezig = DBKObject["dbk:BHVAanwezig"].value;
                 bhvaanwezig = '<span class="label label-success">BHV aanwezig</span>';
             }
             if (DBKObject["dbk:OMSnummer"]) {
                 _obj.feature.omsnummer = DBKObject["dbk:OMSnummer"].value;
-                omsnummer = '' + DBKObject["dbk:OMSnummer"].value + '';
+                omsnummer = '' + _obj.feature.omsnummer + '';
             }
 
             if (DBKObject["dbk:gebruikstype"]) {
                 _obj.feature.gebruikstype = DBKObject["dbk:gebruikstype"].value;
-                gebruikstype = '' + DBKObject["dbk:gebruikstype"].value + '';
+                gebruikstype = '' + _obj.feature.gebruikstype + '';
             }
 
             if (DBKObject["dbk:laagsteBouwlaag"]) {
@@ -161,6 +175,8 @@ dbkjs.protocol.imdbk21 = {
             algemeen_table.append(_obj.constructRow(informelenaam, 'Informele naam'));
             algemeen_table.append(_obj.constructRow(controledatum, 'Controledatum'));
             algemeen_table.append(_obj.constructRow(bhvaanwezig, 'BHV'));
+            algemeen_table.append(_obj.constructRow(inzetprocedure, 'Inzetprocedure'));
+            algemeen_table.append(_obj.constructRow(gebouwconstructie, 'Gebouwconstructie'));
             algemeen_table.append(_obj.constructRow(omsnummer, 'OMS nummer'));
             algemeen_table.append(_obj.constructRow(gebruikstype, 'Gebruik'));
             algemeen_table.append(_obj.constructRow(bouwlaag, 'Bouwlagen'));
@@ -194,8 +210,14 @@ dbkjs.protocol.imdbk21 = {
                             openbareruimtenaam + ' ' + huisnummer + '<br/>' +
                             woonplaatsnaam + ' ' + postcode +
                             '');
-                    _obj.feature.adres.push(openbareruimtenaam + ' ' + huisnummer + '\n' + woonplaatsnaam + '  ' + postcode);
-//                    if (waarde["dbk:Adres"]["dbk:bagId"]) {
+                    if (waarde["dbk:Adres"]["dbk:bagId"]) {
+                        if (waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']){
+                          if (waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID']){
+                              vbo_id = '\nbag vbo: ' + waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value;
+                          }   
+                        }
+                    }
+                    _obj.feature.adres.push(openbareruimtenaam + ' ' + huisnummer + '\n' + woonplaatsnaam + '  ' + postcode + vbo_id);
 //                        var bag_p = $('<p></p>');
 //                        var bag_button = $('<button type="button" class="btn btn-primary">BAG raadplegen</button>');
 //                        bag_p.append(bag_button);
@@ -247,18 +269,19 @@ dbkjs.protocol.imdbk21 = {
             }
             var contact_table_div = $('<div class="table-responsive"></div>');
             var contact_table = $('<table class="table table-hover"></table>');
-            contact_table.append('<tr><th>#</th><th>soort</th><th>informatie</th></tr>');
+            contact_table.append('<tr><th>functie</th><th>naam</th><th>telefoonnummer</th></tr>');
             $.each(contact, function(contact_index, waarde) {
                 var cnt = {
-                    volgnummer: waarde["dbk:Contact"]["dbk:volgnummer"].value,
-                    soort: waarde["dbk:Contact"]["dbk:soort"].value,
-                    tekst: waarde["dbk:Contact"]["dbk:tekst"].value
+                    functie: waarde["dbk:Contact"]["dbk:functie"].value,
+                    naam: waarde["dbk:Contact"]["dbk:naam"].value,
+                    telefoonnummer: waarde["dbk:Contact"]["dbk:telefoonnummer"].value
                 };
+                _obj.feature.contact.push(cnt);
                 contact_table.append(
                         '<tr>' +
-                        '<td>' + cnt.volgnummer + '</td>' +
-                        '<td>' + cnt.soort + '</td>' +
-                        '<td>' + cnt.tekst + '</td>'
+                        '<td>' + cnt.functie + '</td>' +
+                        '<td>' + cnt.naam + '</td>' +
+                        '<td>' + cnt.telefoonnummer + '</td>'
                         + '</tr>'
                         );
             });
