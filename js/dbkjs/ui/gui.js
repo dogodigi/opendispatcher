@@ -37,6 +37,38 @@ dbkjs.ui.gui = {
                 parent: '#overlaypanel_b3',
                 index: 0
             });
+            var GWT_2400m_MI_region = new dbkjs.Layer({
+                name: 'GWT Cirkel 2400m',
+                url: '/brabantnoord/wms',
+                map: dbkjs.map,
+                layerOptions: {layers: 'brwbn:GWT_2400m_MI_region'},
+                parent: '#overlaypanel_b2',
+                index:4
+            });
+            var GWT_900m_MI_region = new dbkjs.Layer({
+                name: 'GWT Cirkel 900m',
+                url: '/brabantnoord/wms',
+                map: dbkjs.map,
+                layerOptions: {layers: 'brwbn:GWT_900m_MI_region'},
+                parent: '#overlaypanel_b2',
+                index:4
+            });
+            var GWT = new dbkjs.Layer({
+                name: 'GWT',
+                url: '/brabantnoord/wms',
+                map: dbkjs.map,
+                layerOptions: {layers: 'brwbn:GWT_REGIO_MI_font_point'},
+                parent: '#overlaypanel_b2',
+                index:4
+            });
+            var geboordeputten = new dbkjs.Layer({
+                name: 'Geboorde putten',
+                url: '/brabantnoord/wms',
+                map: dbkjs.map,
+                layerOptions: {layers: 'brwbn:Geboorde_Putten_font_point'},
+                parent: '#overlaypanel_b2',
+                index:4
+            });
             var hydranten = new dbkjs.Layer({
                 name: 'Hydranten',
                 url: '/brabantnoord/wms',
