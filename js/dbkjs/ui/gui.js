@@ -23,7 +23,7 @@ dbkjs.ui.gui = {
             // even een laag testen, brabantwater? komt ie
             var lufo2 = new dbkjs.Layer({
                 name: 'Hoge resolutie luchtfoto',
-                url: 'http://geo.safetymaps.nl/map/mapserv',
+                url: 'http://view.safetymaps.nl/map/mapserv',
                 map: dbkjs.map,
                 layerOptions: {map: '/home/mapserver/doiv.map', layers: 'luchtfoto'},
                 parent: '#overlaypanel_b3',
@@ -31,7 +31,7 @@ dbkjs.ui.gui = {
             });
             var gbkn = new dbkjs.Layer({
                 name: 'GBKN',
-                url: 'http://geo.safetymaps.nl/map/mapserv',
+                url: 'http://view.safetymaps.nl/map/mapserv',
                 map: dbkjs.map,
                 layerOptions: {map: '/home/mapserver/doiv.map', layers: 'gbkn_panden,gbkn_topografie'},
                 parent: '#overlaypanel_b3',
@@ -87,7 +87,7 @@ dbkjs.ui.gui = {
             });
             var gebieden = new dbkjs.Layer({
                 name: 'Gebieden',
-                url: 'http://geo.safetymaps.nl/map/mapserv',
+                url: 'http://view.safetymaps.nl/map/mapserv',
                 map: dbkjs.map,
                 visibility: true,
                 layerOptions: {map: '/home/mapserver/doiv.map', layers: 'gebieden'},

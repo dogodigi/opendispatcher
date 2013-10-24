@@ -212,7 +212,7 @@ dbkjs.modules.print = {
             });
             jsonData.overviewLayers = encodedOverviewLayers;
         }
-        console.log(jsonData);
+        //console.log(jsonData);
         $.ajax({
             type: _obj.method,
             url: "/print/pdf/" + "create.json",

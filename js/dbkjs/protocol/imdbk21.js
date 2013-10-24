@@ -84,7 +84,7 @@ dbkjs.protocol.imdbk21 = {
                         $('#infopanel_b').html(div);
                         $('#systeem_meldingen').hide();
                     }
-                    console.log(_obj.feature);
+                    //console.log(_obj.feature);
                     $('#infopanel').show();
                 } else {
                     _obj.feature = {};
