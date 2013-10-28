@@ -143,7 +143,7 @@ dbkjs.init = function() {
     dbkjs.map = new OpenLayers.Map(options);
     dbkjs.map.addLayers(dbkjs.options.baselayers);
     dbkjs.options.regio = {
-        id: dbkjs.util.getQueryVariable('regio', 'zeeland')
+        id: dbkjs.util.getQueryVariable('regio', 'brabantnoord')
     };
     dbkjs.options.adres = dbkjs.util.getQueryVariable('adres');
     dbkjs.options.omsnummer = dbkjs.util.getQueryVariable('omsnummer');

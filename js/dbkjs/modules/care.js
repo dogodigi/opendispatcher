@@ -3,8 +3,6 @@ window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.care = {
     id: "care",
-    url: "/zeeland/",
-    namespace: "zeeland",
     visibility: false,
     layer: {visibility: true},
     sel_array: [],

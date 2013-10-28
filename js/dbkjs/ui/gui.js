@@ -35,7 +35,15 @@ dbkjs.ui.gui = {
                 map: dbkjs.map,
                 layerOptions: {map: '/home/mapserver/doiv.map', layers: 'gbkn_panden,gbkn_topografie'},
                 parent: '#overlaypanel_b3',
-                index: 0
+                index: 2
+            });
+            var kvt = new dbkjs.Layer({
+                name: 'KVT',
+                url: '/brabantnoord/wms',
+                map: dbkjs.map,
+                layerOptions: {layers: 'brwbn:KVTTARGET_U_region'},
+                parent: '#overlaypanel_b2',
+                index:4
             });
             var GWT_2400m_MI_region = new dbkjs.Layer({
                 name: 'GWT Cirkel 2400m',
