@@ -22,9 +22,9 @@ dbkjs.modules.print = {
                         "title_text": "Deze tekst wordt denk ik getoond",
                         "mapTitle": dbkjs.options.dbk,
                         "mapComment": "Nieuw commentaar, dit is vooral om te testen.",
-                        "informelenaam": currentFeature.informelenaam,
+                        "informelenaam": currentFeature.informelenaam || "",
                         "formelenaam": currentFeature.formelenaam,
-                        "bouwlaag": currentFeature.bouwlaag,
+                        "bouwlaag": currentFeature.bouwlaag || "",
                         "objectgegevens": 'DBK ' + currentFeature.id + '\n\n' + currentFeature.informelenaam + '\n' + currentFeature.formelenaam + '\n' + currentFeature.bouwlaag + '\n\n'
                     },
                     "pages": [{}]
