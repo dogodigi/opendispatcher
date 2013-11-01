@@ -45,6 +45,7 @@ dbkjs.ui.gui = {
                 parent: '#overlaypanel_b2',
                 index:4
             });
+            
             var GWT_2400m_MI_region = new dbkjs.Layer({
                 name: 'GWT Cirkel 2400m',
                 url: '/brabantnoord/wms',

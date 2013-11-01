@@ -122,13 +122,7 @@ dbkjs.modules.gevaren = {
             html = '<div class="table-responsive">';
             for (var feat in features) {
                 html += '<table class="table table-hover">';
-                //for (var j in features[feat].attributes) {
-                //if ($.inArray(j, ['aanvullendeinformatie', 'symboolCode', 'gevaarsindicatienummer', 'UNnummer', 'hoeveelheid', 'naamStof']) > -1) {
-                //if (!dbkjs.util.isJsonNull(features[feat].attributes[j])) {
                 html += '<tr><td><div class="gevicode">' + features[feat].attributes.gevaarsindicatienummer + '</div><div class="unnummer">' + features[feat].attributes.UNnummer + '</div></td><td><img src="images/eughs/' + features[feat].attributes.symboolCode + '.png" onload="this.width/=2;this.onload=null;"/></td><td>' + features[feat].attributes.naamStof + ' ' + features[feat].attributes.hoeveelheid + '<br><i>' + features[feat].attributes.aanvullendeInformatie + "</i></td></tr>";
-                //}
-                //}
-                //}
                 html += "</table>";
             }
             html += '</div>';

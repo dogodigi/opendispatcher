@@ -27,7 +27,7 @@ dbkjs.util = {
     setModalTitle: function(modal_id, title) {
         if (title instanceof jQuery) {
             $('#' + modal_id).find('div.modal-header:first').html(title);
-        } else if (typeof(title) === "string") {
+        } else if (typeof (title) === "string") {
             $('#' + modal_id).find('div.modal-header:first').html('<h4 class="modal-title">' + title + '</h4>');
         }
 
@@ -36,20 +36,20 @@ dbkjs.util = {
         if (dbkjs.modules) {
             $.each(dbkjs.modules, function(mod_index, module) {
                 if ($.inArray(mod_index, dbkjs.options.regio.modules) > -1) {
-                    if (typeof(module.layer) !== "undefined" && module.layer.visibility) {
+                    if (typeof (module.layer) !== "undefined" && module.layer.visibility) {
                         // Controleer of het een van de dbk layers is waar op is geklikt.
                         if (dbkjs.protocol) {
                             if (dbkjs.protocol.imdbk21) {
                                 if ($.inArray(module.id, ["dbko", "dbkf"]) !== -1) {
                                     //dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
                                 } else {
-                                    if (typeof(module.getfeatureinfo) !== "undefined") {
+                                    if (typeof (module.getfeatureinfo) !== "undefined") {
                                         module.getfeatureinfo(e);
                                     }
                                 }
                             }
                         } else {
-                            if (typeof(module.getfeatureinfo) !== "undefined") {
+                            if (typeof (module.getfeatureinfo) !== "undefined") {
                                 module.getfeatureinfo(e);
                             }
                         }
@@ -59,7 +59,7 @@ dbkjs.util = {
         }
     },
     isJsonNull: function(val) {
-        if (val === "null" || val === null || val === "" || typeof(val) === "undefined" || val === "undefined") {
+        if (val === "null" || val === null || val === "" || typeof (val) === "undefined" || val === "undefined") {
             return true;
         } else {
             return false;
@@ -143,7 +143,7 @@ dbkjs.util = {
             var feat = vLayer.features[i];
             var jstsGeom = convertOlToJstsGeom(feat.geometry);
             if (buffer.intersects(jstsGeom)) {
-                if (typeof(feat.cluster) !== "undefined") {
+                if (typeof (feat.cluster) !== "undefined") {
                     var j;
                     for (j = 0; j < feat.cluster.length; j++) {
                         result.push(feat.cluster[j]);
@@ -162,7 +162,7 @@ dbkjs.util = {
             var feat = vLayer.features[i];
             var jstsGeom = convertOlToJstsGeom(feat.geometry);
             if (jstsLine.distance(jstsGeom) < bufdist) {
-                if (typeof(feat.cluster) !== "undefined") {
+                if (typeof (feat.cluster) !== "undefined") {
                     var j;
                     for (j = 0; j < feat.cluster.length; j++) {
                         result.push(feat.cluster[j]);
@@ -296,7 +296,7 @@ dbkjs.util = {
             if (arr_index !== -1) {
                 this.layersLoading.splice(arr_index, 1);
             }
-            
+
             if (!alert[0]) {
                 if (this.layersLoading.length === 0) {
                     alert.hide();
@@ -374,7 +374,7 @@ dbkjs.util = {
      */
     createTabbable: function(id) {
         if (!id) {
-            id = OpenLayers.Util.createUniqueID("dbkjs.tabbable_");
+            id = OpenLayers.Util.createUniqueID("dbkjs_tabbable_");
         }
         var tabbable = $('<div id="' + id + '" class="tabbable"></div>');
         var ul = $('<ul class="nav nav-tabs"></ul>');
@@ -399,12 +399,10 @@ dbkjs.util = {
     appendTab: function(parent_id, tab_title, tab_content, active, id) {
         var parent_ul = $('#' + parent_id + ' ul:first');
         var parent_tab = $('#' + parent_id + ' .tab-content:first');
+
         var li;
         var ref;
         var pane;
-        if (id) {
-//controleer of de tab wel bestaat..
-        }
         if (!id) {
             var id = OpenLayers.Util.createUniqueID("dbkjs.tab_pane_");
         }
@@ -470,24 +468,31 @@ dbkjs.util = {
                 rowDelim = '"\r\n"',
                 // Grab text from table into CSV formatted string
                 csv = '"' + $rows.map(function(i, row) {
-            var $row = $(row),
-                    $cols = $row.find('td');
-            return $cols.map(function(j, col) {
-                var $col = $(col),
-                        text = $col.text();
-                return text.replace('"', '""'); // escape double quotes
+                    var $row = $(row),
+                            $cols = $row.find('td');
+                    return $cols.map(function(j, col) {
+                        var $col = $(col),
+                                text = $col.text();
+                        return text.replace('"', '""'); // escape double quotes
 
-            }).get().join(tmpColDelim);
-        }).get().join(tmpRowDelim)
+                    }).get().join(tmpColDelim);
+                }).get().join(tmpRowDelim)
                 .split(tmpRowDelim).join(rowDelim)
                 .split(tmpColDelim).join(colDelim) + '"',
                 // Data URI
                 csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csv);
         $(this)
                 .attr({
-            'download': filename,
-            'href': csvData,
-            'target': '_blank'
-        });
+                    'download': filename,
+                    'href': csvData,
+                    'target': '_blank'
+                });
+    },
+    padspaces: function(num,field){
+        var n = '' + num;
+        var w = n.length;
+        var l = field.length;
+        var pad = w < l ? l-w : 0;
+        return n + field.substr(0,pad);
     }
 };

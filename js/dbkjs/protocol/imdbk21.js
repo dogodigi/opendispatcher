@@ -64,6 +64,9 @@ dbkjs.protocol.imdbk21 = {
                     if (xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]) {
                         var div = $('<div class="tabbable"></div>');
                         if (_obj.constructAlgemeen(xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"])) {
+                            _obj.constructGevaarlijkeStof(
+                                    xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:gevaarlijkeStofInfo"]
+                                    );
                             _obj.constructContact(
                                     xmldoc["wfs:FeatureCollection"]["wfs:member"]["dbk:DBKObject"]["dbk:contactInfo"]
                                     );
@@ -126,7 +129,7 @@ dbkjs.protocol.imdbk21 = {
             var hoogste;
             if (DBKObject["dbk:informeleNaam"]) {
                 _obj.feature.informelenaam = DBKObject["dbk:informeleNaam"].value;
-                informelenaam  = _obj.feature.informelenaam;
+                informelenaam = _obj.feature.informelenaam;
             }
             if (DBKObject["dbk:gebouwconstructie"]) {
                 _obj.feature.gebouwconstructie = DBKObject["dbk:gebouwconstructie"].value;
@@ -168,7 +171,7 @@ dbkjs.protocol.imdbk21 = {
                 bouwlaag = 'Hoogste bouwlaag: ' + hoogste + '';
             }
             _obj.feature.bouwlaag = bouwlaag;
-            
+
             _obj.panel_algemeen = $('<div class="tab-pane active" id="collapse_algemeen_' + _obj.feature.id + '"></div>');
             var algemeen_table_div = $('<div class="table-responsive"></div>');
             var algemeen_table = $('<table class="table table-hover"></table>');
@@ -211,40 +214,49 @@ dbkjs.protocol.imdbk21 = {
                             woonplaatsnaam + ' ' + postcode +
                             '');
                     if (waarde["dbk:Adres"]["dbk:bagId"]) {
-                        if (waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']){
-                          if (waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID']){
-                              vbo_id = '\nbag vbo: ' + waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value;
-                          }   
+                        if (waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']) {
+                            if (waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID']) {
+                                vbo_id = '\nbag vbo: ' + waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value;
+                            }
                         }
                     }
                     _obj.feature.adres.push(openbareruimtenaam + ' ' + huisnummer + '\n' + woonplaatsnaam + '  ' + postcode + vbo_id);
-//                        var bag_p = $('<p></p>');
-//                        var bag_button = $('<button type="button" class="btn btn-primary">BAG raadplegen</button>');
-//                        bag_p.append(bag_button);
-//                        bag_button.click(function() {
-//                            if (dbkjs.modules.bag) {
-//                                dbkjs.modules.bag.getVBO(waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value, function(result) {
-//                                    if (result.length === 0) {
-//                                        $('#collapse_algemeen_' + _obj.feature.id).append(
-//                                                '<div class="alert alert-warning alert-dismissable">' +
-//                                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-//                                                '<strong>Mislukt!</strong>' +
-//                                                ' verblijfsobject ' + waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value + ' niet gevonden.' +
-//                                                '</div>'
-//                                                );
-//                                    } else {
-//
-//                                    }
-//
-//                                });
-//                            } else {
-//                                alert(waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value);
-//                            }
-//                        });
-//                        bag_div.append(bag_p);
-//                    }
-                    adres_row.append(adres_div);
-                    //adres_row.append(bag_div);
+                    if (dbkjs.modules.bag) {
+                        if (waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID']){
+                        var bag_p = $('<p></p>');
+                        var bag_button = $('<button type="button" class="btn btn-primary">BAG raadplegen</button>');
+                        bag_p.append(bag_button);
+                        bag_button.click(function() {
+                            if (dbkjs.modules.bag) {
+                                dbkjs.modules.bag.getVBO(waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value, function(result) {
+                                    if (result.length === 0) {
+                                        $('#collapse_algemeen_' + _obj.feature.id).append(
+                                                '<div class="alert alert-warning alert-dismissable">' +
+                                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                                                '<strong>Mislukt!</strong>' +
+                                                ' verblijfsobject ' + waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value + ' niet gevonden.' +
+                                                '</div>'
+                                                );
+                                    } else {
+                                        $('#bagpanel_b').html('');
+                                        $.each(result, function(result_index, waarde) {
+                                            dbkjs.modules.bag.vboInfo2(waarde);
+                                        });
+                                        $('#bagpanel').show();
+                                    }
+                                });
+                            } else {
+                                alert(waarde["dbk:Adres"]["dbk:bagId"]['dbk:NEN3610ID']['dbk:lokaalID'].value);
+                            }
+                        });
+                        bag_div.append(bag_p);
+                        adres_row.append(adres_div);
+                        adres_row.append(bag_div);
+                    }
+                    } else {
+                        adres_row.append(adres_div);
+                    }
+
                     algemeen_table.append(adres_row);
                 });
                 algemeen_table_div.append(algemeen_table);
@@ -256,6 +268,28 @@ dbkjs.protocol.imdbk21 = {
                 return false;
             }
         }
+    },
+    constructGevaarlijkeStof: function(gevaarlijkestof){
+        var _obj = dbkjs.protocol.imdbk21;
+        if(gevaarlijkestof){
+            _obj.feature.gevaarlijkestof = [];
+            if (gevaarlijkestof["dbk:GevaarlijkeStof"]) {
+                var temp = gevaarlijkestof;
+                gevaarlijkestof = [];
+                gevaarlijkestof.push(temp);
+            }
+            $.each(gevaarlijkestof, function(gevstof_index, waarde) {
+                var gev = {
+                    naamStof: waarde["dbk:GevaarlijkeStof"]["dbk:naamStof"].value,
+                    gevaarsindicatienummer: waarde["dbk:GevaarlijkeStof"]["dbk:gevaarsindicatienummer"].value,
+                    UNnummer: waarde["dbk:GevaarlijkeStof"]["dbk:UNnummer"].value,
+                    hoeveelheid: waarde["dbk:GevaarlijkeStof"]["dbk:hoeveelheid"].value,
+                    symboolCode: waarde["dbk:GevaarlijkeStof"]["dbk:symboolCode"].value
+                };
+                _obj.feature.gevaarlijkestof.push(gev);
+            });
+        }
+//        <dbk:gevaarlijkeStofInfo><dbk:GevaarlijkeStof gml:id="GevaarlijkeStof.fid--726ba112_1420c0ad9b3_-718a"><gml:boundedBy><gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#28992"><gml:lowerCorner>160893.2 402068.7</gml:lowerCorner><gml:upperCorner>160893.2 402068.7</gml:upperCorner></gml:Envelope></gml:boundedBy><dbk:locatie><gml:Point srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#28992"><gml:pos>160893.2 402068.7</gml:pos></gml:Point></dbk:locatie><dbk:naamStof>Vloeibare zuurstof</dbk:naamStof><dbk:gevaarsindicatienummer>225</dbk:gevaarsindicatienummer><dbk:UNnummer>1073</dbk:UNnummer><dbk:hoeveelheid>10600 liter</dbk:hoeveelheid><dbk:symboolCode>EU-GHS03</dbk:symboolCode><dbk:symboolPlaatsing><dbk:SymboolOfLabelpositie><dbk:absolutePositie><gml:Point srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#28992"><gml:pos>160893.2 402068.7</gml:pos></gml:Point></dbk:absolutePositie><dbk:symboolschaal>1</dbk:symboolschaal><dbk:hoek>0.0</dbk:hoek></dbk:SymboolOfLabelpositie></dbk:symboolPlaatsing></dbk:GevaarlijkeStof></dbk:gevaarlijkeStofInfo>
     },
     constructContact: function(contact) {
         var _obj = dbkjs.protocol.imdbk21;

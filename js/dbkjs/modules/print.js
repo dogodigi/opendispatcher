@@ -69,7 +69,20 @@ dbkjs.modules.print = {
                         $.each(currentFeature.contact, function(adr_index, adr) {
                             adr_str += adr.naam + ' ' + adr.telefoonnummer + ' (' + adr.functie + ')' + '\n';
                         });
-                        testObject.options.objectgegevens += adr_str;
+                        testObject.options.objectgegevens = adr_str;
+                    }
+                }
+                testObject.options.gevaarlijkestof = ' ';
+                if (currentFeature.gevaarlijkestof) {
+                    if (currentFeature.gevaarlijkestof.length > 0) {
+                        var gev_str = 'Gevaarlijke stoffen:\n\ngevi/un           naam                              hoeveelheid              \n';
+                        gev_str += '-----------------------------------------------------------------------------\n';
+                        $.each(currentFeature.gevaarlijkestof, function(gev_index, gev) {
+                            gev_str += dbkjs.util.padspaces(gev.gevaarsindicatienummer + ' / ' + gev.UNnummer,'                  ') + 
+                                    dbkjs.util.padspaces(gev.naamStof,'                                  ') + 
+                                    dbkjs.util.padspaces(gev.hoeveelheid,'                  ') + '\n';
+                        });
+                        testObject.options.gevaarlijkestof = gev_str;
                     }
                 }
                 testObject.options.bijzonderheden = ' ';
