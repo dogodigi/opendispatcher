@@ -280,11 +280,12 @@ dbkjs.protocol.imdbk21 = {
             }
             $.each(gevaarlijkestof, function(gevstof_index, waarde) {
                 var gev = {
-                    naamStof: waarde["dbk:GevaarlijkeStof"]["dbk:naamStof"].value,
-                    gevaarsindicatienummer: waarde["dbk:GevaarlijkeStof"]["dbk:gevaarsindicatienummer"].value,
-                    UNnummer: waarde["dbk:GevaarlijkeStof"]["dbk:UNnummer"].value,
-                    hoeveelheid: waarde["dbk:GevaarlijkeStof"]["dbk:hoeveelheid"].value,
-                    symboolCode: waarde["dbk:GevaarlijkeStof"]["dbk:symboolCode"].value
+                    naamStof: dbkjs.util.isJsonNull(waarde["dbk:GevaarlijkeStof"]["dbk:naamStof"]) ? "": waarde["dbk:GevaarlijkeStof"]["dbk:naamStof"].value,
+                    gevaarsindicatienummer: dbkjs.util.isJsonNull(waarde["dbk:GevaarlijkeStof"]["dbk:gevaarsindicatienummer"]) ? "" : waarde["dbk:GevaarlijkeStof"]["dbk:gevaarsindicatienummer"].value,
+                    UNnummer: dbkjs.util.isJsonNull(waarde["dbk:GevaarlijkeStof"]["dbk:UNnummer"]) ? "": waarde["dbk:GevaarlijkeStof"]["dbk:UNnummer"].value,
+                    hoeveelheid: dbkjs.util.isJsonNull(waarde["dbk:GevaarlijkeStof"]["dbk:hoeveelheid"]) ? "" : waarde["dbk:GevaarlijkeStof"]["dbk:hoeveelheid"].value,
+                    symboolCode: dbkjs.util.isJsonNull(waarde["dbk:GevaarlijkeStof"]["dbk:symboolCode"]) ? "" : waarde["dbk:GevaarlijkeStof"]["dbk:symboolCode"].value,
+                    aanvullendeInformatie: dbkjs.util.isJsonNull(waarde["dbk:GevaarlijkeStof"]["dbk:aanvullendeInformatie"]) ? "" : waarde["dbk:GevaarlijkeStof"]["dbk:aanvullendeInformatie"].value
                 };
                 _obj.feature.gevaarlijkestof.push(gev);
             });
