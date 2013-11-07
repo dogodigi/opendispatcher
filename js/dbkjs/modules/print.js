@@ -18,10 +18,7 @@ dbkjs.modules.print = {
                         "srs": "EPSG:28992",
                         "layout": "A3 DBK",
                         "dpi": 150,
-                        "title": " Voorblad",
-                        "title_text": "Deze tekst wordt denk ik getoond",
-                        "mapTitle": dbkjs.options.dbk,
-                        "mapComment": "Nieuw commentaar, dit is vooral om te testen.",
+                        "mapTitle": dbkjs.options.regio.titel,
                         "informelenaam": currentFeature.informelenaam || "",
                         "formelenaam": currentFeature.formelenaam,
                         "bouwlaag": currentFeature.bouwlaag || "",
@@ -55,7 +52,7 @@ dbkjs.modules.print = {
                 testObject.options.adres = ' ';
                 if (currentFeature.adres) {
                     if (currentFeature.adres.length > 0) {
-                        var adr_str = 'Adres:\n';
+                        var adr_str = '';
                         $.each(currentFeature.adres, function(adr_index, adr) {
                             adr_str += adr + '\n\n';
                         });
@@ -88,33 +85,33 @@ dbkjs.modules.print = {
                 testObject.options.bijzonderheden = ' ';
                 if (currentFeature.bijzonderheden) {
                     if (currentFeature.bijzonderheden.length > 0) {
-                        var adr_str = 'Bijzonderheden:\n';
-                        var set = {"Algemeen":'Algemeen -\n',"Preparatie":'Preparatie -\n', "Preventie":'Preventie -\n', "Repressie": 'Repressie -\n'};
+                        var adr_str = '';
+                        var set = {"Algemeen":'Algemeen\n',"Preparatie":'Preparatie\n', "Preventie":'Preventie\n', "Repressie": 'Repressie\n'};
                         $.each(currentFeature.bijzonderheden, function(adr_index, adr) {
-                            set[adr.soort] += adr.tekst + '\n';
+                            set[adr.soort] += '     * '  + adr.tekst + '\n';
                             //adr_str += adr.soort + ': ' + adr.tekst + '\n\n';
                         });
-                        if(set.Algemeen === 'Algemeen -\n'){
+                        if(set.Algemeen === 'Algemeen\n'){
                             set.Algemeen = '';
                         } else {
                             set.Algemeen += '\n';
                         }
-                        if(set.Preparatie === 'Preparatie -\n'){
+                        if(set.Preparatie === 'Preparatie\n'){
                             set.Preparatie = '';
                         }else {
                             set.Preparatie += '\n';
                         }
-                        if(set.Preventie === 'Preventie -\n'){
+                        if(set.Preventie === 'Preventie\n'){
                             set.Preventie = '';
                         } else {
                             set.Preventie += '\n';
                         }
-                        if(set.Repressie === 'Repressie -\n'){
+                        if(set.Repressie === 'Repressie\n'){
                             set.Repressie = '';
                         } else {
                             set.Repressie += '\n';
                         }
-                        testObject.options.bijzonderheden = adr_str + set.Algemeen + set.Preparatie + set.Preventie + set.Repressie + '\n\n';
+                        testObject.options.bijzonderheden = adr_str + set.Algemeen + set.Preparatie + set.Preventie + set.Repressie + '\n';
                     }
                 }
                 
@@ -216,13 +213,17 @@ dbkjs.modules.print = {
                     );
         });
         jsonData.pages = encodedPages;
-
+        var encodedOverviewLayers = [];
         if (options.overview) {
-            var encodedOverviewLayers = [];
             $.each(options.overview.layers, function(layer) {
                 var enc = _obj.encodeLayer(layer);
                 enc && encodedOverviewLayers.push(enc);
             });
+            jsonData.overviewLayers = encodedOverviewLayers;
+        } else {
+            //set the baseLayers as the overviewlayer
+            var enc = _obj.encodeLayer(map.baseLayer);
+            encodedOverviewLayers.push(enc);
             jsonData.overviewLayers = encodedOverviewLayers;
         }
         //console.log(jsonData);
@@ -316,7 +317,7 @@ dbkjs.modules.print = {
                 for (var p in layer.params) {
                     param = p.toLowerCase();
                     if (layer.params[p] !== null && !layer.DEFAULT_PARAMS[param] &&
-                            "layers,styles,width,height,srs,cql_filter".indexOf(param) === -1) {
+                            "layers,styles,width,height,srs".indexOf(param) === -1) {
                         if (!enc.customParams) {
                             enc.customParams = {};
                         }
