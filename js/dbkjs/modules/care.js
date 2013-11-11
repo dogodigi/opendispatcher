@@ -12,6 +12,12 @@ dbkjs.modules.care = {
         var _obj = dbkjs.modules.care;
         _obj.layerIncident.mergeNewParams({'time': string});
     },
+    updateSelectieIncident: function() {
+        var _obj = dbkjs.modules.care;
+        _obj.layerIncident.mergeNewParams({
+            cql_filter: "priority IN (" + _obj.cql_array.join() + ") " 
+                + dbkjs.modules.filter.getFilter()});
+    },
     register: function(options) {
         var _obj = dbkjs.modules.care;
         $('#btngrp_3').append('<a id="btn_care" class="btn btn-default navbar-btn" href="#" title="Management informatie"><i class="icon-fire"></i></a>');
@@ -28,14 +34,14 @@ dbkjs.modules.care = {
         _obj.layerIncident = new OpenLayers.Layer.WMS(
                 "Incidenten",
                 _obj.url + 'dbk/wms', {
-            layers: _obj.namespace + ':incidentsgebied',
-            format: 'image/png',
-            transparent: true,
-            time: '',
-            styles: 'prio',
-            cql_filter: "priority IN (" + _obj.cql_array.join() + ") "
+                    layers: _obj.namespace + ':incidentsgebied',
+                    format: 'image/png',
+                    transparent: true,
+                    time: '',
+                    styles: 'prio',
+                    cql_filter: "priority IN (" + _obj.cql_array.join() + ") "
 
-        }, {
+                }, {
             transitionEffect: 'none',
             singleTile: true,
             buffer: 0,
@@ -47,12 +53,12 @@ dbkjs.modules.care = {
         _obj.layerNorm = new OpenLayers.Layer.WMS(
                 "Dekkingsplan",
                 _obj.url + 'dbk/wms', {
-            layers: _obj.namespace + ':normen',
-            format: 'image/png',
-            transparent: true,
-            time: '',
-            styles: 'Normen'
-        }, {
+                    layers: _obj.namespace + ':normen',
+                    format: 'image/png',
+                    transparent: true,
+                    time: '',
+                    styles: 'Normen'
+                }, {
             transitionEffect: 'none',
             singleTile: true,
             buffer: 0,
@@ -88,12 +94,6 @@ dbkjs.modules.care = {
         var normSel = $('<div id="normSel" style="display:none;"></div>');
         var normSel_minuten = $('<input id="sel_care" name="normSel_minuten" type="text" class="form-control" placeholder="Overschrijding in minuten">');
         normSel.append(normSel_minuten);
-        incidentSel.append('<h5>District(en)</h5>');
-        
-        _obj.sel_district = $('<select id="sel_district" multiple class="form-control"><select>');
-        incidentSel.append(_obj.sel_district);
-        //loop through districts.
-        //_obj.sel_district.append('<option>1</option>');
         incidentSel.append('<h5>Datumbereik</h5>');
         incidentSel.append(_obj.sel_care);
         var default_range = moment().startOf('week').format('YYYY-MM-DD') + '/' + moment().endOf('week').format('YYYY-MM-DD');
@@ -180,9 +180,10 @@ dbkjs.modules.care = {
                 }
             });
             _obj.cql_array = arr;
-            _obj.layerIncident.mergeNewParams({'cql_filter': "priority IN (" + _obj.cql_array.join() + ")"});
+            _obj.layerIncident.mergeNewParams({'cql_filter': "priority IN (" + 
+                _obj.cql_array.join() + ")"});
+
         });
-        _obj.getDistricten();
     },
     getfeatureinfo: function(e) {
         if (this.layerIncident.getVisibility()) {
@@ -219,38 +220,6 @@ dbkjs.modules.care = {
         OpenLayers.Request.GET({url: _obj.url + 'wfs', "params": params, callback: _obj.panelNorm});
         //OpenLayers.Event.stop(e);
     },
-    getDistricten: function(){
-        var _obj = dbkjs.modules.care;
-        var params = {
-            bbox: dbkjs.map.getExtent().toBBOX(0),
-            service: "WFS",
-            version: "1.0.0",
-            request: "GetFeature",
-            typename: _obj.namespace + ":district_box",
-            outputFormat: "application/json"
-        };
-        $.ajax({
-            type: "GET",
-            url: _obj.url + 'ows',
-            data: params,
-            dataType: "json",
-            success: function(data) {
-                var geojson_format = new OpenLayers.Format.GeoJSON();
-                var districten = geojson_format.read(data);
-                $.each(districten, function(district_idx, district){
-                    _obj.sel_district.append('<option>' + district.attributes.naam + '</option>');
-                });
-            },
-            error: function() {
-                return false;
-            },
-            complete: function() {
-                return false;
-            }
-        });
-    
-        
-            },
     getIncidentInfo: function(e) {
         var _obj = dbkjs.modules.care;
         var llMin = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x - 12, e.xy.y + 12));
@@ -275,12 +244,6 @@ dbkjs.modules.care = {
         } else {
             params.CQL_FILTER = 'BBOX(the_geom,' + llMin.lon + "," + llMin.lat + "," + llMax.lon + "," + llMax.lat + ",'EPSG:28992')";
         }
-//        if (_obj.layerIncident.params.CQL_FILTER) {
-//            params.CQL_FILTER = _obj.layerIncident.params.CQL_FILTER;
-//            params.CQL_FILTER += ' AND ' + 'district_nr = 1';
-//        } else {
-//            params.CQL_FILTER = 'district_nr = 1';
-//        }
         if (_obj.layerIncident.params.TIME) {
             var time_col = 'datetimereported';
             var time_arr = _obj.layerIncident.params.TIME.split('/');

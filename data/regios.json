@@ -23,7 +23,8 @@
                 "regio",
                 "print",
                 "search",
-                "help"
+                "help",
+                "filter"
             ],
             "gebied": {
                 "geometry": {

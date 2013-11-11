@@ -456,6 +456,18 @@ dbkjs.util = {
         });
         return dialog;
     },
+    createModal: function(id, title, styleoptions) {
+        var modal_wrapper = $('<div class="modal fade" id="' + id + '"></div>');
+        var modal_dialog = $('<div class="modal-dialog"></div>');
+        var modal_content = $('<div class="modal-content"></div>');
+        var modal_header = $('<div id="' + id + '_h" class="modal-header"><h4 class="modal-title">'+ title +'</h4></div>');
+        var modal_body = $('<div id="' + id + '_b" class="modal-body"></div>');
+        modal_content.append(modal_header);
+        modal_content.append(modal_body);
+        modal_wrapper.append(modal_dialog.append(modal_content));
+        modal_wrapper.modal('hide');
+        return modal_wrapper;
+    },
     exportTableToCSV: function($table, filename) {
         var $rows = $table.find('tr:has(td)'),
                 // Temporary delimiter characters unlikely to be typed by keyboard
