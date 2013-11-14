@@ -42,6 +42,15 @@ dbkjs.modules.filter = {
                     _obj.selectie.gemeenten.push(this.value);
                 }
             });
+            if(_obj.selectie.gemeenten.length > 0 || _obj.selectie.districten.length > 0){
+                $('#btn_filter').removeClass('btn-default');
+                $('#btn_filter').addClass('btn-warning');
+                $('#btn_filter').prop('title','Filter aanpassen');
+            } else {
+                $('#btn_filter').removeClass('btn-warning');
+                $('#btn_filter').addClass('btn-default');
+                $('#btn_filter').prop('title','Filter instellen');
+            }
             dbkjs.modules.care.updateSelectieIncident();
         });
         $('#btn_filter_reset').click(function() {
@@ -49,6 +58,9 @@ dbkjs.modules.filter = {
             _obj.selectie.gemeenten = [];
             $("#sel_gemeente option").prop("selected", false);
             $("#sel_district option").prop("selected", false);
+            $('#btn_filter').removeClass('btn-warning');
+            $('#btn_filter').addClass('btn-default');
+            $('#btn_filter').prop('title','Filter instellen');
             dbkjs.modules.care.updateSelectieIncident();
         });
 

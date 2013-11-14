@@ -94,6 +94,15 @@ dbkjs.ui.gui = {
                 parent: '#overlaypanel_b2',
                 index:4
             });
+            var was = new dbkjs.Layer({
+                name: 'WAS palen',
+                url: '/brabantnoord/wms',
+                map: dbkjs.map,
+                visibility: false,
+                layerOptions: { layers: 'brwbn:WAS'},
+                parent: '#overlaypanel_b3',
+                index: 6
+            });
             var gebieden = new dbkjs.Layer({
                 name: 'Gebieden',
                 url: 'http://view.safetymaps.nl/map/mapserv',

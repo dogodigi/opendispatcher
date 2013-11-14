@@ -1,4 +1,7 @@
 /nbproject
+/node_modules
+/css/dbk.min.css
+/js/dbk.min.js
 *~
 dummy.xml
 *.zip
