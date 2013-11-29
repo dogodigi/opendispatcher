@@ -348,7 +348,7 @@ dbkjs.modules.feature = {
             version: "1.0.0",
             request: "GetFeature",
             typename: _obj.namespace + ":WMS_DBKFeature",
-            maxFeatures: 500, // todo let op; deze max kan in de toekomst problemen geven
+            //maxFeatures: 500, // todo let op; deze max kan in de toekomst problemen geven
             outputFormat:"application/json"
         };
         $.ajax({

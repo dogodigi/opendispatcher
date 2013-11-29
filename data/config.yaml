@@ -1,0 +1,799 @@
+#These two settings let the print server open lots of connections to the source dataset.
+globalParallelFetches: 12
+perHostParallelFetches: 4
+
+#Connection timeouts for connecting to the map servers in ms
+connectionTimeout: 60000
+socketTimeout: 360000
+
+#outputFilename: '${outputFilename}'
+outputFilename: 'DOIV-afdruk-${yyyy-MM-dd}T${HHmmss}'
+
+#path to non-default fonts
+#slows down initial start so unused.
+#fonts: {path}
+
+#===========================================================================
+# allowed DPIs
+#===========================================================================
+dpis:
+  - 300
+  - 150
+  - 75
+
+# Dummy scales, else print fails
+scales:
+  - 1
+  - 2 
+  - 3
+
+disableScaleLocking: true
+formats: ['*']
+
+# Allow all hosts
+hosts:
+  - !localMatch
+    dummy: true
+  - !ipMatch
+    host:0.0.0.0
+    mask:0.0.0.0
+
+metaData:
+    title: '${mapTitle}'
+    author: 'Falck AVD'
+    subject: '${mapComment}'
+    keywords: 'DBK, Print, Bereikbaarheidskaart'
+    creator: 'SafetyMaps'
+    supportLegacyReader: false
+
+layouts:
+  A3 lplain:
+    mainPage:
+      pageSize: A3
+      landscape: true
+      rotation: true
+      marginLeft: 15
+      marginRight: 15
+      marginTop: 15
+      marginBottom: 15
+
+      items:
+        #Kaart
+        - !map
+          name: 'Kaart'
+          absoluteX: 17
+          absoluteY: 825
+          width: 1160
+          height: 812
+          padding: 0
+
+        #Overzicht
+        - !columns
+          absoluteX: 16
+          absoluteY: 826
+          width: 240
+          config:
+            borderWidth: 3
+            borderColor: white
+            cells:
+              - padding: 2
+          items:
+            - !map
+              name: 'Overzicht'
+              width: 235
+              height: 164
+              overviewMap: 6
+
+        #Titel - dummy
+        - !columns
+          absoluteX: 971
+          absoluteY: 149
+          width: 200
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/198x45/fff/fff'
+        #Titel - content
+        - !columns
+          config:
+            borderWidth: 0
+            borderColor: '#fff'
+            cells:
+              - padding: 4
+                vertAlign: middle
+          absoluteX: 971
+          absoluteY: 149
+          width: 210
+          items:
+            - !text
+              #condition: mapTitle
+              font: courier-bold
+              fontSize: 12
+              text: 'Brabant Noord - DOIV'
+
+        #Bouwlagen - dummy
+        - !columns
+          absoluteX: 971
+          absoluteY: 101
+          width: 200
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/198x18/fff/fff'
+
+        #Bouwlagen - content
+        - !columns
+          config:
+            borderWidth: 0
+            borderColor: '#fff'
+            cells:
+              - padding: 4
+                vertAlign: middle
+          absoluteX: 971
+          absoluteY: 101
+          width: 210
+          items:
+            - !text
+              font: courier
+              fontSize: 10.5
+              text: ''
+
+        #formelenaam - dummy
+        - !columns
+          absoluteX: 971
+          absoluteY: 80
+          width: 200
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/198x18/fff/fff'
+        #formelenaam - content
+        - !columns
+          config:
+            borderWidth: 0
+            borderColor: '#fff'
+            cells:
+              - padding: 4
+                vertAlign: middle
+          absoluteX: 971
+          absoluteY: 80
+          width: 210
+          items:
+            - !text
+              font: courier
+              fontSize: 10.5
+              text: ''
+
+        #informelenaam - dummy
+        - !columns
+          absoluteX: 971
+          absoluteY: 59
+          width: 200
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/198x18/fff/fff'
+        #informelenaam - content
+        - !columns
+          absoluteX: 971
+          absoluteY: 59
+          width: 210
+          config:
+            borderWidth: 0
+            borderColor: '#fff'
+            cells:
+              - padding: 4
+                vertAlign: middle
+          items:
+            - !text
+              font: courier
+              fontSize: 10.5
+              align: left
+              text: 'Afdruk'
+
+        #Datum - dummy
+        - !columns
+          absoluteX: 971
+          absoluteY: 38
+          width: 200
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/198x18/fff/fff'
+
+        #Datum - content
+        - !columns
+          config:
+            borderWidth: 0
+            borderColor: '#fff'
+            cells:
+              - padding: 4
+                vertAlign: middle
+          absoluteX: 971
+          absoluteY: 38
+          width: 210
+          items:
+            - !text
+              font: courier
+              fontSize: 10.5
+              align: left
+              text: 'Afdruk: ${now yyyy-MM-dd}'
+
+
+        #noordpijl - dummy
+        - !columns
+          absoluteX: 860
+          absoluteY: 149
+          width: 110
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/108x108/fff/fff'
+        #noordpijl - content
+        - !columns
+          absoluteX: 860 
+          absoluteY: 149
+          width: 110
+          items:
+            - !image
+              maxWidth: 110
+              maxHeight: 110
+              spacingAfter: 0
+              align: center
+              vertAlign: middle
+              rotation: '${rotation}'
+              url: 'http://eloquentscience.com/wp-content/uploads/2010/02/MNarrow.png'
+        #Schaalbalk - dummy
+        - !columns
+          absoluteX: 860
+          absoluteY: 38
+          width: 110
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/108x18/fff/fff'
+
+
+        #Schaalbalk - content
+        - !columns
+          config:
+            borderWidth: 0
+            borderColor: '#fff'
+            cells:
+              - padding: 0
+                vertAlign: middle
+          absoluteX: 865
+          absoluteY: 32
+          width: 110
+          items:
+            - !scalebar
+              align: center
+              maxSize: 105
+              type: 'bar'
+              intervals: 3
+              
+  A3 Landscape:
+    titlePage:
+      pageSize: A3
+      landscape: true
+      rotation: true
+      marginLeft: 15
+      marginRight: 15
+      marginTop: 15
+      marginBottom: 15
+
+      items:
+        #Objectgegevens - dummy
+        - !columns
+          absoluteX: 17 
+          absoluteY: 825
+          width: 306
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 4
+          items:
+            - !image
+              url: 'http://placehold.it/1x280/fff/fff'
+        #Objectgegevens - content
+        - !columns
+          absoluteX: 25
+          absoluteY: 822
+          width: 300
+          nbColumns: 1
+          items:
+            - !text
+              font: courier-bold
+              fontSize: 12
+              text: 'Digitale bereikbaarheidskaart'
+            - !text
+              font: courier
+              fontSize: 10.5
+              text: ' '
+            - !text
+              condition: objectgegevens
+              font: courier
+              fontSize: 10.5
+              text: '${objectgegevens}'
+            - !text
+              font: courier
+              fontSize: 10.5
+              text: ' '
+            - !text
+              condition: adres
+              font: courier-bold
+              fontSize: 12
+              text: 'Adresgegevens:'
+            - !text
+              font: courier
+              fontSize: 10.5
+              text: ' '
+            - !text
+              condition: adres
+              font: courier
+              fontSize: 10.5
+              text: '${adres}'
+
+        #Afbeelding1 - dummy
+        - !columns
+          absoluteX: 327
+          absoluteY: 825
+          width: 420
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 4
+          items:
+            - !image
+              url: 'http://placehold.it/1x400/fff/fff'
+
+        #Afbeelding1 - plaatje
+        - !columns
+          absoluteX: 330
+          absoluteY: 822
+          width: 412
+          config:
+            borderWidth: 0
+            borderColor: '#ccc'
+            cells:
+              - padding: 0
+          items:
+            - !image
+              maxWidth: 412
+              maxHeight: 397
+              spacingAfter: 0
+              align: center
+              vertAlign: middle
+              condition: image1
+              url: '${image1}'
+
+
+        #Afbeelding2 - dummy
+        - !columns
+          absoluteX: 751
+          absoluteY: 825
+          width: 420
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 4
+          items:
+            - !image
+              url: 'http://placehold.it/1x400/fff/fff'
+
+        #Afbeelding2 - plaatje
+        - !columns
+          absoluteX: 754
+          absoluteY: 822
+          width: 412
+          config:
+            borderWidth: 0
+            borderColor: '#ccc'
+            cells:
+              - padding: 0
+          items:
+            - !image
+              maxWidth: 412
+              maxHeight: 397
+              spacingAfter: 0
+              align: center
+              vertAlign: middle
+              condition: image2
+              url: '${image2}'
+
+
+
+        #Gevaarlijkestoffen - dummy
+        - !columns
+          absoluteX: 327
+          absoluteY: 413
+          width: 844
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 4
+          items:
+            - !image
+              url: 'http://placehold.it/1x388/fff/fff'
+
+        #Gevaarlijkestoffen - content
+        - !columns
+          absoluteX: 334
+          absoluteY: 410
+          width: 838
+          nbColumns: 1
+          items:
+            - !text
+              condition: gevaarlijkestof
+              font: courier-bold
+              fontSize: 12
+              text: 'Gevaarlijke stoffen:'
+            - !text
+              condition: gevaarlijkestof
+              font: courier
+              fontSize: 10.5
+              text: ' '
+            - !text
+              condition: gevaarlijkestof
+              font: courier
+              fontSize: 10.5
+              text: '${gevaarlijkestof}'
+
+        #Objectdetails - dummy
+        - !columns
+          absoluteX: 17
+          absoluteY: 533
+          width: 306
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 4
+          items:
+            - !image
+              url: 'http://placehold.it/1x508/fff/fff'
+
+        #Objectdetails - content
+        - !columns
+          absoluteX: 25
+          absoluteY: 530
+          width: 300
+          nbColumns: 1
+          items:
+            - !text
+              condition: bijzonderheden
+              font: courier-bold
+              fontSize: 12
+              text: 'Bijzonderheden:'
+            - !text
+              condition: bijzonderheden
+              font: courier
+              fontSize: 10.5
+              text: ' '
+            - !text
+              condition: bijzonderheden
+              font: courier
+              fontSize: 10.5
+              text: '${bijzonderheden}'
+            - !text
+              font: courier
+              fontSize: 10.5
+              text: ' '
+            - !text
+              condition: verblijf
+              font: courier-bold
+              fontSize: 12
+              text: 'Verblijf:'
+            - !text
+              condition: verblijf
+              font: courier
+              fontSize: 10.5
+              text: ' '
+            - !text
+              condition: verblijf
+              font: courier
+              fontSize: 10.5
+              text: '${verblijf}'
+            - !text
+              condition: contact
+              font: courier-bold
+              fontSize: 12
+              text: 'Contact:'
+            - !text
+              condition: contact
+              font: courier
+              fontSize: 10.5
+              text: ' '
+            - !text
+              condition: contact
+              font: courier
+              fontSize: 10.5
+              text: '${contact}'
+
+
+    mainPage:
+      pageSize: A3
+      landscape: true
+      rotation: true
+      marginLeft: 15
+      marginRight: 15
+      marginTop: 15
+      marginBottom: 15
+
+      items:
+        #Kaart
+        - !map
+          name: 'Kaart'
+          absoluteX: 17
+          absoluteY: 825
+          width: 1160
+          height: 812
+          padding: 0
+
+        #Overzicht
+        - !columns
+          absoluteX: 16
+          absoluteY: 826
+          width: 240
+          config:
+            borderWidth: 3
+            borderColor: white
+            cells:
+              - padding: 2
+          items:
+            - !map
+              name: 'Overzicht'
+              width: 235
+              height: 164
+              overviewMap: 6
+
+        #Titel - dummy
+        - !columns
+          absoluteX: 971
+          absoluteY: 149
+          width: 200
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/198x45/fff/fff'
+        #Titel - content
+        - !columns
+          config:
+            borderWidth: 0
+            borderColor: '#fff'
+            cells:
+              - padding: 4
+                vertAlign: middle
+          absoluteX: 971
+          absoluteY: 149
+          width: 210
+          items:
+            - !text
+              #condition: mapTitle
+              font: courier-bold
+              fontSize: 12
+              text: 'Brabant Noord - dbk'
+
+        #Bouwlagen - dummy
+        - !columns
+          absoluteX: 971
+          absoluteY: 101
+          width: 200
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/198x18/fff/fff'
+
+        #Bouwlagen - content
+        - !columns
+          config:
+            borderWidth: 0
+            borderColor: '#fff'
+            cells:
+              - padding: 4
+                vertAlign: middle
+          absoluteX: 971
+          absoluteY: 101
+          width: 210
+          items:
+            - !text
+              condition: bouwlaag
+              font: courier
+              fontSize: 10.5
+              text: '${bouwlaag}'
+
+        #formelenaam - dummy
+        - !columns
+          absoluteX: 971
+          absoluteY: 80
+          width: 200
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/198x18/fff/fff'
+        #formelenaam - content
+        - !columns
+          config:
+            borderWidth: 0
+            borderColor: '#fff'
+            cells:
+              - padding: 4
+                vertAlign: middle
+          absoluteX: 971
+          absoluteY: 80
+          width: 210
+          items:
+            - !text
+              condition: formelenaam
+              font: courier
+              fontSize: 10.5
+              text: '${formelenaam}'
+
+        #informelenaam - dummy
+        - !columns
+          absoluteX: 971
+          absoluteY: 59
+          width: 200
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/198x18/fff/fff'
+        #informelenaam - content
+        - !columns
+          absoluteX: 971
+          absoluteY: 59
+          width: 210
+          config:
+            borderWidth: 0
+            borderColor: '#fff'
+            cells:
+              - padding: 4
+                vertAlign: middle
+          items:
+            - !text
+              condition: informelenaam
+              font: courier
+              fontSize: 10.5
+              align: left
+              text: '${informelenaam}'
+
+        #Datum - dummy
+        - !columns
+          absoluteX: 971
+          absoluteY: 38
+          width: 200
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/198x18/fff/fff'
+
+        #Datum - content
+        - !columns
+          config:
+            borderWidth: 0
+            borderColor: '#fff'
+            cells:
+              - padding: 4
+                vertAlign: middle
+          absoluteX: 971
+          absoluteY: 38
+          width: 210
+          items:
+            - !text
+              font: courier
+              fontSize: 10.5
+              align: left
+              text: 'Afdruk: ${now yyyy-MM-dd}'
+
+
+        #noordpijl - dummy
+        - !columns
+          absoluteX: 860
+          absoluteY: 149
+          width: 110
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/108x108/fff/fff'
+        #noordpijl - content
+        - !columns
+          absoluteX: 860 
+          absoluteY: 149
+          width: 110
+          items:
+            - !image
+              maxWidth: 110
+              maxHeight: 110
+              spacingAfter: 0
+              align: center
+              vertAlign: middle
+              rotation: '${rotation}'
+              url: 'http://eloquentscience.com/wp-content/uploads/2010/02/MNarrow.png'
+        #Schaalbalk - dummy
+        - !columns
+          absoluteX: 860
+          absoluteY: 38
+          width: 110
+          config:
+            borderWidth: 1
+            borderColor: '#ccc'
+            cells:
+              - padding: 1
+          items:
+            - !image
+              url: 'http://placehold.it/108x18/fff/fff'
+
+
+        #Schaalbalk - content
+        - !columns
+          config:
+            borderWidth: 0
+            borderColor: '#fff'
+            cells:
+              - padding: 0
+                vertAlign: middle
+          absoluteX: 865
+          absoluteY: 32
+          width: 110
+          items:
+            - !scalebar
+              align: center
+              maxSize: 105
+              type: 'bar'
+              intervals: 3
