@@ -76,21 +76,38 @@ dbkjs.options.baselayers = [
             }
     ),
     new OpenLayers.Layer.WMS(
-            'Luchtfoto 2009 (PDOK)',
-            'http://geodata1.nationaalgeoregister.nl/luchtfoto/wms?',
-            {
-                layers: "luchtfoto",
-                format: "image/jpeg",
-                transparent: false
-            },
-    {
-        transitionEffect: 'resize',
-        singleTile: false,
-        buffer: 0,
-        isBaseLayer: true,
-        visibility: true,
-        attribution: "PDOK"
-    }
+        'Luchtfoto 2009 (PDOK)',
+        'http://geodata1.nationaalgeoregister.nl/luchtfoto/wms?',
+        {
+            layers: "luchtfoto",
+            format: "image/jpeg",
+            transparent: false
+        },
+        {
+            transitionEffect: 'resize',
+            singleTile: false,
+            buffer: 0,
+            isBaseLayer: true,
+            visibility: true,
+            attribution: "PDOK"
+        }
+    ),
+    new OpenLayers.Layer.WMS(
+        'Hoge resolutie luchtfoto',
+        'http://view.safetymaps.nl/map/mapserv?map=/home/mapserver/doiv.map',
+        {
+            layers: 'luchtfoto',
+            format: "image/png",
+            transparent: false
+        },
+        {
+            transitionEffect: 'resize',
+            singleTile: false,
+            buffer: 0,
+            isBaseLayer: true,
+            visibility: true,
+            attribution: "Gemeentes Veiligheidsregio 21"
+        }
     ),
     new OpenLayers.Layer.TMS(
             'Basisregistratie Topografie (PDOK)',

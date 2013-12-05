@@ -18,14 +18,6 @@ dbkjs.ui.gui = {
                 '</span></div></div></p><hr>'
                 );
         $(parent).append('<h4>Lagen toevoegen</h4><p>De volgende lagen zijn aanwezig op het systeem:</p>');
-        var lufo2 = new dbkjs.Layer({
-                name: 'Hoge resolutie luchtfoto',
-                url: 'http://view.safetymaps.nl/map/mapserv',
-                map: dbkjs.map,
-                layerOptions: {map: '/home/mapserver/doiv.map', layers: 'luchtfoto'},
-                parent: '#overlaypanel_b2',
-                index: 0
-            });
             var gbkn = new dbkjs.Layer({
                 name: 'GBKN',
                 url: 'http://view.safetymaps.nl/map/mapserv',
