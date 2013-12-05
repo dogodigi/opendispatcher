@@ -16,7 +16,7 @@ dbkjs.modules.print = {
                     "options": {
                         "units": "m",
                         "srs": "EPSG:28992",
-                        "layout": "A3 DBK",
+                        "layout": "A3 Landscape",
                         "dpi": 150,
                         "mapTitle": dbkjs.options.regio.titel,
                         "informelenaam": currentFeature.informelenaam || "",
@@ -132,7 +132,21 @@ dbkjs.modules.print = {
                 testObject.pages[0].rotation = 0;
                 dbkjs.modules.print.printdirect(dbkjs.map, testObject.pages, testObject.options);
             } else {
-                alert("Activeer eerst een dbk");
+                var testObject = {
+                    "options": {
+                        "units": "m",
+                        "srs": "EPSG:28992",
+                        "layout": "A3 lplain",
+                        "dpi": 150,
+                        "mapTitle": dbkjs.options.regio.titel
+                    },
+                    "pages": [{}]
+                };
+                var center = dbkjs.map.getCenter();
+                testObject.pages[0].center = [center.lon, center.lat];
+                testObject.pages[0].scale = Math.ceil(dbkjs.map.getScale());
+                testObject.pages[0].rotation = 0;
+                dbkjs.modules.print.printdirect(dbkjs.map, testObject.pages, testObject.options);                
             }
         });
     },
@@ -153,19 +167,16 @@ dbkjs.modules.print = {
         this.dpi = dpi;
     },
     printdirect: function(map, pages, options) {
-
-
         dbkjs.modules.print.loadCapabilities(function(capabilities) {
             dbkjs.modules.print.setLayout({
-                name: "A3 Landscape",
+                name: options.layout,
                 rotation: true,
                 map: {
                     height: 776,
                     width: 1130
                 }
             });
-
-            dbkjs.modules.print.setDpi(150);
+            dbkjs.modules.print.setDpi(options.dpi);
             dbkjs.modules.print.print(map, pages, options);
         });
     },
