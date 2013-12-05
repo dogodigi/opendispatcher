@@ -18,15 +18,12 @@ dbkjs.ui.gui = {
                 '</span></div></div></p><hr>'
                 );
         $(parent).append('<h4>Lagen toevoegen</h4><p>De volgende lagen zijn aanwezig op het systeem:</p>');
-        if (dbkjs.protocol.getCapabilities) {
-            //dbkjs.protocol.getCapabilities.get();
-            // even een laag testen, brabantwater? komt ie
-            var lufo2 = new dbkjs.Layer({
+        var lufo2 = new dbkjs.Layer({
                 name: 'Hoge resolutie luchtfoto',
                 url: 'http://view.safetymaps.nl/map/mapserv',
                 map: dbkjs.map,
                 layerOptions: {map: '/home/mapserver/doiv.map', layers: 'luchtfoto'},
-                parent: '#overlaypanel_b3',
+                parent: '#overlaypanel_b2',
                 index: 0
             });
             var gbkn = new dbkjs.Layer({
@@ -34,74 +31,8 @@ dbkjs.ui.gui = {
                 url: 'http://view.safetymaps.nl/map/mapserv',
                 map: dbkjs.map,
                 layerOptions: {map: '/home/mapserver/doiv.map', layers: 'gbkn_panden,gbkn_topografie'},
-                parent: '#overlaypanel_b3',
+                parent: '#overlaypanel_b2',
                 index: 2
-            });
-            var kvt = new dbkjs.Layer({
-                name: 'KVT',
-                url: '/brabantnoord/wms',
-                map: dbkjs.map,
-                layerOptions: {layers: 'brwbn:KVTTARGET_U_region'},
-                parent: '#overlaypanel_b2',
-                index:4
-            });
-            
-            var GWT_2400m_MI_region = new dbkjs.Layer({
-                name: 'GWT Cirkel 2400m',
-                url: '/brabantnoord/wms',
-                map: dbkjs.map,
-                layerOptions: {layers: 'brwbn:GWT_2400m_MI_region'},
-                parent: '#overlaypanel_b2',
-                index:4
-            });
-            var GWT_900m_MI_region = new dbkjs.Layer({
-                name: 'GWT Cirkel 900m',
-                url: '/brabantnoord/wms',
-                map: dbkjs.map,
-                layerOptions: {layers: 'brwbn:GWT_900m_MI_region'},
-                parent: '#overlaypanel_b2',
-                index:4
-            });
-            var GWT = new dbkjs.Layer({
-                name: 'GWT',
-                url: '/brabantnoord/wms',
-                map: dbkjs.map,
-                layerOptions: {layers: 'brwbn:GWT_REGIO_MI_font_point'},
-                parent: '#overlaypanel_b2',
-                index:4
-            });
-            var geboordeputten = new dbkjs.Layer({
-                name: 'Geboorde putten',
-                url: '/brabantnoord/wms',
-                map: dbkjs.map,
-                layerOptions: {layers: 'brwbn:Geboorde_Putten_font_point'},
-                parent: '#overlaypanel_b2',
-                index:4
-            });
-            var hydranten = new dbkjs.Layer({
-                name: 'Hydranten',
-                url: '/brabantnoord/wms',
-                map: dbkjs.map,
-                layerOptions: {layers: 'brwbn:Brandkranen'},
-                parent: '#overlaypanel_b2',
-                index:4
-            });
-            var brabantwater = new dbkjs.Layer({
-                name: 'Leidingen',
-                url: '/brabantnoord/wms',
-                map: dbkjs.map,
-                layerOptions: {layers: 'brwbn:Water'},
-                parent: '#overlaypanel_b2',
-                index:4
-            });
-            var was = new dbkjs.Layer({
-                name: 'WAS palen',
-                url: '/brabantnoord/wms',
-                map: dbkjs.map,
-                visibility: false,
-                layerOptions: { layers: 'brwbn:WAS'},
-                parent: '#overlaypanel_b3',
-                index: 6
             });
             var gebieden = new dbkjs.Layer({
                 name: 'Gebieden',
@@ -109,10 +40,11 @@ dbkjs.ui.gui = {
                 map: dbkjs.map,
                 visibility: true,
                 layerOptions: {map: '/home/mapserver/doiv.map', layers: 'gebieden'},
-                parent: '#overlaypanel_b3',
+                parent: '#overlaypanel_b2',
                 index: 6
             });
-        }
+            var myCapabilities = new dbkjs.Capabilities({url: 'brabantnoord/brwbn/wms?', title: 'Brandweer'});
+            var myCapabilities = new dbkjs.Capabilities({url: 'brabantnoord/brabantwater/wms?', title: 'Waterbedrijf'});
         $(parent).append('');
         $(parent).append('<hr>');
         $(parent).append(

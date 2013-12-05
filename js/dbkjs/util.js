@@ -57,6 +57,8 @@ dbkjs.util = {
                 }
             });
         }
+        // run getfeatureinfo on each layer that is active and not connected to a module:
+        
     },
     isJsonNull: function(val) {
         if (val === "null" || val === null || val === "" || typeof (val) === "undefined" || val === "undefined") {

@@ -13,11 +13,11 @@ cat js/libs/jquery-1.10.2.min.js \
     js/dbkjs/util.js \
     js/dbkjs/prototype/Class.js \
     js/dbkjs/prototype/Layer.js \
+    js/dbkjs/prototype/Capabilities.js \
     js/dbkjs/layout.js \
     js/dbkjs/ui/gui.js \
     js/dbkjs/modules/geolocate.js \
     js/dbkjs/protocol/imdbk21.js \
-    js/dbkjs/protocol/getCapabilities.js \
     js/dbkjs/modules/search.js \
     js/dbkjs/modules/help.js \
     js/dbkjs/modules/print.js \

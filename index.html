@@ -65,20 +65,16 @@
                     <div class="modal-header"></div>
                     <div class="modal-body">
                         <div class="tabbable">
-                            <ul class="nav nav-tabs">
-                                <li class="active"><a href="#overlay_tab1" data-toggle="tab">DBK lagen</a></li>
-                                <li><a href="#overlay_tab2" data-toggle="tab">Systeem lagen</a></li>
-                                <li><a href="#overlay_tab3" data-toggle="tab">Eigen lagen</a></li>
+                            <ul id="overlaypanel_ul" class="nav nav-tabs">
+                                <li class="active"><a href="#overlay_tab1" data-toggle="tab">Bereikbaarheidskaart</a></li>
+                                <li><a href="#overlay_tab2" data-toggle="tab">Systeem</a></li>
                             </ul>
-                            <div class="tab-content">
+                            <div id="overlaypanel_div" class="tab-content">
                                 <div class="tab-pane active" id="overlay_tab1">
                                     <div id="overlaypanel_b1" class="panel-group"></div>
                                 </div>
                                 <div class="tab-pane" id="overlay_tab2">
                                     <div id="overlaypanel_b2" class="panel-group"></div>
-                                </div>
-                                <div class="tab-pane" id="overlay_tab3">
-                                    <div id="overlaypanel_b3" class="panel-group"></div>
                                 </div>
                             </div>
                         </div>
@@ -104,12 +100,12 @@
         <script src="js/dbkjs/util.js" type="text/javascript" ></script>
         <script src="js/dbkjs/prototype/Class.js" type="text/javascript" ></script>
         <script src="js/dbkjs/prototype/Layer.js" type="text/javascript" ></script>
+        <script src="js/dbkjs/prototype/Capabilities.js" type="text/javascript" ></script>
         <!-- modules -->
         <script src="js/dbkjs/layout.js" type="text/javascript" ></script>
         <script src="js/dbkjs/ui/gui.js" type="text/javascript" ></script>
         <script src="js/dbkjs/modules/geolocate.js" type="text/javascript" ></script>
         <script src="js/dbkjs/protocol/imdbk21.js" type="text/javascript" ></script>
-        <script src="js/dbkjs/protocol/getCapabilities.js" type="text/javascript" ></script>
         <script src="js/dbkjs/modules/search.js" type="text/javascript" ></script>
         <script src="js/dbkjs/modules/help.js" type="text/javascript" ></script>
         <script src="js/dbkjs/modules/print.js" type="text/javascript" ></script>
