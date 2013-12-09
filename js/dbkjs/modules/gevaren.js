@@ -53,6 +53,7 @@ dbkjs.modules.gevaren = {
             maxResolution: 6.71
         }
         );
+        _obj.layer.dbkjsParent = _obj;
         dbkjs.map.addLayers([_obj.layer]);
 
         // vinkje op webpagina aan/uitzetten

@@ -38,6 +38,7 @@ dbkjs.modules.preparatie = {
         _obj.layer = new OpenLayers.Layer.WMS("Preparatieve voorzieningen", _obj.url + 'wms',
                 {layers: _obj.namespace + ':WMS_Brandcompartiment', format: 'image/png', transparent: true},
         {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: _obj.visibility, attribution: "Falck", maxResolution: 6.71});
+        _obj.layer.dbkjsParent = _obj;
         dbkjs.map.addLayers([_obj.layer]);
         
         // vinkje op webpagina aan/uitzetten

@@ -5,7 +5,7 @@ dbkjs.Capabilities = dbkjs.Class({
     url: 'gs2/custom_21/wms?',
     prefix: '',
     SERVICE: 'WMS',
-    VERSION: '1.1.0',
+    VERSION: '1.1.1',
     REQUEST: 'GetCapabilities',
     title: 'WMS lagen',
     onLayerLoadError: function() {

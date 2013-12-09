@@ -33,32 +33,13 @@ dbkjs.util = {
 
     },
     onClick: function(e) {
-        if (dbkjs.modules) {
-            $.each(dbkjs.modules, function(mod_index, module) {
-                if ($.inArray(mod_index, dbkjs.options.regio.modules) > -1) {
-                    if (typeof (module.layer) !== "undefined" && module.layer.visibility) {
-                        // Controleer of het een van de dbk layers is waar op is geklikt.
-                        if (dbkjs.protocol) {
-                            if (dbkjs.protocol.imdbk21) {
-                                if ($.inArray(module.id, ["dbko", "dbkf"]) !== -1) {
-                                    //dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
-                                } else {
-                                    if (typeof (module.getfeatureinfo) !== "undefined") {
-                                        module.getfeatureinfo(e);
-                                    }
-                                }
-                            }
-                        } else {
-                            if (typeof (module.getfeatureinfo) !== "undefined") {
-                                module.getfeatureinfo(e);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        // run getfeatureinfo on each layer that is active and not connected to a module:
-        
+        //controleer of de layer onderdeel is van een module en een getfeatureinfo heeft
+        $.each(dbkjs.map.layers, function(lay_index, lay){
+            if(lay.visibility && lay.dbkjsParent && lay.dbkjsParent.getfeatureinfo){
+                //console.log(lay);
+                lay.dbkjsParent.getfeatureinfo(e);
+            }
+        });
     },
     isJsonNull: function(val) {
         if (val === "null" || val === null || val === "" || typeof (val) === "undefined" || val === "undefined") {
@@ -425,7 +406,7 @@ dbkjs.util = {
         ref.html(tab_title);
         pane.html(tab_content);
         if (active) {
-//verwijder van alle andere tabs de active state!
+            //verwijder van alle andere tabs de active state!
             parent_ul.children().removeClass('active');
             parent_tab.children().removeClass('active');
             li.addClass('active');

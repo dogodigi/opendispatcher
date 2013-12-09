@@ -42,6 +42,7 @@ dbkjs.modules.preventie = {
                             _obj.namespace + ':WMS_Hulplijn,' +
                             _obj.namespace + ':WMS_Brandweervoorziening,' + _obj.namespace + ':WMS_TekstObject', format: 'image/png', transparent: true},
         {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: true, attribution: "Falck", maxResolution: 6.71});
+        _obj.layer.dbkjsParent = _obj;
         dbkjs.map.addLayers([_obj.layer]);
 
         // vinkje op webpagina aan/uitzetten

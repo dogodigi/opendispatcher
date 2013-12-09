@@ -50,6 +50,7 @@ dbkjs.modules.care = {
             attribution: "Falck"
         }
         );
+        _obj.layerIncident.dbkjsParent = _obj;
         _obj.layerNorm = new OpenLayers.Layer.WMS(
                 "Dekkingsplan",
                 _obj.url + 'dbk/wms', {
@@ -67,6 +68,7 @@ dbkjs.modules.care = {
             attribution: "Falck"
         }
         );
+        _obj.layerIncident.dbkjsParent = _obj;
         this.updateLayerIncident();
         _obj.layerIncident.events.register("loadstart", _obj.layerIncident, function() {
             dbkjs.util.loadingStart(_obj.layerIncident);

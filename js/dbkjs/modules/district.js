@@ -7,7 +7,7 @@ dbkjs.modules.district = {
      * URL naar een statisch boringen bestand in gml formaat
      */
     features: [],
-    url: "/brabantnoord/ows?",
+    url: "/geoserver/ows?",
     namespace: "brabantnoord",
     register: function(options) {
         var _obj = dbkjs.modules.district;

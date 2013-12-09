@@ -100,8 +100,7 @@ dbkjs.modules.bag = {
         _obj.layer = new OpenLayers.Layer.WMS("BAG", "/bag/wms?",
                 {layers: 'pand,standplaats,ligplaats', format: 'image/png', transparent: true, maxScale: 5000},
         {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: _visibility});
-
-
+        _obj.layer.dbkjsParent = _obj;
         dbkjs.map.addLayers([
             _obj.layer
         ]);

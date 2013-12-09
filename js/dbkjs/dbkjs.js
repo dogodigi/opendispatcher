@@ -270,7 +270,7 @@ dbkjs.activateClick = function() {
 dbkjs.challengeAuth = function() {
     $.ajax({
         //perform a dummy request to trigger authentication
-        url: dbkjs.options.regio.safetymaps_url + 'wms',
+        url: 'geoserver/wms',
         data: {
             width: 1,
             height: 1,
@@ -317,7 +317,7 @@ dbkjs.successAuth = function() {
         }
         if ($.inArray(mod_index, dbkjs.options.regio.modules) > -1) {
             if (module.register) {
-                module.register({namespace: dbkjs.options.regio.workspace, url: dbkjs.options.regio.safetymaps_url, visible: true});
+                module.register({namespace: dbkjs.options.regio.workspace, url: 'geoserver/', visible: true});
             }
         }
     });

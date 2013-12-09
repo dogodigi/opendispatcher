@@ -35,8 +35,9 @@ dbkjs.ui.gui = {
                 parent: '#overlaypanel_b2',
                 index: 6
             });
-            var myCapabilities = new dbkjs.Capabilities({url: 'brabantnoord/brwbn/wms?', title: 'Brandweer'});
-            var myCapabilities = new dbkjs.Capabilities({url: 'brabantnoord/brabantwater/wms?', title: 'Waterbedrijf'});
+            var myCapabilities = new dbkjs.Capabilities({url: 'geoserver/brwbn/wms?', title: 'Brandweer'});
+            var myCapabilities2 = new dbkjs.Capabilities({url: 'geoserver/brabantwater/wms?', title: 'Waterbedrijf'});
+            var myCapabilities3 = new dbkjs.Capabilities({url: 'risicokaart/ogc_wms_wfs/services?', title: 'Risicokaart'});
         $(parent).append('');
         $(parent).append('<hr>');
         $(parent).append(

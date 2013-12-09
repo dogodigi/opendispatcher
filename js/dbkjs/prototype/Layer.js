@@ -10,23 +10,32 @@ dbkjs.Layer = dbkjs.Class({
     div: null,
     initialize: function(options) {
         options.visibility = options.visibility || false;
+        options.singletile = options.singletile || false;
         this.options = OpenLayers.Util.extend({}, options);
         OpenLayers.Util.extend(this, options);
         var layerOptions = OpenLayers.Util.extend({format: 'image/png', transparent: true}, options.layerOptions);
-        this.id = OpenLayers.Util.createUniqueID("dbkjs.layer_");
+        this.id = OpenLayers.Util.createUniqueID("dbkjs_layer_");
         this.div = $('<div class="panel"></div>');
         this.div.attr('id', 'panel_' + this.id);
         //layers moet worden meegegeven in de opties
         this.layer = new OpenLayers.Layer.WMS(options.name, options.url,
                 layerOptions,
-                {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: options.visibility});
+                {
+                    transitionEffect: 'none',
+                    singleTile: options.singletile,
+                    buffer: 0,
+                    isBaseLayer: false,
+                    visibility: options.visibility
+                }
+        );
+        this.layer.dbkjsParent = this;
         //let op, de map moet worden meegegeven in de opties
         options.map.addLayers([this.layer]);
         var _obj = this;
         this.layer.events.register("loadstart", this.layer, function() {
             dbkjs.util.loadingStart(_obj.layer);
         });
-        
+
         this.layer.events.register("loadend", this.layer, function() {
             dbkjs.util.loadingEnd(_obj.layer);
         });
@@ -65,6 +74,7 @@ dbkjs.Layer = dbkjs.Class({
         }
     },
     getfeatureinfo: function(e) {
+        _obj = this;
         var params = {
             REQUEST: "GetFeatureInfo",
             EXCEPTIONS: "application/vnd.ogc.se_xml",
@@ -91,30 +101,31 @@ dbkjs.Layer = dbkjs.Class({
             params.x = e.xy.x;
             params.y = e.xy.y;
         }
-        OpenLayers.Request.GET({url: this.url, "params": params, callback: this.panel});
+        OpenLayers.Request.GET({url: this.url, "params": params, callback: this.panel, scope: _obj});
         //OpenLayers.Event.stop(e);
     },
     panel: function(response) {
+        _obj = this;
         //verwerk de featureinformatie
         g = new OpenLayers.Format.GML.v3();
 
         features = g.read(response.responseText);
         if (features.length > 0) {
-            html = '<div class="infocontent">';
-            html += '<h2>Hydranten</h2>';
+            html = '<div class="table-responsive"><table class="table table-hover">';
             for (var feat in features) {
-                html += '<table class="featureinfo">';
                 for (var j in features[feat].attributes) {
-                    if ($.inArray(j, ['Name', 'No', 'Latitude', 'Longitude']) > -1) {
-                        if (typeof(features[feat].attributes[j]) !== "undefined" && features[feat].attributes[j] !== "") {
-                            html += '<tr><td><span class="infofieldtitle">' + j + "</span>: </td><td>" + features[feat].attributes[j] + "</td></tr>";
+                    if ($.inArray(j, ['Name', 'No', 'Latitude', 'Longitude']) === -1) {
+                        if (typeof (features[feat].attributes[j]) !== "undefined" && features[feat].attributes[j] !== "") {
+                            html += '<tr><td>' + j + '</td><td>' + features[feat].attributes[j] + '</td></tr>';
                         }
                     }
                 }
-                html += "</table>";
             }
-            html += '</div>';
-            //console.log(html);
+            html += '</table></div>';
+            dbkjs.util.appendTab(dbkjs.wms_panel.attr("id"), _obj.layer.name, html, true, _obj.id + '_pn');
+            $('#wmsclickpanel').show();
+        } else {
+            dbkjs.util.removeTab(dbkjs.wms_panel.attr("id"), _obj.id + '_pn');
         }
     }
 });
