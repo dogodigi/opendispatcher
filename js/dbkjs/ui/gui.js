@@ -31,7 +31,11 @@ dbkjs.ui.gui = {
                 url: 'http://view.safetymaps.nl/map/mapserv',
                 map: dbkjs.map,
                 visibility: true,
-                layerOptions: {map: '/home/mapserver/doiv.map', layers: 'gebieden'},
+                singleTile: true,
+                layerOptions: {
+                    map: '/home/mapserver/doiv.map', 
+                    layers: 'gebieden'
+                },
                 parent: '#overlaypanel_b2',
                 index: 6
             });

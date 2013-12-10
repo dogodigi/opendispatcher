@@ -10,10 +10,19 @@ dbkjs.Layer = dbkjs.Class({
     div: null,
     initialize: function(options) {
         options.visibility = options.visibility || false;
-        options.singletile = options.singletile || false;
+        options.singleTile = options.singleTile || false;
         this.options = OpenLayers.Util.extend({}, options);
         OpenLayers.Util.extend(this, options);
-        var layerOptions = OpenLayers.Util.extend({format: 'image/png', transparent: true}, options.layerOptions);
+        var layerOptions = OpenLayers.Util.extend({
+            format: 'image/png', 
+            transparent: true
+        }, options.layerOptions);
+        
+        if(!options.singleTile){
+            layerOptions.tiled = true;
+            layerOptions.tilesorigin = [dbkjs.map.maxExtent.left, dbkjs.map.maxExtent.bottom];
+        }
+        
         this.id = OpenLayers.Util.createUniqueID("dbkjs_layer_");
         this.div = $('<div class="panel"></div>');
         this.div.attr('id', 'panel_' + this.id);
@@ -22,7 +31,7 @@ dbkjs.Layer = dbkjs.Class({
                 layerOptions,
                 {
                     transitionEffect: 'none',
-                    singleTile: options.singletile,
+                    singleTile: options.singleTile,
                     buffer: 0,
                     isBaseLayer: false,
                     visibility: options.visibility
