@@ -351,7 +351,7 @@ dbkjs.modules.feature = {
         _obj.layer.destroyFeatures();
         var params = {
             timestamp: new Date().getTime(),
-            bbox: dbkjs.map.getExtent().toBBOX(0),
+            bbox: dbkjs.map.getMaxExtent().toBBOX(0),
             service: "WFS",
             version: "1.0.0",
             request: "GetFeature",
