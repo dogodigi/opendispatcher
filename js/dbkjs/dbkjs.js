@@ -76,38 +76,38 @@ dbkjs.options.baselayers = [
             }
     ),
     new OpenLayers.Layer.WMS(
-        'Luchtfoto 2009 (PDOK)',
-        'http://geodata1.nationaalgeoregister.nl/luchtfoto/wms?',
-        {
-            layers: "luchtfoto",
-            format: "image/jpeg",
-            transparent: false
-        },
-        {
-            transitionEffect: 'resize',
-            singleTile: false,
-            buffer: 0,
-            isBaseLayer: true,
-            visibility: true,
-            attribution: "PDOK"
-        }
+            'Luchtfoto 2009 (PDOK)',
+            'http://geodata1.nationaalgeoregister.nl/luchtfoto/wms?',
+            {
+                layers: "luchtfoto",
+                format: "image/jpeg",
+                transparent: false
+            },
+    {
+        transitionEffect: 'resize',
+        singleTile: false,
+        buffer: 0,
+        isBaseLayer: true,
+        visibility: true,
+        attribution: "PDOK"
+    }
     ),
     new OpenLayers.Layer.WMS(
-        'Hoge resolutie luchtfoto',
-        'http://view.safetymaps.nl/map/mapserv?map=/home/mapserver/doiv.map',
-        {
-            layers: 'luchtfoto',
-            format: "image/png",
-            transparent: false
-        },
-        {
-            transitionEffect: 'resize',
-            singleTile: false,
-            buffer: 0,
-            isBaseLayer: true,
-            visibility: true,
-            attribution: "Gemeentes Veiligheidsregio 21"
-        }
+            'Hoge resolutie luchtfoto',
+            'map/mapserv?map=/home/mapserver/doiv.map',
+            {
+                layers: 'luchtfoto',
+                format: "image/png",
+                transparent: false
+            },
+    {
+        transitionEffect: 'resize',
+        singleTile: false,
+        buffer: 0,
+        isBaseLayer: true,
+        visibility: true,
+        attribution: "Gemeentes Veiligheidsregio 21"
+    }
     ),
     new OpenLayers.Layer.TMS(
             'Basisregistratie Topografie (PDOK)',
@@ -160,31 +160,30 @@ dbkjs.init = function() {
     dbkjs.map = new OpenLayers.Map(options);
     dbkjs.map.addLayers(dbkjs.options.baselayers);
     dbkjs.options.regio = {
-        id: dbkjs.util.getQueryVariable('regio', 'brabantnoord')
+        id: dbkjs.util.getQueryVariable('regio', 'demo')
     };
     dbkjs.options.adres = dbkjs.util.getQueryVariable('adres');
     dbkjs.options.omsnummer = dbkjs.util.getQueryVariable('omsnummer');
     dbkjs.options.dbk = dbkjs.util.getQueryVariable('dbk');
 
-    $.getJSON('data/regios.json', function(data) {
-        if (data.type === "regiocollectie") {
-            $.each(data.regios, function(key, val) {
-                if (val.id === dbkjs.options.regio.id) {
-                    dbkjs.options.regio = val;
-                    if (val.gebied.geometry.type === "Point") {
-                        dbkjs.map.setCenter(
-                                new OpenLayers.LonLat(
-                                val.gebied.geometry.coordinates[0],
-                                val.gebied.geometry.coordinates[1]
+    $.getJSON('data/regio.json', function(data) {
+        if (data.regio) {
+            dbkjs.options.regio = data.regio;
+            if (data.regio.gebied.geometry.type === "Point") {
+                dbkjs.map.setCenter(
+                        new OpenLayers.LonLat(
+                                data.regio.gebied.geometry.coordinates[0],
+                                data.regio.gebied.geometry.coordinates[1]
                                 ).transform(
-                                new OpenLayers.Projection(dbkjs.options.projection.code),
-                                dbkjs.map.getProjectionObject()
-                                ),
-                                val.gebied.zoom
-                                );
-                    }
-                }
-            });
+                        new OpenLayers.Projection(dbkjs.options.projection.code),
+                        dbkjs.map.getProjectionObject()
+                        ),
+                        data.regio.gebied.zoom
+                        );
+            }
+            if (dbkjs.options.regio.titel){
+                document.title = dbkjs.options.regio.titel;
+            }
             dbkjs.challengeAuth();
 
         }
@@ -199,7 +198,7 @@ dbkjs.init = function() {
         div: OpenLayers.Util.getElement('attribution')
     });
     dbkjs.map.addControl(attribution);
-    
+
     var scalebar = new OpenLayers.Control.Scale(OpenLayers.Util.getElement('scale'));
     dbkjs.map.addControl(scalebar);
     dbkjs.naviHis = new OpenLayers.Control.NavigationHistory();
@@ -312,7 +311,7 @@ dbkjs.successAuth = function() {
     //register modules
     $.each(dbkjs.modules, function(mod_index, module) {
         //Controleer of de regio een eigen logo heeft gedefinieerd
-        if (dbkjs.options.regio.logo){
+        if (dbkjs.options.regio.logo) {
             $('#logo').css('background-image', 'url(' + dbkjs.options.regio.logo + ')');
         }
         if ($.inArray(mod_index, dbkjs.options.regio.modules) > -1) {
@@ -347,7 +346,7 @@ $(document).ready(function() {
         if (this.id === "tb03") {
             $('#infopanel').toggle();
             //check of de infopanel visible of hidden is
-            if ($('#infopanel').is(":visible")){
+            if ($('#infopanel').is(":visible")) {
                 dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
             }
         } else if (this.id === "c_minimap") {

@@ -237,7 +237,6 @@ dbkjs.modules.print = {
             encodedOverviewLayers.push(enc);
             jsonData.overviewLayers = encodedOverviewLayers;
         }
-        //console.log(jsonData);
         $.ajax({
             type: _obj.method,
             url: "/print/pdf/" + "create.json",

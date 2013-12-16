@@ -20,7 +20,7 @@ dbkjs.ui.gui = {
         $(parent).append('<h4>Lagen toevoegen</h4><p>De volgende lagen zijn aanwezig op het systeem:</p>');
             var gbkn = new dbkjs.Layer({
                 name: 'GBKN',
-                url: 'http://view.safetymaps.nl/map/mapserv',
+                url: 'map/mapserv',
                 map: dbkjs.map,
                 layerOptions: {map: '/home/mapserver/doiv.map', layers: 'gbkn_panden,gbkn_topografie'},
                 parent: '#overlaypanel_b2',
@@ -28,20 +28,24 @@ dbkjs.ui.gui = {
             });
             var gebieden = new dbkjs.Layer({
                 name: 'Gebieden',
-                url: 'http://view.safetymaps.nl/map/mapserv',
+                url: 'geoserver/dbk/wms',
                 map: dbkjs.map,
                 visibility: true,
                 singleTile: true,
+                getfeatureinfo: function(){},
                 layerOptions: {
-                    map: '/home/mapserver/doiv.map', 
                     layers: 'gebieden'
                 },
                 parent: '#overlaypanel_b2',
                 index: 6
             });
-            var myCapabilities = new dbkjs.Capabilities({url: 'geoserver/brwbn/wms?', title: 'Brandweer'});
-            var myCapabilities2 = new dbkjs.Capabilities({url: 'geoserver/brabantwater/wms?', title: 'Waterbedrijf'});
-            var myCapabilities3 = new dbkjs.Capabilities({url: 'risicokaart/ogc_wms_wfs/services?', title: 'Risicokaart'});
+            $.each(dbkjs.options.regio.wms, function (wms_k, wms_v){
+                var myCapabilities = new dbkjs.Capabilities(
+                        {url: wms_v.url, title: wms_v.name, proxy: wms_v.proxy});
+            });
+            
+            //var myCapabilities2 = new dbkjs.Capabilities({url: 'geoserver/brabantwater/wms?', title: 'Waterbedrijf'});
+            //var myCapabilities3 = new dbkjs.Capabilities({url: 'risicokaart/ogc_wms_wfs/services?', title: 'Risicokaart'});
         $(parent).append('');
         $(parent).append('<hr>');
         $(parent).append(
