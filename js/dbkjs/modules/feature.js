@@ -304,7 +304,7 @@ dbkjs.modules.feature = {
     },
     register: function(options) {
         var _obj = dbkjs.modules.feature;
-        $('#btngrp_2').append(
+        $('#btngrp_navigation').append(
             '<a id="btn_refresh" class="btn btn-default navbar-btn" href="#" title="DBK\'s verversen"><i class="icon-refresh"></i></a>'
         );
         $('#btn_refresh').click(function() {
