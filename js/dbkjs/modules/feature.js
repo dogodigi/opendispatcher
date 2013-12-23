@@ -103,12 +103,12 @@ dbkjs.modules.feature = {
             },
             myicon: function(feature) {
                 if (feature.cluster) {
-                    return "http://view.safetymaps.nl/images/jcartier_city_3.png";
+                    return "images/jcartier_city_3.png";
                 } else {
                     if (feature.attributes.typeFeature === 'Object') {
-                        return "http://view.safetymaps.nl/images/jcartier_building_1.png";
+                        return "images/jcartier_building_1.png";
                     } else {
-                        return "http://view.safetymaps.nl/images/jcartier_event_1.png";
+                        return "images/jcartier_event_1.png";
                     }
                 }
             },
@@ -218,12 +218,12 @@ dbkjs.modules.feature = {
             },
             myicon: function(feature) {
                 if (feature.cluster) {
-                    return "http://view.safetymaps.nl/images/jcartier_city_3.png";
+                    return "images/jcartier_city_3.png";
                 } else {
                     if (feature.attributes.typeFeature === 'Object') {
-                        return "http://view.safetymaps.nl/images/jcartier_building_1.png";
+                        return "images/jcartier_building_1.png";
                     } else {
-                        return "http://view.safetymaps.nl/images/jcartier_event_1.png";
+                        return "images/jcartier_event_1.png";
                     }
                 }
             },
@@ -304,6 +304,12 @@ dbkjs.modules.feature = {
     },
     register: function(options) {
         var _obj = dbkjs.modules.feature;
+        $('#btngrp_navigation').append(
+            '<a id="btn_refresh" class="btn btn-default navbar-btn" href="#" title="DBK\'s verversen"><i class="icon-refresh"></i></a>'
+        );
+        $('#btn_refresh').click(function() {
+            _obj.get();
+        });
         _obj.namespace = options.namespace || _obj.namespace;
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
@@ -342,13 +348,15 @@ dbkjs.modules.feature = {
     },
     get: function() {
         var _obj = dbkjs.modules.feature;
+        _obj.layer.destroyFeatures();
         var params = {
-            bbox: dbkjs.map.getExtent().toBBOX(0),
+            timestamp: new Date().getTime(),
+            bbox: dbkjs.map.getMaxExtent().toBBOX(0),
             service: "WFS",
             version: "1.0.0",
             request: "GetFeature",
             typename: _obj.namespace + ":WMS_DBKFeature",
-            //maxFeatures: 500, // todo let op; deze max kan in de toekomst problemen geven
+//            //maxFeatures: 500, // todo let op; deze max kan in de toekomst problemen geven
             outputFormat:"application/json"
         };
         $.ajax({

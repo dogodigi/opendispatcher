@@ -302,7 +302,9 @@ dbkjs.modules.bag = {
             if (typeof(e.feature) !== "undefined") {
                 dbkjs.util.changeDialogTitle('<i class="icon-home"></i> Pand ' + e.feature.attributes.identificatie, '#bagpanel');
                 _obj.pandInfo(e.feature);
+                $('#bagpanel_f').html('Fouten ontdekt in de BAG? <a href="https://www.kadaster.nl/web/formulier/BAG-formulieren/BAG-terugmelding.htm">Meld het!</a>');
                 $('#bagpanel').show();
+                
             } else {
                 _obj.pand_layer.destroyFeatures();
                 _obj.vbo_layer.destroyFeatures();

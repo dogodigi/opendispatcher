@@ -87,7 +87,6 @@ dbkjs.protocol.imdbk21 = {
                         $('#infopanel_b').html(div);
                         $('#systeem_meldingen').hide();
                     }
-                    //console.log(_obj.feature);
                     $('#infopanel').show();
                 } else {
                     _obj.feature = {};
@@ -398,10 +397,11 @@ dbkjs.protocol.imdbk21 = {
                 }
                 var url_arr = url.split(".");
                 var extension = url_arr[url_arr.length - 1];
+                var timestamp = new Date().getTime();
                 if (extension === "pdf" || extension === "doc" || extension === "docx") {
                     image_carousel_inner.append('<div class="item ' + active + '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + url + '" target="_blank"><h1><i class="icon-download icon-large"></h1></i></a><h3>' + waarde["dbk:Foto"]["dbk:naam"].value + '</h3><a href="' + url + '" target="_blank"><h2>Download bestand</h2></a></div></div>');
                 } else {
-                    image_carousel_inner.append('<div class="item ' + active + '"><img src="' + url + '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' + naam + '</h3><p></p></div></div>');
+                    image_carousel_inner.append('<div class="item ' + active + '"><img src="' + url + '?timestamp=' + timestamp + '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' + naam + '</h3><p></p></div></div>');
                     _obj.feature.images.push(url);
                 }
 
@@ -463,14 +463,14 @@ dbkjs.protocol.imdbk21 = {
     },
     getObject: function(id) {
         var params = {
-            request: 'getFeature',
-            version: '2.0',
-            typename: 'dbk:DBKObject',
-            outputFormat: 'gml32',
-            featureID: 'DBKObject.' + id
+//            request: 'getFeature',
+//            version: '2.0',
+//            typename: 'dbk:DBKObject',
+//            outputFormat: 'gml32',
+//            featureID: 'DBKObject.' + id,
+            timestamp: new Date().getTime()
         };
         OpenLayers.Request.GET({
-            //url: dbkjs.options.regio.safetymaps_url + 'wfs',
             url: 'data/' + id + '.xml',
             "params": params, callback: dbkjs.protocol.imdbk21.info});
     },
@@ -480,7 +480,8 @@ dbkjs.protocol.imdbk21 = {
             version: '2.0',
             typename: 'dbk:DBKGebied',
             outputFormat: 'gml32',
-            featureID: 'DBKGebied.' + id
+            featureID: 'DBKGebied.' + id,
+            timestamp: new Date().getTime()
         };
         OpenLayers.Request.GET({url: dbkjs.protocol.imdbk21.url, "params": params, callback: dbkjs.protocol.imdbk21.info});
     },
@@ -490,7 +491,8 @@ dbkjs.protocol.imdbk21 = {
             version: '2.0',
             typename: 'dbk:DBKFeature',
             outputFormat: 'gml32',
-            featureID: 'DBKFeature.' + id
+            featureID: 'DBKFeature.' + id,
+            timestamp: new Date().getTime()
         };
         OpenLayers.Request.GET({url: dbkjs.protocol.imdbk21.url, "params": params, callback: dbkjs.protocol.imdbk21.info});
     }
