@@ -1,0 +1,15 @@
+{
+    "name": "safetymapsdbk",
+    "description": "safetymaps dbk - applicatie voor de digitale bereikbaarheidskaart",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "*",
+        "i18next": "*",
+        "less-middleware": "*",
+        "jade": "*"
+    }
+}

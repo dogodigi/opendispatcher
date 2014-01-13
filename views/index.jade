@@ -1,0 +1,74 @@
+extends index_header
+block content
+
+  div#btngrp_navigation.btn-group.pull-right
+    a.btn.navbar-btn.btn-default.drag-handle(href='#')
+      i.icon-ellipsis-vertical
+    a#zoom_prev.btn.navbar-btn.btn-default.disabled(href='#', title=t('map.prev'))
+      i.icon-reply
+    a#zoom_next.btn.navbar-btn.btn-default.disabled(href='#', title=t('map.next'))
+      i.icon-share-alt
+    a#zoom_in.btn.navbar-btn.btn-default(href='#', title=t('map.zoomIn'))
+      i.icon-zoom-in
+    a#zoom_out.btn.navbar-btn.btn-default(href='#', title=t('map.zoomOut'))
+      i.icon-zoom-out
+    a#zoom_extent.btn.navbar-btn.btn-default(href='#', title=t('map.zoomExtent'))
+      i.icon-fullscreen
+
+  div#btngrp_3.btn-group.pull-right
+    a.btn.navbar-btn.btn-default.drag-handle(href='#')
+      i.icon-ellipsis-vertical
+    a#c_minimap.btn.navbar-btn.btn-default(href='#', title=t('map.mini'))
+      i.icon-picture
+    a#c_settings.btn.navbar-btn.btn-default(href='#settingspanel', data-toggle='modal', title=t('map.settings'))
+      i.icon-cogs
+    a#tb01.btn.navbar-btn.btn-default(href='#overlaypanel', data-toggle='modal', title=t('map.overlays'))
+      i.icon-map-marker
+    a#tb02.btn.navbar-btn.btn-default(href='#baselayerpanel', data-toggle='modal', title=t('map.baseLayers'))
+      i.icon-globe
+    a#tb03.btn.navbar-btn.btn-default(href='#', title=t('map.info'))
+      i.icon-info-sign
+
+  div#btn-grp-search.btn-group.pull-right(style='display:none;')
+  div#mapc1map1
+    div#noordpijl(title=t('map.northarrow'),style='cursor:pointer;')
+      i.icon-long-arrow-up(style='font-size:40px;')
+        span(style='font-size:20px') N
+
+  div#logo
+  div#footer
+    span#measure
+    span#coords
+    span#scale
+    span#attribution
+
+  div#settingspanel.modal.fade
+   div.modal-dialog
+      div.modal-content
+        div.modal-header
+          h4.modal-title= t('map.settings')
+        div#settingspanel_b.modal-body
+
+  div#baselayerpanel.modal.fade
+    div.modal-dialog
+      div.modal-content
+        div.modal-header
+        div#baselayerpanel_b.modal-body
+
+  div#overlaypanel.modal.fade
+    div.modal-dialog
+      div.modal-content
+        div.modal-header
+        div.modal-body
+          div.tabbable
+            ul#overlaypanel_ul.nav.nav-tabs
+              li.active
+                a(data-toggle='tab', href='#overlay_tab1')= t('map.emergencyOverlays')
+              li
+                a(data-toggle='tab', href='#overlay_tab2')= t('map.systemOverlays')
+            div#overlaypanel_div.tab-content
+              div#overlay_tab1.tab-pane.active
+                div#overlaypanel_b1.panel-group
+              div#overlay_tab2.tab-pane
+                div#overlaypanel_b2.panel-group
+  include index_scripts

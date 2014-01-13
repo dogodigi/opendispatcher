@@ -1,0 +1,74 @@
+// less for layout
+blockpadding {
+  padding: .5em 1em;
+  margin: 0 auto;
+  max-width: 40em;
+}
+
+main:extend(blockpadding) {
+
+  display: block;
+  margin-top: 4em;
+}
+
+#header {
+  background: @primary-color;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  & .container:extend(blockpadding) {
+    background: url(img/logo.svg) no-repeat center right;
+    height: 2em;
+    a {
+      color: #fff;
+    }
+
+  }
+}
+
+.top-navigation {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  border-bottom: 1px solid @primary-color
+}
+
+.top-navigation-item {
+
+  display: table-cell;
+  border: 1px solid rgba(255,255,255,.3);
+  border-bottom: 0;
+  padding: .15em;
+  text-align: center;
+  width:  3.4%;
+  width: calc(6.25% - .3em - 2px);
+
+  a {
+    color: #fff;
+
+    font-size: .8em;
+  }
+  &.done {
+    background-color: #fff;
+
+    a {
+      color: @primary-color;
+    }
+  }
+  &.active {
+    font-size: 1.1em;
+    margin-top: -.2em;
+    border-color:@primary-color;
+    font-weight: bold;
+  }
+}
+
+.map {
+  height: 400px;
+  .leaflet-top, .leaflet-bottom {
+    z-index: 2;
+  }
+}
+
