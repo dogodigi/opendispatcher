@@ -25,7 +25,7 @@ dbkjs.util = {
         }
     },
     setModalTitle: function(modal_id, title) {
-        if (title instanceof jQuery) {
+        if (title instanceof $) {
             $('#' + modal_id).find('div.modal-header:first').html(title);
         } else if (typeof (title) === "string") {
             $('#' + modal_id).find('div.modal-header:first').html('<h4 class="modal-title">' + title + '</h4>');
