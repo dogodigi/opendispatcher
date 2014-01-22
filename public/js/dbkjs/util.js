@@ -482,11 +482,30 @@ dbkjs.util = {
                     'target': '_blank'
                 });
     },
-    padspaces: function(num,field){
+    padspaces: function(num,field) {
         var n = '' + num;
         var w = n.length;
         var l = field.length;
         var pad = w < l ? l-w : 0;
         return n + field.substr(0,pad);
-    }
+    },
+    strip: function (html) {  
+        var tmp = document.createElement("DIV"); 
+        tmp.innerHTML = html; 
+        var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;   
+        return tmp.innerText.replace(urlRegex, function(url) {     
+            return '\n' + url;
+        })
+    },
+    renderHTML: function(text) { 
+        var rawText = this.strip(text);
+        var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;   
+        return rawText.replace(urlRegex, function(url) {   
+            if ( ( url.indexOf(".jpg") > 0 ) || ( url.indexOf(".png") > 0 ) || ( url.indexOf(".gif") > 0 ) ) {
+                return '<img src="' + url + '">' + '<br/>';
+            } else {
+                return '<a href="' + url + '">' + url + '</a>' + '<br/>';
+            }
+        }) 
+    } 
 };
