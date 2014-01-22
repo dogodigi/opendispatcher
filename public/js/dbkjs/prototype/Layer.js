@@ -125,7 +125,7 @@ dbkjs.Layer = dbkjs.Class({
                 for (var j in features[feat].attributes) {
                     if ($.inArray(j, ['Name', 'No', 'Latitude', 'Longitude']) === -1) {
                         if (typeof (features[feat].attributes[j]) !== "undefined" && features[feat].attributes[j] !== "") {
-                            html += '<tr><td>' + j + '</td><td>' + features[feat].attributes[j] + '</td></tr>';
+                            html += '<tr><td>' + j + '</td><td>' + dbkjs.util.renderHTML(features[feat].attributes[j]) + '</td></tr>';
                         }
                     }
                 }
