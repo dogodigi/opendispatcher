@@ -4,6 +4,20 @@ var express = require('express'),
         path = require('path'),
         i18n = require('i18next');
 
+global.conf = require('nconf');
+
+// First consider commandline arguments and environment variables, respectively.
+global.conf.argv().env();
+
+// Then load configuration from a designated file.
+global.conf.file({ file: 'config.json' });
+
+// Provide default values for settings not provided above.
+global.conf.defaults({
+    'http': {
+        'port': 9999
+    }
+});
 function clientErrorHandler(err, req, res, next) {
     if (req.xhr) {
         res.send(500, {error: 'Ooops, something went wrong'});
@@ -22,7 +36,7 @@ var app = express();
 
 // all environments
 app.configure(function() {
-    app.set('port', process.env.PORT || 3000);
+    app.set('port', process.env.PORT || global.conf.get('http:port'));
     app.use(function(err, req, res, next) {
         console.error(err.stack);
         res.send(500, 'Something broke!');
@@ -45,7 +59,6 @@ app.configure(function() {
 
     app.use(express.methodOverride());
     app.use(express.static(path.join(__dirname, 'public')));
-
     app.use(app.router);
     app.use(clientErrorHandler);
     app.use(function(err, req, res, next) {
@@ -60,14 +73,17 @@ app.configure(function() {
 });
 
 i18n.registerAppHelper(app);
+i18n.serveClientScript(app)
+	    .serveDynamicResources(app)
+	    .serveMissingKeyRoute(app);
 
 app.get('/', routes.index);
 app.get('/data/regio.json', routes.regio);
 //app.post('/v', routes.validate_POST);
 //app.get('/v/:token', routes.validate_GET);
-app.all('/geoserver/:service',routes.gs_service);
-app.all('/geoserver/:workspace/:service',routes.gs_workspace);
-app.all('/bag/:service',routes.bag_service);
+//app.all('/geoserver/:service',routes.gs_service);
+//app.all('/geoserver/:workspace/:service',routes.gs_workspace);
+//app.all('/bag/:service',routes.bag_service);
 app.get('/eughs.html', routes.eughs);
 app.get('/nen1414.html', routes.nen1414);
 // Create an HTTP service.

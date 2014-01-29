@@ -1,8 +1,3 @@
-html, body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-}
 #wmsclickpanel_b {
     max-height: 300px;
     overflow: auto;
@@ -158,6 +153,7 @@ body {
 }
 #search_input {
     background-color: #ffffff !important;
+    max-width: 180px !important;
 }
 .dialog{
     z-index: 300;

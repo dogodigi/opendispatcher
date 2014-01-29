@@ -16,15 +16,15 @@ dbkjs.modules.search = {
         var search_div = $('#btn-grp-search');
         var search_group = $('<div class="input-group navbar-btn"></div>');
         var search_pre = $('<span id="search-add-on" class="input-group-addon"><i class="icon-building"></i></span>');
-        var search_input = $('<input id="search_input" name="search_input" type="text" class="form-control" placeholder="zoek DBK">');
+        var search_input = $('<input id="search_input" name="search_input" type="text" class="form-control" placeholder="' + i18n.t("search.searchplaceholder") + '">');
         var search_btn_grp = $(
                 '<div class="input-group-btn pull-right">' +
-                '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Zoek <span class="caret"></span></button>' +
+                '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' + i18n.t("search.search") + ' <span class="caret"></span></button>' +
                 '<ul class="dropdown-menu pull-right">' +
-                '<li><a href="#" id="s_dbk"><i class="icon-building"></i> DBK</a></li>' +
-                '<li><a href="#" id="s_oms"><i class="icon-bell"></i> OMS</a></li>' +
-                '<li><a href="#" id="s_adres"><i class="icon-home"></i> Adres</a></li>' +
-                '<li><a href="#" id="s_coord"><i class="icon-pushpin"></i> Co&ouml;rdinaat</a></li>' +
+                '<li><a href="#" id="s_dbk"><i class="icon-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
+                '<li><a href="#" id="s_oms"><i class="icon-bell"></i> ' + i18n.t("search.oms") + '</a></li>' +
+                '<li><a href="#" id="s_adres"><i class="icon-home"></i> ' + i18n.t("search.address") + '</a></li>' +
+                '<li><a href="#" id="s_coord"><i class="icon-pushpin"></i> ' + i18n.t("search.coordinates") + '</a></li>' +
                 '</ul>' +
                 '</div>'
                 );
@@ -79,15 +79,16 @@ dbkjs.modules.search = {
             var mdiv = $(this).parent().parent().parent();
             var mbtn = $('#search-add-on');
             var minp = mdiv.parent().find('input');
-            if ($(this).text() === " Adres") {
+            var searchtype = $(this).text().trim();
+            if (searchtype === i18n.t("search.address")) {
                 mbtn.html('<i class="icon-home"></i>');
-                minp.attr("placeholder", "zoek adres of POI");
+                minp.attr("placeholder", i18n.t("search.addressplaceholder"));
                 if (dbkjs.modules.search) {
                     dbkjs.modules.search.activate();
                 }
-            } else if ($(this).text() === " Coördinaat") {
+            } else if (searchtype === i18n.t("search.coordinates")) {
                 mbtn.html('<i class="icon-pushpin"></i>');
-                minp.attr("placeholder", "lon,lat of X,Y punt voor decimaal");
+                minp.attr("placeholder", i18n.t("search.coordplaceholder"));
                 $('#search_input').change(function() {
                     var ruwe_input = $('#search_input').val();
                     var loc;
@@ -109,13 +110,13 @@ dbkjs.modules.search = {
                     }
                     return false;
                 });
-            } else if ($(this).text() === " DBK") {
+            } else if (searchtype === i18n.t("search.dbk")) {
                 mbtn.html('<i class="icon-building"></i>');
-                minp.attr("placeholder", "zoek dbk");
+                minp.attr("placeholder", i18n.t("search.dbkplaceholder"));
                 dbkjs.modules.feature.search_dbk();
-            } else if ($(this).text() === " OMS") {
+            } else if (searchtype === i18n.t("search.oms")) {
                 mbtn.html('<i class="icon-bell"></i>');
-                minp.attr("placeholder", "zoek oms");
+                minp.attr("placeholder", i18n.t("search.omsplaceholder"));
                 dbkjs.modules.feature.search_oms();
             }
             mdiv.removeClass('open');

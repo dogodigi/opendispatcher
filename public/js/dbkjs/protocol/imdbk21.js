@@ -438,9 +438,10 @@ dbkjs.protocol.imdbk21 = {
             var verblijf_table_div = $('<div class="table-responsive"></div>');
             var verblijf_table = $('<table class="table table-hover"></table>');
             verblijf_table.append('<tr><th>van</th><th>tot</th><th>aantal</th><th>groep</th></tr>');
+            console.log(moment().local)
             $.each(verblijf, function(verblijf_index, waarde) {
                 var verb = {
-                    tijdvakbegintijd: waarde["dbk:AantalPersonen"]["dbk:tijdvakBegintijd"].value.replace(":00Z", '').replace('Z', ''),
+                    tijdvakbegintijd: moment(moment().format("YYYY-MM-DD") + ' ' + waarde["dbk:AantalPersonen"]["dbk:tijdvakBegintijd"].value.replace(":00Z", '').replace('Z', '')).utc().tz("Europe/Amsterdam").format('H:m'),
                     tijdvakeindtijd: waarde["dbk:AantalPersonen"]["dbk:tijdvakEindtijd"].value.replace(":00Z", '').replace('Z', ''),
                     aantal: waarde["dbk:AantalPersonen"]["dbk:aantal"].value,
                     typeaanwezigheidsgroep: waarde["dbk:AantalPersonen"]["dbk:typeAanwezigheidsgroep"].value

@@ -10,6 +10,7 @@
         "express": "*",
         "i18next": "*",
         "less-middleware": "*",
-        "jade": "*"
+        "jade": "*",
+        "nconf": "*"
     }
 }

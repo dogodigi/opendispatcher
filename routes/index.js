@@ -14,72 +14,7 @@ exports.index = function(req, res) {
     res.render('index', {title: 'index pagina'});
 };
 exports.regio = function(req, res) {
-    res.send({
-        "regio": {
-            "id": "brabantnoord",
-            "logo": "images/doiv_logo_def.png",
-            "workspace": "dbk",
-            "titel": "DOIV 1.0 - Brabant Noord",
-            "support": {
-                "mail": "doiv@brwbn.nl",
-                "button": "Fout ontdekt?"
-            },
-            "omschrijving": "Veiligheidsregio Brabant Noord",
-            "modules": [
-                "care",
-                "bag",
-                "filter",
-                "district",
-                "feature",
-                "gebieden",
-                "gemeente",
-                "geolocate",
-                "gevaren",
-                "object",
-                "preparatie",
-                "preventie",
-                "regio",
-                "search",
-                "help",
-                "print",
-                "measure"
-            ],
-            "gebied": {
-                "geometry": {
-                    "type": "Point",
-                    "crs": {
-                        "type": "name",
-                        "properties": {
-                            "name": "urn:ogc:def:crs:EPSG::28992"
-                        }
-                    },
-                    "coordinates": [
-                        149756,
-                        411527
-                    ]
-                },
-                "zoom": 5
-            },
-            "wms": [
-                {
-                    "name": "Brandweer",
-                    "url": "geoserver/brwbn/wms?",
-                    "proxy": false
-                },
-                {
-                    "name": "Waterbedrijf",
-                    "url": "geoserver/brabantwater/wms?",
-                    "proxy": false
-                }
-//            ,
-//            {
-//                "name": "Risicokaart",
-//                "url": "/risicokaart/?",
-//                "proxy": false
-//            }
-            ]
-        }
-    });
+    res.send(global.conf.get("regio"));
 };
 exports.bag_service = function(req,res){
     var queryparams = req.query;

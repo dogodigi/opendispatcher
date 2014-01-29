@@ -29,38 +29,38 @@
         "emergencyContactExtraFunction": "Nevenfunctie"
     },
     "map": {
-        "prev": "previous",
-        "next": "next",
+        "prev": "vorige",
+        "next": "volgende",
         "zoomIn": "zoom in",
-        "zoomOut": "zoom out",
-        "zoomExtent": "zoom to region",
-        "mini": "overview",
-        "settings": "settings",
-        "overlays": "layers",
-        "baseLayers": "basemaps",
-        "info": "Information",
-        "northarrow": "North arrow",
-        "emergencyMap": "Emergency map",
-        "emergencyOverlays": "Emergency map",
-        "systemOverlays": "System"
+        "zoomOut": "zoom uit",
+        "zoomExtent": "zoom naar regio",
+        "mini": "overzichtskaart",
+        "settings": "instellingen",
+        "overlays": "lagen",
+        "baseLayers": "basiskaarten",
+        "info": "Informatie",
+        "northarrow": "Noordpijl",
+        "emergencyMap": "Bereikbaarheidskaart",
+        "emergencyOverlays": "Bereikbaarheidskaart",
+        "systemOverlays": "Systeem"
     },
     "dialogs":{
-      "info": "Information",
-      "bag": "Building registry",
-      "clickinfo": "Click information",
-      "refmap": "Reference map"
+      "info": "Informatie",
+      "bag": "BAG",
+      "clickinfo": "Klik informatie",
+      "refmap": "Referentie kaart"
     },
     "search":{
-        "search": "search",
-        "searchplaceholder": "search DBK",
+        "search": "Zoek",
+        "searchplaceholder": "zoek DBK",
         "dbk": "DBK",
-        "dbkplaceholder": "search DBK",
+        "dbkplaceholder": "zoek DBK",
         "oms": "OMS",
-        "omsplaceholder": "search OMS",
-        "address": "Address",
-        "addressplaceholder": "search Address",
-        "coordinates": "Coordinates",
-        "coordplaceholder": "search coordinates"
+        "omsplaceholder": "zoek OMS",
+        "address": "Adres",
+        "addressplaceholder": "zoek adres",
+        "coordinates": "Coordinaten",
+        "coordplaceholder": "zoek coordinaten"
     },
     "eughs": {
         "intro": "Het Globally Harmonised System van de Verenigde Naties (VN-GHS) is in 2002 door de VN vastgesteld",

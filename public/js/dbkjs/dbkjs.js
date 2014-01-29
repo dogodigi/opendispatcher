@@ -181,7 +181,7 @@ dbkjs.init = function() {
                         data.regio.gebied.zoom
                         );
             }
-            if (dbkjs.options.regio.titel){
+            if (dbkjs.options.regio.titel) {
                 document.title = dbkjs.options.regio.titel;
             }
             dbkjs.challengeAuth();
@@ -327,36 +327,36 @@ dbkjs.successAuth = function() {
 };
 
 $(document).ready(function() {
-    document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
-    $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> Informatie', 'right:0;bottom:0;'));
-    $('body').append(dbkjs.util.createDialog('bagpanel', '<i class="icon-home"></i> BAG', 'right:0;bottom:0;'));
-    $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="icon-info-sign"></i> Klik informatie', 'right:0;bottom:0;'));
-    // tab er aan hangen.
-    dbkjs.wms_panel = dbkjs.util.createTabbable();
-    $('#wmsclickpanel_b').append(dbkjs.wms_panel);
-    $('body').append(dbkjs.util.createDialog('minimappanel', '<i class="icon-picture"></i> Referentiekaart', 'bottom:0;'));
-    $('.dialog').drags({handle: '.panel-heading'});
-    $('.btn-group').drags({handle: '.drag-handle'});
-    dbkjs.util.setModalTitle('overlaypanel', 'Lagen');
-    dbkjs.util.setModalTitle('baselayerpanel', 'Basiskaarten');
-    dbkjs.init();
-
-    $('#infopanel_b').html(dbkjs.options.info);
-    $('.btn').click(function() {
-        if (this.id === "tb03") {
-            $('#infopanel').toggle();
-            //check of de infopanel visible of hidden is
-            if ($('#infopanel').is(":visible")) {
-                dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
-            }
-        } else if (this.id === "c_minimap") {
-            $('#minimappanel').toggle();
-        } else if (this.id === "c_print") {
-            if (dbkjs.map) {
-                if (dbkjs.modules.print) {
-                    dbkjs.modules.print.printdirect(dbkjs.map, 2);
+    // Make sure i18n is initialized
+    i18n.init(function(t) {
+        $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
+        $('body').append(dbkjs.util.createDialog('bagpanel', '<i class="icon-home"></i> ' + t("dialogs.bag"), 'right:0;bottom:0;'));
+        $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
+        dbkjs.wms_panel = dbkjs.util.createTabbable();
+        $('#wmsclickpanel_b').append(dbkjs.wms_panel);
+        $('body').append(dbkjs.util.createDialog('minimappanel', '<i class="icon-picture"></i> ' + i18n.t("dialogs.refmap"), 'bottom:0;'));
+        document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
+        $('.dialog').drags({handle: '.panel-heading'});
+        $('.btn-group').drags({handle: '.drag-handle'});
+        dbkjs.util.setModalTitle('overlaypanel', i18n.t('app.overlays'));
+        dbkjs.util.setModalTitle('baselayerpanel', i18n.t('app.baselayers'));
+        dbkjs.init();
+        $('#infopanel_b').html(dbkjs.options.info);
+        $('.btn').click(function() {
+            if (this.id === "tb03") {
+                $('#infopanel').toggle();
+                if ($('#infopanel').is(":visible")) {
+                    dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
+                }
+            } else if (this.id === "c_minimap") {
+                $('#minimappanel').toggle();
+            } else if (this.id === "c_print") {
+                if (dbkjs.map) {
+                    if (dbkjs.modules.print) {
+                        dbkjs.modules.print.printdirect(dbkjs.map, 2);
+                    }
                 }
             }
-        }
+        });
     });
 });
