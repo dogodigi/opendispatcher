@@ -52,7 +52,6 @@
     },
     "search":{
         "search": "Zoek",
-        "searchplaceholder": "zoek DBK",
         "dbk": "DBK",
         "dbkplaceholder": "zoek DBK",
         "oms": "OMS",
@@ -60,7 +59,7 @@
         "address": "Adres",
         "addressplaceholder": "zoek adres",
         "coordinates": "Coordinaten",
-        "coordplaceholder": "zoek coordinaten"
+        "coordplaceholder": "lon,lat of X,Y punt voor decimaal"
     },
     "eughs": {
         "intro": "Het Globally Harmonised System van de Verenigde Naties (VN-GHS) is in 2002 door de VN vastgesteld",

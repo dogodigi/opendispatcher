@@ -20,7 +20,7 @@ dbkjs.Layer = dbkjs.Class({
         
         if(!options.singleTile){
             layerOptions.tiled = true;
-            layerOptions.tilesorigin = [dbkjs.map.maxExtent.left, dbkjs.map.maxExtent.bottom];
+            layerOptions.tilesorigin = dbkjs.map.maxExtent.left + ',' + dbkjs.map.maxExtent.bottom;
         }
         
         this.id = OpenLayers.Util.createUniqueID("dbkjs_layer_");

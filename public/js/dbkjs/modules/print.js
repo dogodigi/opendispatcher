@@ -199,7 +199,9 @@ dbkjs.modules.print = {
         // ensure that the baseLayer is the first one in the encoded list
         var layers = map.layers.concat(); //concat results in a new array
         //layers.remove(map.baseLayer);
-        //layers.unshift(map.baseLayer);
+        var a = layers.indexOf(map.baseLayer);
+        layers.splice(a,1);
+        layers.unshift(map.baseLayer);
 
         $.each(layers, function(layer_idx, layer) {
             if (layer.name !== null && "Feature,feature_sketch,BAG".indexOf(layer.name) === -1) {

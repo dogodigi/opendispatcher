@@ -16,7 +16,7 @@ dbkjs.modules.search = {
         var search_div = $('#btn-grp-search');
         var search_group = $('<div class="input-group navbar-btn"></div>');
         var search_pre = $('<span id="search-add-on" class="input-group-addon"><i class="icon-building"></i></span>');
-        var search_input = $('<input id="search_input" name="search_input" type="text" class="form-control" placeholder="' + i18n.t("search.searchplaceholder") + '">');
+        var search_input = $('<input id="search_input" name="search_input" type="text" class="form-control" placeholder="' + i18n.t("search.dbkplaceholder") + '">');
         var search_btn_grp = $(
                 '<div class="input-group-btn pull-right">' +
                 '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' + i18n.t("search.search") + ' <span class="caret"></span></button>' +
