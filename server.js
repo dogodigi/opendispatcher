@@ -2,7 +2,9 @@ var express = require('express'),
         routes = require('./routes'),
         http = require('http'),
         path = require('path'),
-        i18n = require('i18next');
+        i18n = require('i18next'),
+        dbk = require('./controllers/dbk.js');
+var anyDB = require('any-db');
 
 global.conf = require('nconf');
 
@@ -31,7 +33,13 @@ i18n.init({
     saveMissing: true,
     debug: false
 });
-
+var dbURL = 'postgres://' + 
+        global.conf.get('database:user') + ':' + 
+        global.conf.get('database:password') + '@' + 
+        global.conf.get('database:host') + ':' + 
+        global.conf.get('database:port') + '/' + 
+        global.conf.get('database:dbname');
+global.pool = anyDB.createPool(dbURL, {min: 2, max: 20});
 var app = express();
 
 // all environments
@@ -74,10 +82,12 @@ app.configure(function() {
 
 i18n.registerAppHelper(app);
 i18n.serveClientScript(app)
-	    .serveDynamicResources(app)
-	    .serveMissingKeyRoute(app);
+        .serveDynamicResources(app)
+        .serveMissingKeyRoute(app);
 
 app.get('/', routes.index);
+app.get('/api/object/:id', dbk.getDBKObject);
+app.get('/api/gebied/:id', dbk.getDBKGebied);
 app.get('/data/regio.json', routes.regio);
 //app.post('/v', routes.validate_POST);
 //app.get('/v/:token', routes.validate_GET);

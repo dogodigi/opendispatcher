@@ -2,6 +2,13 @@
     "http": {
         "port": 3000
     },
+    "database": {
+      "user": "postgres",
+      "password": "postgres",
+      "host": "localhost",
+      "port": 5432,
+      "dbname": "brabantnoord"
+    },
     "regio": {
         "regio": {
             "id": "brabantnoord",

@@ -11,6 +11,9 @@
         "i18next": "*",
         "less-middleware": "*",
         "jade": "*",
-        "nconf": "*"
+        "nconf": "*",
+        "any-db": "*",
+        "any-db-postgres": "*",
+        "pg": "*"
     }
 }
