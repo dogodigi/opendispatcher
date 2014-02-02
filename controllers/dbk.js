@@ -11,7 +11,8 @@ exports.getDBKObject = function(req, res) {
                 if(err) {
                     res.json(err);
                 } else {
-                    res.json(result.rows);
+                    //only return first row
+                    res.json(result.rows[0]);
                 }
                 return;
             }
@@ -32,7 +33,7 @@ exports.getDBKGebied = function(req, res) {
                 if(err) {
                     res.json(err);
                 } else {
-                    res.json(result.rows);
+                    res.json(result.rows[0]);
                 }
                 return;
             }
