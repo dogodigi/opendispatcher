@@ -55,7 +55,7 @@ dbkjs.modules.gevaren = {
         );
         _obj.layer.dbkjsParent = _obj;
         dbkjs.map.addLayers([_obj.layer]);
-
+        dbkjs.map.setLayerIndex(_obj.layer, 3);
         // vinkje op webpagina aan/uitzetten
         var dv_panel = $('<div class="panel"></div>');
         var dv_panel_heading = $('<div class="panel-heading"></div>');
