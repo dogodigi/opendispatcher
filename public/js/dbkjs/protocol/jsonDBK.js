@@ -51,9 +51,9 @@ dbkjs.protocol.jsonDBK = {
             if (_obj.constructAlgemeen(response.DBKObject)) {
                 _obj.constructGevaarlijkeStof(response.DBKObject.gevaarlijkestof);
                 _obj.constructContact(response.DBKObject.contact);
-                //_obj.constructBijzonderheid(response.DBKObject.bijzonderheid);
-                //_obj.constructVerblijf(response.DBKObject.verblijf);
-                //_obj.constructMedia(response.DBKObject.foto);
+                _obj.constructBijzonderheid(response.DBKObject.bijzonderheid);
+                _obj.constructVerblijf(response.DBKObject.verblijf);
+                _obj.constructMedia(response.DBKObject.foto);
                 div.append(_obj.panel_group);
                 div.append(_obj.panel_tabs);
                 $('#infopanel_b').html(div);
@@ -209,14 +209,9 @@ dbkjs.protocol.jsonDBK = {
     },
     constructBijzonderheid: function(bijzonderheid) {
         var _obj = dbkjs.protocol.jsonDBK;
+        var id = 'collapse_bijzonderheid_' + dbkjs.options.feature.identificatie;
         if (bijzonderheid) {
-            _obj.feature.bijzonderheden = [];
-            var bijzonderheid_div = $('<div class="tab-pane" id="collapse_bijzonderheid_' + _obj.feature.id + '"></div>');
-            if (bijzonderheid["dbk:Bijzonderheid"]) {
-                var temp = bijzonderheid;
-                bijzonderheid = [];
-                bijzonderheid.push(temp);
-            }
+            var bijzonderheid_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var bijzonderheid_table_div = $('<div class="table-responsive"></div>');
             var bijzonderheid_table = $('<table class="table table-hover"></table>');
             bijzonderheid_table.append('<tr><th>soort</th><th>informatie</th></tr>');
@@ -227,11 +222,9 @@ dbkjs.protocol.jsonDBK = {
                 Repressie: {titel: 'Repressie', waarde: ''}
             };
             $.each(bijzonderheid, function(bijzonderheid_index, waarde) {
-                var soort = waarde["dbk:Bijzonderheid"]["dbk:soort"].value;
-                if (soort) {
-                    var bijz = {soort: soort, tekst: waarde["dbk:Bijzonderheid"]["dbk:tekst"].value};
-                    _obj.feature.bijzonderheden.push(bijz);
-                    set[soort].waarde += bijz.tekst + '<br>';
+                if (!dbkjs.util.isJsonNull(waarde.soort)) {
+                    var bijz = {soort: waarde.soort, tekst: waarde.tekst};
+                    set[waarde.soort].waarde += bijz.tekst + '<br>';
                 }
             });
             $.each(set, function(set_idx, set_entry) {
@@ -247,98 +240,95 @@ dbkjs.protocol.jsonDBK = {
             bijzonderheid_table_div.append(bijzonderheid_table);
             bijzonderheid_div.append(bijzonderheid_table_div);
             _obj.panel_group.append(bijzonderheid_div);
-            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_bijzonderheid_' + _obj.feature.id + '">Bijzonderheden</a></li>');
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">Bijzonderheden</a></li>');
         } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#collapse_bijzonderheid_' + _obj.feature.id + '">Bijzonderheden</a></li>');
+            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">Bijzonderheden</a></li>');
         }
     },
     constructMedia: function(foto) {
         var _obj = dbkjs.protocol.jsonDBK;
+        var id = 'collapse_foto_' + dbkjs.options.feature.identificatie;
+        var car_id = 'carousel_foto_' + dbkjs.options.feature.identificatie;
         if (foto) {
-            _obj.feature.images = [];
-            var foto_div = $('<div class="tab-pane" id="collapse_foto_' + _obj.feature.id + '"></div>');
-            var image_carousel = $('<div id="carousel_foto_' + _obj.feature.id + '" class="carousel slide" data-interval="false"></div>');
+            dbkjs.options.feature.images = [];
+            var foto_div = $('<div class="tab-pane" id="' + id + '"></div>');
+            var image_carousel = $('<div id="' + car_id + '" class="carousel slide" data-interval="false"></div>');
             var image_carousel_inner = $('<div class="carousel-inner"></div>');
-            //if (foto["dbk:Foto"]) {
-            if (foto["dbk:Foto"]) {
-                var temp = foto;
-                foto = [];
-                foto.push(temp);
-            }
-
             var image_carousel_nav = $('<ol class="carousel-indicators"></ol>');
             $.each(foto, function(foto_index, waarde) {
-                var url = waarde["dbk:Foto"]["dbk:URL"].value;
-                var naam = waarde["dbk:Foto"]["dbk:naam"].value;
+                var active = '';
                 if (foto_index === 0) {
                     active = 'active';
                 } else {
                     active = '';
                 }
-                var url_arr = url.split(".");
-                var extension = url_arr[url_arr.length - 1];
                 var timestamp = new Date().getTime();
-                if (extension === "pdf" || extension === "doc" || extension === "docx") {
-                    image_carousel_inner.append('<div class="item ' + active + '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + url + '" target="_blank"><h1><i class="icon-download icon-large"></h1></i></a><h3>' + waarde["dbk:Foto"]["dbk:naam"].value + '</h3><a href="' + url + '" target="_blank"><h2>Download bestand</h2></a></div></div>');
+                var realpath = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/media/' + dbkjs.options.regio.id + '/' + waarde.URL;
+                if (waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
+                    image_carousel_inner.append('<div class="item ' + active + 
+                            '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath + 
+                            '" target="_blank"><h1><i class="icon-download icon-large"></h1></i></a><h3>' + 
+                            waarde.naam + 
+                            '</h3><a href="' + url + '" target="_blank"><h2>Download bestand</h2></a></div></div>');
                 } else {
-                    image_carousel_inner.append('<div class="item ' + active + '"><img src="' + url + '?timestamp=' + timestamp + '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' + naam + '</h3><p></p></div></div>');
-                    _obj.feature.images.push(url);
+                    image_carousel_inner.append('<div class="item ' + active + '"><img src="' + realpath + '?timestamp=' + 
+                            timestamp + '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' + 
+                            waarde.naam + '</h3><p></p></div></div>');
+                    dbkjs.options.feature.images.push(realpath);
                 }
 
                 if (foto.length > 1) {
-                    image_carousel_nav.append('<li data-target="#carousel_foto_' + _obj.feature.id + '" data-slide-to="' + foto_index + '" class="' + active + '"></li>');
+                    image_carousel_nav.append('<li data-target="#' + car_id + '" data-slide-to="' + 
+                            foto_index + '" class="' + active + '"></li>');
                 }
             });
             image_carousel.append(image_carousel_nav);
             image_carousel.append(image_carousel_inner);
             if (foto.length > 1) {
-                image_carousel.append('<a class="left carousel-control" href="#carousel_foto_' + _obj.feature.id + '" data-slide="prev">' +
+                image_carousel.append('<a class="left carousel-control" href="#' + car_id + '" data-slide="prev">' +
                         '<span class="icon-prev"></span></a>');
-                image_carousel.append('<a class="right carousel-control" href="#carousel_foto_' + _obj.feature.id + '" data-slide="next">' +
+                image_carousel.append('<a class="right carousel-control" href="#' + car_id + '" data-slide="next">' +
                         '<span class="icon-next"></span></a>');
             }
             foto_div.append(image_carousel);
             _obj.panel_group.append(foto_div);
-            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_foto_' + _obj.feature.id + '">Media</a></li>');
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">Media</a></li>');
         } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#collapse_foto_' + _obj.feature.id + '">Media</a></li>');
+            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">Media</a></li>');
         }
     },
     constructVerblijf: function(verblijf) {
         var _obj = dbkjs.protocol.jsonDBK;
+        var id = 'collapse_verblijf_' + dbkjs.options.feature.identificatie;
         if (verblijf) {
-            _obj.feature.verblijf = [];
-            var verblijf_div = $('<div class="tab-pane" id="collapse_verblijf_' + _obj.feature.id + '"></div>');
-            //if (verblijf["dbk:AantalPersonen"]) {
-            if (verblijf["dbk:AantalPersonen"]) {
-                var temp = verblijf;
-                verblijf = [];
-                verblijf.push(temp);
-            }
+            var verblijf_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var verblijf_table_div = $('<div class="table-responsive"></div>');
             var verblijf_table = $('<table class="table table-hover"></table>');
-            verblijf_table.append('<tr><th>van</th><th>tot</th><th>aantal</th><th>groep</th></tr>');
+            verblijf_table.append('<tr><th>van</th><th>tot</th><th>aantal</th><th>nzr</th><th>groep</th><th>dagen</th></tr>');
             $.each(verblijf, function(verblijf_index, waarde) {
-                var verb = {
-                    tijdvakbegintijd: waarde["dbk:AantalPersonen"]["dbk:tijdvakBegintijd"].value.replace(":00Z", '').replace('Z', ''),
-                    tijdvakeindtijd: waarde["dbk:AantalPersonen"]["dbk:tijdvakEindtijd"].value.replace(":00Z", '').replace('Z', ''),
-                    aantal: waarde["dbk:AantalPersonen"]["dbk:aantal"].value,
-                    typeaanwezigheidsgroep: waarde["dbk:AantalPersonen"]["dbk:typeAanwezigheidsgroep"].value
-                };
-                _obj.feature.verblijf.push(verb);
+                var dagen = '';
+                dagen += !waarde.maandag ? '<span class="label">ma</span>' : '<span class="label label-success">ma</span>';
+                dagen += !waarde.dinsdag ? '<span class="label">di</span>' : '<span class="label label-success">di</span>';
+                dagen += !waarde.woensdag ? '<span class="label">wo</span>' : '<span class="label label-success">wo</span>';
+                dagen += !waarde.donderdag ? '<span class="label">do</span>' : '<span class="label label-success">do</span>';
+                dagen += !waarde.vrijdag ? '<span class="label">vr</span>' : '<span class="label label-success">vr</span>';
+                dagen += !waarde.zaterdag ? '<span class="label">za</span>' : '<span class="label label-success">za</span>';
+                dagen += !waarde.zondag ? '<span class="label">zo</span>' : '<span class="label label-success">zo</span>';
                 verblijf_table.append('<tr>' +
-                        '<td>' + verb.tijdvakbegintijd + '</td>' +
-                        '<td>' + verb.tijdvakeindtijd + '</td>' +
-                        '<td>' + verb.aantal + '</td>' +
-                        '<td>' + verb.typeaanwezigheidsgroep + '</td>' +
+                        '<td>' + waarde.tijdvakBegintijd.substring(0,5) + '</td>' +
+                        '<td>' + waarde.tijdvakEindtijd.substring(0,5) + '</td>' +
+                        '<td>' + waarde.aantal + '</td>' +
+                        '<td>' + waarde.aantalNietZelfredzaam + '</td>' +
+                        '<td>' + waarde.typeAanwezigheidsgroep + '</td>' +
+                        '<td>' + dagen + '</td>' +
                         '</tr>');
             });
             verblijf_table_div.append(verblijf_table);
             verblijf_div.append(verblijf_table_div);
             _obj.panel_group.append(verblijf_div);
-            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_verblijf_' + _obj.feature.id + '">Verblijf</a></li>');
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">Verblijf</a></li>');
         } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#collapse_verblijf_' + _obj.feature.id + '">Verblijf</a></li>');
+            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">Verblijf</a></li>');
         }
     },
     getObject: function(id) {
