@@ -2,6 +2,7 @@
 /node_modules
 /css/dbk.min.css
 /js/dbk.min.js
+config.json
 *~
 dummy.xml
 *.zip
