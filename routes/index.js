@@ -11,59 +11,19 @@ exports.nen1414 = function(req, res) {
     res.render('nen1414', {title: 'nen1414'});
 };
 exports.index = function(req, res) {
+    if(req.headers['x-safetymaps-dn']){
+        var arr1 = req.headers['x-safetymaps-dn'].split('/');
+        var user = {};
+        for (index = 0; index < arr1.length; ++index) {
+            var arr2 = arr1[index].split('=');
+            user[arr2[0]] = arr2[1];
+        }
+        console.log(user);
+    }
     res.render('index', {title: 'index pagina'});
 };
 exports.regio = function(req, res) {
     res.send(global.conf.get("regio"));
-};
-exports.bag_service = function(req,res){
-    var queryparams = req.query;
-    var options = {
-        host: "view.safetymaps.nl",
-        method: 'GET',
-        port: 80,
-        path: '/bag/' 
-                + req.params.service + '?' 
-                + querystring.stringify(queryparams)
-    };
-    var request = http.request(options,function(response){
-      response.pipe(res);
-    });
-    request.end();
-};
-
-exports.gs_service = function(req, res) {
-    var queryparams = req.query;
-    var options = {
-        host: "view.safetymaps.nl",
-        method: 'GET',
-        port: 80,
-        path: '/geoserver/' 
-                + req.params.service + '?' 
-                + querystring.stringify(queryparams)
-    };
-    var request = http.request(options, function(response) {
-        console.log(response.headers);
-        res.writeHead(200, response.headers);
-        response.pipe(res);
-    });
-    request.end();
-};
-
-exports.gs_workspace = function(req, res) {
-    var queryparams = req.query;
-    var options = {
-        host: "view.safetymaps.nl",
-        method: 'GET',
-        port: 80,
-        path: '/geoserver/' + req.params.workspace + '/' + req.params.service + '?' + querystring.stringify(queryparams)
-    };
-    var request = http.request(options, function(response) {
-        console.log(response);
-        response.pipe(res);
-        request.end();
-    });
-    
 };
 
 exports.validate_GET = function(req, res) {

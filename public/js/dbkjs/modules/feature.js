@@ -389,7 +389,7 @@ dbkjs.modules.feature = {
         $(ret_title).click(function() {
             dbkjs.options.dbk = feature.attributes.identificatie;
             dbkjs.modules.updateFilter(feature.attributes.identificatie);
-            dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
+            dbkjs.protocol.jsonDBK.process(dbkjs.options.dbk);
             if (dbkjs.map.zoom < 13) {
                 dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
             } else {
@@ -421,7 +421,7 @@ dbkjs.modules.feature = {
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             dbkjs.options.dbk = datum.id;
             dbkjs.modules.updateFilter(datum.id);
-            dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
+            dbkjs.protocol.jsonDBK.process(dbkjs.options.dbk);
             if (dbkjs.map.zoom < 13) {
                 dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
             } else {
@@ -452,7 +452,7 @@ dbkjs.modules.feature = {
         });
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             dbkjs.modules.updateFilter(datum.id);
-            dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
+            dbkjs.protocol.jsonDBK.process(dbkjs.options.dbk);
             if (dbkjs.map.zoom < 13) {
                 dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
             } else {
@@ -497,7 +497,7 @@ dbkjs.modules.feature = {
                 }
             } else {
                 _obj.currentCluster = [];
-                dbkjs.protocol.imdbk21.process(e.feature.attributes.identificatie);
+                dbkjs.protocol.jsonDBK.process(e.feature.attributes.identificatie);
                 _obj.zoomToFeature(e.feature);
                 $('#infopanel').hide();
             }

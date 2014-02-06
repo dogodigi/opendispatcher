@@ -345,9 +345,9 @@ $(document).ready(function() {
         $('.btn').click(function() {
             if (this.id === "tb03") {
                 $('#infopanel').toggle();
-                if ($('#infopanel').is(":visible")) {
-                    dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
-                }
+                //if ($('#infopanel').is(":visible")) {
+                //    dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
+                //}
             } else if (this.id === "c_minimap") {
                 $('#minimappanel').toggle();
             } else if (this.id === "c_print") {

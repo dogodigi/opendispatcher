@@ -11,7 +11,7 @@ dbkjs.modules.print = {
 
         $('#btn_print').click(function() {
             if (!dbkjs.util.isJsonNull(dbkjs.options.dbk) && dbkjs.options.dbk !== 0) {
-                var currentFeature = dbkjs.protocol.imdbk21.feature;
+                var currentFeature = dbkjs.options.feature;
                 var testObject = {
                     "options": {
                         "units": "m",

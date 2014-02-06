@@ -3,8 +3,11 @@ var express = require('express'),
         http = require('http'),
         path = require('path'),
         i18n = require('i18next'),
-        dbk = require('./controllers/dbk.js');
-var anyDB = require('any-db');
+        anyDB = require('any-db'),
+        web = require('./controllers/web.js'),
+        dbk = require('./controllers/dbk.js'),
+        bag = require('./controllers/bag.js');
+
 
 global.conf = require('nconf');
 
@@ -39,8 +42,19 @@ var dbURL = 'postgres://' +
         global.conf.get('database:host') + ':' + 
         global.conf.get('database:port') + '/' + 
         global.conf.get('database:dbname');
+
+var dbURL2 = 'postgres://webdev:wNgQ7tmRy5pXLp@localhost:5433/bag';
+
 global.pool = anyDB.createPool(dbURL, {min: 2, max: 20});
-var app = express();
+global.bag = anyDB.createPool(dbURL2, {min: 2, max: 20});
+var app = express(
+//    {
+//        requestCert: true,
+//        // If specified as "true", no unauthenticated traffic
+//        // will make it to the route specified.
+//        rejectUnauthorized: true
+//    }
+);
 
 // all environments
 app.configure(function() {
@@ -62,11 +76,11 @@ app.configure(function() {
         prefix: '/public',
         debug: true
     }));
-
     app.use(express.bodyParser());
 
     app.use(express.methodOverride());
     app.use(express.static(path.join(__dirname, 'public')));
+    app.use('/web', express.static(__dirname + '/web'));
     app.use(app.router);
     app.use(clientErrorHandler);
     app.use(function(err, req, res, next) {
@@ -88,16 +102,15 @@ i18n.serveClientScript(app)
 app.get('/', routes.index);
 app.get('/api/object/:id', dbk.getDBKObject);
 app.get('/api/gebied/:id', dbk.getDBKGebied);
+app.get('/api/bag/adres/:id', bag.getAdres);
+app.get('/api/bag/panden/:id', bag.getPanden);
 app.get('/data/regio.json', routes.regio);
-//app.post('/v', routes.validate_POST);
-//app.get('/v/:token', routes.validate_GET);
-//app.all('/geoserver/:service',routes.gs_service);
-//app.all('/geoserver/:workspace/:service',routes.gs_workspace);
-//app.all('/bag/:service',routes.bag_service);
+app.post('/validate', web.validate_POST);
+app.get('/validate/:token', web.validate_GET);
 app.get('/eughs.html', routes.eughs);
 app.get('/nen1414.html', routes.nen1414);
 // Create an HTTP service.
-http.createServer(app).listen(app.get('port'), function() {
+app.listen(app.get('port'), function() {
     console.log("Express server listening on port " + app.get('port'));
 });
 
