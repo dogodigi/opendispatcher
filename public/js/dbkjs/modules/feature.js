@@ -350,34 +350,40 @@ dbkjs.modules.feature = {
         var _obj = dbkjs.modules.feature;
         _obj.layer.destroyFeatures();
         var params = {
-            timestamp: new Date().getTime(),
-            bbox: dbkjs.map.getMaxExtent().toBBOX(0),
-            service: "WFS",
-            version: "1.0.0",
-            request: "GetFeature",
-            typename: _obj.namespace + ":WMS_DBKFeature",
-//            //maxFeatures: 500, // todo let op; deze max kan in de toekomst problemen geven
-            outputFormat:"application/json"
+            srid: 28992,
+            timestamp: new Date().getTime()
         };
-        $.ajax({
-            type: "GET",
-            url: _obj.url + 'ows',
-            data: params,
-            dataType: "json",
-            success: function(data) {
-                var geojson_format = new OpenLayers.Format.GeoJSON();
+        $.getJSON('api/features', params).done(function(data) {
+            var geojson_format = new OpenLayers.Format.GeoJSON();
                 _obj.features = geojson_format.read(data);
+                console.log(_obj.features);
                 _obj.layer.addFeatures(_obj.features);
                 _obj.search_dbk();
                 _obj.getActive();
-            },
-            error: function() {
-                return false;
-            },
-            complete: function() {
-                return false;
-            }
+        }).fail(function( jqxhr, textStatus, error ) {
+            dbkjs.options.feature = null;
+            dbkjs.util.alert('Fout', ' Features konden niet worden ingelezen', 'alert-danger');
         });
+        
+//        $.ajax({
+//            type: "GET",
+//            url: _obj.url + 'ows',
+//            data: params,
+//            dataType: "json",
+//            success: function(data) {
+//                var geojson_format = new OpenLayers.Format.GeoJSON();
+//                _obj.features = geojson_format.read(data);
+//                _obj.layer.addFeatures(_obj.features);
+//                _obj.search_dbk();
+//                _obj.getActive();
+//            },
+//            error: function() {
+//                return false;
+//            },
+//            complete: function() {
+//                return false;
+//            }
+//        });
     },
     featureInfohtml: function(feature) {
         var ret_title = $('<li></li>');

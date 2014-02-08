@@ -4,8 +4,8 @@ exports.getAdres = function(req, res) {
     if (req.query) {
         id = req.params.id;
         //var query_str = 'select * from "dbk"."DBKObject_Feature" d JOIN (select * from "dbk"."type_aanwezigheidsgroep") t   ;';
-        var query_str = 'select openbareruimtenaam, huisnummer, huisletter, huisnummertoevoeging, postcode, woonplaatsnaam, gemeentenaam, provincienaam, typeadresseerbaarobject, adresseerbaarobject, nummeraanduiding, nevenadres, st_asgeojson(geopunt) geopunt from bag8jan2014.adres where adresseerbaarobject = $1';
-        global.bag.query(query_str, [id],
+        var query_str = 'select openbareruimtenaam, huisnummer, huisletter, huisnummertoevoeging, postcode, woonplaatsnaam, gemeentenaam, provincienaam, typeadresseerbaarobject, adresseerbaarobject, nummeraanduiding, nevenadres, st_asgeojson(st_transform(geopunt,$2)) geopunt from bag8jan2014.adres where adresseerbaarobject = $1';
+        global.bag.query(query_str, [id,4326],
             function(err, result){
                 if(err) {
                     res.json(err);

@@ -100,8 +100,9 @@ i18n.serveClientScript(app)
         .serveMissingKeyRoute(app);
 
 app.get('/', routes.index);
-app.get('/api/object/:id', dbk.getDBKObject);
-app.get('/api/gebied/:id', dbk.getDBKGebied);
+app.get('/api/object/:id', dbk.getObject);
+app.get('/api/gebied/:id', dbk.getGebied);
+app.get('/api/features', dbk.getFeatures);
 app.get('/api/bag/adres/:id', bag.getAdres);
 app.get('/api/bag/panden/:id', bag.getPanden);
 app.get('/data/regio.json', routes.regio);

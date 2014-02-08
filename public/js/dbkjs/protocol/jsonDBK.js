@@ -332,11 +332,11 @@ dbkjs.protocol.jsonDBK = {
         }
     },
     getObject: function(id) {
-        var data = {
+        var params = {
             timestamp: new Date().getTime()
         };
-        $.getJSON('api/object/' + id, data).done(function(json) {
-            dbkjs.protocol.jsonDBK.info(json);
+        $.getJSON('api/object/' + id, params).done(function(data) {
+            dbkjs.protocol.jsonDBK.info(data);
         }).fail(function( jqxhr, textStatus, error ) {
             dbkjs.options.feature = null;
             dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
