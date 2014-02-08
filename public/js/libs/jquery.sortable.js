@@ -82,4 +82,4 @@ $.fn.sortable = function(options) {
 		});
 	});
 };
-})(jQuery);
+})(window.jQuery);

@@ -38,7 +38,7 @@ dbkjs.modules.district = {
                 _obj.bounds = _obj.features[0].geometry.getBounds().clone();
                 var district_li = $('<li><a href="#district_0">' + _obj.features[0].attributes.naam + '</a></li>');
                 district_li.click(function() {
-                    var n = parseInt($(this).children('a:first').attr('href').replace("#district_", ""));
+                    var n = parseInt($(this).children('a').first().attr('href').replace("#district_", ""));
                     $('#geselecteerd_district').html(_obj.features[n].attributes.naam);
                     var bounds = _obj.features[n].geometry.getBounds().clone();
                     dbkjs.map.zoomToExtent(bounds, false);
@@ -51,7 +51,7 @@ dbkjs.modules.district = {
                     district_li = $('<li><a href="#district_' + i + '">' + _obj.features[i].attributes.naam + '</a></li>');
                     _obj.ul.append(district_li);
                     district_li.click(function() {
-                        var n = parseInt($(this).children('a:first').attr('href').replace("#district_", ""));
+                        var n = parseInt($(this).children('a').first().attr('href').replace("#district_", ""));
                         $('#geselecteerd_district').html(_obj.features[n].attributes.naam);
                         var bounds = _obj.features[n].geometry.getBounds().clone();
                         dbkjs.map.zoomToExtent(bounds, false);

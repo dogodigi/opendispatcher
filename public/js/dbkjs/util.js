@@ -26,9 +26,9 @@ dbkjs.util = {
     },
     setModalTitle: function(modal_id, title) {
         if (title instanceof $) {
-            $('#' + modal_id).find('div.modal-header:first').html(title);
+            $('#' + modal_id).find('div.modal-header').first().html(title);
         } else if (typeof (title) === "string") {
-            $('#' + modal_id).find('div.modal-header:first').html('<h4 class="modal-title">' + title + '</h4>');
+            $('#' + modal_id).find('div.modal-header').first().html('<h4 class="modal-title">' + title + '</h4>');
         }
 
     },
@@ -379,8 +379,8 @@ dbkjs.util = {
      * @returns {string}
      */
     appendTab: function(parent_id, tab_title, tab_content, active, id) {
-        var parent_ul = $('#' + parent_id + ' ul:first');
-        var parent_tab = $('#' + parent_id + ' .tab-content:first');
+        var parent_ul = $('#' + parent_id + ' ul').first();
+        var parent_tab = $('#' + parent_id + ' .tab-content').first();
 
         var li;
         var ref;
@@ -416,8 +416,8 @@ dbkjs.util = {
     removeTab: function(parent_id, id) {
         $('#' + id + '_tab').remove();
         $('#' + id).remove();
-        $('#' + parent_id + ' ul:first').children().first().addClass('active');
-        $('#' + parent_id + ' .tab-content:first').children().first().addClass('active');
+        $('#' + parent_id + ' ul').first().children().first().addClass('active');
+        $('#' + parent_id + ' .tab-content').first().children().first().addClass('active');
     },
     createDialog: function(id, title, styleoptions) {
         if (!styleoptions) {

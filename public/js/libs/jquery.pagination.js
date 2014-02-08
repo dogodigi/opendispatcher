@@ -7,8 +7,9 @@
  * @param {Object} opts Several options (see README for documentation)
  * @return {Object} jQuery Object
  */
-jQuery.fn.pagination = function(maxentries, opts){
-	opts = jQuery.extend({
+(function($) {
+$.fn.pagination = function(maxentries, opts){
+	opts = $.extend({
 		items_per_page:10,
 		num_display_entries:10,
 		current_page:0,
@@ -81,12 +82,12 @@ jQuery.fn.pagination = function(maxentries, opts){
 			// Helper function for generating a single link (or a span tag if it's the current page)
 			var appendItem = function(page_id, appendopts){
 				page_id = page_id<0?0:(page_id<np?page_id:np-1); // Normalize page id to sane value
-				appendopts = jQuery.extend({text:page_id+1, classes:""}, appendopts||{});
+				appendopts = $.extend({text:page_id+1, classes:""}, appendopts||{});
 				if(page_id === current_page){
 
-					var lnk = jQuery('<li class="active"><a href="#">'+(appendopts.text)+'</a></li>');
+					var lnk = $('<li class="active"><a href="#">'+(appendopts.text)+'</a></li>');
 				} else {
-					var lnk = jQuery('<li><a href="#">'+(appendopts.text)+'</a></li>')
+					var lnk = $('<li><a href="#">'+(appendopts.text)+'</a></li>')
 						.bind("click", getClickHandler(page_id))
 						.attr('href', opts.link_to.replace(/__id__/,page_id));
 				}
@@ -106,7 +107,7 @@ jQuery.fn.pagination = function(maxentries, opts){
 				}
 				if(opts.num_edge_entries < interval[0] && opts.ellipse_text)
 				{
-					jQuery('<li><a href="#">'+opts.ellipse_text+"</a></li>").appendTo(panel);
+					$('<li><a href="#">'+opts.ellipse_text+"</a></li>").appendTo(panel);
 				}
 			}
 			// Generate interval links
@@ -118,7 +119,7 @@ jQuery.fn.pagination = function(maxentries, opts){
 			{
 				if(np-opts.num_edge_entries > interval[1]&& opts.ellipse_text)
 				{
-					jQuery('<li><a href="#">'+opts.ellipse_text+"</a></li>").appendTo(panel);
+					$('<li><a href="#">'+opts.ellipse_text+"</a></li>").appendTo(panel);
 				}
 				var begin = Math.max(np-opts.num_edge_entries, interval[1]);
 				for(var i=begin; i<np; i++) {
@@ -138,7 +139,7 @@ jQuery.fn.pagination = function(maxentries, opts){
 		maxentries = (!maxentries || maxentries < 0)?1:maxentries;
 		opts.items_per_page = (!opts.items_per_page || opts.items_per_page < 0)?1:opts.items_per_page;
 		// Store DOM element for easy access from all inner functions
-		var panel = jQuery(this);
+		var panel = $(this);
 		// Attach control functions to the DOM element 
 		this.selectPage = function(page_id){ 
             pageSelected(page_id);
@@ -167,5 +168,5 @@ jQuery.fn.pagination = function(maxentries, opts){
         opts.callback(current_page, this);
 	});
 };
-
+})(window.jQuery);
 

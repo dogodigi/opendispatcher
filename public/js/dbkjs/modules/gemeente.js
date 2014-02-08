@@ -38,7 +38,7 @@ dbkjs.modules.gemeente = {
                 _obj.bounds = _obj.features[0].geometry.getBounds().clone();
                 var gem_li = $('<li><a href="#gem_0">' + _obj.features[0].attributes.naam + '</a></li>');
                 gem_li.click(function() {
-                    var n = parseInt($(this).children('a:first').attr('href').replace("#gem_", ""));
+                    var n = parseInt($(this).children('a').first().attr('href').replace("#gem_", ""));
                     $('#geselecteerde_gemeente').html(_obj.features[n].attributes.naam);
                     var bounds = _obj.features[n].geometry.getBounds().clone();
                     dbkjs.map.zoomToExtent(bounds, false);
@@ -49,7 +49,7 @@ dbkjs.modules.gemeente = {
                     gem_li = $('<li><a href="#gem_' + i + '">' + _obj.features[i].attributes.naam + '</a></li>');
                     _obj.ul.append(gem_li);
                     gem_li.click(function() {
-                        var n = parseInt($(this).children('a:first').attr('href').replace("#gem_", ""));
+                        var n = parseInt($(this).children('a').first().attr('href').replace("#gem_", ""));
                         $('#geselecteerde_gemeente').html(_obj.features[n].attributes.naam);
                         var bounds = _obj.features[n].geometry.getBounds().clone();
                         dbkjs.map.zoomToExtent(bounds, false);
