@@ -1,3 +1,24 @@
+exports.getOrganisation = function(req, res) {
+    //where identificatie = 1369659645
+    if (req.query) {
+        id = req.params.id;
+        srid = req.query.srid;
+        if(!srid){
+            srid = 4326;
+        }
+        var query_str = 'select "organisation" from organisation.organisation_json($1)';
+        global.pool.query(query_str, [srid],
+            function(err, result){
+                if(err) {
+                    res.json(err);
+                } else {
+                    res.json(result.rows[0]);
+                }
+                return;
+            }
+        );
+    }
+};
 exports.getObject = function(req, res) {
     //where identificatie = 1369659645
     if (req.query) {

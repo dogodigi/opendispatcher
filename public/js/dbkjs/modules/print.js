@@ -18,7 +18,7 @@ dbkjs.modules.print = {
                         "srs": "EPSG:28992",
                         "layout": "A3 Landscape",
                         "dpi": 150,
-                        "mapTitle": dbkjs.options.regio.titel,
+                        "mapTitle": dbkjs.options.organisation.title,
                         "informelenaam": currentFeature.informelenaam || "",
                         "formelenaam": currentFeature.formelenaam,
                         "bouwlaag": currentFeature.bouwlaag || "",
@@ -138,7 +138,7 @@ dbkjs.modules.print = {
                         "srs": "EPSG:28992",
                         "layout": "A3 lplain",
                         "dpi": 150,
-                        "mapTitle": dbkjs.options.regio.titel
+                        "mapTitle": dbkjs.options.organisation.titel
                     },
                     "pages": [{}]
                 };

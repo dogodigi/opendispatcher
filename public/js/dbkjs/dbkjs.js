@@ -160,30 +160,33 @@ dbkjs.init = function() {
 
     dbkjs.map = new OpenLayers.Map(options);
     dbkjs.map.addLayers(dbkjs.options.baselayers);
-    dbkjs.options.regio = {
-        id: dbkjs.util.getQueryVariable('regio', 'demo')
+    dbkjs.options.organisation = {
+        id: dbkjs.util.getQueryVariable(i18n.t('app.organisation'), 'demo')
     };
-    dbkjs.options.adres = dbkjs.util.getQueryVariable('adres');
-    dbkjs.options.omsnummer = dbkjs.util.getQueryVariable('omsnummer');
-    dbkjs.options.dbk = dbkjs.util.getQueryVariable('dbk');
-
-    $.getJSON('data/regio.json', function(data) {
-        if (data.regio) {
-            dbkjs.options.regio = data.regio;
-            if (data.regio.gebied.geometry.type === "Point") {
+    dbkjs.options.adres = dbkjs.util.getQueryVariable(i18n.t('app.queryAddress'));
+    dbkjs.options.omsnummer = dbkjs.util.getQueryVariable(i18n.t('app.queryNumber'));
+    dbkjs.options.dbk = dbkjs.util.getQueryVariable(i18n.t('app.queryDBK'));
+    var params = {srid: dbkjs.options.projection.srid};
+    $.getJSON('/api/organisation', params).done(function(data) {
+        if (data.organisation) {
+            dbkjs.options.organisation = data.organisation;
+            if (data.organisation.area.geometry.type === "Point") {
                 dbkjs.map.setCenter(
                         new OpenLayers.LonLat(
-                                data.regio.gebied.geometry.coordinates[0],
-                                data.regio.gebied.geometry.coordinates[1]
+                                data.organisation.area.geometry.coordinates[0],
+                                data.organisation.area.geometry.coordinates[1]
                                 ).transform(
                         new OpenLayers.Projection(dbkjs.options.projection.code),
                         dbkjs.map.getProjectionObject()
                         ),
-                        data.regio.gebied.zoom
+                        data.organisation.area.zoom
                         );
+            } else if (data.organisation.area.geometry.type === "Polygon"){
+                var areaGeometry = new OpenLayers.Format.GeoJSON().read(data.organisation.area.geometry, "Geometry");
+                dbkjs.map.zoomToExtent(areaGeometry.getBounds());
             }
-            if (dbkjs.options.regio.titel) {
-                document.title = dbkjs.options.regio.titel;
+            if (dbkjs.options.organisation.title) {
+                document.title = dbkjs.options.organisation.title;
             }
             dbkjs.challengeAuth();
 
@@ -269,28 +272,16 @@ dbkjs.activateClick = function() {
 };
 
 dbkjs.challengeAuth = function() {
-    $.ajax({
-        //perform a dummy request to trigger authentication
-        url: 'geoserver/wms',
-        data: {
-            width: 1,
-            height: 1,
-            srs: dbkjs.options.projection.code,
-            bbox: "0,0,1,1",
-            styles: "",
-            layers: dbkjs.options.regio.workspace + ":WMS_TekstObject",
-            service: "wms",
-            version: "1.3.0",
-            request: "GetMap",
-            format: "image/png"
-        },
-        method: 'GET',
-        //error: function(jqXHR, textStatus, errorThrown) {
-        //},
-        success: function() {
+    var params = {
+        "id":"milo"
+    }
+    $.getJSON('login', params).done(function(data) {
+        if(data.login === 'ok'){
             dbkjs.successAuth();
         }
-
+    }).fail(function( jqxhr, textStatus, error ) {
+        dbkjs.options.feature = null;
+        dbkjs.util.alert('Fout', ' Aanmelden mislukt', 'alert-danger');
     });
 };
 
@@ -313,12 +304,12 @@ dbkjs.successAuth = function() {
     //register modules
     $.each(dbkjs.modules, function(mod_index, module) {
         //Controleer of de regio een eigen logo heeft gedefinieerd
-        if (dbkjs.options.regio.logo) {
-            $('#logo').css('background-image', 'url(' + dbkjs.options.regio.logo + ')');
+        if (dbkjs.options.organisation.logo) {
+            $('#logo').css('background-image', 'url(' + dbkjs.options.organisation.logo + ')');
         }
-        if ($.inArray(mod_index, dbkjs.options.regio.modules) > -1) {
+        if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
             if (module.register) {
-                module.register({namespace: dbkjs.options.regio.workspace, url: 'geoserver/', visible: true});
+                module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true});
             }
         }
     });
@@ -330,7 +321,7 @@ dbkjs.successAuth = function() {
 
 $(document).ready(function() {
     // Make sure i18n is initialized
-    i18n.init(function(t) {
+    i18n.init({lng: "nl-NL" }, function(t) {
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
         $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
         $('body').append(dbkjs.util.createDialog('bagpanel', '<i class="icon-home"></i> ' + t("dialogs.bag"), 'right:0;bottom:0;'));

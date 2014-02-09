@@ -26,26 +26,25 @@ dbkjs.ui.gui = {
                 parent: '#overlaypanel_b2',
                 index: 2
             });
-            var gebieden = new dbkjs.Layer({
-                name: 'Gebieden',
-                url: 'geoserver/dbk/wms',
-                map: dbkjs.map,
-                visibility: true,
-                singleTile: true,
-                getfeatureinfo: function(){},
-                layerOptions: {
-                    layers: 'gebieden'
-                },
-                parent: '#overlaypanel_b2',
-                index: 6
-            });
-            $.each(dbkjs.options.regio.wms, function (wms_k, wms_v){
+            if(dbkjs.options.organisation.modules.gebieden){
+                var gebieden = new dbkjs.Layer({
+                    name: 'Gebieden',
+                    url: 'geoserver/dbk/wms',
+                    map: dbkjs.map,
+                    visibility: true,
+                    singleTile: true,
+                    getfeatureinfo: function(){},
+                    layerOptions: {
+                        layers: 'gebieden'
+                    },
+                    parent: '#overlaypanel_b2',
+                    index: 6
+                });
+            }
+            $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v){
                 var myCapabilities = new dbkjs.Capabilities(
                         {url: wms_v.url, title: wms_v.name, proxy: wms_v.proxy});
             });
-            
-            //var myCapabilities2 = new dbkjs.Capabilities({url: 'geoserver/brabantwater/wms?', title: 'Waterbedrijf'});
-            //var myCapabilities3 = new dbkjs.Capabilities({url: 'risicokaart/ogc_wms_wfs/services?', title: 'Risicokaart'});
         $(parent).append('');
         $(parent).append('<hr>');
         $(parent).append(

@@ -100,12 +100,14 @@ i18n.serveClientScript(app)
         .serveMissingKeyRoute(app);
 
 app.get('/', routes.index);
+app.get('/login', routes.login);
 app.get('/api/object/:id', dbk.getObject);
 app.get('/api/gebied/:id', dbk.getGebied);
 app.get('/api/features', dbk.getFeatures);
 app.get('/api/bag/adres/:id', bag.getAdres);
 app.get('/api/bag/panden/:id', bag.getPanden);
-app.get('/data/regio.json', routes.regio);
+app.get('/api/organisation', dbk.getOrganisation);
+//app.get('/data/regio.json', routes.regio);
 app.post('/validate', web.validate_POST);
 app.get('/validate/:token', web.validate_GET);
 app.get('/eughs.html', routes.eughs);

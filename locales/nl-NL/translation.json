@@ -1,6 +1,10 @@
 {
     "app": {
         "title": "Safetymaps DBK",
+        "queryAddress": "adres",
+        "queryNumber": "omsnummer",
+        "queryDBK": "dbk",
+        "organisation": "regio",
         "error": "Fout",
         "loggedinAs": "U bent ingelogd als:",
         "firstName": "Voornaam",
@@ -50,8 +54,23 @@
       "clickinfo": "Klik informatie",
       "refmap": "Referentie kaart",
       "busyloading": "Bezig met laden van",
-      "invalidImage": "is geen geldige afbeelding",
+      "invalidImage": "geen geldige afbeelding",
       "layerNotFound": "laag niet gevonden (of meer dan 1)"
+    },
+    "care": {
+        "managementinfo": "Management informatie",
+        "details": "Details",
+        "incidents": "Incidenten",
+        "coverage": "Dekkingsplan",
+        "incidentsAndCoverage": "Incidenten en dekkingsplan",
+        "selectPeriod": "Kies een periode",
+        "excesses": "Overschrijding",
+        "dateRange": "Datumbereik",
+        "priority": "Prioriteit",
+        "prio1": "Prio 1",
+        "prio2": "Prio 2",
+        "prio3": "Prio 3",
+        "combinedWithCoverage": "Gekoppeld aan dekkingsplan"
     },
     "search":{
         "search": "Zoek",

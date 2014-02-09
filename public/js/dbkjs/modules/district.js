@@ -3,9 +3,6 @@ window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.district = {
     id: "dbkdistrict",
-    /**
-     * URL naar een statisch boringen bestand in gml formaat
-     */
     features: [],
     url: "/geoserver/ows?",
     namespace: "brabantnoord",

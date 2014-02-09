@@ -253,7 +253,8 @@ dbkjs.protocol.jsonDBK = {
                     active = '';
                 }
                 var timestamp = new Date().getTime();
-                var realpath = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/media/' + dbkjs.options.regio.id + '/' + waarde.URL;
+                var realpath = window.location.protocol + '//' + window.location.hostname + ':' + 
+                        window.location.port + '/media/' + dbkjs.options.organisation.id + '/' + waarde.URL;
                 if (waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
                     image_carousel_inner.append('<div class="item ' + active + 
                             '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath + 
@@ -338,9 +339,11 @@ dbkjs.protocol.jsonDBK = {
             srid: dbkjs.options.projection.srid,
             timestamp: new Date().getTime()
         };
-        OpenLayers.Request.GET({
-            "url": 'api/gebied/' + feature.attributes.identificatie,
-            "params": params, callback: dbkjs.protocol.jsonDBK.info
+        $.getJSON('api/gebied/' + feature.attributes.identificatie, params).done(function(data) {
+            dbkjs.protocol.jsonDBK.info(data);
+        }).fail(function( jqxhr, textStatus, error ) {
+            dbkjs.options.feature = null;
+            dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
         });
     }
 };

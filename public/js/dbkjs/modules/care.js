@@ -20,8 +20,9 @@ dbkjs.modules.care = {
     },
     register: function(options) {
         var _obj = dbkjs.modules.care;
-        $('#btngrp_3').append('<a id="btn_care" class="btn btn-default navbar-btn" href="#" title="Management informatie"><i class="icon-fire"></i></a>');
-        $('body').append(dbkjs.util.createDialog('carepanel', '<i class="icon-fire"></i> Details', 'right:0;bottom:0;'));
+        $('#btngrp_3').append('<a id="btn_care" class="btn btn-default navbar-btn" href="#" title="' + 
+                i18n.t('care.managementinfo') + '"><i class="icon-fire"></i></a>');
+        $('body').append(dbkjs.util.createDialog('carepanel', '<i class="icon-fire"></i> ' + i18n.t('care.details'), 'right:0;bottom:0;'));
         $('#btn_care').click(function() {
             $('#care_dialog').toggle();
         });
@@ -32,7 +33,7 @@ dbkjs.modules.care = {
         // moment.js, wat een mooie javascript bibliotheek
 
         _obj.layerIncident = new OpenLayers.Layer.WMS(
-                "Incidenten",
+                i18n.t('care.incidents'),
                 _obj.url + 'dbk/wms', {
                     layers: _obj.namespace + ':incidentsgebied',
                     format: 'image/png',
@@ -52,7 +53,7 @@ dbkjs.modules.care = {
         );
         _obj.layerIncident.dbkjsParent = _obj;
         _obj.layerNorm = new OpenLayers.Layer.WMS(
-                "Dekkingsplan",
+                i18n.t('care.coverage'),
                 _obj.url + 'dbk/wms', {
                     layers: _obj.namespace + ':normen',
                     format: 'image/png',
@@ -86,17 +87,19 @@ dbkjs.modules.care = {
         dbkjs.map.addLayers([_obj.layerIncident, _obj.layerNorm]);
 
         //Care heeft zijn eigen panel:
-        _obj.dialog = dbkjs.util.createDialog('care_dialog', '<i class="icon-fire"></i> Incidenten en dekkingsplan');
+        _obj.dialog = dbkjs.util.createDialog('care_dialog', '<i class="icon-fire"></i> ' + i18n.t('care.incidentsAndCoverage'));
         $('body').append(_obj.dialog);
-        _obj.sel_care = $('<input id="sel_care" name="sel_care" type="text" class="form-control" placeholder="Kies een periode">');
+        _obj.sel_care = $('<input id="sel_care" name="sel_care" type="text" class="form-control" placeholder="' + 
+                i18n.t('care.selectPeriod') + '">');
         $('.dialog').drags({handle: '.panel-heading'});
 
         //_obj.updateLayer(moment().format('YYYY-MM-DD'));
         var incidentSel = $('<div id="incidentSel" style="display:none;"></div>');
         var normSel = $('<div id="normSel" style="display:none;"></div>');
-        var normSel_minuten = $('<input id="sel_care" name="normSel_minuten" type="text" class="form-control" placeholder="Overschrijding in minuten">');
+        var normSel_minuten = $('<input id="sel_care" name="normSel_minuten" type="text" class="form-control" placeholder="'+ 
+                i18n.t('care.excesses')+'">');
         normSel.append(normSel_minuten);
-        incidentSel.append('<h5>Datumbereik</h5>');
+        incidentSel.append('<h5>'+ i18n.t('dateRange') + '</h5>');
         incidentSel.append(_obj.sel_care);
         var default_range = moment().startOf('week').format('YYYY-MM-DD') + '/' + moment().endOf('week').format('YYYY-MM-DD');
         _obj.sel_care.daterangepicker({
@@ -109,20 +112,19 @@ dbkjs.modules.care = {
         });
         _obj.sel_care.val(default_range);
         _obj.updateLayerIncident(default_range);
-        incidentSel.append('<h5>Prioriteit</h5>');
+        incidentSel.append('<h5>' + i18n.t('care.priority')+ '</h5>');
         incidentSel.append(dbkjs.util.createListGroup(
-                [
-                    '<input name="chk_prio" type="checkbox" checked="checked"/><span>Prio 1</span>',
-                    '<input name="chk_prio" type="checkbox" checked="checked"/><span>Prio 2</span>',
-                    '<input name="chk_prio" type="checkbox" checked="checked"/><span>Prio 3</span>'
-                ]
-                ));
+            [
+                '<input name="chk_prio" type="checkbox" checked="checked"/><span>' + i18n.t('care.prio1') + '</span>',
+                '<input name="chk_prio" type="checkbox" checked="checked"/><span>' + i18n.t('care.prio2') + '</span>',
+                '<input name="chk_prio" type="checkbox" checked="checked"/><span>' + i18n.t('care.prio3') + '</span>'
+            ]
+        ));
         incidentSel.append(dbkjs.util.createListGroup(
-                [
-                    '<input name="chk_koppel" type="checkbox"/><span>Gekoppeld aan dekkingsplan</span>'
-                ]
-                ));
-        //_obj.dialog.show();
+            [
+                '<input name="chk_koppel" type="checkbox"/><span>' + i18n.t('care.combinedWithCoverage')+'</span>'
+            ]
+        ));
         var incidenten_button = $('<button class="btn btn-block btn_5px" type="button">Incidenten aan</button>');
         var dekkingsplan_button = $('<button class="btn btn-block btn_5px" type="button">Dekkingsplan aan</button>');
         var rapportage_button = $('<button class="btn btn-block btn_5px" type="button">Rapportage</button>');

@@ -22,8 +22,16 @@ exports.index = function(req, res) {
     }
     res.render('index', {title: 'index pagina'});
 };
-exports.regio = function(req, res) {
-    res.send(global.conf.get("regio"));
+
+exports.login = function(req,res){
+    if(req.query){
+        var id = req.query.id;
+        if(id === 'milo'){
+            res.json({"login":"ok"});
+        } else {
+            res.send(401, 'Unauthorized');
+        }
+    }
 };
 
 exports.validate_GET = function(req, res) {
