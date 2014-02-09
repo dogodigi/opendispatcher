@@ -67,7 +67,7 @@ dbkjs.modules.gevaren = {
         dv_panel.append(dv_panel_heading);
         var dv_panel_content = $('<div id="collapse_' + _obj.id + '" class="panel-collapse collapse"></div>');
         dv_panel_content.append('<div class="panel-body">' +
-                '<img src="' + _obj.url + 'wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=GevaarlijkeStof&legend_options=fontAntiAliasing:true;fontSize:14;dpi:90' + '"></img>' +
+                '<img src="' + _obj.url + 'dbk/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=GevaarlijkeStof&legend_options=fontAntiAliasing:true;fontSize:14;dpi:90' + '"></img>' +
                 '</div>');
         dv_panel.append(dv_panel_content);
         $('#overlaypanel_b1').append(dv_panel);

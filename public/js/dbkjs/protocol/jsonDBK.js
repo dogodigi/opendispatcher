@@ -8,34 +8,26 @@ dbkjs.protocol.jsonDBK = {
     panel_group: null,
     panel_tabs: null,
     panel_algemeen: null,
-    process: function(selection_id) {
+    process: function(feature) {
         $('#infopanel_f').html('');
-        if (selection_id) {
-            if (!dbkjs.options.feature) {
+        if (feature) {
+            if (!dbkjs.options.feature || feature.id !== dbkjs.options.feature.id) {
                 if (!dbkjs.protocol.jsonDBK.processing) {
                     $('#infopanel').hide();
                     dbkjs.protocol.jsonDBK.processing = true;
                     dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>', ' Objectinformatie wordt opgehaald...', 'alert-info');
-                    dbkjs.options.feature = {id: selection_id, div: ''};
-                    dbkjs.protocol.jsonDBK.getObject(selection_id);
+                    if(feature.attributes.typeFeature === 'Object'){
+                        dbkjs.protocol.jsonDBK.getObject(feature);
+                    } else if (feature.attributes.typeFeature === 'Object') {
+                        dbkjs.protocol.jsonDBK.getGebied(feature);
+                    }
                 }
-            } else if (selection_id === dbkjs.options.feature.id) {
-                //doe niks
+            } else {
+                //Check if processing is finished
                 if (!dbkjs.protocol.jsonDBK.processing) {
                     $('#infopanel_b').html(dbkjs.options.feature.div);
                     $('#infopanel_f').html('');
                     $('#infopanel').show();
-                    //reset naar eerste tab
-                }
-
-            } else {
-                //anders opnieuw ophalen.    
-                if (!dbkjs.protocol.jsonDBK.processing) {
-                    $('#infopanel').hide();
-                    dbkjs.protocol.jsonDBK.processing = true;
-                    dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>', ' Objectinformatie wordt opgehaald...', 'alert-info');
-                    dbkjs.options.feature = {id: selection_id, div: ''};
-                    dbkjs.protocol.jsonDBK.getObject(selection_id);
                 }
             }
         }
@@ -44,7 +36,6 @@ dbkjs.protocol.jsonDBK = {
         var _obj = dbkjs.protocol.jsonDBK;
         if (response.DBKObject) {
             dbkjs.options.feature = response.DBKObject;
-            console.log(dbkjs.options.feature);
             _obj.panel_group = $('<div class="tab-content"></div>');
             _obj.panel_tabs = $('<ul class="nav nav-pills"></ul>');
             var div = $('<div class="tabbable"></div>');
@@ -61,7 +52,6 @@ dbkjs.protocol.jsonDBK = {
             }
             $('#infopanel').show();
             _obj.processing = false;
-            
         } else {
             dbkjs.options.feature = null;
             dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
@@ -331,23 +321,25 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">Verblijf</a></li>');
         }
     },
-    getObject: function(id) {
+    getObject: function(feature) {
         var params = {
+            srid: dbkjs.options.projection.srid,
             timestamp: new Date().getTime()
         };
-        $.getJSON('api/object/' + id, params).done(function(data) {
+        $.getJSON('api/object/' + feature.attributes.identificatie, params).done(function(data) {
             dbkjs.protocol.jsonDBK.info(data);
         }).fail(function( jqxhr, textStatus, error ) {
             dbkjs.options.feature = null;
             dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
         });
     },
-    getGebied: function(id) {
+    getGebied: function(feature) {
         var params = {
+            srid: dbkjs.options.projection.srid,
             timestamp: new Date().getTime()
         };
         OpenLayers.Request.GET({
-            "url": 'api/gebied/' + id,
+            "url": 'api/gebied/' + feature.attributes.identificatie,
             "params": params, callback: dbkjs.protocol.jsonDBK.info
         });
     }

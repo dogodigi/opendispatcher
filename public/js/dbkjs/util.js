@@ -21,7 +21,7 @@ dbkjs.util = {
                 layers[0].setVisibility(false);
             }
         } else {
-            alert('layer niet gevonden (of meer dan 1)');
+            alert(i18n.t('dialogs.layerNotFound'));
         }
     },
     setModalTitle: function(modal_id, title) {
@@ -166,7 +166,7 @@ dbkjs.util = {
     mediaError: function(e) {
         var msg = $($(e).parent().find('p')[0]);
         if (msg) {
-            msg.html('<a href="' + e.src + '">' + e.src + '</a><br>is geen geldige afbeelding');
+            msg.html('<a href="' + e.src + '">' + e.src + '</a><br>' +i18n.t('dialogs.invalidImage'));
         }
         e.src = "images/missing.gif";
         e.onerror = "";
@@ -259,14 +259,14 @@ dbkjs.util = {
         if (!alert[0]) {
             var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
             alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-            alert.append('<i class="icon-spinner icon-spin"></i> Bezig met laden van ' + this.layersLoading.join(', ') + '...');
+            alert.append('<i class="icon-spinner icon-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
             $('body').append(alert);
             alert.show();
         } else {
             alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass('alert-info');
             alert.html('');
             alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-            alert.append('<i class="icon-spinner icon-spin"></i> Bezig met laden van ' + this.layersLoading.join(', ') + '...');
+            alert.append('<i class="icon-spinner icon-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
             alert.show();
         }
 
@@ -285,7 +285,7 @@ dbkjs.util = {
                 } else {
                     var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
                     alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-                    alert.append('<i class="icon-spinner icon-spin"></i> Bezig met laden van ' + this.layersLoading.join(', ') + '...');
+                    alert.append('<i class="icon-spinner icon-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
                     $('body').append(alert);
                     alert.show();
                 }
@@ -296,7 +296,7 @@ dbkjs.util = {
                     alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass('alert-info');
                     alert.html('');
                     alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-                    alert.append('<i class="icon-spinner icon-spin"></i> Bezig met laden van ' + this.layersLoading.join(', ') + '...');
+                    alert.append('<i class="icon-spinner icon-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
                     alert.show();
                 }
             }

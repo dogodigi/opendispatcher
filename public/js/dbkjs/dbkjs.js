@@ -14,6 +14,7 @@ dbkjs.overlays = dbkjs.overlays || [];
 dbkjs.options = {
     projection: {
         code: "EPSG:28992",
+        srid: 28992,
         coordinates: {
             numDigits: 0
         }
@@ -232,7 +233,8 @@ dbkjs.init = function() {
     dbkjs.toggleBaseLayer(0);
     dbkjs.overview = new OpenLayers.Control.OverviewMap({
         div: document.getElementById('minimappanel_b'),
-        size: new OpenLayers.Size(180, 180)
+        size: new OpenLayers.Size(180, 180),
+        theme: null
     });
     dbkjs.map.addControl(dbkjs.overview);
     dbkjs.map.addControl(new OpenLayers.Control.Zoom({
@@ -345,9 +347,6 @@ $(document).ready(function() {
         $('.btn').click(function() {
             if (this.id === "tb03") {
                 $('#infopanel').toggle();
-                //if ($('#infopanel').is(":visible")) {
-                //    dbkjs.protocol.imdbk21.process(dbkjs.options.dbk);
-                //}
             } else if (this.id === "c_minimap") {
                 $('#minimappanel').toggle();
             } else if (this.id === "c_print") {

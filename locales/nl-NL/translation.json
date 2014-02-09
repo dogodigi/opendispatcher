@@ -48,7 +48,10 @@
       "info": "Informatie",
       "bag": "BAG",
       "clickinfo": "Klik informatie",
-      "refmap": "Referentie kaart"
+      "refmap": "Referentie kaart",
+      "busyloading": "Bezig met laden van",
+      "invalidImage": "is geen geldige afbeelding",
+      "layerNotFound": "laag niet gevonden (of meer dan 1)"
     },
     "search":{
         "search": "Zoek",
