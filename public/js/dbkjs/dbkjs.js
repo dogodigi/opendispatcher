@@ -253,6 +253,7 @@ dbkjs.init = function() {
             multiple: false, hover: false
         }
     );
+    dbkjs.selectControl.handlers.feature.stopDown = false;
     dbkjs.map.addControl(dbkjs.selectControl);
 };
 

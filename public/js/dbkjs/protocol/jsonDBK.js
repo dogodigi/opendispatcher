@@ -32,13 +32,10 @@ dbkjs.protocol.jsonDBK = {
         _obj.hoverControl = new OpenLayers.Control.SelectFeature(
                 _obj.layers,
                 {
-                    clickout: false, multiple: false, hover: true ,highlightOnly: true//,
-                    //eventListeners: {
-                    //    featurehighlighted: onHighlight,
-                    //    featureunhighlighted: onUnHighlight
-                    //}
+                    hover: true ,highlightOnly: true
                 }
         );
+        _obj.hoverControl.handlers.feature.stopDown = false;
         dbkjs.map.addControl(_obj.hoverControl);
     },
     getObject: function(feature) {
