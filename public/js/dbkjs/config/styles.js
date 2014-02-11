@@ -10,7 +10,7 @@ dbkjs.config.styles = {
             strokeWidth: 1
         }),
         'select': new OpenLayers.Style({
-            strokeWidth: 2
+            strokeWidth: 12
         })
     }),
     dbkcompartiment: new OpenLayers.StyleMap({
@@ -43,7 +43,7 @@ dbkjs.config.styles = {
         }
     }),
         'select': new OpenLayers.Style({
-            strokeWidth: 3
+            strokeWidth: 12
         })
     }),    
     pandstylemap : new OpenLayers.StyleMap({
@@ -78,6 +78,8 @@ dbkjs.config.styles = {
                     }
                 }
             }
+        }), 'select': new OpenLayers.Style({
+            pointRadius: 40
         })
     }),
     gevaarlijkestof: new OpenLayers.StyleMap({
@@ -90,6 +92,8 @@ dbkjs.config.styles = {
                     return "images/eughs/" + feature.attributes.type + ".png";
                 }
             }
+        }), 'select': new OpenLayers.Style({
+            pointRadius: 40
         })
     })
 };

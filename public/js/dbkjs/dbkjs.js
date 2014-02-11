@@ -241,10 +241,19 @@ dbkjs.init = function() {
     });
     dbkjs.map.addControl(dbkjs.overview);
     dbkjs.map.addControl(new OpenLayers.Control.Zoom({
-        zoomInId: "zoom_in",
-        zoomOutId: "zoom_out"
-    })
-            );
+            zoomInId: "zoom_in",
+            zoomOutId: "zoom_out"
+        })
+    );
+    dbkjs.protocol.jsonDBK.init();
+    dbkjs.selectControl = new OpenLayers.Control.SelectFeature(
+        [],
+        {
+            clickout: true, toggle: false,
+            multiple: false, hover: false
+        }
+    );
+    dbkjs.map.addControl(dbkjs.selectControl);
 };
 
 /**
@@ -289,16 +298,6 @@ dbkjs.successAuth = function() {
     //zoek de dbk op wanneer de variabele dbk gevuld is.
     //Geef de dbk door als filter
     //zoom naar de juiste dbk!
-    dbkjs.selectControl = new OpenLayers.Control.SelectFeature(
-            [],
-            {
-                clickout: true, toggle: false,
-                multiple: false, hover: false,
-                toggleKey: "ctrlKey", // ctrl key removes from selection
-                multipleKey: "shiftKey" // shift key adds to selection
-            }
-    );
-    dbkjs.map.addControl(dbkjs.selectControl);
     dbkjs.selectControl.activate();
 
     //register modules

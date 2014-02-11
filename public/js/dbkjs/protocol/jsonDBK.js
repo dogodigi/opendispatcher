@@ -8,6 +8,106 @@ dbkjs.protocol.jsonDBK = {
     panel_group: null,
     panel_tabs: null,
     panel_algemeen: null,
+    init: function() {
+        var _obj = dbkjs.protocol.jsonDBK;
+        _obj.layerPandgeometrie = new OpenLayers.Layer.Vector("Pandgeometrie",{
+            styleMap: dbkjs.config.styles.dbkpand
+        });
+        _obj.layerBrandcompartiment = new OpenLayers.Layer.Vector("Brandompartiment",{
+            styleMap: dbkjs.config.styles.dbkcompartiment
+        });
+        _obj.layerBrandweervoorziening = new OpenLayers.Layer.Vector("brandweervoorziening",{
+            styleMap: dbkjs.config.styles.brandweervoorziening
+        });
+        _obj.layerGevaarlijkestof = new OpenLayers.Layer.Vector("gevaarlijkestof",{
+            styleMap: dbkjs.config.styles.gevaarlijkestof
+        });
+        _obj.layers = [
+            _obj.layerPandgeometrie, 
+            _obj.layerBrandcompartiment,
+            _obj.layerBrandweervoorziening,
+            _obj.layerGevaarlijkestof
+        ];;
+        dbkjs.map.addLayers(_obj.layers);
+        _obj.hoverControl = new OpenLayers.Control.SelectFeature(
+                _obj.layers,
+                {
+                    clickout: false, multiple: false, hover: true ,highlightOnly: true//,
+                    //eventListeners: {
+                    //    featurehighlighted: onHighlight,
+                    //    featureunhighlighted: onUnHighlight
+                    //}
+                }
+        );
+        dbkjs.map.addControl(_obj.hoverControl);
+    },
+    getObject: function(feature) {
+        var _obj = dbkjs.protocol.jsonDBK; 
+        //clear all layers first!
+        var params = {
+            srid: dbkjs.options.projection.srid,
+            timestamp: new Date().getTime()
+        };
+        $.getJSON('api/object/' + feature.attributes.identificatie, params).done(function(data) {
+            dbkjs.protocol.jsonDBK.info(data);
+            //@todo selectControl implementeren voor mouseover effecten.
+            if(data.DBKObject.pandgeometrie){
+                var features = [];
+                $.each(data.DBKObject.pandgeometrie, function(idx, myGeometry){
+                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                    myFeature.attributes = { "id" : myGeometry.bagId,"status":myGeometry.bagStatus};
+                    features.push(myFeature);
+                });
+                _obj.layerPandgeometrie.addFeatures(features);
+            }
+            
+            if(data.DBKObject.brandcompartiment){
+                var features = [];
+                $.each(data.DBKObject.brandcompartiment, function(idx, myGeometry){
+                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                    //@todo: De omschrijving moet er nog bij, ook in de database!
+                    myFeature.attributes = { "type" : myGeometry.typeScheiding};
+                    features.push(myFeature);
+                });
+                _obj.layerBrandcompartiment.addFeatures(features);
+            }
+            if(data.DBKObject.brandweervoorziening){
+                var features = [];
+                $.each(data.DBKObject.brandweervoorziening, function(idx, myGeometry){
+                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                    myFeature.attributes = { 
+                        "type" : myGeometry.typeVoorziening, 
+                        "name": myGeometry.naamVoorziening,
+                        "information": myGeometry.aanvullendeInformatie,
+                        "rotation": myGeometry.hoek
+                    };
+                    features.push(myFeature);
+                });
+                _obj.layerBrandweervoorziening.addFeatures(features);
+            }
+            if(data.DBKObject.gevaarlijkestof){
+                var features = [];
+                $.each(data.DBKObject.gevaarlijkestof, function(idx, myGeometry){
+                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                    myFeature.attributes = { 
+                        "type" : myGeometry.symboolCode, 
+                        "name": myGeometry.naamStof,
+                        "quantity": myGeometry.hoeveelheid,
+                        "dangerindication": myGeometry.gevaarsindicatienummer,
+                        "information": myGeometry.aanvullendeInformatie,
+                        "unnumber": myGeometry.UNnummer
+                        //rotation: not yet implemented
+                    };
+                    features.push(myFeature);
+                });
+                _obj.layerGevaarlijkestof.addFeatures(features);
+            }
+            _obj.hoverControl.activate();   
+        }).fail(function( jqxhr, textStatus, error ) {
+            dbkjs.options.feature = null;
+            dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
+        });
+    },
     process: function(feature) {
         $('#infopanel_f').html('');
         if (feature) {
@@ -321,90 +421,6 @@ dbkjs.protocol.jsonDBK = {
         } else {
             _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">Verblijf</a></li>');
         }
-    },
-    getObject: function(feature) {
-        var params = {
-            srid: dbkjs.options.projection.srid,
-            timestamp: new Date().getTime()
-        };
-        $.getJSON('api/object/' + feature.attributes.identificatie, params).done(function(data) {
-            dbkjs.protocol.jsonDBK.info(data);
-            //@todo selectControl implementeren voor mouseover effecten.
-            
-            if(data.DBKObject.pandgeometrie){
-                var ly = new OpenLayers.Layer.Vector("Pandgeometrie",{
-                    styleMap: dbkjs.config.styles.dbkpand
-                });
-                var features = [];
-                $.each(data.DBKObject.pandgeometrie, function(idx, myGeometry){
-                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                    myFeature.attributes = { "id" : myGeometry.bagId,"status":myGeometry.bagStatus};
-                    features.push(myFeature);
-                });
-                ly.addFeatures(features);
-                dbkjs.map.addLayers([ly]);
-            }
-            
-            if(data.DBKObject.brandcompartiment){
-                var ly = new OpenLayers.Layer.Vector("Brandompartiment",{
-                    styleMap: dbkjs.config.styles.dbkcompartiment
-                });
-                var features = [];
-                $.each(data.DBKObject.brandcompartiment, function(idx, myGeometry){
-                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                    //@todo: De omschrijving moet er nog bij, ook in de database!
-                    myFeature.attributes = { "type" : myGeometry.typeScheiding};
-                    features.push(myFeature);
-                });
-                ly.addFeatures(features);
-                dbkjs.map.addLayers([ly]);
-            }
-            if(data.DBKObject.brandweervoorziening){
-                var ly = new OpenLayers.Layer.Vector("brandweervoorziening",{
-                    styleMap: dbkjs.config.styles.brandweervoorziening
-                });
-                var features = [];
-                $.each(data.DBKObject.brandweervoorziening, function(idx, myGeometry){
-                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                    myFeature.attributes = { 
-                        "type" : myGeometry.typeVoorziening, 
-                        "name": myGeometry.naamVoorziening,
-                        "information": myGeometry.aanvullendeInformatie,
-                        "rotation": myGeometry.hoek
-                    };
-                    features.push(myFeature);
-                });
-                ly.addFeatures(features);
-                dbkjs.map.addLayers([ly]);
-            }
-            
-            if(data.DBKObject.gevaarlijkestof){
-                var ly = new OpenLayers.Layer.Vector("gevaarlijkestof",{
-                    styleMap: dbkjs.config.styles.gevaarlijkestof
-                });
-                var features = [];
-                console.log(data.DBKObject.gevaarlijkestof[0]);
-                $.each(data.DBKObject.gevaarlijkestof, function(idx, myGeometry){
-                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                    myFeature.attributes = { 
-                        "type" : myGeometry.symboolCode, 
-                        "name": myGeometry.naamStof,
-                        "quantity": myGeometry.hoeveelheid,
-                        "dangerindication": myGeometry.gevaarsindicatienummer,
-                        "information": myGeometry.aanvullendeInformatie,
-                        "unnumber": myGeometry.UNnummer
-                        //rotation: not yet implemented
-                    };
-                    features.push(myFeature);
-                });
-                ly.addFeatures(features);
-                dbkjs.map.addLayers([ly]);
-            }
-            
-        }).fail(function( jqxhr, textStatus, error ) {
-            dbkjs.options.feature = null;
-            dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
-        });
     },
     getGebied: function(feature) {
         var params = {
