@@ -17,21 +17,6 @@ dbkjs.modules.bag = {
     div: null,
     activateVectors: function() {
         var _obj = dbkjs.modules.bag;
-        var pandstylemap = new OpenLayers.StyleMap({
-            fillColor: "yellow",
-            fillOpacity: 0.4,
-            strokeColor: "red",
-            strokeWidth: 2,
-            pointRadius: 5
-        });
-        var vbostylemap = new OpenLayers.StyleMap({
-            fillColor: "black",
-            fillOpacity: 0.4,
-            strokeColor: "black",
-            strokeWidth: 1,
-            pointRadius: 3
-        });
-
         _obj.pandprotocol = new OpenLayers.Protocol.WFS({
             url: "/bag/wfs",
             featurePrefix: 'bagviewer',
@@ -80,11 +65,11 @@ dbkjs.modules.bag = {
         });
 
         _obj.pand_layer = new OpenLayers.Layer.Vector("BAG panden", {
-            styleMap: pandstylemap
+            styleMap: dbkjs.config.styles.pandstylemap
         });
 
         _obj.vbo_layer = new OpenLayers.Layer.Vector("BAG verblijfsobjecten", {
-            styleMap: vbostylemap
+            styleMap: dbkjs.config.styles.vbostylemap
         });
         dbkjs.map.addLayers([_obj.pand_layer, _obj.vbo_layer]);
     },

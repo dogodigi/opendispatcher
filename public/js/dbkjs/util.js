@@ -4,6 +4,58 @@ $.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
 $.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
 $.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 $.browser.device = (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase()));
+
+Array.prototype.where = function(f) {
+    var lambda = function( l ) {
+        var fn = l.match(/\((.*)\)\s*=>\s*(.*)/) ;
+        var p = [] ;
+        var b = "" ;
+        if ( fn.length > 0 ) fn.shift() ;
+        if ( fn.length > 0 ) b = fn.pop() ;
+        if ( fn.length > 0 ) p = fn.pop()
+            .replace(/^\s*|\s(?=\s)|\s*$|,/g, '').split(' ') ;
+        // prepend a return if not already there.
+        fn = ( ( ! /\s*return\s+/.test( b ) ) ? "return " : "" ) + b ;   
+        p.push( fn ) ;
+        try {
+            return Function.apply( {}, p ) ;
+        } catch(e) {
+            return null ;
+        }
+    };
+
+    var fn = f;
+    // if type of parameter is string         
+    if (typeof f === "string")
+        // try to make it into a function
+        if ((fn = lambda(fn)) === null)
+            // if fail, throw exception
+            throw "Syntax error in lambda string: " + f;
+    // initialize result array
+    var res = [];
+    var l = this.length;
+    // set up parameters for filter function call
+    var p = [0, 0, res];
+    // append any pass-through parameters to parameter array               
+    for (var i = 1; i < arguments.length; i++)
+        p.push(arguments[i]);
+    // for each array element, pass to filter function
+    for (var i = 0; i < l; i++) {
+        // skip missing elements
+        if (typeof this[ i ] == "undefined")
+            continue;
+        // param1 = array element             
+        p[ 0 ] = this[ i ];
+        // param2 = current indeex
+        p[ 1 ] = i;
+        // call filter function. if return true, copy element to results            
+        if (!!fn.apply(this, p))
+            res.push(this[i]);
+    }
+    // return filtered result
+    return res;
+}
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.util = {
@@ -34,8 +86,8 @@ dbkjs.util = {
     },
     onClick: function(e) {
         //controleer of de layer onderdeel is van een module en een getfeatureinfo heeft
-        $.each(dbkjs.map.layers, function(lay_index, lay){
-            if(lay.visibility && lay.dbkjsParent && lay.dbkjsParent.getfeatureinfo){
+        $.each(dbkjs.map.layers, function(lay_index, lay) {
+            if (lay.visibility && lay.dbkjsParent && lay.dbkjsParent.getfeatureinfo) {
                 lay.dbkjsParent.getfeatureinfo(e);
             }
         });
@@ -166,7 +218,7 @@ dbkjs.util = {
     mediaError: function(e) {
         var msg = $($(e).parent().find('p')[0]);
         if (msg) {
-            msg.html('<a href="' + e.src + '">' + e.src + '</a><br>' +i18n.t('dialogs.invalidImage'));
+            msg.html('<a href="' + e.src + '">' + e.src + '</a><br>' + i18n.t('dialogs.invalidImage'));
         }
         e.src = "images/missing.gif";
         e.onerror = "";
@@ -442,7 +494,7 @@ dbkjs.util = {
         var modal_wrapper = $('<div class="modal fade" id="' + id + '"></div>');
         var modal_dialog = $('<div class="modal-dialog"></div>');
         var modal_content = $('<div class="modal-content"></div>');
-        var modal_header = $('<div id="' + id + '_h" class="modal-header"><h4 class="modal-title">'+ title +'</h4></div>');
+        var modal_header = $('<div id="' + id + '_h" class="modal-header"><h4 class="modal-title">' + title + '</h4></div>');
         var modal_body = $('<div id="' + id + '_b" class="modal-body"></div>');
         modal_content.append(modal_header);
         modal_content.append(modal_body);
@@ -482,30 +534,30 @@ dbkjs.util = {
                     'target': '_blank'
                 });
     },
-    padspaces: function(num,field) {
+    padspaces: function(num, field) {
         var n = '' + num;
         var w = n.length;
         var l = field.length;
-        var pad = w < l ? l-w : 0;
-        return n + field.substr(0,pad);
+        var pad = w < l ? l - w : 0;
+        return n + field.substr(0, pad);
     },
-    strip: function (html) {  
-        var tmp = document.createElement("DIV"); 
-        tmp.innerHTML = html; 
-        var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;   
-        return tmp.innerText.replace(urlRegex, function(url) {     
+    strip: function(html) {
+        var tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        return $(tmp).text().replace(urlRegex, function(url) {
             return '\n' + url;
-        })
+        });
     },
-    renderHTML: function(text) { 
+    renderHTML: function(text) {
         var rawText = this.strip(text);
-        var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;   
-        return rawText.replace(urlRegex, function(url) {   
-            if ( ( url.indexOf(".jpg") > 0 ) || ( url.indexOf(".png") > 0 ) || ( url.indexOf(".gif") > 0 ) ) {
+        var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        return rawText.replace(urlRegex, function(url) {
+            if ((url.indexOf(".jpg") > 0) || (url.indexOf(".png") > 0) || (url.indexOf(".gif") > 0)) {
                 return '<img src="' + url + '">' + '<br/>';
             } else {
                 return '<a href="' + url + '">' + url + '</a>' + '<br/>';
             }
-        }) 
-    } 
+        })
+    }
 };

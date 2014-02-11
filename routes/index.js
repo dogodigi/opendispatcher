@@ -20,7 +20,7 @@ exports.index = function(req, res) {
         }
         console.log(user);
     }
-    res.render('index', {title: 'index pagina'});
+    res.render('index');
 };
 
 exports.login = function(req,res){

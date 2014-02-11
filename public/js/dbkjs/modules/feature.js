@@ -36,7 +36,7 @@ dbkjs.modules.feature = {
                 if (feature.cluster) {
                     if (feature.cluster.length < 10) {
                         return feature.cluster.length + 64;
-                    } else if (feature.cluster.length > 10) {
+                    } else {
                         return 65;
                     }
                 } else {
@@ -52,7 +52,7 @@ dbkjs.modules.feature = {
                 if (feature.cluster) {
                     if (feature.cluster.length < 10) {
                         return feature.cluster.length + 84;
-                    } else if (feature.cluster.length > 10) {
+                    } else {
                         return 85;
                     }
                 } else {
@@ -151,7 +151,7 @@ dbkjs.modules.feature = {
                 if (feature.cluster) {
                     if (feature.cluster.length < 10) {
                         return feature.cluster.length + 64;
-                    } else if (feature.cluster.length > 10) {
+                    } else {
                         return 65;
                     }
                 } else {
@@ -167,7 +167,7 @@ dbkjs.modules.feature = {
                 if (feature.cluster) {
                     if (feature.cluster.length < 10) {
                         return feature.cluster.length + 84;
-                    } else if (feature.cluster.length > 10) {
+                    } else {
                         return 85;
                     }
                 } else {
@@ -356,6 +356,14 @@ dbkjs.modules.feature = {
         $.getJSON('api/features', params).done(function(data) {
             var geojson_format = new OpenLayers.Format.GeoJSON();
                 _obj.features = geojson_format.read(data);
+                var test = data.features.where( "( el, i, res, param ) => el.properties.gevaarlijkestof !== null");
+                console.log(test.length + ' DBK Features met gevaarlijke stoffen');
+                var test = data.features.where( "( el, i, res, param ) => el.properties.OMSNummer !== null");
+                console.log(test.length + ' DBK Features met OMS nummer');
+                var test = data.features.where( "( el, i, res, param ) => el.properties.typeFeature === 'Object'");
+                console.log(test.length + ' DBK objecten');
+                var test = data.features.where( "( el, i, res, param ) => el.properties.typeFeature === 'Gebied'");
+                console.log(test.length + ' DBK gebieden');
                 _obj.layer.addFeatures(_obj.features);
                 _obj.search_dbk();
                 _obj.getActive();
@@ -363,26 +371,6 @@ dbkjs.modules.feature = {
             dbkjs.options.feature = null;
             dbkjs.util.alert('Fout', ' Features konden niet worden ingelezen', 'alert-danger');
         });
-        
-//        $.ajax({
-//            type: "GET",
-//            url: _obj.url + 'ows',
-//            data: params,
-//            dataType: "json",
-//            success: function(data) {
-//                var geojson_format = new OpenLayers.Format.GeoJSON();
-//                _obj.features = geojson_format.read(data);
-//                _obj.layer.addFeatures(_obj.features);
-//                _obj.search_dbk();
-//                _obj.getActive();
-//            },
-//            error: function() {
-//                return false;
-//            },
-//            complete: function() {
-//                return false;
-//            }
-//        });
     },
     featureInfohtml: function(feature) {
         var ret_title = $('<li></li>');

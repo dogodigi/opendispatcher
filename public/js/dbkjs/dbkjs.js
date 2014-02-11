@@ -313,15 +313,15 @@ dbkjs.successAuth = function() {
             }
         }
     });
-    if (dbkjs.ui.gui) {
-        dbkjs.ui.gui.activate();
+    if (dbkjs.layout) {
+        dbkjs.layout.activate();
     }
     dbkjs.activateClick();
 };
 
 $(document).ready(function() {
     // Make sure i18n is initialized
-    i18n.init({lng: "nl-NL" }, function(t) {
+    i18n.init({ lng: "nl", debug: true }, function(t) {
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
         $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
         $('body').append(dbkjs.util.createDialog('bagpanel', '<i class="icon-home"></i> ' + t("dialogs.bag"), 'right:0;bottom:0;'));

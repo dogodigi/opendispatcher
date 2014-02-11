@@ -329,6 +329,78 @@ dbkjs.protocol.jsonDBK = {
         };
         $.getJSON('api/object/' + feature.attributes.identificatie, params).done(function(data) {
             dbkjs.protocol.jsonDBK.info(data);
+            //@todo selectControl implementeren voor mouseover effecten.
+            
+            if(data.DBKObject.pandgeometrie){
+                var ly = new OpenLayers.Layer.Vector("Pandgeometrie",{
+                    styleMap: dbkjs.config.styles.dbkpand
+                });
+                var features = [];
+                $.each(data.DBKObject.pandgeometrie, function(idx, myGeometry){
+                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                    myFeature.attributes = { "id" : myGeometry.bagId,"status":myGeometry.bagStatus};
+                    features.push(myFeature);
+                });
+                ly.addFeatures(features);
+                dbkjs.map.addLayers([ly]);
+            }
+            
+            if(data.DBKObject.brandcompartiment){
+                var ly = new OpenLayers.Layer.Vector("Brandompartiment",{
+                    styleMap: dbkjs.config.styles.dbkcompartiment
+                });
+                var features = [];
+                $.each(data.DBKObject.brandcompartiment, function(idx, myGeometry){
+                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                    //@todo: De omschrijving moet er nog bij, ook in de database!
+                    myFeature.attributes = { "type" : myGeometry.typeScheiding};
+                    features.push(myFeature);
+                });
+                ly.addFeatures(features);
+                dbkjs.map.addLayers([ly]);
+            }
+            if(data.DBKObject.brandweervoorziening){
+                var ly = new OpenLayers.Layer.Vector("brandweervoorziening",{
+                    styleMap: dbkjs.config.styles.brandweervoorziening
+                });
+                var features = [];
+                $.each(data.DBKObject.brandweervoorziening, function(idx, myGeometry){
+                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                    myFeature.attributes = { 
+                        "type" : myGeometry.typeVoorziening, 
+                        "name": myGeometry.naamVoorziening,
+                        "information": myGeometry.aanvullendeInformatie,
+                        "rotation": myGeometry.hoek
+                    };
+                    features.push(myFeature);
+                });
+                ly.addFeatures(features);
+                dbkjs.map.addLayers([ly]);
+            }
+            
+            if(data.DBKObject.gevaarlijkestof){
+                var ly = new OpenLayers.Layer.Vector("gevaarlijkestof",{
+                    styleMap: dbkjs.config.styles.gevaarlijkestof
+                });
+                var features = [];
+                console.log(data.DBKObject.gevaarlijkestof[0]);
+                $.each(data.DBKObject.gevaarlijkestof, function(idx, myGeometry){
+                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                    myFeature.attributes = { 
+                        "type" : myGeometry.symboolCode, 
+                        "name": myGeometry.naamStof,
+                        "quantity": myGeometry.hoeveelheid,
+                        "dangerindication": myGeometry.gevaarsindicatienummer,
+                        "information": myGeometry.aanvullendeInformatie,
+                        "unnumber": myGeometry.UNnummer
+                        //rotation: not yet implemented
+                    };
+                    features.push(myFeature);
+                });
+                ly.addFeatures(features);
+                dbkjs.map.addLayers([ly]);
+            }
+            
         }).fail(function( jqxhr, textStatus, error ) {
             dbkjs.options.feature = null;
             dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
