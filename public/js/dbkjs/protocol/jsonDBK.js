@@ -36,6 +36,7 @@ dbkjs.protocol.jsonDBK = {
                 }
         );
         _obj.hoverControl.handlers.feature.stopDown = false;
+        _obj.hoverControl.handlers.feature.stopUp = false;
         dbkjs.map.addControl(_obj.hoverControl);
     },
     getObject: function(feature) {

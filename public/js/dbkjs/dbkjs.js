@@ -254,6 +254,7 @@ dbkjs.init = function() {
         }
     );
     dbkjs.selectControl.handlers.feature.stopDown = false;
+    dbkjs.selectControl.handlers.feature.stopUp = false;
     dbkjs.map.addControl(dbkjs.selectControl);
 };
 
