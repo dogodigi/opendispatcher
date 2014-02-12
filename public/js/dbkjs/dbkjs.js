@@ -245,15 +245,6 @@ dbkjs.init = function() {
             zoomOutId: "zoom_out"
         })
     );
-    dbkjs.protocol.jsonDBK.init();
-    dbkjs.selectControl = new OpenLayers.Control.SelectFeature(
-        [],
-        {
-            clickout: true, toggle: false,
-            multiple: false, hover: false
-        }
-    );
-    dbkjs.map.addControl(dbkjs.selectControl);
 };
 
 /**
@@ -283,7 +274,7 @@ dbkjs.activateClick = function() {
 dbkjs.challengeAuth = function() {
     var params = {
         "id":"milo"
-    }
+    };
     $.getJSON('login', params).done(function(data) {
         if(data.login === 'ok'){
             dbkjs.successAuth();
@@ -295,11 +286,16 @@ dbkjs.challengeAuth = function() {
 };
 
 dbkjs.successAuth = function() {
-    //zoek de dbk op wanneer de variabele dbk gevuld is.
-    //Geef de dbk door als filter
-    //zoom naar de juiste dbk!
-    dbkjs.selectControl.activate();
-
+    dbkjs.selectControl = new OpenLayers.Control.SelectFeature(
+        [],
+        {
+            clickout: true, 
+            toggle: true,
+            multiple: false 
+        }
+    );
+    dbkjs.map.addControl(dbkjs.selectControl);
+    dbkjs.protocol.jsonDBK.init();
     //register modules
     $.each(dbkjs.modules, function(mod_index, module) {
         //Controleer of de regio een eigen logo heeft gedefinieerd
@@ -316,6 +312,8 @@ dbkjs.successAuth = function() {
         dbkjs.layout.activate();
     }
     dbkjs.activateClick();
+    
+    dbkjs.selectControl.activate();
 };
 
 $(document).ready(function() {

@@ -29,17 +29,19 @@ dbkjs.protocol.jsonDBK = {
             _obj.layerGevaarlijkestof
         ];;
         dbkjs.map.addLayers(_obj.layers);
-        _obj.hoverControl = new OpenLayers.Control.SelectFeature(
-                _obj.layers,
-                {
-                    clickout: false, multiple: false, hover: true ,highlightOnly: true//,
-                    //eventListeners: {
-                    //    featurehighlighted: onHighlight,
-                    //    featureunhighlighted: onUnHighlight
-                    //}
-                }
-        );
-        dbkjs.map.addControl(_obj.hoverControl);
+        dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.layers));
+        dbkjs.selectControl.activate();
+//        _obj.hoverControl = new OpenLayers.Control.SelectFeature(
+//                _obj.layers,
+//                {
+//                    clickout: false, multiple: false, hover: true ,highlightOnly: true//,
+//                    //eventListeners: {
+//                    //    featurehighlighted: onHighlight,
+//                    //    featureunhighlighted: onUnHighlight
+//                    //}
+//                }
+//        );
+//        dbkjs.map.addControl(_obj.hoverControl);
     },
     getObject: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK; 
@@ -102,7 +104,7 @@ dbkjs.protocol.jsonDBK = {
                 });
                 _obj.layerGevaarlijkestof.addFeatures(features);
             }
-            _obj.hoverControl.activate();   
+//            _obj.hoverControl.activate();   
         }).fail(function( jqxhr, textStatus, error ) {
             dbkjs.options.feature = null;
             dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
