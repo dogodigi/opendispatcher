@@ -25,12 +25,16 @@ dbkjs.protocol.jsonDBK = {
         _obj.layerGevaarlijkestof = new OpenLayers.Layer.Vector("gevaarlijkestof",{
             styleMap: dbkjs.config.styles.gevaarlijkestof
         });
+        _obj.layerTekstobject = new OpenLayers.Layer.Vector("tekstobject",{
+            styleMap: dbkjs.config.styles.tekstobject
+        });
         _obj.layers = [
             _obj.layerPandgeometrie, 
             _obj.layerBrandcompartiment,
             _obj.layerHulplijn,
             _obj.layerBrandweervoorziening,
-            _obj.layerGevaarlijkestof
+            _obj.layerGevaarlijkestof,
+            _obj.layerTekstobject
         ];;
         dbkjs.map.addLayers(_obj.layers);
         dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.layers));
@@ -117,7 +121,20 @@ dbkjs.protocol.jsonDBK = {
                 });
                 _obj.layerGevaarlijkestof.addFeatures(features);
             }
-//            _obj.hoverControl.activate();   
+            if(data.DBKObject.tekstobject){
+                var features = [];
+                $.each(data.DBKObject.tekstobject, function(idx, myGeometry){
+                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                    //@todo: De omschrijving moet er nog bij, ook in de database!
+                    myFeature.attributes = { 
+                        "title" : myGeometry.tekst,
+                        "rotation" : myGeometry.hoek,
+                        "scale": myGeometry.schaal + 2
+                    };
+                    features.push(myFeature);
+                });
+                _obj.layerTekstobject.addFeatures(features);
+            }
         }).fail(function( jqxhr, textStatus, error ) {
             dbkjs.options.feature = null;
             dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');

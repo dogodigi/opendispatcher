@@ -283,5 +283,24 @@ dbkjs.config.styles = {
         }), 'temporary': new OpenLayers.Style({
             pointRadius: 25
         })
+    }),
+    tekstobject: new OpenLayers.StyleMap({
+        "default": new OpenLayers.Style({
+            pointRadius: 0,
+            //fontColor: "${myfontcolor}",
+            fontSize: "${scale}",
+            //fontWeight: "${myfontweight}",
+            label: "${title}",
+            rotation: "${rotation}",
+            labelSelect: true,
+            labelOutlineColor: "#ffffff",
+            labelOutlineWidth: 1
+            //,
+            //labelAlign: "${mylabelalign}",
+            //labelXOffset: "${mylabelxoffset}",
+            //labelYOffset: "${mylabelyoffset}"
+        }), 
+        'select': new OpenLayers.Style({}), 
+        'temporary': new OpenLayers.Style({})
     })
 };
