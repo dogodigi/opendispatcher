@@ -1,6 +1,7 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.config = dbkjs.config || {};
+OpenLayers.Renderer.symbol.arrow = [0,2, 1,0, 2,2, 1,0, 0,2];
 dbkjs.config.styles = {
     dbkfeature: new OpenLayers.StyleMap({
        "default" : new OpenLayers.Style({
@@ -135,12 +136,17 @@ dbkjs.config.styles = {
     dbkpand: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
             fillColor: "#66FF66",
-            fillOpacity: 0.4,
+            fillOpacity: 0.2,
             strokeColor: "#66FF66",
             strokeWidth: 1
         }),
         'select': new OpenLayers.Style({
-            strokeWidth: 12
+            strokeWidth: 4,
+            fillOpacity: 0.7
+        }),
+        'temporary': new OpenLayers.Style({
+            strokeWidth: 3,
+            fillOpacity: 0.4
         })
     }),
     dbkcompartiment: new OpenLayers.StyleMap({
@@ -174,8 +180,56 @@ dbkjs.config.styles = {
     }),
         'select': new OpenLayers.Style({
             strokeWidth: 12
+        }), 'temporary': new OpenLayers.Style({
+            
         })
-    }),    
+    }),
+    hulplijn: new OpenLayers.StyleMap({
+        'default': new OpenLayers.Style({
+            strokeColor: "${mycolor}",
+            fillColor: "${mycolor}",
+            fillOpacity: 0.9,
+            strokeWidth: 1,
+            pointRadius: 5,
+            rotation: "${myrotation}",
+            graphicName: "${mygraphic}"
+        }, {
+        context: {
+            myrotation: function(feature) {
+                if(feature.attributes.rotation){
+                    return -feature.attributes.rotation;
+                } else {
+                    return 0;
+                }
+            },
+            mycolor: function(feature) {
+                switch(feature.attributes.type) {
+                    case "Arrow":
+                        return "#000000";
+                        break;
+                    default:
+                        return "#ff0000";
+                }
+ 
+            },
+            mygraphic: function(feature) {
+                switch(feature.attributes.type) {
+                    case "Arrow":
+                        return "triangle";
+                        break;
+                    default:
+                        return "";
+                }
+ 
+            }
+        }
+    }),
+        'select': new OpenLayers.Style({
+            
+        }), 'temporary': new OpenLayers.Style({
+            
+        })
+    }),
     pandstylemap : new OpenLayers.StyleMap({
         fillColor: "yellow",
         fillOpacity: 0.4,
@@ -209,7 +263,9 @@ dbkjs.config.styles = {
                 }
             }
         }), 'select': new OpenLayers.Style({
-            pointRadius: 40
+            pointRadius: 20
+        }), 'temporary': new OpenLayers.Style({
+            pointRadius: 25
         })
     }),
     gevaarlijkestof: new OpenLayers.StyleMap({
@@ -223,7 +279,9 @@ dbkjs.config.styles = {
                 }
             }
         }), 'select': new OpenLayers.Style({
-            pointRadius: 40
+            pointRadius: 20
+        }), 'temporary': new OpenLayers.Style({
+            pointRadius: 25
         })
     })
 };

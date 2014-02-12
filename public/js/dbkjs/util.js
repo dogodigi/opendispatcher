@@ -42,7 +42,7 @@ Array.prototype.where = function(f) {
     // for each array element, pass to filter function
     for (var i = 0; i < l; i++) {
         // skip missing elements
-        if (typeof this[ i ] == "undefined")
+        if (typeof this[ i ] === "undefined")
             continue;
         // param1 = array element             
         p[ 0 ] = this[ i ];
@@ -558,6 +558,19 @@ dbkjs.util = {
             } else {
                 return '<a href="' + url + '">' + url + '</a>' + '<br/>';
             }
-        })
+        });
+    },
+    bearing: function(pt1,pt2){
+        var bx = 0;
+        var by = 1;
+        var ax = pt2.x - pt1.x;
+        var ay = pt2.y - pt1.y;
+        var angle_rad = Math.acos((ax*bx+ay*by)/Math.sqrt(ax*ax+ay*ay));
+        var angle = 360/(2*Math.PI)*angle_rad;
+        if (ax < 0){
+            return 360 - angle;
+        } else { 
+            return angle;
+        }
     }
 };

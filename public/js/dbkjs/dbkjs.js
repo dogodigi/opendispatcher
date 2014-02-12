@@ -286,6 +286,17 @@ dbkjs.challengeAuth = function() {
 };
 
 dbkjs.successAuth = function() {
+    dbkjs.hoverControl = new OpenLayers.Control.SelectFeature(
+        [],
+        {
+            hover: true, 
+            highlightOnly: true,
+            renderIntent: "temporary"
+        }
+    );
+    dbkjs.hoverControl.handlers.feature.stopDown = false;
+    dbkjs.hoverControl.handlers.feature.stopUp = false;
+    dbkjs.map.addControl(dbkjs.hoverControl);
     dbkjs.selectControl = new OpenLayers.Control.SelectFeature(
         [],
         {

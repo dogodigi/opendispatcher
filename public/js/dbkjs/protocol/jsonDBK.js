@@ -10,11 +10,14 @@ dbkjs.protocol.jsonDBK = {
     panel_algemeen: null,
     init: function() {
         var _obj = dbkjs.protocol.jsonDBK;
-        _obj.layerPandgeometrie = new OpenLayers.Layer.Vector("Pandgeometrie",{
+        _obj.layerPandgeometrie = new OpenLayers.Layer.Vector("pandgeometrie",{
             styleMap: dbkjs.config.styles.dbkpand
         });
-        _obj.layerBrandcompartiment = new OpenLayers.Layer.Vector("Brandompartiment",{
+        _obj.layerBrandcompartiment = new OpenLayers.Layer.Vector("brandcompartiment",{
             styleMap: dbkjs.config.styles.dbkcompartiment
+        });
+        _obj.layerHulplijn = new OpenLayers.Layer.Vector("hulplijn",{
+            styleMap: dbkjs.config.styles.hulplijn
         });
         _obj.layerBrandweervoorziening = new OpenLayers.Layer.Vector("brandweervoorziening",{
             styleMap: dbkjs.config.styles.brandweervoorziening
@@ -25,11 +28,14 @@ dbkjs.protocol.jsonDBK = {
         _obj.layers = [
             _obj.layerPandgeometrie, 
             _obj.layerBrandcompartiment,
+            _obj.layerHulplijn,
             _obj.layerBrandweervoorziening,
             _obj.layerGevaarlijkestof
         ];;
         dbkjs.map.addLayers(_obj.layers);
         dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.layers));
+        dbkjs.hoverControl.setLayer((dbkjs.hoverControl.layers || dbkjs.hoverControl.layer).concat(_obj.layers));
+        dbkjs.hoverControl.activate();
         dbkjs.selectControl.activate();
     },
     getObject: function(feature) {
@@ -50,6 +56,24 @@ dbkjs.protocol.jsonDBK = {
                     features.push(myFeature);
                 });
                 _obj.layerPandgeometrie.addFeatures(features);
+            }
+            if(data.DBKObject.hulplijn){
+                var features = [];
+                $.each(data.DBKObject.hulplijn, function(idx, myGeometry){
+                    var myBearing = 0;
+                    var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
+                    var myFeature = new OpenLayers.Feature.Vector(myline); 
+                    if (myGeometry.typeHulplijn === "Arrow"){
+                        var myVertices = myline.getVertices();
+                        var myEndpoint = myVertices[myVertices.length -1];
+                        //revert bearing. Don't knwo why, but it works ;-)
+                        myBearing = -(dbkjs.util.bearing(myVertices[myVertices.length -2], myVertices[myVertices.length -1]));
+                        myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Collection([myline,myEndpoint]));
+                    }
+                    myFeature.attributes = { "type": myGeometry.typeHulplijn, "rotation": myBearing};
+                    features.push(myFeature);
+                });
+                _obj.layerHulplijn.addFeatures(features);
             }
             
             if(data.DBKObject.brandcompartiment){
