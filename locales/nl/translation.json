@@ -41,7 +41,7 @@
         "mini": "overzichtskaart",
         "settings": "instellingen",
         "overlays": "lagen",
-        "baseLayers": "basiskaarten",
+        "baselayers": "basiskaarten",
         "info": "Informatie",
         "northarrow": "Noordpijl",
         "emergencyMap": "Bereikbaarheidskaart",

@@ -109,7 +109,7 @@ dbkjs.modules.feature = {
             "featuresadded": function() {
             },
             "featureunselected": function(e) {
-                $('#infopanel').hide();
+               // $('#infopanel').hide();
             }
         });
         _obj.get();

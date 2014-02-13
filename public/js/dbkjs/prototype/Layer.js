@@ -75,6 +75,7 @@ dbkjs.Layer = dbkjs.Class({
             var that = this;
             $('input[name="box_' + this.id + '"]').click(function() {
                 if ($(this).is(':checked')) {
+                    console.log(that.layer);                    
                     that.layer.setVisibility(true);
                 } else {
                     that.layer.setVisibility(false);

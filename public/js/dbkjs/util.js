@@ -8,7 +8,6 @@ $.browser.device = (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mi
 
 //Override drawText function on openlayers SVG.js
 OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location) {
-    console.log(style);
     var drawOutline = (!!style.labelOutlineWidth);
     // First draw text in halo color and size and overlay the
     // normal text afterwards
@@ -98,7 +97,8 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
         tspan.setAttribute("x", x);
         if (i === 0) {
             var vfactor = OpenLayers.Renderer.SVG.LABEL_VFACTOR[align[1]];
-            if (vfactor === null) {
+            // @todo: the if clause was: if(vfactor == null), this is depricatedd
+            if (!vfactor) {
                  vfactor = -.5;
             }
             tspan.setAttribute("dy", (vfactor*(numRows-1)) + "em");

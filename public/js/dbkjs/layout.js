@@ -25,33 +25,34 @@ dbkjs.layout = {
                 '</span></div></div></p><hr>'
                 );
         $(parent).append('<h4>Lagen toevoegen</h4><p>De volgende lagen zijn aanwezig op het systeem:</p>');
-            var gbkn = new dbkjs.Layer({
-                name: 'GBKN',
-                url: 'map/mapserv',
+        var gbkn = new dbkjs.Layer({
+            name: 'GBKN',
+            url: 'map/mapserv',
+            map: dbkjs.map,
+            layerOptions: {map: '/home/mapserver/doiv.map', layers: 'gbkn_panden,gbkn_topografie'},
+            parent: '#overlaypanel_b2',
+            index: 2
+        });
+        if ($.inArray('gebieden', dbkjs.options.organisation.modules) > -1) {
+            var gebieden = new dbkjs.Layer({
+                name: 'Gebieden',
+                url: 'geoserver/dbk/wms',
                 map: dbkjs.map,
-                layerOptions: {map: '/home/mapserver/doiv.map', layers: 'gbkn_panden,gbkn_topografie'},
+                visibility: true,
+                singleTile: true,
+                getfeatureinfo: function(){},
+                layerOptions: {
+                    layers: 'gebieden'
+                },
                 parent: '#overlaypanel_b2',
-                index: 2
+                index: 6
             });
-            if(dbkjs.options.organisation.modules.gebieden){
-                var gebieden = new dbkjs.Layer({
-                    name: 'Gebieden',
-                    url: 'geoserver/dbk/wms',
-                    map: dbkjs.map,
-                    visibility: true,
-                    singleTile: true,
-                    getfeatureinfo: function(){},
-                    layerOptions: {
-                        layers: 'gebieden'
-                    },
-                    parent: '#overlaypanel_b2',
-                    index: 6
-                });
-            }
-            $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v){
-                var myCapabilities = new dbkjs.Capabilities(
-                        {url: wms_v.url, title: wms_v.name, proxy: wms_v.proxy});
-            });
+        }
+        $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v){
+            var myCapabilities = new dbkjs.Capabilities(
+                {url: wms_v.url, title: wms_v.name, proxy: wms_v.proxy}
+            );
+        });
         $(parent).append('');
         $(parent).append('<hr>');
         $(parent).append(

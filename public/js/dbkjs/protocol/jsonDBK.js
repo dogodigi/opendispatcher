@@ -45,6 +45,17 @@ dbkjs.protocol.jsonDBK = {
     getObject: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK; 
         //clear all layers first!
+        $.each(_obj.layers, function(idx, lyr){
+           lyr.destroyFeatures();
+           lyr.events.on({
+            "featureselected": _obj.getfeatureinfo,
+            "featuresadded": function() {
+            },
+            "featureunselected": function(e) {
+               // $('#infopanel').hide();
+            }
+        });
+        });
         var params = {
             srid: dbkjs.options.projection.srid,
             timestamp: new Date().getTime()
@@ -139,6 +150,22 @@ dbkjs.protocol.jsonDBK = {
             dbkjs.options.feature = null;
             dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
         });
+    },
+    getfeatureinfo: function(e){
+        html = '<div class="table-responsive">';
+            html += '<table class="table table-hover">';
+            for (var j in e.feature.attributes) {
+                //if ($.inArray(j, ['Omschrijving', 'GEVIcode', 'UNnr', 'Hoeveelheid', 'NaamStof']) > -1) {
+                    if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
+                        html += '<tr><td><span>' + j + "</span>: </td><td>" + e.feature.attributes[j] + "</td></tr>";
+                    }
+                //}
+            }
+            html += "</table>";
+        html += '</div>';
+        //dbkjs.util.appendTab(dbkjs.wms_panel.attr("id"),'Brandcompartiment',html, true, 'br_comp_tab');
+        $('#wmsclickpanel_b').html(html);
+        $('#wmsclickpanel').show();
     },
     process: function(feature) {
         $('#infopanel_f').html('');

@@ -8,8 +8,9 @@ dbkjs.Capabilities = dbkjs.Class({
     VERSION: '1.1.1',
     REQUEST: 'GetCapabilities',
     title: 'WMS lagen',
-    onLayerLoadError: function() {
+    onLayerLoadError: function(e) {
         /* Display error message, etc */
+        console.log(e);
     },
     initialize: function(options){
         this.options = OpenLayers.Util.extend({}, options);
@@ -29,7 +30,7 @@ dbkjs.Capabilities = dbkjs.Class({
                 }
                 var c = _obj.wmsCapabilitiesFormat.read(doc);
                 if (!c || !c.capability) {
-                    _obj.onLayerLoadError();
+                    _obj.onLayerLoadError(c);
                     return;
                 } else {
                     //construct a unique identifier
@@ -54,7 +55,7 @@ dbkjs.Capabilities = dbkjs.Class({
                 }
             },
             failure: function(r) {
-                _obj.onLayerLoadError();
+                _obj.onLayerLoadError(r);
             }
         });
     }
