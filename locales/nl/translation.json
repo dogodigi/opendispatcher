@@ -104,8 +104,25 @@
         "contact": "Contact",
         "particularities": "Bijzonderheden",
         "tarry": "Verblijf",
+        "tarryobjectid": "Verblijfsobject",
         "media": "Media"
-        
+    },
+    "tarry": {
+        "from":"tarry.from",
+        "to": "tarry.to",
+        "ammount":"tarry.ammount",
+        "notSelfReliant": "tarry.notSelfReliant",
+        "group": "tarry.group",
+        "days": "tarry.days"
+    },
+    "particularies":{
+        "type": "soort",
+        "comment": "informatie"
+    },
+    "contact":{
+        "role": "functie",
+        "name": "naam",
+        "telephone": "telefoon"
     },
     "search":{
         "search": "Zoek",

@@ -284,7 +284,7 @@ dbkjs.protocol.jsonDBK = {
                     if (!dbkjs.util.isJsonNull(waarde.bagId)){
                         var bag_div = $('<td></td>');
                         var bag_p = $('<p></p>');
-                        var bag_button = $('<button type="button" class="btn btn-primary">Verblijfsobject ' + waarde.bagId + '</button>');
+                        var bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + waarde.bagId + '</button>');
                         bag_p.append(bag_button);
                         bag_button.click(function() {
                             if (dbkjs.modules.bag) {
@@ -367,7 +367,7 @@ dbkjs.protocol.jsonDBK = {
             var bijzonderheid_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var bijzonderheid_table_div = $('<div class="table-responsive"></div>');
             var bijzonderheid_table = $('<table class="table table-hover"></table>');
-            bijzonderheid_table.append('<tr><th>soort</th><th>informatie</th></tr>');
+            bijzonderheid_table.append('<tr><th>'+ i18n.t('particularies.type')+'</th><th>'+ i18n.t('particularies.comment')+'</th></tr>');
             var set = {
                 Algemeen: {titel: 'Algemeen', waarde: ''},
                 Preparatie: {titel: 'Preparatie', waarde: ''},
@@ -458,16 +458,21 @@ dbkjs.protocol.jsonDBK = {
             var verblijf_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var verblijf_table_div = $('<div class="table-responsive"></div>');
             var verblijf_table = $('<table class="table table-hover"></table>');
-            verblijf_table.append('<tr><th>van</th><th>tot</th><th>aantal</th><th>nzr</th><th>groep</th><th>dagen</th></tr>');
+            verblijf_table.append('<tr><th>' + i18n.t('tarry.from')+ '</th><th>' + 
+                    i18n.t('tarry.to')+ '</th><th>' + 
+                    i18n.t('tarry.ammount')+ '</th><th>' + 
+                    i18n.t('tarry.notSelfReliant')+ '</th><th>' + 
+                    i18n.t('tarry.group')+ '</th><th>' + 
+                    i18n.t('tarry.days')+ '</th></tr>');
             $.each(verblijf, function(verblijf_index, waarde) {
                 var dagen = '';
-                dagen += !waarde.maandag ? '<span class="label">ma</span>' : '<span class="label label-success">ma</span>';
-                dagen += !waarde.dinsdag ? '<span class="label">di</span>' : '<span class="label label-success">di</span>';
-                dagen += !waarde.woensdag ? '<span class="label">wo</span>' : '<span class="label label-success">wo</span>';
-                dagen += !waarde.donderdag ? '<span class="label">do</span>' : '<span class="label label-success">do</span>';
-                dagen += !waarde.vrijdag ? '<span class="label">vr</span>' : '<span class="label label-success">vr</span>';
-                dagen += !waarde.zaterdag ? '<span class="label">za</span>' : '<span class="label label-success">za</span>';
-                dagen += !waarde.zondag ? '<span class="label">zo</span>' : '<span class="label label-success">zo</span>';
+                dagen += !waarde.maandag ? '<span class="label label-default">' + moment.weekdaysMin(1)+ '</span>' : '<span class="label label-success">' + moment.weekdaysMin(1)+ '</span>';
+                dagen += !waarde.dinsdag ? '<span class="label label-default">' + moment.weekdaysMin(2)+ '</span>' : '<span class="label label-success">' + moment.weekdaysMin(2)+ '</span>';
+                dagen += !waarde.woensdag ? '<span class="label label-default">' + moment.weekdaysMin(3)+ '</span>' : '<span class="label label-success">' + moment.weekdaysMin(3)+ '</span>';
+                dagen += !waarde.donderdag ? '<span class="label label-default">' + moment.weekdaysMin(4)+ '</span>' : '<span class="label label-success">' + moment.weekdaysMin(4)+ '</span>';
+                dagen += !waarde.vrijdag ? '<span class="label label-default">' + moment.weekdaysMin(5)+ '</span>' : '<span class="label label-success">' + moment.weekdaysMin(5)+ '</span>';
+                dagen += !waarde.zaterdag ? '<span class="label label-default">' + moment.weekdaysMin(6)+ '</span>' : '<span class="label label-success">' + moment.weekdaysMin(6)+ '</span>';
+                dagen += !waarde.zondag ? '<span class="label label-default">' + moment.weekdaysMin(0)+ '</span>' : '<span class="label label-success">' + moment.weekdaysMin(0)+ '</span>';
                 verblijf_table.append('<tr>' +
                         '<td>' + waarde.tijdvakBegintijd.substring(0,5) + '</td>' +
                         '<td>' + waarde.tijdvakEindtijd.substring(0,5) + '</td>' +

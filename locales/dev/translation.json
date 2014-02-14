@@ -104,7 +104,17 @@
         "contact": "dbk.contact",
         "particularities": "dbk.particularities",
         "tarry": "dbk.tarry",
+        "tarryobjectid": "dbk.tarryobjectid",
         "media": "dbk.media"
+    },
+    "contact":{
+        "role": "contact.role",
+        "name": "contact.name",
+        "telephone": "contact.telephone"
+    },
+    "particularies":{
+        "type": "particularies.type",
+        "comment": "particularies.comment"
     },
     "search":{
         "search": "search.search",
