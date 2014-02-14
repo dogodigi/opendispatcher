@@ -148,7 +148,7 @@ dbkjs.protocol.jsonDBK = {
             }
         }).fail(function( jqxhr, textStatus, error ) {
             dbkjs.options.feature = null;
-            dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
+            dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
         });
     },
     getfeatureinfo: function(e){
@@ -174,7 +174,7 @@ dbkjs.protocol.jsonDBK = {
                 if (!dbkjs.protocol.jsonDBK.processing) {
                     $('#infopanel').hide();
                     dbkjs.protocol.jsonDBK.processing = true;
-                    dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>', ' Objectinformatie wordt opgehaald...', 'alert-info');
+                    dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>', i18n.t('dialogs.running'), 'alert-info');
                     if(feature.attributes.typeFeature === 'Object'){
                         dbkjs.protocol.jsonDBK.getObject(feature);
                     } else if (feature.attributes.typeFeature === 'Object') {
@@ -213,7 +213,7 @@ dbkjs.protocol.jsonDBK = {
             _obj.processing = false;
         } else {
             dbkjs.options.feature = null;
-            dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
+            dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
         }
     },
     constructRow: function(val, caption) {
@@ -228,8 +228,11 @@ dbkjs.protocol.jsonDBK = {
         var _obj = dbkjs.protocol.jsonDBK;
         /** Algemene dbk info **/
         dbkjs.util.changeDialogTitle('<i class="icon-building"></i> ' + DBKObject.formeleNaam);
-        var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">Niet bekend</span>' : DBKObject.controleDatum;
-        var bhvaanwezig = dbkjs.util.isJsonNull(DBKObject.BHVaanwezig) ? '<span class="label label-warning">Geen BHV aanwezig of onbekend</span>' : '<span class="label label-success">BHV aanwezig</span>';
+        var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+ 
+                i18n.t('dbk.unknown')+ '</span>' : DBKObject.controleDatum;
+        var bhvaanwezig = dbkjs.util.isJsonNull(DBKObject.BHVaanwezig) ? '<span class="label label-warning">'+ 
+                i18n.t('dbk.noEmergencyResponse') +'</span>' : '<span class="label label-success">'+ 
+                i18n.t('dbk.emergencyResponsePresent') + '</span>';
         var informelenaam = dbkjs.util.isJsonNull(DBKObject.informeleNaam) ? '' : DBKObject.informeleNaam;
         var omsnummer = dbkjs.util.isJsonNull(DBKObject.OMSnummer) ? '' : DBKObject.OMSnummer;
         var gebouwconstructie = dbkjs.util.isJsonNull(DBKObject.gebouwconstructie) ? '' : DBKObject.gebouwconstructie;
@@ -239,25 +242,25 @@ dbkjs.protocol.jsonDBK = {
         var hoogste = dbkjs.util.isJsonNull(DBKObject.hoogsteBouwlaag) ? false : DBKObject.hoogsteBouwlaag;
         var bouwlaag = '';
         if (laagste && hoogste) {
-            bouwlaag = 'Bouwlaag:' + laagste + ' t/m ' + hoogste + '';
+            bouwlaag = i18n.t('dbk.level') + ': ' + laagste + ' ' + i18n.t('dbk.to') + ' ' + hoogste + '';
         } else if (laagste && !hoogste) {
-            bouwlaag = 'Laagste bouwlaag: ' + laagste + '';
+            bouwlaag = i18n.t('dbk.lowLevel') + ': ' + laagste + '';
         } else if (hoogste && !laagste) {
-            bouwlaag = 'Hoogste bouwlaag: ' + hoogste + '';
+            bouwlaag = i18n.t('dbk.highLevel') + ': ' + hoogste + '';
         }
         dbkjs.options.feature.bouwlaag = bouwlaag;
         
         _obj.panel_algemeen = $('<div class="tab-pane active" id="collapse_algemeen_' + DBKObject.identificatie + '"></div>');
         var algemeen_table_div = $('<div class="table-responsive"></div>');
         var algemeen_table = $('<table class="table table-hover"></table>');
-        algemeen_table.append(_obj.constructRow(informelenaam, 'Informele naam'));
-        algemeen_table.append(_obj.constructRow(controledatum, 'Controledatum'));
-        algemeen_table.append(_obj.constructRow(bhvaanwezig, 'BHV'));
-        algemeen_table.append(_obj.constructRow(inzetprocedure, 'Inzetprocedure'));
+        algemeen_table.append(_obj.constructRow(informelenaam, i18n.t('dbk.alternativeName')));
+        algemeen_table.append(_obj.constructRow(controledatum, i18n.t('dbk.dateChecked')));
+        algemeen_table.append(_obj.constructRow(bhvaanwezig, i18n.t('dbk.emergencyResponse')));
+        algemeen_table.append(_obj.constructRow(inzetprocedure, i18n.t('dbk.procedure')));
         algemeen_table.append(_obj.constructRow(gebouwconstructie, 'Gebouwconstructie'));
-        algemeen_table.append(_obj.constructRow(omsnummer, 'OMS nummer'));
-        algemeen_table.append(_obj.constructRow(gebruikstype, 'Gebruik'));
-        algemeen_table.append(_obj.constructRow(bouwlaag, 'Bouwlagen'));
+        algemeen_table.append(_obj.constructRow(omsnummer, i18n.t('dbk.fireAlarmCode')));
+        algemeen_table.append(_obj.constructRow(gebruikstype, i18n.t('dbk.application')));
+        algemeen_table.append(_obj.constructRow(bouwlaag, i18n.t('dbk.levels')));
         
         if (DBKObject.adres) {
             //adres is een array of null
@@ -290,8 +293,9 @@ dbkjs.protocol.jsonDBK = {
                                         $('#collapse_algemeen_' + _obj.feature.id).append(
                                             '<div class="alert alert-warning alert-dismissable">' +
                                             '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-                                            '<strong>Mislukt!</strong>' +
-                                            ' verblijfsobject ' + waarde.bagId + ' niet gevonden.' +
+                                            '<strong>' + i18n.t('app.fail') +
+                                            '</strong>' +
+                                             waarde.bagId + ' ' + i18n.t('dialogs.infoNotFound') +
                                             '</div>'
                                         );
                                     } else {
@@ -316,7 +320,7 @@ dbkjs.protocol.jsonDBK = {
             algemeen_table_div.append(algemeen_table);
             _obj.panel_algemeen.append(algemeen_table_div);
             _obj.panel_group.html(_obj.panel_algemeen);
-            _obj.panel_tabs.html('<li class="active"><a data-toggle="tab" href="#collapse_algemeen_' + DBKObject.identificatie + '">Algemeen</a></li>');
+            _obj.panel_tabs.html('<li class="active"><a data-toggle="tab" href="#collapse_algemeen_' + DBKObject.identificatie + '">' + i18n.t('dbk.general') + '</a></li>');
             return true;
         } else {
             return false;
@@ -351,9 +355,9 @@ dbkjs.protocol.jsonDBK = {
             contact_table_div.append(contact_table);
             contact_div.append(contact_table_div);
             _obj.panel_group.append(contact_div);
-            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">Contact</a></li>');
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.contact')+ '</a></li>');
         } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">Contact</a></li>');
+            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">'+ i18n.t('dbk.contact')+ '</a></li>');
         }
     },
     constructBijzonderheid: function(bijzonderheid) {
@@ -389,9 +393,9 @@ dbkjs.protocol.jsonDBK = {
             bijzonderheid_table_div.append(bijzonderheid_table);
             bijzonderheid_div.append(bijzonderheid_table_div);
             _obj.panel_group.append(bijzonderheid_div);
-            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">Bijzonderheden</a></li>');
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.particularities')+ '</a></li>');
         } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">Bijzonderheden</a></li>');
+            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">'+ i18n.t('dbk.particularities')+ '</a></li>');
         }
     },
     constructMedia: function(foto) {
@@ -442,9 +446,9 @@ dbkjs.protocol.jsonDBK = {
             }
             foto_div.append(image_carousel);
             _obj.panel_group.append(foto_div);
-            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">Media</a></li>');
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.media')+ '</a></li>');
         } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">Media</a></li>');
+            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">'+ i18n.t('dbk.media')+ '</a></li>');
         }
     },
     constructVerblijf: function(verblijf) {
@@ -476,9 +480,9 @@ dbkjs.protocol.jsonDBK = {
             verblijf_table_div.append(verblijf_table);
             verblijf_div.append(verblijf_table_div);
             _obj.panel_group.append(verblijf_div);
-            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">Verblijf</a></li>');
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.tarry')+ '</a></li>');
         } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">Verblijf</a></li>');
+            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">'+ i18n.t('dbk.tarry')+ '</a></li>');
         }
     },
     getGebied: function(feature) {
@@ -490,7 +494,7 @@ dbkjs.protocol.jsonDBK = {
             dbkjs.protocol.jsonDBK.info(data);
         }).fail(function( jqxhr, textStatus, error ) {
             dbkjs.options.feature = null;
-            dbkjs.util.alert('Fout', ' Geen informatie gevonden', 'alert-danger');
+            dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
         });
     }
 };

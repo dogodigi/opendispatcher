@@ -57,7 +57,7 @@ dbkjs.modules.geolocate = {
     }),
     register: function(){
         var _obj = dbkjs.modules.geolocate;
-        $('#btngrp_3').append('<a id="btn_geolocate" class="btn btn-default navbar-btn" href="#" title="Zoom naar locatie"><i class="icon-screenshot"></i></a>');
+        $('#btngrp_3').append('<a id="btn_geolocate" class="btn btn-default navbar-btn" href="#" title="' + i18n.t('map.zoomLocation') + '"><i class="icon-screenshot"></i></a>');
         $('#btn_geolocate').click(function(){
             if ($(this).hasClass('active')) {
                 _obj.layer.removeAllFeatures();

@@ -1,45 +1,42 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.Layer = dbkjs.Class({
-    url: 'dbkjs.prototype.layer.url',
-    id: "dbkjs.prototype.layer." + new Date().getTime(),
-    namespace: 'dbkjs.prototype.layer.namespace',
-    visibility: false,
+    id: null,
     layer: null,
-    map: null,
     div: null,
-    initialize: function(options) {
-        options.visibility = options.visibility || false;
-        options.singleTile = options.singleTile || false;
-        this.options = OpenLayers.Util.extend({}, options);
-        OpenLayers.Util.extend(this, options);
-        var layerOptions = OpenLayers.Util.extend({
+    initialize: function(name, url, params, options, parent, index) {
+        var defaultparams = {
             format: 'image/png', 
             transparent: true
-        }, options.layerOptions);
+        };
+        var defaultoptions = {
+            transitionEffect: 'resize',
+            singleTile: false,
+            tiled: true,
+            buffer: 0,
+            isBaseLayer: false,
+            visibility: false
+        };
         
-        if(!options.singleTile){
-            layerOptions.tiled = true;
-            layerOptions.tilesorigin = dbkjs.map.maxExtent.left + ',' + dbkjs.map.maxExtent.bottom;
-        }
+        params = OpenLayers.Util.extend(defaultparams, params);
+        options = OpenLayers.Util.extend(defaultoptions, options);
+        
+//        if(!options.singleTile){
+//            layerOptions.tiled = true;
+//            layerOptions.tilesorigin = dbkjs.map.maxExtent.left + ',' + dbkjs.map.maxExtent.bottom;
+//        }
         
         this.id = OpenLayers.Util.createUniqueID("dbkjs_layer_");
         this.div = $('<div class="panel"></div>');
         this.div.attr('id', 'panel_' + this.id);
         //layers moet worden meegegeven in de opties
-        this.layer = new OpenLayers.Layer.WMS(options.name, options.url,
-                layerOptions,
-                {
-                    transitionEffect: 'none',
-                    singleTile: options.singleTile,
-                    buffer: 0,
-                    isBaseLayer: false,
-                    visibility: options.visibility
-                }
+        this.layer = new OpenLayers.Layer.WMS(name, url,
+                params,
+                options
         );
         this.layer.dbkjsParent = this;
         //let op, de map moet worden meegegeven in de opties
-        options.map.addLayers([this.layer]);
+        dbkjs.map.addLayers([this.layer]);
         var _obj = this;
         this.layer.events.register("loadstart", this.layer, function() {
             dbkjs.util.loadingStart(_obj.layer);
@@ -48,38 +45,47 @@ dbkjs.Layer = dbkjs.Class({
         this.layer.events.register("loadend", this.layer, function() {
             dbkjs.util.loadingEnd(_obj.layer);
         });
-        // @todo functie maken om layerindex dynamisch te toveren 0 is onderop de stapel
-        if (options.index) {
-            options.map.setLayerIndex(this.layer, options.index);
-        } else {
-            options.map.setLayerIndex(this.layer, 0);
-        }
-
-        var dv_panel_heading = $('<div class="panel-heading"></div>');
-        var dv_panel_title = $('<h4 class="panel-title"></div>');
-        dv_panel_title.append('<input type="checkbox" name="box_' + this.id + '"/>&nbsp;');
-        dv_panel_title.append(this.layer.name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
-                this.id + '" data-parent="' + options.parent + '" ><i class="icon-info-sign"></i></a>');
-        dv_panel_heading.append(dv_panel_title);
-        this.div.append(dv_panel_heading);
-        var dv_panel_content = $('<div id="collapse_' + this.id + '" class="panel-collapse collapse"></div>');
-        //dv_panel_content.append('');
-        this.div.append(dv_panel_content);
-        $(options.parent).append(this.div);
-        $(options.parent).sortable({handle: '.panel'});
-        if (this.layer) {
-            if (this.layer.getVisibility()) {
-                //checkbox aan
-                $('input[name="box_' + this.id + '"]').attr('checked', 'checked');
+        if(!options.isBaseLayer) {
+            // @todo functie maken om layerindex dynamisch te toveren 0 is onderop de stapel
+            if(index){
+                dbkjs.map.setLayerIndex(this.layer, index);
+            } else {
+                dbkjs.map.setLayerIndex(this.layer, 0);
             }
-            var that = this;
-            $('input[name="box_' + this.id + '"]').click(function() {
-                if ($(this).is(':checked')) {
-                    console.log(that.layer);                    
-                    that.layer.setVisibility(true);
-                } else {
-                    that.layer.setVisibility(false);
+
+            var dv_panel_heading = $('<div class="panel-heading"></div>');
+            var dv_panel_title = $('<h4 class="panel-title"></div>');
+            dv_panel_title.append('<input type="checkbox" name="box_' + this.id + '"/>&nbsp;');
+            dv_panel_title.append(name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
+                    this.id + '" data-parent="' + parent + '" ><i class="icon-info-sign"></i></a>');
+            dv_panel_heading.append(dv_panel_title);
+            this.div.append(dv_panel_heading);
+            var dv_panel_content = $('<div id="collapse_' + this.id + '" class="panel-collapse collapse"></div>');
+            //dv_panel_content.append('');
+            this.div.append(dv_panel_content);
+            $(parent).append(this.div);
+            $(parent).sortable({handle: '.panel'});
+            if (this.layer) {
+                if (this.layer.getVisibility()) {
+                    //checkbox aan
+                    $('input[name="box_' + this.id + '"]').attr('checked', 'checked');
                 }
+                var that = this;
+                $('input[name="box_' + this.id + '"]').click(function() {
+                    if ($(this).is(':checked')) {
+                        that.layer.setVisibility(true);
+                    } else {
+                        that.layer.setVisibility(false);
+                    }
+                });
+            }
+        } else {
+            //dbkjs.map.setLayerIndex(this.layer, 0);
+            dbkjs.options.baselayers.push(this.layer);
+            var _li = $('<li class="bl"><a href="#">' + name + '</a></li>');
+            $('#baselayerpanel_ul').append(_li);
+            _li.click(function() {
+                dbkjs.toggleBaseLayer($(this).index());
             });
         }
     },
@@ -88,14 +94,14 @@ dbkjs.Layer = dbkjs.Class({
         var params = {
             REQUEST: "GetFeatureInfo",
             EXCEPTIONS: "application/vnd.ogc.se_xml",
-            BBOX: this.map.getExtent().toBBOX(),
+            BBOX: dbkjs.map.getExtent().toBBOX(),
             SERVICE: "WMS",
             INFO_FORMAT: 'application/vnd.ogc.gml',
             QUERY_LAYERS: this.layer.params.LAYERS,
             FEATURE_COUNT: 50,
             Layers: this.layer.params.LAYERS,
-            WIDTH: this.map.size.w,
-            HEIGHT: this.map.size.h,
+            WIDTH: dbkjs.map.size.w,
+            HEIGHT: dbkjs.map.size.h,
             format: 'image/png',
             styles: this.layer.params.STYLES,
             srs: this.layer.params.SRS

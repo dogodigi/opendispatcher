@@ -42,14 +42,13 @@ dbkjs.Capabilities = dbkjs.Class({
                                 '</div>');
                     //loop through all the layers and make them available
                     $.each(c.capability.layers, function(lkey, lval) {
-                        var myLayer = new dbkjs.Layer({
-                            name: lval.title,
-                            url: _obj.url,
-                            map: dbkjs.map,
-                            layerOptions: {layers: lval.name},
-                            parent: '#' + myID + '_panel',
-                            index: lkey
-                        });
+                        var myLayer = new dbkjs.Layer(lval.title,
+                            _obj.url,
+                            {layers: lval.name},
+                            {},
+                            '#' + myID + '_panel',
+                            lkey
+                        );
                     });
                     return;
                 }

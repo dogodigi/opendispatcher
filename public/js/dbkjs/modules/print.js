@@ -7,7 +7,7 @@ dbkjs.modules.print = {
         _obj.namespace = options.namespace || _obj.namespace;
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
-        $('#btngrp_3').append('<a id="btn_print" class="btn btn-default navbar-btn" href="#" title="Afdrukken"><i class="icon-print"></i></a>');
+        $('#btngrp_3').append('<a id="btn_print" class="btn btn-default navbar-btn" href="#" title="' + i18n.t('app.print') + '"><i class="icon-print"></i></a>');
 
         $('#btn_print').click(function() {
             if (!dbkjs.util.isJsonNull(dbkjs.options.dbk) && dbkjs.options.dbk !== 0) {

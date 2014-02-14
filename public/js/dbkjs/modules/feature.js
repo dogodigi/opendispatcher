@@ -75,7 +75,8 @@ dbkjs.modules.feature = {
     register: function(options) {
         var _obj = dbkjs.modules.feature;
         $('#btngrp_navigation').append(
-            '<a id="btn_refresh" class="btn btn-default navbar-btn" href="#" title="DBK\'s verversen"><i class="icon-refresh"></i></a>'
+            '<a id="btn_refresh" class="btn btn-default navbar-btn" href="#" title="'+
+            i18n.t('app.refresh') + '"><i class="icon-refresh"></i></a>'
         );
         $('#btn_refresh').click(function() {
             _obj.get();

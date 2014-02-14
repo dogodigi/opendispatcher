@@ -183,7 +183,7 @@ dbkjs.util = {
                 layers[0].setVisibility(false);
             }
         } else {
-            alert(i18n.t('dialogs.layerNotFound'));
+            dbkjs.util.alert(i18n.t('dialogs.layerNotFound'));
         }
     },
     setModalTitle: function(modal_id, title) {
@@ -475,14 +475,14 @@ dbkjs.util = {
         if (!alert[0]) {
             var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable ' + type + '"></div>');
             alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-            alert.append(content);
+            alert.append(' ' + content);
             $('body').append(alert);
             alert.show();
         } else {
             alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass(type);
             alert.html('');
             alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-            alert.append(content);
+            alert.append(' ' + content);
             alert.show();
         }
     },

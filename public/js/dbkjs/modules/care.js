@@ -99,7 +99,7 @@ dbkjs.modules.care = {
         var normSel_minuten = $('<input id="sel_care" name="normSel_minuten" type="text" class="form-control" placeholder="'+ 
                 i18n.t('care.excesses')+'">');
         normSel.append(normSel_minuten);
-        incidentSel.append('<h5>'+ i18n.t('dateRange') + '</h5>');
+        incidentSel.append('<h5>'+ i18n.t('care.dateRange') + '</h5>');
         incidentSel.append(_obj.sel_care);
         var default_range = moment().startOf('week').format('YYYY-MM-DD') + '/' + moment().endOf('week').format('YYYY-MM-DD');
         _obj.sel_care.daterangepicker({
@@ -125,44 +125,36 @@ dbkjs.modules.care = {
                 '<input name="chk_koppel" type="checkbox"/><span>' + i18n.t('care.combinedWithCoverage')+'</span>'
             ]
         ));
-        var incidenten_button = $('<button class="btn btn-block btn_5px" type="button">Incidenten aan</button>');
-        var dekkingsplan_button = $('<button class="btn btn-block btn_5px" type="button">Dekkingsplan aan</button>');
-        var rapportage_button = $('<button class="btn btn-block btn_5px" type="button">Rapportage</button>');
-        var rop_button = $('<button class="btn btn-block btn_5px" type="button">ROP</button>');
+        var incidenten_button = $('<button class="btn btn-block btn_5px" type="button">'+ 
+                i18n.t('care.incidentsOn') + '</button>');
+        var dekkingsplan_button = $('<button class="btn btn-block btn_5px" type="button">' +
+                i18n.t('care.coverageOn') + '</button>');
         if (_obj.layerIncident.getVisibility()) {
             incidentSel.show();
-            incidenten_button.addClass('btn-primary').html('Incidenten uit');
+            incidenten_button.addClass('btn-primary').html(i18n.t('care.incidentsOff'));
         }
         if (_obj.layerNorm.getVisibility()) {
             normSel.show();
-            dekkingsplan_button.addClass('btn-primary').html('Dekkingsplan uit');
+            dekkingsplan_button.addClass('btn-primary').html(i18n.t('care.coverageOff'));
         }
 
-        $(rapportage_button).click(function() {
-            window.open('https://brwbn.safetyportal.nl/');
-            return false;
-        });
-        $(rop_button).click(function() {
-            window.open('https://rop.bbnweb.nl/');
-            return false;
-        });
         $(incidenten_button).click(function() {
             incidentSel.toggle();
             if (_obj.layerIncident.getVisibility()) {
-                incidenten_button.removeClass('btn-primary').html('Incidenten aan');
+                incidenten_button.removeClass('btn-primary').html(i18n.t('care.incidentsOn'));
                 _obj.layerIncident.setVisibility(false);
             } else {
-                incidenten_button.addClass('btn-primary').html('Incidenten uit');
+                incidenten_button.addClass('btn-primary').html(i18n.t('care.incidentsOff'));
                 _obj.layerIncident.setVisibility(true);
             }
         });
         $(dekkingsplan_button).click(function() {
             normSel.toggle();
             if (_obj.layerNorm.getVisibility()) {
-                dekkingsplan_button.removeClass('btn-primary').html('Dekkingsplan aan');
+                dekkingsplan_button.removeClass('btn-primary').html(i18n.t('care.coverageOn'));
                 _obj.layerNorm.setVisibility(false);
             } else {
-                dekkingsplan_button.addClass('btn-primary').html('Dekkingsplan uit');
+                dekkingsplan_button.addClass('btn-primary').html(i18n.t('care.coverageOff'));
                 _obj.layerNorm.setVisibility(true);
             }
         });
@@ -170,8 +162,14 @@ dbkjs.modules.care = {
         $('#care_dialog_b').append(incidentSel);
         $('#care_dialog_b').append(dekkingsplan_button);
         $('#care_dialog_b').append(normSel);
-        $('#care_dialog_b').append(rapportage_button);
-        $('#care_dialog_b').append(rop_button);
+        $.each(dbkjs.options.organisation.care, function (care_k, care_v){
+            var btn = $('<button class="btn btn-block btn_5px" type="button">' + care_v.button + '</button>');
+            $(btn).click(function() {
+                window.open(care_v.url);
+                return false;
+            });
+            $('#care_dialog_b').append(btn);
+        });
         $('input[name="chk_koppel"]').click(function() {
             $.each($('input[name="chk_koppel"]'), function(chk_idx, chk) {
                 if ($(chk).is(':checked')) {

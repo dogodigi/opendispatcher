@@ -7,7 +7,6 @@ dbkjs.map = dbkjs.map || null;
 
 dbkjs.init = function() {
     dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
-    dbkjs.map.addLayers(dbkjs.options.baselayers);
     dbkjs.options.organisation = {
         id: dbkjs.util.getQueryVariable(i18n.t('app.organisation'), 'demo')
     };
@@ -56,16 +55,18 @@ dbkjs.init = function() {
     dbkjs.naviHis = new OpenLayers.Control.NavigationHistory();
     dbkjs.map.addControl(dbkjs.naviHis);
     dbkjs.naviHis.activate();
-    var baselayer_ul = $('<ul class="nav nav-pills nav-stacked">');
-
+    
+    var baselayer_ul = $('<ul id="baselayerpanel_ul" class="nav nav-pills nav-stacked">');
     $.each(dbkjs.options.baselayers, function(bl_index, bl) {
         var _li = $('<li class="bl"><a href="#">' + bl.name + '</a></li>');
         baselayer_ul.append(_li);
+        dbkjs.map.addLayers([bl]);
         _li.click(function() {
             dbkjs.toggleBaseLayer(bl_index);
         });
     });
     $('#baselayerpanel_b').append(baselayer_ul);
+    
     dbkjs.map.events.register("moveend", dbkjs.map, function() {
         //check if the naviHis has any content
         if (dbkjs.naviHis.nextStack.length > 0) {
@@ -179,7 +180,7 @@ dbkjs.successAuth = function() {
 
 $(document).ready(function() {
     // Make sure i18n is initialized
-    i18n.init({ lng: "nl", debug: true }, function(t) {
+    i18n.init({ lng: "dev", debug: true }, function(t) {
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
         $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
         $('body').append(dbkjs.util.createDialog('bagpanel', '<i class="icon-home"></i> ' + t("dialogs.bag"), 'right:0;bottom:0;'));
