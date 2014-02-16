@@ -11,6 +11,9 @@ exports.nen1414 = function(req, res) {
     res.render('nen1414', {title: 'nen1414'});
 };
 exports.index = function(req, res) {
+    console.log(req.i18n.language());
+    console.log(req.i18n.lng());
+    console.log(req.i18n.locale());
     if(req.headers['x-safetymaps-dn']){
         var arr1 = req.headers['x-safetymaps-dn'].split('/');
         var user = {};
@@ -20,7 +23,7 @@ exports.index = function(req, res) {
         }
         console.log(user);
     }
-    res.render('index');
+    res.render('index',{mylang: req.i18n.language()});
 };
 
 exports.login = function(req,res){
