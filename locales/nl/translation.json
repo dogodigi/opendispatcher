@@ -105,15 +105,30 @@
         "particularities": "Bijzonderheden",
         "tarry": "Verblijf",
         "tarryobjectid": "Verblijfsobject",
-        "media": "Media"
+        "media": "Media",
+        "prevention": "Brandweervoorziening",
+        "chemicals": "Gevaarlijke stoffen"
+    },
+    "chemicals": {
+      "type": "soort",
+      "name": "naam",
+      "quantity": "hoeveelheid",
+      "indication": "gevi",
+      "information": "informatie",
+      "unnumber": "UN nummer"
+    },
+    "prevention":{
+      "type": "soort",
+      "name": "naam",
+      "comment": "informatie"
     },
     "tarry": {
-        "from":"tarry.from",
-        "to": "tarry.to",
-        "ammount":"tarry.ammount",
-        "notSelfReliant": "tarry.notSelfReliant",
-        "group": "tarry.group",
-        "days": "tarry.days"
+        "from":"van",
+        "to": "tot",
+        "ammount":"hoeveelheid",
+        "notSelfReliant": "nzr",
+        "group": "groep",
+        "days": "dagen"
     },
     "particularies":{
         "type": "soort",

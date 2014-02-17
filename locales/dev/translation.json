@@ -105,7 +105,22 @@
         "particularities": "dbk.particularities",
         "tarry": "dbk.tarry",
         "tarryobjectid": "dbk.tarryobjectid",
-        "media": "dbk.media"
+        "media": "dbk.media",
+        "prevention": "dbk.prevention",
+        "chemicals": "dbk.chemicals"
+    },
+    "chemicals": {
+      "type": "chemicals.type",
+      "name": "chemicals.name",
+      "quantity": "chemicals.quantity",
+      "indication": "chemicals.indication",
+      "information": "chemicals.information",
+      "unnumber": "chemicals.unnumber"
+    },
+    "prevention":{
+      "type": "prevention.type",
+      "name": "prevention.name",
+      "comment": "revention.comment"
     },
     "contact":{
         "role": "contact.role",

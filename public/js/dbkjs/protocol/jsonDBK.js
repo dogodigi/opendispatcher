@@ -48,7 +48,7 @@ dbkjs.protocol.jsonDBK = {
         $.each(_obj.layers, function(idx, lyr){
            lyr.destroyFeatures();
            lyr.events.on({
-            "featureselected": _obj.getfeatureinfo,
+            //"featureselected": _obj.getfeatureinfo,
             "featuresadded": function() {
             },
             "featureunselected": function(e) {
@@ -62,90 +62,6 @@ dbkjs.protocol.jsonDBK = {
         };
         $.getJSON('api/object/' + feature.attributes.identificatie, params).done(function(data) {
             dbkjs.protocol.jsonDBK.info(data);
-            //@todo selectControl implementeren voor mouseover effecten.
-            if(data.DBKObject.pandgeometrie){
-                var features = [];
-                $.each(data.DBKObject.pandgeometrie, function(idx, myGeometry){
-                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                    myFeature.attributes = { "id" : myGeometry.bagId,"status":myGeometry.bagStatus};
-                    features.push(myFeature);
-                });
-                _obj.layerPandgeometrie.addFeatures(features);
-            }
-            if(data.DBKObject.hulplijn){
-                var features = [];
-                $.each(data.DBKObject.hulplijn, function(idx, myGeometry){
-                    var myBearing = 0;
-                    var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
-                    var myFeature = new OpenLayers.Feature.Vector(myline); 
-                    if (myGeometry.typeHulplijn === "Arrow"){
-                        var myVertices = myline.getVertices();
-                        var myEndpoint = myVertices[myVertices.length -1];
-                        //revert bearing. Don't knwo why, but it works ;-)
-                        myBearing = -(dbkjs.util.bearing(myVertices[myVertices.length -2], myVertices[myVertices.length -1]));
-                        myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Collection([myline,myEndpoint]));
-                    }
-                    myFeature.attributes = { "type": myGeometry.typeHulplijn, "rotation": myBearing};
-                    features.push(myFeature);
-                });
-                _obj.layerHulplijn.addFeatures(features);
-            }
-            
-            if(data.DBKObject.brandcompartiment){
-                var features = [];
-                $.each(data.DBKObject.brandcompartiment, function(idx, myGeometry){
-                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                    //@todo: De omschrijving moet er nog bij, ook in de database!
-                    myFeature.attributes = { "type" : myGeometry.typeScheiding};
-                    features.push(myFeature);
-                });
-                _obj.layerBrandcompartiment.addFeatures(features);
-            }
-            if(data.DBKObject.brandweervoorziening){
-                var features = [];
-                $.each(data.DBKObject.brandweervoorziening, function(idx, myGeometry){
-                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                    myFeature.attributes = { 
-                        "type" : myGeometry.typeVoorziening, 
-                        "name": myGeometry.naamVoorziening,
-                        "information": myGeometry.aanvullendeInformatie,
-                        "rotation": myGeometry.hoek
-                    };
-                    features.push(myFeature);
-                });
-                _obj.layerBrandweervoorziening.addFeatures(features);
-            }
-            if(data.DBKObject.gevaarlijkestof){
-                var features = [];
-                $.each(data.DBKObject.gevaarlijkestof, function(idx, myGeometry){
-                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                    myFeature.attributes = { 
-                        "type" : myGeometry.symboolCode, 
-                        "name": myGeometry.naamStof,
-                        "quantity": myGeometry.hoeveelheid,
-                        "dangerindication": myGeometry.gevaarsindicatienummer,
-                        "information": myGeometry.aanvullendeInformatie,
-                        "unnumber": myGeometry.UNnummer
-                        //rotation: not yet implemented
-                    };
-                    features.push(myFeature);
-                });
-                _obj.layerGevaarlijkestof.addFeatures(features);
-            }
-            if(data.DBKObject.tekstobject){
-                var features = [];
-                $.each(data.DBKObject.tekstobject, function(idx, myGeometry){
-                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                    //@todo: De omschrijving moet er nog bij, ook in de database!
-                    myFeature.attributes = { 
-                        "title" : myGeometry.tekst,
-                        "rotation" : myGeometry.hoek,
-                        "scale": myGeometry.schaal + 2
-                    };
-                    features.push(myFeature);
-                });
-                _obj.layerTekstobject.addFeatures(features);
-            }
         }).fail(function( jqxhr, textStatus, error ) {
             dbkjs.options.feature = null;
             dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
@@ -191,23 +107,77 @@ dbkjs.protocol.jsonDBK = {
             }
         }
     },
-    info: function(response) {
+    info: function(data) {
         var _obj = dbkjs.protocol.jsonDBK;
-        if (response.DBKObject) {
-            dbkjs.options.feature = response.DBKObject;
+        if (data.DBKObject) {
+            dbkjs.options.feature = data.DBKObject;
             _obj.panel_group = $('<div class="tab-content"></div>');
             _obj.panel_tabs = $('<ul class="nav nav-pills"></ul>');
             var div = $('<div class="tabbable"></div>');
-            if (_obj.constructAlgemeen(response.DBKObject)) {
-                _obj.constructGevaarlijkeStof(response.DBKObject.gevaarlijkestof);
-                _obj.constructContact(response.DBKObject.contact);
-                _obj.constructBijzonderheid(response.DBKObject.bijzonderheid);
-                _obj.constructVerblijf(response.DBKObject.verblijf);
-                _obj.constructMedia(response.DBKObject.foto);
+            if (_obj.constructAlgemeen(data.DBKObject)) {
+                _obj.constructContact(data.DBKObject.contact);
+                _obj.constructBijzonderheid(data.DBKObject.bijzonderheid);
+                _obj.constructVerblijf(data.DBKObject.verblijf);
+                _obj.constructMedia(data.DBKObject.foto);
+                _obj.constructBrandweervoorziening(data.DBKObject.brandweervoorziening);
+                _obj.constructGevaarlijkestof(data.DBKObject.gevaarlijkestof);
                 div.append(_obj.panel_group);
                 div.append(_obj.panel_tabs);
                 $('#infopanel_b').html(div);
                 $('#systeem_meldingen').hide();
+            }
+            if(data.DBKObject.pandgeometrie){
+                var features = [];
+                $.each(data.DBKObject.pandgeometrie, function(idx, myGeometry){
+                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                    myFeature.attributes = { "id" : myGeometry.bagId,"status":myGeometry.bagStatus};
+                    features.push(myFeature);
+                });
+                _obj.layerPandgeometrie.addFeatures(features);
+            }
+            if(data.DBKObject.hulplijn){
+                var features = [];
+                $.each(data.DBKObject.hulplijn, function(idx, myGeometry){
+                    var myBearing = 0;
+                    var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
+                    var myFeature = new OpenLayers.Feature.Vector(myline); 
+                    if (myGeometry.typeHulplijn === "Arrow"){
+                        var myVertices = myline.getVertices();
+                        var myEndpoint = myVertices[myVertices.length -1];
+                        //revert bearing. Don't knwo why, but it works ;-)
+                        myBearing = -(dbkjs.util.bearing(myVertices[myVertices.length -2], myVertices[myVertices.length -1]));
+                        myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Collection([myline,myEndpoint]));
+                    }
+                    myFeature.attributes = { "type": myGeometry.typeHulplijn, "rotation": myBearing};
+                    features.push(myFeature);
+                });
+                _obj.layerHulplijn.addFeatures(features);
+            }
+            
+            if(data.DBKObject.brandcompartiment){
+                var features = [];
+                $.each(data.DBKObject.brandcompartiment, function(idx, myGeometry){
+                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                    //@todo: De omschrijving moet er nog bij, ook in de database!
+                    myFeature.attributes = { "type" : myGeometry.typeScheiding};
+                    features.push(myFeature);
+                });
+                _obj.layerBrandcompartiment.addFeatures(features);
+            }
+            
+            if(data.DBKObject.tekstobject){
+                var features = [];
+                $.each(data.DBKObject.tekstobject, function(idx, myGeometry){
+                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                    //@todo: De omschrijving moet er nog bij, ook in de database!
+                    myFeature.attributes = { 
+                        "title" : myGeometry.tekst,
+                        "rotation" : myGeometry.hoek,
+                        "scale": myGeometry.schaal + 2
+                    };
+                    features.push(myFeature);
+                });
+                _obj.layerTekstobject.addFeatures(features);
             }
             $('#infopanel').show();
             _obj.processing = false;
@@ -326,12 +296,105 @@ dbkjs.protocol.jsonDBK = {
             return false;
         }
     },
-    constructGevaarlijkeStof: function(gevaarlijkestof){
+    constructBrandweervoorziening: function(brandweervoorziening){
+        var _obj = dbkjs.protocol.jsonDBK;
+        if(brandweervoorziening){
+            var id = 'collapse_brandweervoorziening_' + dbkjs.options.feature.identificatie;
+            var bv_div = $('<div class="tab-pane" id="' + id + '"></div>');
+            var bv_table_div = $('<div class="table-responsive"></div>');
+            var bv_table = $('<table class="table table-hover"></table>');
+            bv_table.append('<tr><th>' + 
+                    i18n.t('prevention.type') + '</th><th>' + 
+                    i18n.t('prevention.name') + '</th><th>' + 
+                    i18n.t('prevention.comment') + '</th></tr>');
+            var features = [];
+            $.each(brandweervoorziening, function(idx, myGeometry){
+                var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                myFeature.attributes = { 
+                    "type" : myGeometry.typeVoorziening, 
+                    "name": myGeometry.naamVoorziening,
+                    "information": myGeometry.aanvullendeInformatie,
+                    "rotation": myGeometry.hoek,
+                    "fid": "brandweervoorziening_ft_" + idx 
+                };
+                var myrow = $('<tr>' +
+                        '<td>' + myFeature.attributes.type + '</td>' +
+                        '<td>' + myFeature.attributes.name + '</td>' +
+                        '<td>' + myFeature.attributes.information + '</td>'
+                        + '</tr>');
+                myrow.mouseover(function(){
+                    //console.log(myFeature.attributes.fid);
+                    //myFeature=myVectorLayer.getFeaturesByAttribute("myAttribute","myValue")[0]
+                    dbkjs.selectControl.select(myFeature);
+                    //Then call .select(myFeature) on your selectControl.
+                });
+                myrow.mouseout(function(){
+                    //console.log(myFeature.attributes.fid);
+                    //myFeature=myVectorLayer.getFeaturesByAttribute("myAttribute","myValue")[0]
+                    dbkjs.selectControl.unselect(myFeature);
+                    //Then call .select(myFeature) on your selectControl.
+                })
+                bv_table.append(myrow);
+                features.push(myFeature);
+                
+            });
+            _obj.layerBrandweervoorziening.addFeatures(features);
+            bv_table_div.append(bv_table);
+            bv_div.append(bv_table_div);
+            _obj.panel_group.append(bv_div);
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.prevention')+ '</a></li>');
+
+        }
+    },
+    constructGevaarlijkestof: function(gevaarlijkestof){
         var _obj = dbkjs.protocol.jsonDBK;
         if(gevaarlijkestof){
-            $.each(gevaarlijkestof, function(gevstof_index, waarde) {
-                var naamStof = dbkjs.util.isJsonNull(waarde.naamStof) ? "": waarde.naamStof;
+            var id = 'collapse_gevaarlijkestof_' + dbkjs.options.feature.identificatie;
+            var bv_div = $('<div class="tab-pane" id="' + id + '"></div>');
+            var bv_table_div = $('<div class="table-responsive"></div>');
+            var bv_table = $('<table class="table table-hover"></table>');
+            bv_table.append('<tr><th>' + 
+                i18n.t('chemicals.type') + '</th><th>' + 
+                i18n.t('chemicals.name') + '</th><th>' + 
+                i18n.t('chemicals.quantity') + '</th><th>' + 
+                i18n.t('chemicals.indication') + '</th><th>' + 
+                i18n.t('chemicals.information') + '</th><th>' + 
+                i18n.t('chemicals.unnumber') + '</th></tr>');
+            var features = [];
+             $.each(gevaarlijkestof, function(idx, myGeometry){
+                var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                myFeature.attributes = { 
+                    "type" : myGeometry.symboolCode, 
+                    "name": myGeometry.naamStof,
+                    "quantity": myGeometry.hoeveelheid,
+                    "indication": myGeometry.gevaarsindicatienummer,
+                    "information": myGeometry.aanvullendeInformatie,
+                    "unnumber": myGeometry.UNnummer,
+                    "fid": "gevaarlijkestof_ft_" + idx
+                };
+                var myrow = $('<tr>' +
+                        '<td>' + myFeature.attributes.type + '</td>' +
+                        '<td>' + myFeature.attributes.name + '</td>' +
+                        '<td>' + myFeature.attributes.quantity + '</td>' +
+                        '<td>' + myFeature.attributes.indication + '</td>' +
+                        '<td>' + myFeature.attributes.information + '</td>' +
+                        '<td>' + myFeature.attributes.unnumber + '</td>'
+                        + '</tr>');
+                myrow.mouseover(function(){
+                    dbkjs.selectControl.select(myFeature);
+                });
+                myrow.mouseout(function(){
+                    dbkjs.selectControl.unselect(myFeature);
+                })
+                bv_table.append(myrow);
+                features.push(myFeature);
             });
+            _obj.layerGevaarlijkestof.addFeatures(features);
+            bv_table_div.append(bv_table);
+            bv_div.append(bv_table_div);
+            _obj.panel_group.append(bv_div);
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.chemicals')+ '</a></li>');
+
         }
     },
     constructContact: function(contact) {
@@ -342,7 +405,10 @@ dbkjs.protocol.jsonDBK = {
             var contact_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var contact_table_div = $('<div class="table-responsive"></div>');
             var contact_table = $('<table class="table table-hover"></table>');
-            contact_table.append('<tr><th>functie</th><th>naam</th><th>telefoonnummer</th></tr>');
+            contact_table.append('<tr><th>' + 
+                    i18n.t('contact.role') + '</th><th>' + 
+                    i18n.t('contact.name') + '</th><th>' + 
+                    i18n.t('contact.telephone') + '</th></tr>');
             $.each(contact, function(contact_index, waarde) {
                 contact_table.append(
                         '<tr>' +
