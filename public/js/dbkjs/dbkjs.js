@@ -17,20 +17,24 @@ dbkjs.init = function() {
     $.getJSON('/api/organisation', params).done(function(data) {
         if (data.organisation) {
             dbkjs.options.organisation = data.organisation;
-            if (data.organisation.area.geometry.type === "Point") {
-                dbkjs.map.setCenter(
-                        new OpenLayers.LonLat(
-                                data.organisation.area.geometry.coordinates[0],
-                                data.organisation.area.geometry.coordinates[1]
-                                ).transform(
-                        new OpenLayers.Projection(dbkjs.options.projection.code),
-                        dbkjs.map.getProjectionObject()
-                        ),
-                        data.organisation.area.zoom
-                        );
-            } else if (data.organisation.area.geometry.type === "Polygon"){
-                var areaGeometry = new OpenLayers.Format.GeoJSON().read(data.organisation.area.geometry, "Geometry");
-                dbkjs.map.zoomToExtent(areaGeometry.getBounds());
+            if (data.organisation.area){
+                if (data.organisation.area.geometry.type === "Point") {
+                    dbkjs.map.setCenter(
+                            new OpenLayers.LonLat(
+                                    data.organisation.area.geometry.coordinates[0],
+                                    data.organisation.area.geometry.coordinates[1]
+                                    ).transform(
+                            new OpenLayers.Projection(dbkjs.options.projection.code),
+                            dbkjs.map.getProjectionObject()
+                            ),
+                            data.organisation.area.zoom
+                            );
+                } else if (data.organisation.area.geometry.type === "Polygon"){
+                    var areaGeometry = new OpenLayers.Format.GeoJSON().read(data.organisation.area.geometry, "Geometry");
+                    dbkjs.map.zoomToExtent(areaGeometry.getBounds());
+                }
+            } else {
+                dbkjs.map.zoomToMaxExtent();
             }
             if (dbkjs.options.organisation.title) {
                 document.title = dbkjs.options.organisation.title;
@@ -158,12 +162,13 @@ dbkjs.successAuth = function() {
     dbkjs.selectControl.handlers.feature.stopUp = false;
     dbkjs.map.addControl(dbkjs.selectControl);
     dbkjs.protocol.jsonDBK.init();
+    if (dbkjs.options.organisation.logo) {
+        $('#logo').css('background-image', 'url(' + dbkjs.options.organisation.logo + ')');
+    }
     //register modules
     $.each(dbkjs.modules, function(mod_index, module) {
         //Controleer of de regio een eigen logo heeft gedefinieerd
-        if (dbkjs.options.organisation.logo) {
-            $('#logo').css('background-image', 'url(' + dbkjs.options.organisation.logo + ')');
-        }
+
         if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
             if (module.register) {
                 module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true});
@@ -185,7 +190,6 @@ $(document).ready(function() {
     }, function(t) {
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
         $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
-        $('body').append(dbkjs.util.createDialog('bagpanel', '<i class="icon-home"></i> ' + t("dialogs.bag"), 'right:0;bottom:0;'));
         $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
         dbkjs.wms_panel = dbkjs.util.createTabbable();
         $('#wmsclickpanel_b').append(dbkjs.wms_panel);

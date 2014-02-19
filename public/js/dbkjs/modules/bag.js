@@ -77,78 +77,80 @@ dbkjs.modules.bag = {
      * Initialisatie functie om objecten toe te voegen aan de kaart
      */
     register: function() {
-        var _visibility = true;
-        if ($.browser.device){
-            _visibility = false;
-        }
-        var _obj = dbkjs.modules.bag;
-        _obj.layer = new OpenLayers.Layer.WMS("BAG", "/bag/wms?",
-                {layers: 'pand,standplaats,ligplaats', format: 'image/png', transparent: true, maxScale: 5000},
-        {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: _visibility});
-        _obj.layer.dbkjsParent = _obj;
-        dbkjs.map.addLayers([
-            _obj.layer
-        ]);
-        _obj.layer.events.register("loadstart", _obj.layer, function() {
-            dbkjs.util.loadingStart(_obj.layer);
-        });
-        
-        _obj.layer.events.register("loadend", _obj.layer, function() {
-            dbkjs.util.loadingEnd(_obj.layer);
-        });
-        dbkjs.map.setLayerIndex(_obj.layer, 0);
+        var _visibility = false;
+        if (!$.browser.device){
+            _visibility = true;
 
-        // vinkje op webpagina aan/uitzetten
-        var dv_panel = $('<div class="panel"></div>');
-        var dv_panel_heading = $('<div class="panel-heading"></div>');
-        var dv_panel_title = $('<h4 class="panel-title"></div>');
-        dv_panel_title.append('<input type="checkbox" name="box_' + _obj.id + '"/>&nbsp;');
-        dv_panel_title.append(
-                _obj.layer.name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
-                _obj.id +
-                '" data-parent="#overlaypanel_b2" ><i class="icon-info-sign"></i></a>'
-                );
-        dv_panel_heading.append(dv_panel_title);
-        dv_panel.append(dv_panel_heading);
-        var dv_panel_content = $('<div id="collapse_' + _obj.id + '" class="panel-collapse collapse"></div>');
-        dv_panel_content.append('<div class="panel-body">' +
-                '<p>Toont de panden uit de BAG en geeft de mogelijkheid op een pand ' +
-                'te klikken om vervolgens informatie te krijgen over de panden en verblijfsobjecten.' +
-                'Deze laag wordt direct betrokken bij PDOK.</p>' +
-                '<p>' +
-                '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#cccccc;border:3px solid #000000;">&nbsp;</div></div><div class="col-xs-10"> Panden</div></div>' +
-                '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#D7DF01;border:2px solid #ff0000;">&nbsp;</div></div><div class="col-xs-10"> Geselecteerd pand</div></div>' +
-                '<div class="row"><div class="col-xs-2 text-center"><i class="icon-circle" style="color:#610B21;"></i></div><div class="col-xs-10"> Verblijfsobject(en) in geselecteerd pand</div></div>' +
-                '</p></div>');
-        dv_panel.append(dv_panel_content);
-        $('#overlaypanel_b2').append(dv_panel);
-        if (_obj.layer.getVisibility()) {
-            //checkbox aan
-            $('input[name="box_' + _obj.id + '"]').attr('checked', 'checked');
-            _obj.activateVectors();
-        }
+            var _obj = dbkjs.modules.bag;
+            $('body').append(dbkjs.util.createDialog('bagpanel', '<i class="icon-home"></i> ' + i18n.t("dialogs.bag"), 'right:0;bottom:0;'));
+            _obj.layer = new OpenLayers.Layer.WMS("BAG", "/bag/wms?",
+                    {layers: 'pand,standplaats,ligplaats', format: 'image/png', transparent: true, maxScale: 5000},
+            {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: _visibility});
+            _obj.layer.dbkjsParent = _obj;
+            dbkjs.map.addLayers([
+                _obj.layer
+            ]);
+            _obj.layer.events.register("loadstart", _obj.layer, function() {
+                dbkjs.util.loadingStart(_obj.layer);
+            });
 
-        $('input[name="box_' + _obj.id + '"]').click(function() {
-            if ($(this).is(':checked')) {
-                _obj.layer.setVisibility(true);
+            _obj.layer.events.register("loadend", _obj.layer, function() {
+                dbkjs.util.loadingEnd(_obj.layer);
+            });
+            dbkjs.map.setLayerIndex(_obj.layer, 0);
+
+            // vinkje op webpagina aan/uitzetten
+            var dv_panel = $('<div class="panel"></div>');
+            var dv_panel_heading = $('<div class="panel-heading"></div>');
+            var dv_panel_title = $('<h4 class="panel-title"></div>');
+            dv_panel_title.append('<input type="checkbox" name="box_' + _obj.id + '"/>&nbsp;');
+            dv_panel_title.append(
+                    _obj.layer.name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
+                    _obj.id +
+                    '" data-parent="#overlaypanel_b2" ><i class="icon-info-sign"></i></a>'
+                    );
+            dv_panel_heading.append(dv_panel_title);
+            dv_panel.append(dv_panel_heading);
+            var dv_panel_content = $('<div id="collapse_' + _obj.id + '" class="panel-collapse collapse"></div>');
+            dv_panel_content.append('<div class="panel-body">' +
+                    '<p>Toont de panden uit de BAG en geeft de mogelijkheid op een pand ' +
+                    'te klikken om vervolgens informatie te krijgen over de panden en verblijfsobjecten.' +
+                    'Deze laag wordt direct betrokken bij PDOK.</p>' +
+                    '<p>' +
+                    '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#cccccc;border:3px solid #000000;">&nbsp;</div></div><div class="col-xs-10"> Panden</div></div>' +
+                    '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#D7DF01;border:2px solid #ff0000;">&nbsp;</div></div><div class="col-xs-10"> Geselecteerd pand</div></div>' +
+                    '<div class="row"><div class="col-xs-2 text-center"><i class="icon-circle" style="color:#610B21;"></i></div><div class="col-xs-10"> Verblijfsobject(en) in geselecteerd pand</div></div>' +
+                    '</p></div>');
+            dv_panel.append(dv_panel_content);
+            $('#overlaypanel_b2').append(dv_panel);
+            if (_obj.layer.getVisibility()) {
+                //checkbox aan
+                $('input[name="box_' + _obj.id + '"]').attr('checked', 'checked');
                 _obj.activateVectors();
-            } else {
-                _obj.layer.setVisibility(false);
-                $('#bagpanel').hide();
-                var bagpand_lyr = dbkjs.map.getLayersByName('BAG panden')[0];
-                var bagvbo_lyr = dbkjs.map.getLayersByName('BAG verblijfsobjecten')[0];
-
-                if (bagpand_lyr) {
-                    _obj.pand_layer.destroyFeatures();
-                    dbkjs.map.removeLayer(bagpand_lyr);
-                }
-                if (bagvbo_lyr) {
-                    _obj.vbo_layer.destroyFeatures();
-                    dbkjs.map.removeLayer(bagvbo_lyr);
-                }
-
             }
-        });
+
+            $('input[name="box_' + _obj.id + '"]').click(function() {
+                if ($(this).is(':checked')) {
+                    _obj.layer.setVisibility(true);
+                    _obj.activateVectors();
+                } else {
+                    _obj.layer.setVisibility(false);
+                    $('#bagpanel').hide();
+                    var bagpand_lyr = dbkjs.map.getLayersByName('BAG panden')[0];
+                    var bagvbo_lyr = dbkjs.map.getLayersByName('BAG verblijfsobjecten')[0];
+
+                    if (bagpand_lyr) {
+                        _obj.pand_layer.destroyFeatures();
+                        dbkjs.map.removeLayer(bagpand_lyr);
+                    }
+                    if (bagvbo_lyr) {
+                        _obj.vbo_layer.destroyFeatures();
+                        dbkjs.map.removeLayer(bagvbo_lyr);
+                    }
+
+                }
+            });
+        }
     },
     vboInfo: function(feature) {
         var _obj = dbkjs.modules.bag;

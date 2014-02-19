@@ -17,6 +17,7 @@ dbkjs.options = {
     APPLICATION: "DOIV",
     REMARKS: "Eerste release",
     INFO: "",
+    zoom: 19,
     map: {
         options : {
             theme: null,

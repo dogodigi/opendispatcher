@@ -12,6 +12,7 @@ dbkjs.modules.updateFilter = function(id) {
     });
 };
 dbkjs.modules.search = {
+    id: "dbk_search",
     register: function() {
         var search_div = $('#btn-grp-search');
         var search_group = $('<div class="input-group navbar-btn"></div>');
@@ -62,7 +63,7 @@ dbkjs.modules.search = {
         });
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             dbkjs.modules.updateFilter(datum.id);
-            if (dbkjs.map.zoom < 13) {
+            if (dbkjs.map.zoom < dbkjs.options.zoom) {
                 dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 11);
             } else {
                 dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat());

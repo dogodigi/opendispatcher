@@ -121,7 +121,7 @@
     "prevention":{
       "type": "prevention.type",
       "name": "prevention.name",
-      "comment": "revention.comment"
+      "comment": "prevention.comment"
     },
     "contact":{
         "role": "contact.role",

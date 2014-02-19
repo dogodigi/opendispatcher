@@ -252,7 +252,7 @@ dbkjs.config.styles = {
         }, {
             context: {
                 myicon: function(feature) {
-                    return "images/nen1414/" + feature.attributes.type + ".png";
+                    return "images/" + feature.attributes.namespace + "/" + feature.attributes.type + ".png";
                 },
                 myrotation: function(feature) {
                     if(feature.attributes.rotation){

@@ -250,14 +250,14 @@ dbkjs.protocol.jsonDBK = {
                 adres_div.append(adresText);
                 adres_row.append(adres_div);
                 algemeen_table.append(adres_row);
-                if (dbkjs.modules.bag) {
+                if ($.inArray('bag', dbkjs.options.organisation.modules) > -1) {
                     if (!dbkjs.util.isJsonNull(waarde.bagId)){
                         var bag_div = $('<td></td>');
                         var bag_p = $('<p></p>');
                         var bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + waarde.bagId + '</button>');
                         bag_p.append(bag_button);
                         bag_button.click(function() {
-                            if (dbkjs.modules.bag) {
+                            if($.inArray('bag', dbkjs.options.organisation.modules) > -1) {
                                 dbkjs.modules.bag.getVBO(waarde.bagId, function(result) {
                                     if (result.length === 0) {
                                         $('#collapse_algemeen_' + _obj.feature.id).append(
@@ -281,10 +281,10 @@ dbkjs.protocol.jsonDBK = {
                         bag_div.append(bag_p);
                         adres_row.append(bag_div);
                     } else {
-                        adres_row.append('<tr></tr>');
+                        adres_row.append('<td></td>');
                     }
                 } else {
-                    adres_row.append('<tr></tr>');
+                    adres_row.append('<td></td>');
                 } 
             });
             algemeen_table_div.append(algemeen_table);
@@ -315,6 +315,7 @@ dbkjs.protocol.jsonDBK = {
                     "name": myGeometry.naamVoorziening,
                     "information": myGeometry.aanvullendeInformatie,
                     "rotation": myGeometry.hoek,
+                    "namespace": myGeometry.namespace,
                     "fid": "brandweervoorziening_ft_" + idx 
                 };
                 var myrow = $('<tr>' +
@@ -482,14 +483,14 @@ dbkjs.protocol.jsonDBK = {
                     active = '';
                 }
                 var timestamp = new Date().getTime();
-                var realpath = window.location.protocol + '//' + window.location.hostname + ':' + 
-                        window.location.port + '/media/' + dbkjs.options.organisation.id + '/' + waarde.URL;
+                var realpath = window.location.protocol + '//' + window.location.hostname + 
+                        '/media/' + dbkjs.options.organisation.id + '/' + waarde.URL;
                 if (waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
                     image_carousel_inner.append('<div class="item ' + active + 
                             '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath + 
                             '" target="_blank"><h1><i class="icon-download icon-large"></h1></i></a><h3>' + 
                             waarde.naam + 
-                            '</h3><a href="' + url + '" target="_blank"><h2>Download bestand</h2></a></div></div>');
+                            '</h3><a href="' + realpath + '" target="_blank"><h2>Download bestand</h2></a></div></div>');
                 } else {
                     image_carousel_inner.append('<div class="item ' + active + '"><img src="' + realpath + '?timestamp=' + 
                             timestamp + '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' + 

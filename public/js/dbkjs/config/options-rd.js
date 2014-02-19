@@ -19,6 +19,7 @@ dbkjs.options = {
     APPLICATION: "DOIV",
     REMARKS: "Eerste release",
     INFO: "",
+    zoom: 13,
     /**
      * PDOK settings, particular for the Netherlands national geodata services
      *

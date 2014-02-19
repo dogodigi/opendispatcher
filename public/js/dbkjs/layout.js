@@ -24,29 +24,29 @@ dbkjs.layout = {
                 '<button id="click_contrast_up" class="btn btn-default" type="button"><i class="icon-plus">&nbsp;<i class="icon-adjust"></i></button>' +
                 '</span></div></div></p><hr>'
                 );
+        if(dbkjs.options.organisation.wms){
+            $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v){
+                if(wms_v.getcapabilities === true){
+                    var myCapabilities = new dbkjs.Capabilities(
+                        {url: wms_v.url, title: wms_v.name, proxy: wms_v.proxy}
+                    );
+                } else if (!dbkjs.options.organisation.wms.baselayer) {
+                    var params = wms_v.params || {};
+                    var options = wms_v.options || {};
+                    var parent = wms_v.parent || null;
+                    var index = wms_v.index || 0;
+                    var myLayer = new dbkjs.Layer(
+                        wms_v.name,
+                        wms_v.url,
+                        params,
+                        options,
+                        parent,
+                        index
+                    );
+                }
 
-        $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v){
-            if(wms_v.getcapabilities === true){
-                var myCapabilities = new dbkjs.Capabilities(
-                    {url: wms_v.url, title: wms_v.name, proxy: wms_v.proxy}
-                );
-            } else if (!dbkjs.options.organisation.wms.baselayer) {
-                var params = wms_v.params || {};
-                var options = wms_v.options || {};
-                var parent = wms_v.parent || null;
-                var index = wms_v.index || 0;
-                var myLayer = new dbkjs.Layer(
-                    wms_v.name,
-                    wms_v.url,
-                    params,
-                    options,
-                    parent,
-                    index
-                );
-            }
-
-        });
-        $(parent).append('');
+            });
+        }
         $(parent).append('<hr>');
         $(parent).append(
                 '<p><strong>' + dbkjs.options.APPLICATION + '</strong> ' + dbkjs.options.VERSION + ' (' + dbkjs.options.RELEASEDATE + ')' + '</p>' +

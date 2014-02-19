@@ -2,7 +2,7 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.feature = {
-    id: "dbkf",
+    id: "dbk_feature",
     /**
      * URL naar een statisch boringen bestand in gml formaat
      */
@@ -64,8 +64,8 @@ dbkjs.modules.feature = {
             if (feature) {
                 dbkjs.options.dbk = feature.attributes.identificatie;
                 dbkjs.modules.updateFilter(dbkjs.options.dbk);
-                if (dbkjs.map.zoom < 13) {
-                    dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
+                if (dbkjs.map.zoom <  dbkjs.options.zoom) {
+                    dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), dbkjs.options.zoom);
                 } else {
                     dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
                 }
@@ -113,11 +113,14 @@ dbkjs.modules.feature = {
                // $('#infopanel').hide();
             }
         });
+        
         _obj.get();
     },
     get: function() {
         var _obj = dbkjs.modules.feature;
-        _obj.layer.destroyFeatures();
+        if(_obj.layer){
+            _obj.layer.destroyFeatures();
+        }
         var params = {
             srid: dbkjs.options.projection.srid,
             timestamp: new Date().getTime()
@@ -152,8 +155,8 @@ dbkjs.modules.feature = {
             //dbkjs.options.dbk = feature.attributes.identificatie;
             dbkjs.modules.updateFilter(feature.attributes.identificatie);
             dbkjs.protocol.jsonDBK.process(feature);
-            if (dbkjs.map.zoom < 13) {
-                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
+            if (dbkjs.map.zoom <  dbkjs.options.zoom) {
+                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(),  dbkjs.options.zoom);
             } else {
                 dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
             }
@@ -186,8 +189,8 @@ dbkjs.modules.feature = {
             dbkjs.modules.updateFilter(datum.id);
             //@todo select the feature based on the datum
             dbkjs.protocol.jsonDBK.process(datum);
-            if (dbkjs.map.zoom < 13) {
-                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
+            if (dbkjs.map.zoom <  dbkjs.options.zoom) {
+                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), dbkjs.options.zoom);
             } else {
                 dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat());
             }
@@ -218,8 +221,8 @@ dbkjs.modules.feature = {
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             dbkjs.modules.updateFilter(datum.id);
             dbkjs.protocol.jsonDBK.process(datum);
-            if (dbkjs.map.zoom < 13) {
-                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 13);
+            if (dbkjs.map.zoom < dbkjs.options.zoom) {
+                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), dbkjs.options.zoom);
             } else {
                 dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat());
             }
@@ -228,8 +231,8 @@ dbkjs.modules.feature = {
     zoomToFeature: function(feature) {
         dbkjs.options.dbk = feature.attributes.identificatie;
         dbkjs.modules.updateFilter(feature.attributes.identificatie);
-        if (dbkjs.map.zoom < 13) {
-            dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), 13);
+        if (dbkjs.map.zoom < dbkjs.options.zoom) {
+            dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), dbkjs.options.zoom);
         } else {
             dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
         }
