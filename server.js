@@ -108,6 +108,7 @@ app.get('/api/bag/adres/:id', bag.getAdres);
 app.get('/api/bag/panden/:id', bag.getPanden);
 app.get('/api/organisation', dbk.getOrganisation);
 //app.get('/data/regio.json', routes.regio);
+app.get('/webdata/:id', web.getData);
 app.post('/validate', web.validate_POST);
 app.get('/validate/:token', web.validate_GET);
 app.get('/eughs.html', routes.eughs);

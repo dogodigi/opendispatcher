@@ -8,15 +8,15 @@ exports.validate_POST = function(req, res) {
     checkToken(token, res);
 };
 
-checkToken = function(token, res){
+checkToken = function(token, res) {
     if (token === "be8c631496af73e302c0effec301dfda7ffd11fa1c2e08ae") {
-        
-        res.render('error', {title: 'Welkom!',error: 'Hallo Milo!'});
+
+        res.render('error', {title: 'Welkom!', error: 'Hallo Milo!'});
     } else {
         require('crypto').randomBytes(24, function(ex, buf) {
             var newtoken = buf.toString('hex');
             if (newtoken === token) {
-                res.render('error', {title: 'Yeah!', error:'Goed zo!'});
+                res.render('error', {title: 'Yeah!', error: 'Goed zo!'});
             } else {
                 res.status(500);
                 res.render('error', {title: 'Fout', error: token + ' is niet gelijk aan ' + newtoken});
@@ -24,4 +24,61 @@ checkToken = function(token, res){
         });
     }
 };
-
+exports.getData = function(req, res) {
+    if (req.query) {
+        id = req.params.id;
+        var query_str = 'select gid from web.user where uuid = $1';
+        global.pool.query(query_str, [id],
+            function(err, result) {
+                if (err) {
+                    res.json({"Unauthorized": "No corresponding user found"});
+                } else {
+                    if(result.rows.length > 0){
+                        //console.log(result);
+                        //res.json({"boo": "bah"});
+                        req.params.uuid = result.rows[0].gid;
+                        getJSON(req, res);
+                    } else {
+                        res.status(401);
+                        res.json({"Unauthorized": "No corresponding user found"});
+                    }
+                }
+                return;
+            }
+        );
+    }
+};
+getJSON = function(req, res) {
+    if (req.query) {
+        id = req.params.uuid;
+        srid = req.query.srid;
+        if (!srid) {
+            srid = 4326;
+        }
+        var query_str = 'select * from web.data_json($1,$2)';
+        global.pool.query(query_str, [id, srid],
+            function(err, result) {
+                if (err) {
+                    res.json(err);
+                } else {
+                    var resultset = {};
+                    for (index = 0; index < result.rows.length; ++index) {
+                        resultset[result.rows[index].name] = result.rows[index].data;
+                        if (!resultset[result.rows[index].name].fields) {
+                            delete resultset[result.rows[index].name].fields;
+                        }
+                        if (!resultset[result.rows[index].name].functions) {
+                            delete resultset[result.rows[index].name].functions;
+                        }
+                        if (!resultset[result.rows[index].name].features) {
+                            delete resultset[result.rows[index].name].features;
+                        }
+                        //delete resultset[result.rows[index].name].name;
+                    }
+                    res.json(resultset);
+                }
+                return;
+            }
+        );
+    }
+};
