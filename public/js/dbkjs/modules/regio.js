@@ -2,7 +2,7 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.regio = {
-    id: "dbkregio",
+    id: "dbk.module.regio",
     /**
      * URL naar een statisch boringen bestand in gml formaat
      */

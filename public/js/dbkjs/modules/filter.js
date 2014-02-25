@@ -2,7 +2,7 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.filter = {
-    id: "filter",
+    id: "dbk.modules.filter",
     sel_district: null,
     selectie: {
         districten: [],

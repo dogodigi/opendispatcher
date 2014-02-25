@@ -3,7 +3,7 @@ window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 
 dbkjs.modules.measure = {
-    id: "dbk_measure",
+    id: "dbk.modules.measure",
     distance_control: null,
     area_control: null,
     register: function() {

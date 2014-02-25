@@ -2,7 +2,7 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.district = {
-    id: "dbkdistrict",
+    id: "dbk.modules.district",
     features: [],
     url: "/geoserver/ows?",
     namespace: "brabantnoord",

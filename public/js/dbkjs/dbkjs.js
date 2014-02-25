@@ -170,11 +170,13 @@ dbkjs.successAuth = function() {
         //Controleer of de regio een eigen logo heeft gedefinieerd
 
         if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
+            console.log(module);
             if (module.register) {
                 module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true});
             }
         }
     });
+    console.log('layout');
     if (dbkjs.layout) {
         dbkjs.layout.activate();
     }

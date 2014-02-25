@@ -8,7 +8,7 @@ dbkjs.modules = dbkjs.modules || {};
  * Voor alle functionaliteit gerelateerd aan bag
  */
 dbkjs.modules.bag = {
-    id: "dbkbag",
+    id: "dbk.modules.bag",
     namespace: "bag",
     layer: null,
     panel_group: null,

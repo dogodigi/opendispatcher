@@ -208,18 +208,31 @@ dbkjs.protocol.jsonDBK = {
         var gebouwconstructie = dbkjs.util.isJsonNull(DBKObject.gebouwconstructie) ? '' : DBKObject.gebouwconstructie;
         var inzetprocedure = dbkjs.util.isJsonNull(DBKObject.inzetprocedure) ? '' : DBKObject.inzetprocedure;
         var gebruikstype = dbkjs.util.isJsonNull(DBKObject.gebruikstype) ? '' : DBKObject.gebruikstype;
-        var laagste = dbkjs.util.isJsonNull(DBKObject.laagsteBouwlaag) ? false : DBKObject.laagsteBouwlaag;
-        var hoogste = dbkjs.util.isJsonNull(DBKObject.hoogsteBouwlaag) ? false : DBKObject.hoogsteBouwlaag;
-        var bouwlaag = '';
-        if (laagste && hoogste) {
-            bouwlaag = i18n.t('dbk.level') + ': ' + laagste + ' ' + i18n.t('dbk.to') + ' ' + hoogste + '';
-        } else if (laagste && !hoogste) {
-            bouwlaag = i18n.t('dbk.lowLevel') + ': ' + laagste + '';
-        } else if (hoogste && !laagste) {
-            bouwlaag = i18n.t('dbk.highLevel') + ': ' + hoogste + '';
-        }
-        dbkjs.options.feature.bouwlaag = bouwlaag;
         
+        // @todo: Losse regel voor laagste en hoogste
+        // Hoogste altijd positief (zegt Dennis, ik sla hem kort als het niet zo is)
+        // Laagste; minnetje er voor, bij 0 niet tonen.
+        // Verdiepingen berekenen. Bij hoogste; 1 = BG/0, 2 = 1 etc.
+        var laagstebouwlaag;
+        var hoogstebouwlaag;
+        if(!dbkjs.util.isJsonNull(DBKObject.bouwlaag)){
+          bouwlaag = DBKObject.bouwlaag;
+        } else {
+            bouwlaag = i18n.t('dbk.unknown');
+        };
+        if(!dbkjs.util.isJsonNull(DBKObject.laagsteBouwlaag)){
+            laagstebouwlaag = DBKObject.laagsteBouwlaag === 0 ? 0 : -DBKObject.laagsteBouwlaag + ' (' + -DBKObject.laagsteBouwlaag + ')';
+        } else {
+            laagstebouwlaag = i18n.t('dbk.unknown');
+        };
+        if(!dbkjs.util.isJsonNull(DBKObject.hoogsteBouwlaag)){
+            hoogstebouwlaag = DBKObject.hoogsteBouwlaag + ' (' + (DBKObject.hoogsteBouwlaag-1) + ')';
+        } else {
+            hoogstebouwlaag = i18n.t('dbk.unknown');
+        };
+        dbkjs.options.feature.bouwlaag = bouwlaag;
+        dbkjs.options.feature.laagstebouwlaag = laagstebouwlaag;
+        dbkjs.options.feature.hoogstebouwlaag = hoogstebouwlaag;
         _obj.panel_algemeen = $('<div class="tab-pane active" id="collapse_algemeen_' + DBKObject.identificatie + '"></div>');
         var algemeen_table_div = $('<div class="table-responsive"></div>');
         var algemeen_table = $('<table class="table table-hover"></table>');
@@ -230,7 +243,9 @@ dbkjs.protocol.jsonDBK = {
         algemeen_table.append(_obj.constructRow(gebouwconstructie, 'Gebouwconstructie'));
         algemeen_table.append(_obj.constructRow(omsnummer, i18n.t('dbk.fireAlarmCode')));
         algemeen_table.append(_obj.constructRow(gebruikstype, i18n.t('dbk.application')));
-        algemeen_table.append(_obj.constructRow(bouwlaag, i18n.t('dbk.levels')));
+        algemeen_table.append(_obj.constructRow(bouwlaag, i18n.t('dbk.level')));
+        algemeen_table.append(_obj.constructRow(laagstebouwlaag, i18n.t('dbk.lowLevel') + ' (' +  i18n.t('dbk.floor' + ')')));
+        algemeen_table.append(_obj.constructRow(hoogstebouwlaag, i18n.t('dbk.highLevel') + ' (' +  i18n.t('dbk.floor' + ')')));
         
         if (DBKObject.adres) {
             //adres is een array of null

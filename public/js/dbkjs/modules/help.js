@@ -2,7 +2,7 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.help = {
-    id: "dbkhelp",
+    id: "dbk.modules.help",
     register: function() {
         if (dbkjs.options.organisation.support) {
             $('body').append('<div id="foutknop" class="btn-group">' +

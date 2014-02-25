@@ -3,6 +3,7 @@ window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 
 dbkjs.modules.geolocate = {
+    id: 'dbk.modules.geolocate',
     style: {
         strokeColor: '#CCCC00',
         fillColor: '#CCCC00',

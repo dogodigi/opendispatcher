@@ -106,6 +106,7 @@ app.get('/api/gebied/:id', dbk.getGebied);
 app.get('/api/features', dbk.getFeatures);
 app.get('/api/bag/adres/:id', bag.getAdres);
 app.get('/api/bag/panden/:id', bag.getPanden);
+app.get('/api/bag/zoek/:text', bag.getZoek);
 app.get('/api/organisation', dbk.getOrganisation);
 //app.get('/data/regio.json', routes.regio);
 app.get('/webdata/:id', web.getData);

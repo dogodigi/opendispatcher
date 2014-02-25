@@ -92,6 +92,7 @@
         "emergencyResponse": "BHV",
         "to": "t/m",
         "level": "bouwlaag",
+        "floor": "verdieping",
         "lowLevel": "laagste bouwlaag",
         "highLevel": "hoogste bouwlaag",
         "procedure": "Inzetprocedure",

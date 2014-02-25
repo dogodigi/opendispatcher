@@ -12,7 +12,7 @@ dbkjs.modules.updateFilter = function(id) {
     });
 };
 dbkjs.modules.search = {
-    id: "dbk_search",
+    id: "dbk.modules.search",
     register: function() {
         var search_div = $('#btn-grp-search');
         var search_group = $('<div class="input-group navbar-btn"></div>');

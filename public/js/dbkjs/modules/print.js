@@ -2,6 +2,7 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 
 dbkjs.modules.print = {
+    id: 'dbk.modules.print',
     register: function(options) {
         var _obj = dbkjs.modules.print;
         _obj.namespace = options.namespace || _obj.namespace;

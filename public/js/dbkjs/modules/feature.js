@@ -2,13 +2,11 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.feature = {
-    id: "dbk_feature",
+    id: "dbk.modules.feature",
     /**
      * URL naar een statisch boringen bestand in gml formaat
      */
     features: [],
-    url: "/geoserver/zeeland/ows?",
-    namespace: "zeeland",
     /**
      * Laag. Wordt geiniteerd met de functie dbkobject.show() kan worden overruled
      */

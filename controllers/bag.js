@@ -113,3 +113,26 @@ exports.getPanden = function(req, res) {
             });
     }
 };
+
+exports.getZoek = function(req, res){
+     if (req.query) {
+          searchtext = req.params.text;
+//        srid = req.query.srid;
+//        if(!srid){
+//            srid = 4326;
+//        }
+        var query_str = "select a.*, vp.gerelateerdpand as pand from bag8jan2014.adres a left join bag8jan2014.verblijfsobjectpand vp on a.adresseerbaarobject = vp.identificatie " + 
+                "where textsearchable_adres @@ plainto_tsquery('english', $1) limit 20";
+        global.bag.query(query_str,[searchtext],
+            function(err, result){
+                if(err) {
+                    res.json(err);
+                } else {
+                    res.json(result.rows);
+                }
+            });
+            
+//    res.status(500);
+//    res.json({"Message": "Not implemented"});
+     }
+};

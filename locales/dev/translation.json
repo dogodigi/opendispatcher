@@ -92,6 +92,7 @@
         "emergencyResponse": "dbk.emergencyResponse",
         "to": "dbk.to",
         "level": "dbk.level",
+        "floor": "dbk.floor",
         "lowLevel": "dbk.lowLevel",
         "highLevel": "dbk.highLevel",
         "procedure": "dbk.procedure",

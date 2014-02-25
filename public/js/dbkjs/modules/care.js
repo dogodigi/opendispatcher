@@ -2,7 +2,7 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.care = {
-    id: "care",
+    id: "dbk.modules.care",
     visibility: false,
     layer: {visibility: true},
     sel_array: [],
