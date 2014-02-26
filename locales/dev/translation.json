@@ -93,6 +93,8 @@
         "to": "dbk.to",
         "level": "dbk.level",
         "floor": "dbk.floor",
+        "floors": "dbk.floors",
+        "mainobject": "dbk.mainobject",
         "lowLevel": "dbk.lowLevel",
         "highLevel": "dbk.highLevel",
         "procedure": "dbk.procedure",

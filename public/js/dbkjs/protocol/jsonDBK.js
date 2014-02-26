@@ -8,6 +8,7 @@ dbkjs.protocol.jsonDBK = {
     panel_group: null,
     panel_tabs: null,
     panel_algemeen: null,
+    active_tab:'algemeen',
     init: function() {
         var _obj = dbkjs.protocol.jsonDBK;
         _obj.layerPandgeometrie = new OpenLayers.Layer.Vector("pandgeometrie",{
@@ -42,8 +43,12 @@ dbkjs.protocol.jsonDBK = {
         dbkjs.hoverControl.activate();
         dbkjs.selectControl.activate();
     },
-    getObject: function(feature) {
-        var _obj = dbkjs.protocol.jsonDBK; 
+    getObject: function(feature, activetab) {
+        
+        var _obj = dbkjs.protocol.jsonDBK;
+        if(activetab){
+         _obj.active_tab = activetab;   
+        }
         //clear all layers first!
         $.each(_obj.layers, function(idx, lyr){
            lyr.destroyFeatures();
@@ -60,12 +65,19 @@ dbkjs.protocol.jsonDBK = {
             srid: dbkjs.options.projection.srid,
             timestamp: new Date().getTime()
         };
-        $.getJSON('api/object/' + feature.attributes.identificatie, params).done(function(data) {
-            dbkjs.protocol.jsonDBK.info(data);
-        }).fail(function( jqxhr, textStatus, error ) {
-            dbkjs.options.feature = null;
-            dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
-        });
+        var fid;
+        if(feature.attributes){
+            fid = feature.attributes.identificatie;
+        } else {
+            //the function is not recieving a feature, but a string
+            fid = feature;
+        }
+        $.getJSON('api/object/' + fid, params).done(function(data) {
+                dbkjs.protocol.jsonDBK.info(data);
+            }).fail(function( jqxhr, textStatus, error ) {
+                dbkjs.options.feature = null;
+                dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
+            });
     },
     getfeatureinfo: function(e){
         html = '<div class="table-responsive">';
@@ -119,6 +131,7 @@ dbkjs.protocol.jsonDBK = {
                 _obj.constructBijzonderheid(data.DBKObject.bijzonderheid);
                 _obj.constructVerblijf(data.DBKObject.verblijf);
                 _obj.constructMedia(data.DBKObject.foto);
+                _obj.constructFloors(data.DBKObject.verdiepingen);
                 _obj.constructBrandweervoorziening(data.DBKObject.brandweervoorziening);
                 _obj.constructGevaarlijkestof(data.DBKObject.gevaarlijkestof);
                 div.append(_obj.panel_group);
@@ -233,7 +246,8 @@ dbkjs.protocol.jsonDBK = {
         dbkjs.options.feature.bouwlaag = bouwlaag;
         dbkjs.options.feature.laagstebouwlaag = laagstebouwlaag;
         dbkjs.options.feature.hoogstebouwlaag = hoogstebouwlaag;
-        _obj.panel_algemeen = $('<div class="tab-pane active" id="collapse_algemeen_' + DBKObject.identificatie + '"></div>');
+        var active_tab = _obj.active_tab === 'algemeen' ?  'active' : '';
+        _obj.panel_algemeen = $('<div class="tab-pane ' + active_tab + '" id="collapse_algemeen_' + DBKObject.identificatie + '"></div>');
         var algemeen_table_div = $('<div class="table-responsive"></div>');
         var algemeen_table = $('<table class="table table-hover"></table>');
         algemeen_table.append(_obj.constructRow(informelenaam, i18n.t('dbk.alternativeName')));
@@ -305,7 +319,12 @@ dbkjs.protocol.jsonDBK = {
             algemeen_table_div.append(algemeen_table);
             _obj.panel_algemeen.append(algemeen_table_div);
             _obj.panel_group.html(_obj.panel_algemeen);
-            _obj.panel_tabs.html('<li class="active"><a data-toggle="tab" href="#collapse_algemeen_' + DBKObject.identificatie + '">' + i18n.t('dbk.general') + '</a></li>');
+            if(active_tab === 'active'){
+                _obj.panel_tabs.html('<li class="active"><a data-toggle="tab" href="#collapse_algemeen_' + DBKObject.identificatie + '">' + i18n.t('dbk.general') + '</a></li>');
+            } else {
+                _obj.panel_tabs.html('<li><a data-toggle="tab" href="#collapse_algemeen_' + DBKObject.identificatie + '">' + i18n.t('dbk.general') + '</a></li>');
+            }
+            _obj.panel_tabs.html();
             return true;
         } else {
             return false;
@@ -339,17 +358,11 @@ dbkjs.protocol.jsonDBK = {
                         '<td>' + myFeature.attributes.information + '</td>'
                         + '</tr>');
                 myrow.mouseover(function(){
-                    //console.log(myFeature.attributes.fid);
-                    //myFeature=myVectorLayer.getFeaturesByAttribute("myAttribute","myValue")[0]
                     dbkjs.selectControl.select(myFeature);
-                    //Then call .select(myFeature) on your selectControl.
                 });
                 myrow.mouseout(function(){
-                    //console.log(myFeature.attributes.fid);
-                    //myFeature=myVectorLayer.getFeaturesByAttribute("myAttribute","myValue")[0]
                     dbkjs.selectControl.unselect(myFeature);
-                    //Then call .select(myFeature) on your selectControl.
-                })
+                });
                 bv_table.append(myrow);
                 features.push(myFeature);
                 
@@ -413,12 +426,60 @@ dbkjs.protocol.jsonDBK = {
 
         }
     },
+    constructFloors: function(verdiepingen) {
+        var _obj = dbkjs.protocol.jsonDBK;
+        var id = 'collapse_floors_' + dbkjs.options.feature.identificatie;
+        if (verdiepingen) {
+            //null checks
+            var active_tab = _obj.active_tab === 'verdiepingen' ?  'active' : '';
+            var verdiepingen_div = $('<div class="tab-pane ' + active_tab + '" id="' + id + '"></div>');
+            var verdiepingen_table_div = $('<div class="table-responsive"></div>');
+            var verdiepingen_table = $('<table class="table table-hover"></table>');
+            verdiepingen_table.append('<tr><th>' + 
+                    i18n.t('dbk.floor') + '</th></tr>');
+            $.each(verdiepingen, function(verdiepingen_index, waarde) {
+                var myrow;
+                var sterretje = '';
+                if (waarde.type === 'hoofdobject'){
+                 sterretje = ' (' + i18n.t('dbk.mainobject') + ')';   
+                }
+                if(waarde.identificatie !== dbkjs.options.feature.identificatie){
+                        
+                        //Show the hyperlink!
+                        myrow = $('<tr>' +
+                            '<td>' + waarde.bouwlaag + sterretje +'</td>' +
+                            '</tr>');
+                        myrow.click(function(){
+                            _obj.getObject(waarde.identificatie, 'verdiepingen');
+                        });
+                } else {
+                    //No hyperlink, current object
+                    myrow = $('<tr>' +
+                            '<td><strong><em>' + waarde.bouwlaag + sterretje +'</em><strong></td>' +
+                            '</tr>');
+
+                }
+                verdiepingen_table.append(myrow);
+            });
+            verdiepingen_table_div.append(verdiepingen_table);
+            verdiepingen_div.append(verdiepingen_table_div);
+            _obj.panel_group.append(verdiepingen_div);
+            if(active_tab === 'active'){
+                _obj.panel_tabs.append('<li class="' + active_tab + '"><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.floors')+ '</a></li>');
+            } else {
+                _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.floors')+ '</a></li>');
+            }
+            
+        } else {
+            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">'+ i18n.t('dbk.floors')+ '</a></li>');
+        }
+    },
     constructContact: function(contact) {
         var _obj = dbkjs.protocol.jsonDBK;
         var id = 'collapse_contact_' + dbkjs.options.feature.identificatie;
         if (contact) {
-            //null checks
-            var contact_div = $('<div class="tab-pane" id="' + id + '"></div>');
+            var active_tab = _obj.active_tab === 'gevaarlijkestof' ?  'active' : '';
+            var contact_div = $('<div class="tab-pane" ' + active_tab + ' id="' + id + '"></div>');
             var contact_table_div = $('<div class="table-responsive"></div>');
             var contact_table = $('<table class="table table-hover"></table>');
             contact_table.append('<tr><th>' + 

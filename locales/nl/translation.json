@@ -93,6 +93,8 @@
         "to": "t/m",
         "level": "bouwlaag",
         "floor": "verdieping",
+        "floors": "verdiepingen",
+        "mainobject": "hoofdobject",
         "lowLevel": "laagste bouwlaag",
         "highLevel": "hoogste bouwlaag",
         "procedure": "Inzetprocedure",
