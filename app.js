@@ -15,7 +15,7 @@ global.conf = require('nconf');
 global.conf.argv().env();
 
 // Then load configuration from a designated file.
-global.conf.file({ file: 'config-true.json' });
+global.conf.file({ file: 'config.json' });
 
 // Provide default values for settings not provided above.
 global.conf.defaults({

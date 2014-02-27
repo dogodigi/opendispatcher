@@ -7,7 +7,6 @@ dbkjs.modules.measure = {
     distance_control: null,
     area_control: null,
     register: function() {
-        console.log("measure.register()");
         var _obj = dbkjs.modules.measure;
         $('#btngrp_3').append('<a id="btn_measure_distance" class="btn btn-default navbar-btn" href="#" title="' + 
                 i18n.t('map.measureDistance') + '"><i class="icon-resize-horizontal rotate_45"></i></a>');

@@ -230,6 +230,45 @@ dbkjs.config.styles = {
             
         })
     }),
+    toegangterrein: new OpenLayers.StyleMap({
+        'default': new OpenLayers.Style({
+            strokeColor: "${mycolor}",
+            fillColor: "${mycolor}",
+            fillOpacity: 0.9,
+            strokeWidth: 1,
+            pointRadius: 5,
+            rotation: "${myrotation}",
+            graphicName: "${mygraphic}"
+        }, {
+        context: {
+            myrotation: function(feature) {
+                if(feature.attributes.rotation){
+                    return -feature.attributes.rotation;
+                } else {
+                    return 0;
+                }
+            },
+            mycolor: function(feature) {
+                switch(feature.attributes.primary) {
+                    case true:
+                        return "#ff0000";
+                        break;
+                    default:
+                        return "#00ff00";
+                }
+ 
+            },
+            mygraphic: function(feature) {
+                return "triangle";
+            }
+        }
+    }),
+        'select': new OpenLayers.Style({
+            
+        }), 'temporary': new OpenLayers.Style({
+            
+        })
+    }),
     pandstylemap : new OpenLayers.StyleMap({
         fillColor: "yellow",
         fillOpacity: 0.4,

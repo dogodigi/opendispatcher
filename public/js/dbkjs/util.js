@@ -666,7 +666,7 @@ dbkjs.util = {
             if ((url.indexOf(".jpg") > 0) || (url.indexOf(".png") > 0) || (url.indexOf(".gif") > 0)) {
                 return '<img src="' + url + '">' + '<br/>';
             } else {
-                return '<a href="' + url + '">' + url + '</a>' + '<br/>';
+                return '<a href="' + url + '" target="_blank">' + url + '</a>' + '<br/>';
             }
         });
     },

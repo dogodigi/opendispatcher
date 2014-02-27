@@ -167,8 +167,6 @@ dbkjs.successAuth = function() {
     }
     //register modules
     $.each(dbkjs.modules, function(mod_index, module) {
-        //Controleer of de regio een eigen logo heeft gedefinieerd
-
         if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
             console.log(module);
             if (module.register) {
@@ -176,7 +174,6 @@ dbkjs.successAuth = function() {
             }
         }
     });
-    console.log('layout');
     if (dbkjs.layout) {
         dbkjs.layout.activate();
     }

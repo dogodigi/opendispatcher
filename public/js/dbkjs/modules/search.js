@@ -70,9 +70,10 @@ dbkjs.modules.search = {
             }
         });
         $('#search_input').click(
-                function() {
-                    $(this).val('');
-                }
+                //function(e) {
+                //    console.log(e);
+                //    $(this).val('');
+                //}
         );
         $('div.btn-group ul.dropdown-menu li a').click(function(e) {
             $('#search_input').typeahead('destroy');

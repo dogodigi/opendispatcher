@@ -20,6 +20,9 @@ dbkjs.protocol.jsonDBK = {
         _obj.layerHulplijn = new OpenLayers.Layer.Vector("hulplijn",{
             styleMap: dbkjs.config.styles.hulplijn
         });
+        _obj.layerToegangterrein = new OpenLayers.Layer.Vector("toegangterrein",{
+            styleMap: dbkjs.config.styles.toegangterrein
+        });
         _obj.layerBrandweervoorziening = new OpenLayers.Layer.Vector("brandweervoorziening",{
             styleMap: dbkjs.config.styles.brandweervoorziening
         });
@@ -33,6 +36,7 @@ dbkjs.protocol.jsonDBK = {
             _obj.layerPandgeometrie, 
             _obj.layerBrandcompartiment,
             _obj.layerHulplijn,
+            _obj.layerToegangterrein,
             _obj.layerBrandweervoorziening,
             _obj.layerGevaarlijkestof,
             _obj.layerTekstobject
@@ -166,7 +170,23 @@ dbkjs.protocol.jsonDBK = {
                 });
                 _obj.layerHulplijn.addFeatures(features);
             }
-            
+            if(data.DBKObject.toegangterrein){
+                var features = [];
+                $.each(data.DBKObject.toegangterrein, function(idx, myGeometry){
+                    var myBearing = 0;
+                    var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
+                    var myFeature = new OpenLayers.Feature.Vector(myline); 
+                    var myVertices = myline.getVertices();
+                    var myEndpoint = myVertices[myVertices.length -1];
+                        //revert bearing. Don't knwo why, but it works ;-)
+                    myBearing = -(dbkjs.util.bearing(myVertices[myVertices.length -2], myVertices[myVertices.length -1]));
+                    myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Collection([myline,myEndpoint]));
+                    myFeature.attributes = { "primary": myGeometry.primair, "rotation": myBearing,
+                    "title": myGeometry.naamRoute, "information": myGeometry.aanvullendeInformatie };
+                    features.push(myFeature);
+                });
+                _obj.layerToegangterrein.addFeatures(features);
+            }
             if(data.DBKObject.brandcompartiment){
                 var features = [];
                 $.each(data.DBKObject.brandcompartiment, function(idx, myGeometry){
@@ -372,7 +392,6 @@ dbkjs.protocol.jsonDBK = {
             bv_div.append(bv_table_div);
             _obj.panel_group.append(bv_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.prevention')+ '</a></li>');
-
         }
     },
     constructGevaarlijkestof: function(gevaarlijkestof){
@@ -423,14 +442,12 @@ dbkjs.protocol.jsonDBK = {
             bv_div.append(bv_table_div);
             _obj.panel_group.append(bv_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.chemicals')+ '</a></li>');
-
         }
     },
     constructFloors: function(verdiepingen) {
         var _obj = dbkjs.protocol.jsonDBK;
-        var id = 'collapse_floors_' + dbkjs.options.feature.identificatie;
-        if (verdiepingen) {
-            //null checks
+        if (verdiepingen && verdiepingen.length > 1) {
+            var id = 'collapse_floors_' + dbkjs.options.feature.identificatie;
             var active_tab = _obj.active_tab === 'verdiepingen' ?  'active' : '';
             var verdiepingen_div = $('<div class="tab-pane ' + active_tab + '" id="' + id + '"></div>');
             var verdiepingen_table_div = $('<div class="table-responsive"></div>');
@@ -469,9 +486,6 @@ dbkjs.protocol.jsonDBK = {
             } else {
                 _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.floors')+ '</a></li>');
             }
-            
-        } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">'+ i18n.t('dbk.floors')+ '</a></li>');
         }
     },
     constructContact: function(contact) {
@@ -499,8 +513,6 @@ dbkjs.protocol.jsonDBK = {
             contact_div.append(contact_table_div);
             _obj.panel_group.append(contact_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.contact')+ '</a></li>');
-        } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">'+ i18n.t('dbk.contact')+ '</a></li>');
         }
     },
     constructBijzonderheid: function(bijzonderheid) {
@@ -537,8 +549,6 @@ dbkjs.protocol.jsonDBK = {
             bijzonderheid_div.append(bijzonderheid_table_div);
             _obj.panel_group.append(bijzonderheid_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.particularities')+ '</a></li>');
-        } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">'+ i18n.t('dbk.particularities')+ '</a></li>');
         }
     },
     constructMedia: function(foto) {
@@ -590,8 +600,6 @@ dbkjs.protocol.jsonDBK = {
             foto_div.append(image_carousel);
             _obj.panel_group.append(foto_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.media')+ '</a></li>');
-        } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">'+ i18n.t('dbk.media')+ '</a></li>');
         }
     },
     constructVerblijf: function(verblijf) {
@@ -629,8 +637,6 @@ dbkjs.protocol.jsonDBK = {
             verblijf_div.append(verblijf_table_div);
             _obj.panel_group.append(verblijf_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.tarry')+ '</a></li>');
-        } else {
-            _obj.panel_tabs.append('<li class="disabled"><a href="#' + id + '">'+ i18n.t('dbk.tarry')+ '</a></li>');
         }
     },
     getGebied: function(feature) {
