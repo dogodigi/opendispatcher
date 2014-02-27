@@ -3,6 +3,7 @@
 /css/dbk.min.css
 /js/dbk.min.js
 config.json
+config-true.json
 *~
 dummy.xml
 *.zip
