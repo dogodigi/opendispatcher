@@ -85,6 +85,7 @@ app.configure(function() {
     app.use(express.methodOverride());
     app.use(express.static(path.join(__dirname, 'public')));
     app.use('/web', express.static(__dirname + '/web'));
+    app.use('/media', express.static(global.conf.get('media:path')));
     app.use(app.router);
     app.use(clientErrorHandler);
     app.use(function(err, req, res, next) {

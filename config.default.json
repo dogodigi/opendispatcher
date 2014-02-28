@@ -3,10 +3,20 @@
         "port": 3000
     },
     "database": {
-      "user": "postgres",
-      "password": "postgres",
+      "user": "user",
+      "password": "password",
       "host": "localhost",
       "port": 5432,
-      "dbname": "brabantnoord"
+      "dbname": "demo"
+    },
+    "bag":{
+      "user": "user",
+      "password": "password",
+      "host": "localhost",
+      "port": 5432,
+      "dbname": "bag"
+    },
+    "media": { 
+      "path" : "/real/path/to/media"
     }
 }
