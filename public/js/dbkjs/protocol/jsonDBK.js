@@ -278,8 +278,8 @@ dbkjs.protocol.jsonDBK = {
         algemeen_table.append(_obj.constructRow(omsnummer, i18n.t('dbk.fireAlarmCode')));
         algemeen_table.append(_obj.constructRow(gebruikstype, i18n.t('dbk.application')));
         algemeen_table.append(_obj.constructRow(bouwlaag, i18n.t('dbk.level')));
-        algemeen_table.append(_obj.constructRow(laagstebouwlaag, i18n.t('dbk.lowLevel') + ' (' +  i18n.t('dbk.floor' + ')')));
-        algemeen_table.append(_obj.constructRow(hoogstebouwlaag, i18n.t('dbk.highLevel') + ' (' +  i18n.t('dbk.floor' + ')')));
+        algemeen_table.append(_obj.constructRow(laagstebouwlaag, i18n.t('dbk.lowLevel') + ' (' +  i18n.t('dbk.floor') + ')'));
+        algemeen_table.append(_obj.constructRow(hoogstebouwlaag, i18n.t('dbk.highLevel') + ' (' +  i18n.t('dbk.floor') + ')'));
         
         if (DBKObject.adres) {
             //adres is een array of null
