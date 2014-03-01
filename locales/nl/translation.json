@@ -35,7 +35,9 @@
         "add": "Voeg toe",
         "emergencyContactFunction": "Functie",
         "select": "Selecteer",
-        "emergencyContactExtraFunction": "Nevenfunctie"
+        "emergencyContactExtraFunction": "Nevenfunctie",
+        "download": "Download bestand",
+        "hyperlink": "Open URL"
     },
     "map": {
         "prev": "vorige",

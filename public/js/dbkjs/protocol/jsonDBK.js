@@ -571,19 +571,23 @@ dbkjs.protocol.jsonDBK = {
                 var timestamp = new Date().getTime();
                 var realpath = window.location.protocol + '//' + window.location.hostname + 
                         '/media/' + waarde.URL;
-                if (waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
+                if (waarde.filetype === "document" || waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
                     image_carousel_inner.append('<div class="item ' + active + 
                             '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath + 
                             '" target="_blank"><h1><i class="icon-download icon-large"></h1></i></a><h3>' + 
                             waarde.naam + 
-                            '</h3><a href="' + realpath + '" target="_blank"><h2>Download bestand</h2></a></div></div>');
-                } else {
+                            '</h3><a href="' + realpath + '" target="_blank"><h2>' + i18n.t('app.download')  + '</h2></a></div></div>');
+                } else if(waarde.filetype === "weblink") {
+                    image_carousel_inner.append('<div class="item ' + active + 
+                            '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + waarde.url + 
+                            '" target="_blank"><h1><i class="icon-external-link icon-large"></h1></i></a></div></div>'
+                        );
+                } else if(waarde.filetype === 'afbeelding') {
                     image_carousel_inner.append('<div class="item ' + active + '"><img src="' + realpath + 
                             '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' + 
-                            waarde.naam + '</h3><p></p></div></div>');
+                            waarde.naam + '</h3></div></div>');
                     dbkjs.options.feature.images.push(realpath);
                 }
-
                 if (foto.length > 1) {
                     image_carousel_nav.append('<li data-target="#' + car_id + '" data-slide-to="' + 
                             foto_index + '" class="' + active + '"></li>');

@@ -35,7 +35,9 @@
         "add": "app.add",
         "emergencyContactFunction": "app.emergencyContactFunction",
         "select": "app.select",
-        "emergencyContactExtraFunction": "app.emergencyContactExtraFunction"
+        "emergencyContactExtraFunction": "app.emergencyContactExtraFunction",
+        "download": "app.download",
+        "hyperlink": "app.hyperlink"
     },
     "map": {
         "prev": "map.prev",
