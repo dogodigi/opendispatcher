@@ -579,7 +579,7 @@ dbkjs.protocol.jsonDBK = {
                             '</h3><a href="' + realpath + '" target="_blank"><h2>' + i18n.t('app.download')  + '</h2></a></div></div>');
                 } else if(waarde.filetype === "weblink") {
                     image_carousel_inner.append('<div class="item ' + active + 
-                            '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + waarde.url + 
+                            '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL + 
                             '" target="_blank"><h1><i class="icon-external-link icon-large"></h1></i></a></div></div>'
                         );
                 } else if(waarde.filetype === 'afbeelding') {
