@@ -259,7 +259,7 @@ dbkjs.protocol.jsonDBK = {
             laagstebouwlaag = i18n.t('dbk.unknown');
         };
         if(!dbkjs.util.isJsonNull(DBKObject.hoogsteBouwlaag)){
-            hoogstebouwlaag = DBKObject.hoogsteBouwlaag + ' (' + (DBKObject.hoogsteBouwlaag-1) + ')';
+            hoogstebouwlaag = DBKObject.hoogsteBouwlaag === 0 ? 0 : DBKObject.hoogsteBouwlaag + ' (' + (DBKObject.hoogsteBouwlaag-1) + ')';
         } else {
             hoogstebouwlaag = i18n.t('dbk.unknown');
         };
