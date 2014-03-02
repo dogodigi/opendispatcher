@@ -233,9 +233,17 @@ dbkjs.protocol.jsonDBK = {
         dbkjs.util.changeDialogTitle('<i class="icon-building"></i> ' + DBKObject.formeleNaam);
         var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+ 
                 i18n.t('dbk.unknown')+ '</span>' : DBKObject.controleDatum;
-        var bhvaanwezig = dbkjs.util.isJsonNull(DBKObject.BHVaanwezig) ? '<span class="label label-warning">'+ 
-                i18n.t('dbk.noEmergencyResponse') +'</span>' : '<span class="label label-success">'+ 
-                i18n.t('dbk.emergencyResponsePresent') + '</span>';
+        var bhvaanwezig = '<span class="label label-warning">'+ 
+                i18n.t('dbk.noEmergencyResponse') +'</span>';
+        if(!dbkjs.util.isJsonNull(DBKObject.BHVaanwezig)) {
+           if(DBKObject.BHVaanwezig === true){
+              bhvaanwezig = '<span class="label label-success">'+ 
+                i18n.t('dbk.emergencyResponsePresent') + '</span>'; 
+           } else {
+           bhvaanwezig = '<span class="label label-warning">'+ 
+                i18n.t('dbk.noEmergencyResponse') +'</span>';
+           }
+        }
         var informelenaam = dbkjs.util.isJsonNull(DBKObject.informeleNaam) ? '' : DBKObject.informeleNaam;
         var omsnummer = dbkjs.util.isJsonNull(DBKObject.OMSnummer) ? '' : DBKObject.OMSnummer;
         var gebouwconstructie = dbkjs.util.isJsonNull(DBKObject.gebouwconstructie) ? '' : DBKObject.gebouwconstructie;
