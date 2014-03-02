@@ -83,6 +83,7 @@ app.configure(function() {
     app.use(express.bodyParser());
 
     app.use(express.methodOverride());
+    app.use('/locales', express.static(__dirname + '/locales'));
     app.use(express.static(path.join(__dirname, 'public')));
     app.use('/web', express.static(__dirname + '/web'));
     app.use('/media', express.static(global.conf.get('media:path')));
@@ -123,6 +124,4 @@ app.get('/nen1414.html', routes.nen1414);
 app.listen(app.get('port'), function() {
     console.log("Express server listening on port " + app.get('port'));
 });
-
-
 
