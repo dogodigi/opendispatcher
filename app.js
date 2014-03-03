@@ -112,8 +112,19 @@ app.get('/api/gebied/:id', dbk.getGebied);
 app.get('/api/features', dbk.getFeatures);
 app.get('/api/bag/adres/:id', bag.getAdres);
 app.get('/api/bag/panden/:id', bag.getPanden);
-app.get('/api/bag/zoek/:text', bag.getZoek);
+app.get('/api/autocomplete/:searchphrase', bag.autoComplete);
 app.get('/api/organisation', dbk.getOrganisation);
+app.all('/proxy/',function(req,res){
+ if(req.query){
+   //res.json({"origin": req.query.q});
+   var request = require('request');
+   var x = request(req.query.q);
+    req.pipe(x);
+    x.pipe(res);
+ } else {
+    res.json({"booh": "Nah, nah, nah! You didn't say the magic words!"});
+ }
+});
 //app.get('/data/regio.json', routes.regio);
 app.get('/webdata/:id', web.getData);
 app.post('/validate', web.validate_POST);

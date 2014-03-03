@@ -10,6 +10,7 @@ exports.eughs = function(req, res) {
 exports.nen1414 = function(req, res) {
     res.render('nen1414', {title: 'nen1414'});
 };
+
 exports.index = function(req, res) {
     console.log(req.i18n.language());
     console.log(req.i18n.lng());

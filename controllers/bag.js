@@ -1,3 +1,7 @@
+String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+
 exports.getAdres = function(req, res) {
     //console.log(req);
     //where adresseerbaarobject = 14200010788752
@@ -114,25 +118,33 @@ exports.getPanden = function(req, res) {
     }
 };
 
-exports.getZoek = function(req, res){
-     if (req.query) {
-          searchtext = req.params.text;
-//        srid = req.query.srid;
-//        if(!srid){
-//            srid = 4326;
-//        }
-        var query_str = "select a.*, vp.gerelateerdpand as pand from bag8jan2014.adres a left join bag8jan2014.verblijfsobjectpand vp on a.adresseerbaarobject = vp.identificatie " + 
-                "where textsearchable_adres @@ plainto_tsquery('english', $1) limit 20";
-        global.bag.query(query_str,[searchtext],
-            function(err, result){
-                if(err) {
+exports.autoComplete = function(req, res) {
+    //console.log(req);
+    //where adresseerbaarobject = 796010000436352
+    if (req.query) {
+        searchphrase = req.params.searchphrase;
+        srid = req.query.srid;
+        if (!srid) {
+            srid = 4326;
+        }
+
+        // Are there any spaces in the searchphrase? use to_tsquery!
+        var query_str = "select openbareruimtenaam || ' ' || " +
+                "CASE WHEN lower(woonplaatsnaam) = lower(gemeentenaam) THEN woonplaatsnaam " +
+                "ELSE woonplaatsnaam || ', ' || gemeentenaam END as datum " +
+                "from bag8jan2014.adres where " +
+                "openbareruimtenaam like $1 " + 
+                "group by woonplaatsnaam, gemeentenaam, openbareruimtenaam limit 10";
+        //( textsearchable_adres @@ to_tsquery('dutch','spinellihof $1 limit 1';
+
+        global.bag.query(query_str, [searchphrase.toProperCase() + '%'],
+            function(err, result) {
+                if (err) {
                     res.json(err);
                 } else {
                     res.json(result.rows);
                 }
-            });
-            
-//    res.status(500);
-//    res.json({"Message": "Not implemented"});
-     }
+            return;
+        });
+    }
 };

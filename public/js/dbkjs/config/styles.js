@@ -299,6 +299,13 @@ dbkjs.config.styles = {
                     } else {
                         return 0;
                     }
+                },
+                mypointradius: function(feature){
+                    if(feature.attributes.pointradius){
+                        return feature.attributes.pointradius;
+                    } else {
+                        return 12;
+                    }
                 }
             }
         }), 'select': new OpenLayers.Style({
