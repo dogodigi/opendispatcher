@@ -187,14 +187,28 @@ dbkjs.config.styles = {
     hulplijn: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
+            strokeLinecap : "square", 
+            strokeDashstyle: "${mydash}",
             fillColor: "${mycolor}",
-            fillOpacity: 0.9,
-            strokeWidth: 1,
+            fillOpacity: "${myopacity}",
+            strokeWidth: "${mywidth}",
             pointRadius: 5,
             rotation: "${myrotation}",
             graphicName: "${mygraphic}"
         }, {
         context: {
+            myopacity: function(feature){
+                switch(feature.attributes.type) {
+                    case "Arrow":
+                        return 0.8;
+                        break;
+                    case "Fence":
+                        return 1;
+                        break;
+                    default:
+                        return 1;
+                }
+            },
             myrotation: function(feature) {
                 if(feature.attributes.rotation){
                     return -feature.attributes.rotation;
@@ -202,13 +216,59 @@ dbkjs.config.styles = {
                     return 0;
                 }
             },
+            mywidth: function(feature){
+                switch(feature.attributes.type) {
+                    case "Arrow":
+                        return 0.8;
+                        break;
+                    case "Broken":
+                        return 1;
+                        break;
+                    case "Fence":
+                        return 2;
+                        break;
+                    default:
+                        return 2;
+                }
+            },
+            mydash: function(feature) {
+                switch(feature.attributes.type) {
+                    case "Arrow":
+                        return "solid";
+                        break;
+                    case "Conduit":
+                        return "1 20";
+                        break;
+                    case "Cable":
+                        return "8 8";
+                        break;
+                    case "Broken":
+                    case "Fence":
+                        return "4 4";
+                        break;
+                    default:
+                        return "solid";
+                }
+            },
             mycolor: function(feature) {
                 switch(feature.attributes.type) {
                     case "Arrow":
+                        return "#040404";
+                        break;
+                    case "Fence":
                         return "#000000";
                         break;
-                    default:
+                    case "Cable":
+                        return "#ffff00";
+                        break;
+                    case "Cable":
+                        return "#ff00ff";
+                        break;
+                    case "HEAT":
                         return "#ff0000";
+                        break;
+                    default:
+                        return "#000000";
                 }
  
             },
