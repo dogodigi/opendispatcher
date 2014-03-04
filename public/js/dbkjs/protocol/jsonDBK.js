@@ -245,6 +245,7 @@ dbkjs.protocol.jsonDBK = {
            }
         }
         var informelenaam = dbkjs.util.isJsonNull(DBKObject.informeleNaam) ? '' : DBKObject.informeleNaam;
+        var risicoklasse = dbkjs.util.isJsonNull(DBKObject.risicoklasse) ? '' : DBKObject.risicoklasse;
         var omsnummer = dbkjs.util.isJsonNull(DBKObject.OMSnummer) ? '' : DBKObject.OMSnummer;
         var gebouwconstructie = dbkjs.util.isJsonNull(DBKObject.gebouwconstructie) ? '' : DBKObject.gebouwconstructie;
         var inzetprocedure = dbkjs.util.isJsonNull(DBKObject.inzetprocedure) ? '' : DBKObject.inzetprocedure;
@@ -285,6 +286,7 @@ dbkjs.protocol.jsonDBK = {
         algemeen_table.append(_obj.constructRow(gebouwconstructie, 'Gebouwconstructie'));
         algemeen_table.append(_obj.constructRow(omsnummer, i18n.t('dbk.fireAlarmCode')));
         algemeen_table.append(_obj.constructRow(gebruikstype, i18n.t('dbk.application')));
+        algemeen_table.append(_obj.constructRow(risicoklasse, i18n.t('dbk.risk')));
         algemeen_table.append(_obj.constructRow(bouwlaag, i18n.t('dbk.level')));
         algemeen_table.append(_obj.constructRow(laagstebouwlaag, i18n.t('dbk.lowLevel') + ' (' +  i18n.t('dbk.floor') + ')'));
         algemeen_table.append(_obj.constructRow(hoogstebouwlaag, i18n.t('dbk.highLevel') + ' (' +  i18n.t('dbk.floor') + ')'));

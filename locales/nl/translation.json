@@ -113,7 +113,8 @@
         "tarryobjectid": "Verblijfsobject",
         "media": "Media",
         "prevention": "Brandweervoorziening",
-        "chemicals": "Gevaarlijke stoffen"
+        "chemicals": "Gevaarlijke stoffen",
+        "risk": "Risicoklasse"
     },
     "chemicals": {
       "type": "soort",

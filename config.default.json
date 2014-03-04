@@ -17,6 +17,7 @@
       "dbname": "bag"
     },
     "media": { 
-      "path" : "/real/path/to/media"
+      "path" : "/real/path/to/media",
+      "symbols": "/real/path/to/symbols"
     }
 }

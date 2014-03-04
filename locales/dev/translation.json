@@ -113,7 +113,8 @@
         "tarryobjectid": "dbk.tarryobjectid",
         "media": "dbk.media",
         "prevention": "dbk.prevention",
-        "chemicals": "dbk.chemicals"
+        "chemicals": "dbk.chemicals",
+        "risk": "dbk.risk"
     },
     "chemicals": {
       "type": "chemicals.type",
