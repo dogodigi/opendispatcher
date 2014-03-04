@@ -26,15 +26,16 @@ dbkjs.layout = {
                 );
         if(dbkjs.options.organisation.wms){
             $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v){
+                var index = wms_v.index || 0;
                 if(wms_v.getcapabilities === true){
                     var myCapabilities = new dbkjs.Capabilities(
-                        {url: wms_v.url, title: wms_v.name, proxy: wms_v.proxy}
+                        {url: wms_v.url, title: wms_v.name, proxy: wms_v.proxy, index: index}
                     );
                 } else if (!dbkjs.options.organisation.wms.baselayer) {
                     var params = wms_v.params || {};
                     var options = wms_v.options || {};
                     var parent = wms_v.parent || null;
-                    var index = wms_v.index || 0;
+                    
                     var myLayer = new dbkjs.Layer(
                         wms_v.name,
                         wms_v.url,

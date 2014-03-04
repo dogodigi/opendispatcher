@@ -47,7 +47,7 @@ dbkjs.Capabilities = dbkjs.Class({
                             {layers: lval.name},
                             {},
                             '#' + myID + '_panel',
-                            lkey
+                            options.index + lkey
                         );
                     });
                     return;
