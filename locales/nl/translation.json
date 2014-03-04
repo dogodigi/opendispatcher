@@ -101,7 +101,7 @@
         "highLevel": "hoogste bouwlaag",
         "procedure": "Inzetprocedure",
         "unknown": "Niet bekend",
-        "noEmergencyResponse": "Geen BHV aanwezig of onbekend",
+        "noEmergencyResponse": "Geen BHV aanwezig",
         "emergencyResponsePresent": "BHV aanwezig",
         "fireAlarmCode": "OMS nummer",
         "application": "Gebruik",
