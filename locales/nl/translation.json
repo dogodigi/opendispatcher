@@ -40,18 +40,18 @@
         "hyperlink": "Open URL"
     },
     "map": {
-        "prev": "vorige",
-        "next": "volgende",
+        "prev": "Vorige",
+        "next": "Volgende",
         "zoomIn": "zoom in",
-        "zoomOut": "zoom uit",
-        "zoomExtent": "zoom naar regio",
-        "zoomLocation": "zoom naar locatie",
-        "mini": "overzichtskaart",
-        "settings": "instellingen",
-        "overlays": "lagen",
-        "baseLayers": "basiskaarten",
-        "measureDistance": "meet afstand",
-        "measureArea": "meet oppervlakte",
+        "zoomOut": "Zoom uit",
+        "zoomExtent": "Zoom naar regio",
+        "zoomLocation": "Zoom naar locatie",
+        "mini": "Overzichtskaart",
+        "settings": "Instellingen",
+        "overlays": "Lagen",
+        "baseLayers": "Basiskaarten",
+        "measureDistance": "Meet afstand",
+        "measureArea": "Meet oppervlakte",
         "info": "Informatie",
         "northarrow": "Noordpijl",
         "emergencyMap": "Bereikbaarheidskaart",
@@ -65,8 +65,8 @@
       "refmap": "Referentie kaart",
       "busyloading": "Bezig met laden van",
       "invalidImage": "geen geldige afbeelding",
-      "layerNotFound": "laag niet gevonden (of meer dan 1)",
-      "infoNotFound": "geen informatie gevonden",
+      "layerNotFound": "Laag niet gevonden (of meer dan 1)",
+      "infoNotFound": "Geen informatie gevonden",
       "running": "Objectinformatie wordt opgehaald..."
     },
     "care": {
@@ -89,16 +89,16 @@
         "combinedWithCoverage": "Gekoppeld aan dekkingsplan"
     },
     "dbk": {
-        "alternativeName": "informele naam",
-        "dateChecked": "controledatum",
+        "alternativeName": "Informele naam",
+        "dateChecked": "Controledatum",
         "emergencyResponse": "BHV",
         "to": "t/m",
-        "level": "bouwlaag",
-        "floor": "verdieping",
-        "floors": "verdiepingen",
-        "mainobject": "hoofdobject",
-        "lowLevel": "laagste bouwlaag",
-        "highLevel": "hoogste bouwlaag",
+        "level": "Bouwlaag",
+        "floor": "Verdieping",
+        "floors": "Verdiepingen",
+        "mainobject": "Hoofdobject",
+        "lowLevel": "Laagste bouwlaag",
+        "highLevel": "Hoogste bouwlaag",
         "procedure": "Inzetprocedure",
         "unknown": "Niet bekend",
         "noEmergencyResponse": "Geen BHV aanwezig",
@@ -117,45 +117,45 @@
         "risk": "Risicoklasse"
     },
     "chemicals": {
-      "type": "soort",
-      "name": "naam",
-      "quantity": "hoeveelheid",
-      "indication": "gevi",
-      "information": "informatie",
+      "type": "Soort",
+      "name": "Naam",
+      "quantity": "Hoeveelheid",
+      "indication": "Gevi",
+      "information": "Informatie",
       "unnumber": "UN nummer"
     },
     "prevention":{
-      "type": "soort",
-      "name": "naam",
-      "comment": "informatie"
+      "type": "Soort",
+      "name": "Naam",
+      "comment": "Informatie"
     },
     "tarry": {
         "from":"van",
         "to": "tot",
-        "ammount":"hoeveelheid",
-        "notSelfReliant": "nzr",
-        "group": "groep",
-        "days": "dagen"
+        "ammount":"Hoeveelheid",
+        "notSelfReliant": "Nzr",
+        "group": "Groep",
+        "days": "Dagen"
     },
     "particularies":{
-        "type": "soort",
-        "comment": "informatie"
+        "type": "Soort",
+        "comment": "Informatie"
     },
     "contact":{
-        "role": "functie",
-        "name": "naam",
-        "telephone": "telefoon"
+        "role": "Functie",
+        "name": "Naam",
+        "telephone": "Telefoon"
     },
     "search":{
         "search": "Zoek",
         "dbk": "DBK",
-        "dbkplaceholder": "zoek DBK",
+        "dbkplaceholder": "Zoek DBK",
         "oms": "OMS",
-        "omsplaceholder": "zoek OMS",
+        "omsplaceholder": "Zoek OMS",
         "address": "Adres",
-        "addressplaceholder": "zoek adres",
+        "addressplaceholder": "Zoek adres",
         "coordinates": "Coordinaten",
-        "coordplaceholder": "lon,lat of X,Y punt voor decimaal"
+        "coordplaceholder": "Lon,lat of X,Y punt voor decimaal"
     },
     "eughs": {
         "intro": "Het Globally Harmonised System van de Verenigde Naties (VN-GHS) is in 2002 door de VN vastgesteld",
