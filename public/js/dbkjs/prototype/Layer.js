@@ -8,11 +8,12 @@ dbkjs.Layer = dbkjs.Class({
         var defaultparams = {
             format: 'image/png', 
             transparent: true
+            //tiled: true,
+            //tilesorigin: [dbkjs.map.maxExtent.left, dbkjs.map.maxExtent.bottom]
         };
         var defaultoptions = {
             transitionEffect: 'resize',
-            singleTile: false,
-            tiled: true,
+            singleTile: true,
             buffer: 0,
             isBaseLayer: false,
             visibility: false
@@ -20,7 +21,7 @@ dbkjs.Layer = dbkjs.Class({
         
         params = OpenLayers.Util.extend(defaultparams, params);
         options = OpenLayers.Util.extend(defaultoptions, options);
-        
+        console.log(options);
 //        if(!options.singleTile){
 //            layerOptions.tiled = true;
 //            layerOptions.tilesorigin = dbkjs.map.maxExtent.left + ',' + dbkjs.map.maxExtent.bottom;
