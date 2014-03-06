@@ -135,10 +135,24 @@ dbkjs.config.styles = {
     }),
     dbkpand: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
-            fillColor: "#66FF66",
+            fillColor: "${mycolor}",
             fillOpacity: 0.2,
-            strokeColor: "#66FF66",
+            strokeColor: "${mycolor}",
             strokeWidth: 1
+        },{
+            context:{
+                mycolor: function(feature) {
+                    if (feature.attributes.type) {
+                        if (feature.attributes.type === "gebied"){
+                            return "#B45F04";
+                        } else {
+                            return "#66ff66";
+                        }
+                    } else {
+                        return "#66ff66";
+                    }
+                }
+            }
         }),
         'select': new OpenLayers.Style({
             strokeWidth: 4,
