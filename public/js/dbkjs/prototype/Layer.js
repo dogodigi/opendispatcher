@@ -21,7 +21,6 @@ dbkjs.Layer = dbkjs.Class({
         
         params = OpenLayers.Util.extend(defaultparams, params);
         options = OpenLayers.Util.extend(defaultoptions, options);
-        console.log(options);
 //        if(!options.singleTile){
 //            layerOptions.tiled = true;
 //            layerOptions.tilesorigin = dbkjs.map.maxExtent.left + ',' + dbkjs.map.maxExtent.bottom;
@@ -37,15 +36,21 @@ dbkjs.Layer = dbkjs.Class({
         );
         this.layer.dbkjsParent = this;
         //let op, de map moet worden meegegeven in de opties
-        dbkjs.map.addLayers([this.layer]);
         var _obj = this;
-        this.layer.events.register("loadstart", this.layer, function() {
-            dbkjs.util.loadingStart(_obj.layer);
-        });
-
-        this.layer.events.register("loadend", this.layer, function() {
-            dbkjs.util.loadingEnd(_obj.layer);
-        });
+//        this.layer.events.register("loadstart", this.layer, function() {
+//            dbkjs.util.loadingStart(_obj.layer);
+//            console.log(_obj.layer.name + ": loadstart");
+//        });
+//        this.layer.events.register("added", this.layer, function() {
+//            console.log(_obj.layer.name + ": added");
+//        });
+//        this.layer.events.register("loadend", this.layer, function() {
+//            dbkjs.util.loadingEnd(_obj.layer);
+//            console.log(_obj.layer.name + ": loadend");
+//        });
+        dbkjs.map.addLayers([this.layer]);
+        
+        
         if(!options.isBaseLayer) {
             // @todo functie maken om layerindex dynamisch te toveren 0 is onderop de stapel
             if(index){

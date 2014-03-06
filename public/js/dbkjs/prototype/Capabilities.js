@@ -30,6 +30,10 @@ dbkjs.Capabilities = dbkjs.Class({
                 }
                 var c = _obj.wmsCapabilitiesFormat.read(doc);
                 if (!c || !c.capability) {
+                    dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
+                    if(dbkjs.loadingcapabilities === 0){
+                        dbkjs.finishMap();
+                    }
                     _obj.onLayerLoadError(c);
                     return;
                 } else {
@@ -50,11 +54,20 @@ dbkjs.Capabilities = dbkjs.Class({
                             options.index + lkey
                         );
                     });
+                    dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
+                    if(dbkjs.loadingcapabilities === 0){
+                        dbkjs.finishMap();
+                    }
                     return;
                 }
             },
             failure: function(r) {
+                dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
+                if(dbkjs.loadingcapabilities === 0){
+                    dbkjs.finishMap();
+                }
                 _obj.onLayerLoadError(r);
+                return;
             }
         });
     }

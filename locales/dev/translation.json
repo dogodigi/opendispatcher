@@ -56,7 +56,8 @@
         "northarrow": "map.northarrow",
         "emergencyMap": "map.emergencyMap",
         "emergencyOverlays": "map.emergencyOverlays",
-        "systemOverlays": "map.systemOverlays"
+        "systemOverlays": "map.systemOverlays",
+        "permalink": "map.permalink"
     },
     "dialogs":{
       "info": "dialogs.info",

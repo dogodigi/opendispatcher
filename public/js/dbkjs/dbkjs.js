@@ -13,41 +13,13 @@ dbkjs.init = function() {
     dbkjs.options.adres = dbkjs.util.getQueryVariable(i18n.t('app.queryAddress'));
     dbkjs.options.omsnummer = dbkjs.util.getQueryVariable(i18n.t('app.queryNumber'));
     dbkjs.options.dbk = dbkjs.util.getQueryVariable(i18n.t('app.queryDBK'));
-    var params = {srid: dbkjs.options.projection.srid};
-    $.getJSON('/api/organisation', params).done(function(data) {
-        if (data.organisation) {
-            dbkjs.options.organisation = data.organisation;
-            if (data.organisation.area){
-                if (data.organisation.area.geometry.type === "Point") {
-                    dbkjs.map.setCenter(
-                            new OpenLayers.LonLat(
-                                    data.organisation.area.geometry.coordinates[0],
-                                    data.organisation.area.geometry.coordinates[1]
-                                    ).transform(
-                            new OpenLayers.Projection(dbkjs.options.projection.code),
-                            dbkjs.map.getProjectionObject()
-                            ),
-                            data.organisation.area.zoom
-                            );
-                } else if (data.organisation.area.geometry.type === "Polygon"){
-                    var areaGeometry = new OpenLayers.Format.GeoJSON().read(data.organisation.area.geometry, "Geometry");
-                    dbkjs.map.zoomToExtent(areaGeometry.getBounds());
-                }
-            } else {
-                dbkjs.map.zoomToMaxExtent();
-            }
-            if (dbkjs.options.organisation.title) {
-                document.title = dbkjs.options.organisation.title;
-            }
-            dbkjs.challengeAuth();
-
-        }
-    });
+    dbkjs.challengeAuth();
     // Show mouseposition
     var mousePos = new OpenLayers.Control.MousePosition({
         numDigits: dbkjs.options.projection.coordinates.numDigits,
         div: OpenLayers.Util.getElement('coords')
     });
+
     dbkjs.map.addControl(mousePos);
     var attribution = new OpenLayers.Control.Attribution({
         div: OpenLayers.Util.getElement('attribution')
@@ -64,13 +36,23 @@ dbkjs.init = function() {
     $.each(dbkjs.options.baselayers, function(bl_index, bl) {
         var _li = $('<li class="bl"><a href="#">' + bl.name + '</a></li>');
         baselayer_ul.append(_li);
+//        bl.events.register("loadstart", bl, function() {
+//            dbkjs.util.loadingStart(bl);
+//            console.log(bl.name + ": loadstart");
+//        });
+//        bl.events.register("added", bl, function() {
+//            console.log(bl.name + ": added");
+//        });
+//        bl.events.register("loadend", bl, function() {
+//            dbkjs.util.loadingEnd(bl);
+//            console.log(bl.name + ": loadend");
+//        });
         dbkjs.map.addLayers([bl]);
         _li.click(function() {
             dbkjs.toggleBaseLayer(bl_index);
         });
     });
     $('#baselayerpanel_b').append(baselayer_ul);
-    
     dbkjs.map.events.register("moveend", dbkjs.map, function() {
         //check if the naviHis has any content
         if (dbkjs.naviHis.nextStack.length > 0) {
@@ -86,7 +68,7 @@ dbkjs.init = function() {
             $('#zoom_prev').addClass('disabled');
         }
     });
-    dbkjs.toggleBaseLayer(0);
+    
     dbkjs.overview = new OpenLayers.Control.OverviewMap({
         div: document.getElementById('minimappanel_b'),
         size: new OpenLayers.Size(180, 180),
@@ -130,7 +112,16 @@ dbkjs.challengeAuth = function() {
     };
     $.getJSON('login', params).done(function(data) {
         if(data.login === 'ok'){
-            dbkjs.successAuth();
+            var params = {srid: dbkjs.options.projection.srid};
+            $.getJSON('/api/organisation', params).done(function(data) {
+                if (data.organisation) {
+                    dbkjs.options.organisation = data.organisation;
+                    if (dbkjs.options.organisation.title) {
+                        document.title = dbkjs.options.organisation.title;
+                    }
+                    dbkjs.successAuth();
+                }
+            });
         }
     }).fail(function( jqxhr, textStatus, error ) {
         dbkjs.options.feature = null;
@@ -168,18 +159,83 @@ dbkjs.successAuth = function() {
     //register modules
     $.each(dbkjs.modules, function(mod_index, module) {
         if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
-            //console.log(module);
             if (module.register) {
                 module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true});
             }
         }
     });
+    
+    if(dbkjs.options.organisation.wms){
+        dbkjs.loadingcapabilities = 0;
+            $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v){
+                var index = wms_v.index || 0;
+                if(wms_v.getcapabilities === true){
+                    dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
+                    var myCapabilities = new dbkjs.Capabilities(
+                        {url: wms_v.url, title: wms_v.name, proxy: wms_v.proxy, index: index}
+                    );
+                } else if (!dbkjs.options.organisation.wms.baselayer) {
+                    var params = wms_v.params || {};
+                    var options = wms_v.options || {};
+                    var parent = wms_v.parent || null;
+                    
+                    var myLayer = new dbkjs.Layer(
+                        wms_v.name,
+                        wms_v.url,
+                        params,
+                        options,
+                        parent,
+                        index
+                    );
+                }
+
+            });
+            if(dbkjs.loadingcapabilities === 0){
+                dbkjs.finishMap();
+            }
+        } else {
+            dbkjs.finishMap();
+        }
+};
+
+dbkjs.finishMap = function(){
     if (dbkjs.layout) {
         dbkjs.layout.activate();
     }
     dbkjs.activateClick();
     
     dbkjs.selectControl.activate();
+    var hrefzoom = dbkjs.util.getQueryVariable('zoom');
+    var hreflat = dbkjs.util.getQueryVariable('lat');
+    var hreflon = dbkjs.util.getQueryVariable('lon');
+    var hreflayers = dbkjs.util.getQueryVariable('layers');
+
+    if(hrefzoom && hreflat && hreflon &&hreflayers){
+        var argparser = new OpenLayers.Control.ArgParser();
+        dbkjs.map.addControl(argparser);
+    }else {
+        if (dbkjs.options.organisation.area){
+            if (dbkjs.options.organisation.area.geometry.type === "Point") {
+                dbkjs.map.setCenter(
+                        new OpenLayers.LonLat(
+                                dbkjs.options.organisation.area.geometry.coordinates[0],
+                                dbkjs.options.organisation.area.geometry.coordinates[1]
+                                ).transform(
+                        new OpenLayers.Projection(dbkjs.options.projection.code),
+                        dbkjs.map.getProjectionObject()
+                        ),
+                        dbkjs.options.organisation.area.zoom
+                        );
+            } else if (dbkjs.options.organisation.area.geometry.type === "Polygon"){
+                var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
+                dbkjs.map.zoomToExtent(areaGeometry.getBounds());
+            }
+        } else {
+            dbkjs.map.zoomToMaxExtent();
+        }
+    }
+    var permalink = new OpenLayers.Control.Permalink('permalink');
+    dbkjs.map.addControl(permalink);
 };
 
 $(document).ready(function() {

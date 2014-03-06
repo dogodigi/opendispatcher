@@ -56,7 +56,8 @@
         "northarrow": "Noordpijl",
         "emergencyMap": "Bereikbaarheidskaart",
         "emergencyOverlays": "Bereikbaarheidskaart",
-        "systemOverlays": "Systeem"
+        "systemOverlays": "Systeem",
+        "permalink": "Snelkoppeling"
     },
     "dialogs":{
       "info": "Informatie",
