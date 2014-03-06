@@ -168,7 +168,7 @@ dbkjs.successAuth = function() {
     //register modules
     $.each(dbkjs.modules, function(mod_index, module) {
         if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
-            console.log(module);
+            //console.log(module);
             if (module.register) {
                 module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true});
             }
