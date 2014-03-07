@@ -163,7 +163,8 @@ dbkjs.protocol.jsonDBK = {
                         myBearing = -(dbkjs.util.bearing(myVertices[myVertices.length -2], myVertices[myVertices.length -1]));
                         myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Collection([myline,myEndpoint]));
                     }
-                    myFeature.attributes = { "type": myGeometry.typeHulplijn, "rotation": myBearing};
+                    var aanvinfo =  dbkjs.util.isJsonNull(myGeometry.aanvullendeInformatie) ? '': myGeometry.aanvullendeInformatie;
+                    myFeature.attributes = { "type": myGeometry.typeHulplijn, "rotation": myBearing, "information": aanvinfo};
                     features.push(myFeature);
                 });
                 _obj.layerHulplijn.addFeatures(features);

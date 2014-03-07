@@ -208,7 +208,8 @@ dbkjs.config.styles = {
             strokeWidth: "${mywidth}",
             pointRadius: 5,
             rotation: "${myrotation}",
-            graphicName: "${mygraphic}"
+            graphicName: "${mygraphic}",
+            label: "${information}"
         }, {
         context: {
             myopacity: function(feature){
@@ -247,6 +248,8 @@ dbkjs.config.styles = {
             },
             mydash: function(feature) {
                 switch(feature.attributes.type) {
+                    //Bbarrier
+                    //Gate
                     case "Arrow":
                         return "solid";
                         break;
@@ -266,6 +269,8 @@ dbkjs.config.styles = {
             },
             mycolor: function(feature) {
                 switch(feature.attributes.type) {
+                    //Bbarrier
+                    //Gate
                     case "Arrow":
                         return "#040404";
                         break;
@@ -275,7 +280,7 @@ dbkjs.config.styles = {
                     case "Cable":
                         return "#ffff00";
                         break;
-                    case "Cable":
+                    case "Conduit":
                         return "#ff00ff";
                         break;
                     case "HEAT":
