@@ -359,7 +359,7 @@ dbkjs.config.styles = {
     }),
     brandweervoorziening: new OpenLayers.StyleMap({
         "default": new OpenLayers.Style({
-            pointRadius: 10,
+            pointRadius: "${myradius}",
             externalGraphic: "${myicon}",
             rotation: "${myrotation}"
         }, {
@@ -374,9 +374,9 @@ dbkjs.config.styles = {
                         return 0;
                     }
                 },
-                mypointradius: function(feature){
-                    if(feature.attributes.pointradius){
-                        return feature.attributes.pointradius;
+                myradius: function(feature){
+                    if(feature.attributes.radius){
+                        return feature.attributes.radius;
                     } else {
                         return 12;
                     }

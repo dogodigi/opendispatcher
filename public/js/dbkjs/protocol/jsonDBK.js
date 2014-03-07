@@ -360,6 +360,7 @@ dbkjs.protocol.jsonDBK = {
                     "information": myGeometry.aanvullendeInformatie,
                     "rotation": myGeometry.hoek,
                     "namespace": myGeometry.namespace,
+                    "radius": myGeometry.radius,
                     "fid": "brandweervoorziening_ft_" + idx 
                 };
                 var myrow = $('<tr>' +
