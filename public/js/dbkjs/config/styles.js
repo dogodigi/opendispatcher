@@ -385,7 +385,17 @@ dbkjs.config.styles = {
         }), 'select': new OpenLayers.Style({
             pointRadius: 20
         }), 'temporary': new OpenLayers.Style({
-            pointRadius: 25
+            pointRadius: "${myradius}"
+        }, {
+            context: {
+                myradius: function(feature){
+                    if(feature.attributes.radius){
+                        return feature.attributes.radius * 2;
+                    } else {
+                        return 24;
+                    }
+                }
+            }
         })
     }),
     gevaarlijkestof: new OpenLayers.StyleMap({

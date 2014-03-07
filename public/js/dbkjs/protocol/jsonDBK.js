@@ -14,6 +14,14 @@ dbkjs.protocol.jsonDBK = {
         _obj.layerPandgeometrie = new OpenLayers.Layer.Vector("pandgeometrie",{
             styleMap: dbkjs.config.styles.dbkpand
         });
+         dbkjs.map.events.register("moveend", null, function() {
+            //console.log("pandgeometrie: moveend" + dbkjs.map.zoom);
+            if (dbkjs.map.zoom < 12){
+                _obj.hideLayers();
+            } else {
+                _obj.showLayers();
+            }
+        });
         _obj.layerBrandcompartiment = new OpenLayers.Layer.Vector("brandcompartiment",{
             styleMap: dbkjs.config.styles.dbkcompartiment
         });
@@ -46,6 +54,18 @@ dbkjs.protocol.jsonDBK = {
         dbkjs.hoverControl.setLayer((dbkjs.hoverControl.layers || dbkjs.hoverControl.layer).concat(_obj.layers));
         dbkjs.hoverControl.activate();
         dbkjs.selectControl.activate();
+    },
+    hideLayers: function(){
+        var _obj = dbkjs.protocol.jsonDBK;
+        $.each(_obj.layers, function(lindex, lyr) {
+            lyr.setVisibility(false);
+        });
+    },
+    showLayers: function(){
+        var _obj = dbkjs.protocol.jsonDBK;
+        $.each(_obj.layers, function(lindex, lyr) {
+            lyr.setVisibility(true);
+        });
     },
     getfeatureinfo: function(e){
         html = '<div class="table-responsive">';
