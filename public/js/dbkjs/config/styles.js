@@ -166,9 +166,9 @@ dbkjs.config.styles = {
     dbkcompartiment: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
-            strokeWidth: 4,
+            strokeWidth: "${mystrokewidth}",
             strokeLinecap : "square", 
-            strokeDashstyle: "2 8"
+            strokeDashstyle: "${mystrokedashstyle}"
         }, {
         context: {
             mycolor: function(feature) {
@@ -179,6 +179,10 @@ dbkjs.config.styles = {
                     case "60 minuten brandwerende scheiding":
                         return "#5da03b";
                         break;
+                    case "> 60 minuten brandwerende scheiding":
+                        //return "#5da03b";
+                        return "#ff0000";
+                        break;
                     case "Rookwerende scheiding":
                         return "#009cdd";
                         break;
@@ -187,8 +191,34 @@ dbkjs.config.styles = {
                 }
  
             },
+            mystrokewidth: function(feature) {
+                switch(feature.attributes.type) {
+                    case "60 minuten brandwerende scheiding":
+                    case "> 60 minuten brandwerende scheiding":
+                        return 6;
+                        break;
+                    default:
+                        return 4;
+                }
+ 
+            },
             mystrokedashstyle: function(feature) {
-                
+                switch(feature.attributes.type) {
+                    case "30 minuten brandwerende scheiding":
+                        return "5 10";
+                        break;
+                    case "60 minuten brandwerende scheiding":
+                        return "1 12";
+                        break;
+                    case "> 60 minuten brandwerende scheiding":
+                        return "solid";
+                        break;
+                    case "Rookwerende scheiding":
+                        return "5 10 1 10";
+                        break;
+                    default:
+                        return "10 10";
+                }
             }
         }
     }),
