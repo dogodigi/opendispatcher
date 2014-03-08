@@ -6,10 +6,7 @@ html, body {
 #btn-grp-search {
     line-height: 0 !important;
 }
-#wmsclickpanel_b {
-    max-height: 300px;
-    overflow: auto;
-}
+
 .tt-suggestion {
     line-height: 1 !important;
 }
@@ -124,7 +121,6 @@ h4, h5, h6 {
     margin-top: 0 !important;
 }
 .tab-content{
-    width: 482px;
     height: 380px;
     overflow: auto;
 }

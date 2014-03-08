@@ -174,9 +174,25 @@ dbkjs.successAuth = function() {
                     var myCapabilities = new dbkjs.Capabilities(
                         {url: wms_v.url, title: wms_v.name, proxy: wms_v.proxy, index: index}
                     );
-                } else if (!dbkjs.options.organisation.wms.baselayer) {
+                } else if (!wms_v.baselayer) {
                     var params = wms_v.params || {};
                     var options = wms_v.options || {};
+                    var parent = wms_v.parent || null;
+                    
+                    var myLayer = new dbkjs.Layer(
+                        wms_v.name,
+                        wms_v.url,
+                        params,
+                        options,
+                        parent,
+                        index
+                    );
+                } else {
+                    console.log(wms_v);
+                    
+                    var params = wms_v.params || {};
+                    var options = wms_v.options || {};
+                    options = OpenLayers.Util.extend({isBaseLayer: true}, options);
                     var parent = wms_v.parent || null;
                     
                     var myLayer = new dbkjs.Layer(
