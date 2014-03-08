@@ -8,7 +8,20 @@ exports.eughs = function(req, res) {
     res.render('eughs', {title: 'eughs', source_url: "http://stoffen-info.nl/onderwerpen/eu-ghs/kort/"});
 };
 exports.nen1414 = function(req, res) {
-    res.render('nen1414', {title: 'nen1414'});
+    //db query uitvoeren.
+    var query_str = 'select naam, omschrijving, brandweervoorziening_symbool,lower(namespace) as namespace  from dbk.type_brandweervoorziening';
+        global.pool.query(query_str,
+            function(err, result){
+                if(err) {
+                    res.render('error', {title: 'Fout opgetreden', error: 'De NEN1414 bibliotheek kan niet worden getoond'});
+                } else {
+                    console.log(result.rows);
+                    res.render('nen1414', {title: 'nen1414', items: result.rows});
+                }
+                return;
+            }
+        );
+    
 };
 
 exports.index = function(req, res) {

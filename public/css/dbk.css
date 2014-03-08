@@ -115,7 +115,22 @@ a {
 .drag-handle {
     color: #cccccc !important;
 }
-
+.image-wrapper{
+    height: 100px;
+    width: 200px;
+}
+.symbol-block{
+    margin: 20px;
+    height: 200px;
+    width: 200px;
+}
+.milotron{
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+    margin-top: 10px;
+    margin-bottom: 10px;
+        
+}
 h4, h5, h6 {
     margin-bottom: 0 !important;
     margin-top: 0 !important;
