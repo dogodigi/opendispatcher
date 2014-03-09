@@ -23,11 +23,11 @@ dbkjs.modules.feature = {
     /**
      * The layer that will hold the incident sketches such as catchement areas and route
      */
-    sketch: new OpenLayers.Layer.Vector("feature_sketch", {
-        rendererOptions: {
-            zIndexing: true
-        }
-    }),
+//    sketch: new OpenLayers.Layer.Vector("Feature_sketch", {
+//        rendererOptions: {
+//            zIndexing: true
+//        }
+//    }),
     getActive: function() {
         var _obj = dbkjs.modules.feature;
         var feature;
@@ -96,10 +96,12 @@ dbkjs.modules.feature = {
             styleMap: dbkjs.config.styles.dbkfeature
         });
         _obj.layer.setZIndex(2006);
-        _obj.sketch.setZIndex(2002);
+        //_obj.sketch.setZIndex(2002);
         _obj.layer.displayInLayerSwitcher = false;
-        _obj.sketch.displayInLayerSwitcher = false;
-        dbkjs.map.addLayers([_obj.sketch, _obj.layer]);
+        //_obj.sketch.displayInLayerSwitcher = false;
+        dbkjs.map.addLayers([
+            //_obj.sketch, 
+            _obj.layer]);
         //Add the layer to the selectControl
         dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.layer));
         dbkjs.selectControl.activate();

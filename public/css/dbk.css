@@ -2,6 +2,7 @@ html, body {
     margin: 0;
     width: 100%;
     height: 100%;
+    background-color: #cccccc;
 }
 #btn-grp-search {
     line-height: 0 !important;
@@ -98,9 +99,11 @@ a {
     font-weight: bold;
     text-align: center;
 }
-@media (max-width: 999px) and (orientation: landscape) {
+@media (max-width: 999px) {
     #foutknop {
-        display:none;
+        left: 8px;
+        bottom: 0;
+        position: absolute;
     }
     #btn_care {
         display: none;

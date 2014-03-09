@@ -11,7 +11,7 @@ dbkjs.protocol.jsonDBK = {
     active_tab:'algemeen',
     init: function() {
         var _obj = dbkjs.protocol.jsonDBK;
-        _obj.layerPandgeometrie = new OpenLayers.Layer.Vector("pandgeometrie",{
+        _obj.layerPandgeometrie = new OpenLayers.Layer.Vector("Pandgeometrie",{
             styleMap: dbkjs.config.styles.dbkpand
         });
          dbkjs.map.events.register("moveend", null, function() {
@@ -22,7 +22,7 @@ dbkjs.protocol.jsonDBK = {
                 _obj.showLayers();
             }
         });
-        _obj.layerBrandcompartiment = new OpenLayers.Layer.Vector("brandcompartiment",{
+        _obj.layerBrandcompartiment = new OpenLayers.Layer.Vector("Brandcompartiment",{
             styleMap: dbkjs.config.styles.dbkcompartiment
         });
          _obj.layerHulplijn2 = new OpenLayers.Layer.Vector("hulplijn2",{
@@ -31,20 +31,20 @@ dbkjs.protocol.jsonDBK = {
         _obj.layerHulplijn1 = new OpenLayers.Layer.Vector("hulplijn1",{
             styleMap: dbkjs.config.styles.hulplijn1
         });
-        _obj.layerHulplijn = new OpenLayers.Layer.Vector("hulplijn",{
+        _obj.layerHulplijn = new OpenLayers.Layer.Vector("Hulplijn",{
             styleMap: dbkjs.config.styles.hulplijn
         });
 
-        _obj.layerToegangterrein = new OpenLayers.Layer.Vector("toegangterrein",{
+        _obj.layerToegangterrein = new OpenLayers.Layer.Vector("Toegang terrein",{
             styleMap: dbkjs.config.styles.toegangterrein
         });
-        _obj.layerBrandweervoorziening = new OpenLayers.Layer.Vector("brandweervoorziening",{
+        _obj.layerBrandweervoorziening = new OpenLayers.Layer.Vector("Brandweervoorziening",{
             styleMap: dbkjs.config.styles.brandweervoorziening
         });
-        _obj.layerGevaarlijkestof = new OpenLayers.Layer.Vector("gevaarlijkestof",{
+        _obj.layerGevaarlijkestof = new OpenLayers.Layer.Vector("Gevaarlijke stoffen",{
             styleMap: dbkjs.config.styles.gevaarlijkestof
         });
-        _obj.layerTekstobject = new OpenLayers.Layer.Vector("tekstobject",{
+        _obj.layerTekstobject = new OpenLayers.Layer.Vector("Tekst objecten",{
             styleMap: dbkjs.config.styles.tekstobject
         });
         _obj.layers = [
