@@ -109,6 +109,7 @@ i18n.serveClientScript(app)
 app.get('/', routes.index);
 app.get('/login', routes.login);
 app.get('/api/object/:id', dbk.getObject);
+app.post('/api/annotation', dbk.postAnnotation);
 app.get('/api/gebied/:id', dbk.getGebied);
 app.get('/api/features', dbk.getFeatures);
 app.get('/api/bag/adres/:id', bag.getAdres);
