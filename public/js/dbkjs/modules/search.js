@@ -94,21 +94,28 @@ dbkjs.modules.search = {
                 $('#search_input').change(function() {
                     var ruwe_input = $('#search_input').val();
                     var loc;
-                    var coords = ruwe_input.split(',');
+                    var coords = ruwe_input.split(/[\s,]+/);;
                     coords[0] = parseFloat(coords[0]);
                     coords[1] = parseFloat(coords[1]);
-                    if (coords.length === 2) {
-                        if (coords[0] > 2.0 && coords[0] < 8.0 && coords[1] > 50.0 && coords[0] < 54.0) { //wgs84
+                    console.log(coords);
+                    if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+                        if (coords[0] > 50.0 && coords[0] < 54.0 && coords[1] > 2.0 && coords[1] < 8.0) { //wgs84
                             loc = new OpenLayers.LonLat(coords[0], coords[1]).transform(new OpenLayers.Projection("EPSG:4326"), dbkjs.map.getProjectionObject());
                             dbkjs.modules.updateFilter(0);
                             dbkjs.map.setCenter(loc, 11);
-                        } else if (coords[0] > -14000.0 && coords[0] < 293100.0 && coords[1] > 293100.0 && coords[0] < 650000.0) { //rd
+                            $('#search_input').removeClass('has-error');
+                        } else if (coords[0] > -14000.0 && coords[0] < 293100.0 && coords[1] > 293100.0 && coords[1] < 650000.0) { //rd
                             loc = new OpenLayers.LonLat(coords[0], coords[1]).transform(new OpenLayers.Projection("EPSG:28992"), dbkjs.map.getProjectionObject());
                             dbkjs.modules.updateFilter(0);
                             dbkjs.map.setCenter(loc, 11);
+                            $('#search_input').removeClass('has-error');
                         } else {
                             // @todo build function to handle map fault
+                            //maak het vakje rood, geen geldige coordinaten
+                            $('#search_input').addClass('has-error');
                         }
+                    } else {
+                        $('#search_input').addClass('has-error');
                     }
                     return false;
                 });

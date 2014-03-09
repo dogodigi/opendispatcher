@@ -288,23 +288,18 @@ dbkjs.config.styles = {
             },
             mydash: function(feature) {
                 switch(feature.attributes.type) {
-                    //Bbarrier
-                    case "Bbarrier":
-                        return "20 20";
-                        break;
-                    case "Arrow":
-                        return "solid";
-                        break;
                     case "Cable":
-                        return "20 20";
-                        break;
-                    case "Broken":
-                        return "3 2";
+                    case "Bbarrier":
+                        return "10 10";
                         break;
                     case "Conduit":
                     case "Gate":
                     case "Fence":
                         return "1 20";
+                        break;
+
+                    case "Broken":
+                        return "3 2";
                         break;
                     default:
                         return "solid";
@@ -362,7 +357,7 @@ dbkjs.config.styles = {
                 switch(feature.attributes.type) {
                     case "Cable":
                     case "Bbarrier":
-                        return 6;
+                        return 4;
                         break;
                     case "Conduit":
                     case "Gate":
@@ -407,7 +402,7 @@ dbkjs.config.styles = {
             mywidth: function(feature){
                 switch(feature.attributes.type) {
                      case "Gate":
-                        return 6;
+                        return 5;
                         break;
                     default:
                         return 2;
