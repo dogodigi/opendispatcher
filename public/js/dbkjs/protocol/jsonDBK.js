@@ -25,9 +25,16 @@ dbkjs.protocol.jsonDBK = {
         _obj.layerBrandcompartiment = new OpenLayers.Layer.Vector("brandcompartiment",{
             styleMap: dbkjs.config.styles.dbkcompartiment
         });
+         _obj.layerHulplijn2 = new OpenLayers.Layer.Vector("hulplijn2",{
+            styleMap: dbkjs.config.styles.hulplijn2
+        });
+        _obj.layerHulplijn1 = new OpenLayers.Layer.Vector("hulplijn1",{
+            styleMap: dbkjs.config.styles.hulplijn1
+        });
         _obj.layerHulplijn = new OpenLayers.Layer.Vector("hulplijn",{
             styleMap: dbkjs.config.styles.hulplijn
         });
+
         _obj.layerToegangterrein = new OpenLayers.Layer.Vector("toegangterrein",{
             styleMap: dbkjs.config.styles.toegangterrein
         });
@@ -43,15 +50,23 @@ dbkjs.protocol.jsonDBK = {
         _obj.layers = [
             _obj.layerPandgeometrie, 
             _obj.layerBrandcompartiment,
-            _obj.layerHulplijn,
+            _obj.layerHulplijn2,
+            _obj.layerHulplijn1,
+            _obj.layerHulplijn, 
             _obj.layerToegangterrein,
             _obj.layerBrandweervoorziening,
             _obj.layerGevaarlijkestof,
             _obj.layerTekstobject
-        ];;
+        ];
+        _obj.selectlayers = [];
+        _obj.hoverlayers = [
+            _obj.layerPandgeometrie, 
+            _obj.layerBrandweervoorziening,
+            _obj.layerGevaarlijkestof
+        ];
         dbkjs.map.addLayers(_obj.layers);
-        dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.layers));
-        dbkjs.hoverControl.setLayer((dbkjs.hoverControl.layers || dbkjs.hoverControl.layer).concat(_obj.layers));
+        dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.hoverlayers));
+        dbkjs.hoverControl.setLayer((dbkjs.hoverControl.layers || dbkjs.hoverControl.layer).concat(_obj.hoverlayers));
         dbkjs.hoverControl.activate();
         dbkjs.selectControl.activate();
     },
@@ -152,6 +167,8 @@ dbkjs.protocol.jsonDBK = {
             }
             if(dbkjs.options.feature.hulplijn){
                 var features = [];
+                var features1 = [];
+                var features2 = [];
                 $.each(dbkjs.options.feature.hulplijn, function(idx, myGeometry){
                     var myBearing = 0;
                     var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
@@ -166,8 +183,28 @@ dbkjs.protocol.jsonDBK = {
                     var aanvinfo =  dbkjs.util.isJsonNull(myGeometry.aanvullendeInformatie) ? '': myGeometry.aanvullendeInformatie;
                     myFeature.attributes = { "type": myGeometry.typeHulplijn, "rotation": myBearing, "information": aanvinfo};
                     features.push(myFeature);
+                    if(myGeometry.typeHulplijn === "Cable" ){
+                        features1.push(myFeature.clone());
+                    }
+                    if(myGeometry.typeHulplijn === "Conduit" ){
+                        features1.push(myFeature.clone());
+                    }
+                    if(myGeometry.typeHulplijn === "Fence" ){
+                        features1.push(myFeature.clone());
+                    }
+                    if(myGeometry.typeHulplijn === "Gate" ){
+                        features1.push(myFeature.clone());
+                        features2.push(myFeature.clone());
+                    }
+                    if(myGeometry.typeHulplijn === "Bbarrier" ){
+                        features1.push(myFeature.clone());
+                        features2.push(myFeature.clone());
+                    }
+                    
                 });
                 _obj.layerHulplijn.addFeatures(features);
+                _obj.layerHulplijn1.addFeatures(features1);
+                _obj.layerHulplijn2.addFeatures(features2);
             }
             if(dbkjs.options.feature.toegangterrein){
                 var features = [];
@@ -189,10 +226,27 @@ dbkjs.protocol.jsonDBK = {
             if(dbkjs.options.feature.brandcompartiment){
                 var features = [];
                 $.each(dbkjs.options.feature.brandcompartiment, function(idx, myGeometry){
-                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                    //@todo: De omschrijving moet er nog bij, ook in de database!
-                    myFeature.attributes = { "type" : myGeometry.typeScheiding};
-                    features.push(myFeature);
+                    var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
+                    if(!dbkjs.util.isJsonNull(myGeometry.Label)){
+                        //create a feature for every center of every segment of the line, place the label there
+                        var labelfeatures = [];
+                        labelfeatures.push(myline);
+                        //$.each(myline.components,function(cidx, component){
+                        //    console.log(component.getCentroid());
+                        //    var labelFeature = myline.getCentroid();
+                        //    labelfeatures.push(labelFeature);
+                        //});
+                        //labelfeatures.push(myFeature);
+                        var outFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Collection(labelfeatures));
+                        outFeature.attributes = { "type" : myGeometry.typeScheiding, "label": myGeometry.Label};
+                        features.push(outFeature);
+                        console.log(outFeature);
+                       } else {
+                        var myFeature = new OpenLayers.Feature.Vector(myline);
+                        myFeature.attributes = { "type" : myGeometry.typeScheiding};
+                        features.push(myFeature); 
+                    }
+
                 });
                 _obj.layerBrandcompartiment.addFeatures(features);
             }

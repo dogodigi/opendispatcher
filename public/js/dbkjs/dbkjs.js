@@ -36,17 +36,12 @@ dbkjs.init = function() {
     $.each(dbkjs.options.baselayers, function(bl_index, bl) {
         var _li = $('<li class="bl"><a href="#">' + bl.name + '</a></li>');
         baselayer_ul.append(_li);
-//        bl.events.register("loadstart", bl, function() {
-//            dbkjs.util.loadingStart(bl);
-//            console.log(bl.name + ": loadstart");
-//        });
-//        bl.events.register("added", bl, function() {
-//            console.log(bl.name + ": added");
-//        });
-//        bl.events.register("loadend", bl, function() {
-//            dbkjs.util.loadingEnd(bl);
-//            console.log(bl.name + ": loadend");
-//        });
+        bl.events.register("loadstart", bl, function() {
+            dbkjs.util.loadingStart(bl);
+        });
+        bl.events.register("loadend", bl, function() {
+            dbkjs.util.loadingEnd(bl);
+        });
         dbkjs.map.addLayers([bl]);
         _li.click(function() {
             dbkjs.toggleBaseLayer(bl_index);

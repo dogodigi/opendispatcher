@@ -25,13 +25,21 @@ dbkjs.Layer = dbkjs.Class({
         this.div = $('<div class="panel"></div>');
         this.div.attr('id', 'panel_' + this.id);
         //layers moet worden meegegeven in de opties
-        this.layer = new OpenLayers.Layer.WMS(name, url,
+        var ly = new OpenLayers.Layer.WMS(name, url,
                 params,
                 options
         );
+        ly.events.register("loadstart", ly, function() {
+            dbkjs.util.loadingStart(ly);
+        });
+        ly.events.register("loadend", ly, function() {
+            dbkjs.util.loadingEnd(ly);
+        });
+        this.layer  = ly;
         this.layer.dbkjsParent = this;
         //let op, de map moet worden meegegeven in de opties
         var _obj = this;
+
         dbkjs.map.addLayers([this.layer]);
         if(!options.isBaseLayer) {
             // @todo functie maken om layerindex dynamisch te toveren 0 is onderop de stapel

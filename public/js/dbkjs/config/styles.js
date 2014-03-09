@@ -121,17 +121,17 @@ dbkjs.config.styles = {
     }),
     "select": new OpenLayers.Style({
         fontColor: "${myfontcolor}"
-    }, {
-        context: {
-            myfontcolor: function(feature) {
-                if (feature.cluster) {
-                    return "#fff722";
-                } else {
-                    return "#000000";
+        }, {
+            context: {
+                myfontcolor: function(feature) {
+                    if (feature.cluster) {
+                        return "#fff722";
+                    } else {
+                        return "#000000";
+                    }
                 }
             }
-        }
-    })
+        })
     }),
     dbkpand: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
@@ -167,8 +167,17 @@ dbkjs.config.styles = {
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
             strokeWidth: "${mystrokewidth}",
-            strokeLinecap : "square", 
-            strokeDashstyle: "${mystrokedashstyle}"
+            strokeLinecap : "none",
+            strokeDashstyle: "${mystrokedashstyle}",
+            fontColor: "${mycolor}",
+            pointRadius: 5,
+            fontSize: "12px",
+            fontWeight: "bold",
+            //rotation: "${rotation}",
+            labelSelect: true,
+            labelOutlineColor: "#ffffff",
+            labelOutlineWidth: 1,
+            label: "${mylabel}"
         }, {
         context: {
             mycolor: function(feature) {
@@ -180,7 +189,6 @@ dbkjs.config.styles = {
                         return "#5da03b";
                         break;
                     case "> 60 minuten brandwerende scheiding":
-                        //return "#5da03b";
                         return "#ff0000";
                         break;
                     case "Rookwerende scheiding":
@@ -195,43 +203,45 @@ dbkjs.config.styles = {
                 switch(feature.attributes.type) {
                     case "60 minuten brandwerende scheiding":
                     case "> 60 minuten brandwerende scheiding":
-                        return 6;
+                        return 4;
                         break;
                     default:
-                        return 4;
+                        return 2;
                 }
  
             },
             mystrokedashstyle: function(feature) {
                 switch(feature.attributes.type) {
                     case "30 minuten brandwerende scheiding":
-                        return "5 10";
+                        return "8 4";
                         break;
                     case "60 minuten brandwerende scheiding":
-                        return "1 12";
+                        return "4 4";
                         break;
                     case "> 60 minuten brandwerende scheiding":
                         return "solid";
                         break;
                     case "Rookwerende scheiding":
-                        return "5 10 1 10";
+                        return "8 4 2 4";
                         break;
                     default:
                         return "10 10";
                 }
+            },
+            mylabel: function(feature) {
+                if(feature.attributes.label){
+                    return feature.attributes.label;
+                } else {
+                    return "";
+                }
             }
         }
-    }),
-        'select': new OpenLayers.Style({
-            strokeWidth: 12
-        }), 'temporary': new OpenLayers.Style({
-            
-        })
+    })
     }),
     hulplijn: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
-            strokeLinecap : "square", 
+            strokeLinecap : "none", 
             strokeDashstyle: "${mydash}",
             fillColor: "${mycolor}",
             fillOpacity: "${myopacity}",
@@ -247,9 +257,6 @@ dbkjs.config.styles = {
                     case "Arrow":
                         return 0.8;
                         break;
-                    case "Fence":
-                        return 1;
-                        break;
                     default:
                         return 1;
                 }
@@ -263,15 +270,18 @@ dbkjs.config.styles = {
             },
             mywidth: function(feature){
                 switch(feature.attributes.type) {
-                    case "Arrow":
-                        return 0.8;
+                    case "Conduit":
+                    case "Gate":
+                    case "Fence":
+                        return 8;
+                        break;
+                     case "HEAT":
+                        return 3;
                         break;
                     case "Broken":
                         return 1;
                         break;
-                    case "Fence":
-                        return 2;
-                        break;
+                    case "Arrow":
                     default:
                         return 2;
                 }
@@ -279,19 +289,22 @@ dbkjs.config.styles = {
             mydash: function(feature) {
                 switch(feature.attributes.type) {
                     //Bbarrier
-                    //Gate
+                    case "Bbarrier":
+                        return "20 20";
+                        break;
                     case "Arrow":
                         return "solid";
                         break;
-                    case "Conduit":
-                        return "1 20";
-                        break;
                     case "Cable":
-                        return "8 8";
+                        return "20 20";
                         break;
                     case "Broken":
+                        return "3 2";
+                        break;
+                    case "Conduit":
+                    case "Gate":
                     case "Fence":
-                        return "4 4";
+                        return "1 20";
                         break;
                     default:
                         return "solid";
@@ -301,9 +314,13 @@ dbkjs.config.styles = {
                 switch(feature.attributes.type) {
                     //Bbarrier
                     //Gate
+                    case "Bbarrier":
+                        return "#ffffff";
+                        break;
                     case "Arrow":
                         return "#040404";
                         break;
+                    case "Gate":
                     case "Fence":
                         return "#000000";
                         break;
@@ -332,12 +349,90 @@ dbkjs.config.styles = {
  
             }
         }
+    })
     }),
-        'select': new OpenLayers.Style({
-            
-        }), 'temporary': new OpenLayers.Style({
-            
-        })
+    hulplijn1: new OpenLayers.StyleMap({
+        'default': new OpenLayers.Style({
+            strokeColor: "${mycolor}",
+            strokeDashstyle: "${mydash}",
+            strokeWidth: "${mywidth}"
+        }, {
+        context: {
+            mywidth: function(feature){
+                switch(feature.attributes.type) {
+                    case "Cable":
+                    case "Bbarrier":
+                        return 6;
+                        break;
+                    case "Conduit":
+                    case "Gate":
+                    case "Fence":
+                        return 2;
+                        break;
+                    default:
+                        return 2;
+                }
+            },
+            mydash: function(feature) {
+                switch(feature.attributes.type) {
+                    default:
+                        return "none";
+                }
+            },
+            mycolor: function(feature) {
+                switch(feature.attributes.type) {
+                    case "Conduit":
+                        return "#ff00ff";
+                        break;
+                    case "Bbarrier":
+                        return "#ff0000";
+                        break;
+                    case "Gate":
+                        return "#ffffff";
+                        break;
+                    default:
+                        return "#000000";
+                }
+            }
+        }
+    })
+    }),
+    hulplijn2: new OpenLayers.StyleMap({
+        'default': new OpenLayers.Style({
+            strokeColor: "${mycolor}",
+            strokeDashstyle: "${mydash}",
+            strokeWidth: "${mywidth}"
+        }, {
+        context: {
+            mywidth: function(feature){
+                switch(feature.attributes.type) {
+                     case "Gate":
+                        return 6;
+                        break;
+                    default:
+                        return 2;
+                }
+            },
+            mydash: function(feature) {
+                switch(feature.attributes.type) {
+                    case "Gate":
+                        return "none";
+                        break;
+                    default:
+                        return "none";
+                }
+            },
+            mycolor: function(feature) {
+                switch(feature.attributes.type) {
+                     case "Gate":
+                        return "#000000";
+                        break;
+                    default:
+                        return "#000000";
+                }
+            }
+        }
+    })
     }),
     toegangterrein: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
