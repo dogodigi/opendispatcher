@@ -12,10 +12,10 @@ dbkjs.options = {
             numDigits: 4
         }
     },
-    VERSION: "1.0",
-    RELEASEDATE: "15-11-2013",
-    APPLICATION: "DOIV",
-    REMARKS: "Eerste release",
+    VERSION: "2.0",
+    RELEASEDATE: "10-03-2014",
+    APPLICATION: "safetymapsDBK",
+    REMARKS: "",
     INFO: "",
     zoom: 19,
     map: {
