@@ -49,7 +49,7 @@
         "mini": "Overzichtskaart",
         "settings": "Instellingen",
         "overlays": "Lagen",
-        "baseLayers": "Basiskaarten",
+        "baselayers": "Basiskaarten",
         "measureDistance": "Meet afstand",
         "measureArea": "Meet oppervlakte",
         "info": "Informatie",
