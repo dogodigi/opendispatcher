@@ -1,7 +1,7 @@
 /nbproject
 /node_modules
-/css/dbk.min.css
-/js/dbk.min.js
+/public/css/dbk.min.css
+/public/js/dbk.min.js
 config.json
 config-true.json
 *~

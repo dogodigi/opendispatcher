@@ -15,6 +15,8 @@
         "any-db": "*",
         "any-db-postgres": "*",
         "pg": "*",
-        "request":"*"
+        "request":"*",
+        "uglify-js": "*",
+        "clean-css": "*"
     }
 }
