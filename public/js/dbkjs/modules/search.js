@@ -97,7 +97,6 @@ dbkjs.modules.search = {
                     var coords = ruwe_input.split(/[\s,]+/);;
                     coords[0] = parseFloat(coords[0]);
                     coords[1] = parseFloat(coords[1]);
-                    console.log(coords);
                     if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
                         if (coords[0] > 50.0 && coords[0] < 54.0 && coords[1] > 2.0 && coords[1] < 8.0) { //wgs84
                             loc = new OpenLayers.LonLat(coords[0], coords[1]).transform(new OpenLayers.Projection("EPSG:4326"), dbkjs.map.getProjectionObject());

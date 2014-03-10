@@ -30,7 +30,6 @@ dbkjs.modules.support = {
                 dbkjs.selectControl.deactivate();
                 dbkjs.map.raiseLayer(_obj.layer, dbkjs.map.layers.length);
                 var center = dbkjs.map.getCenter();
-                console.log(center);
                 var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(center.lon, center.lat),
                     {some:'data'}, 
                     {externalGraphic: 'images/marker-red.png', graphicHeight:35, graphicWidth:30}
@@ -110,7 +109,6 @@ dbkjs.modules.support = {
                             dataType: "html",
                             data: data,
                             success: function (result) {
-                                console.log(result);
                                 $('#supportpanel_b').html('<p class="bg-info">Uw melding is verstuurd. U ontvangt bericht omtrent de afhandeling.</p>');
                                 _obj.layer.destroyFeatures();
                                 _obj.drag.deactivate();

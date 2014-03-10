@@ -183,8 +183,6 @@ dbkjs.successAuth = function() {
                         index
                     );
                 } else {
-                    console.log(wms_v);
-                    
                     var params = wms_v.params || {};
                     var options = wms_v.options || {};
                     options = OpenLayers.Util.extend({isBaseLayer: true}, options);

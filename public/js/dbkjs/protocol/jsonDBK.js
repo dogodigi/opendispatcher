@@ -240,7 +240,6 @@ dbkjs.protocol.jsonDBK = {
                         var outFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Collection(labelfeatures));
                         outFeature.attributes = { "type" : myGeometry.typeScheiding, "label": myGeometry.Label};
                         features.push(outFeature);
-                        console.log(outFeature);
                        } else {
                         var myFeature = new OpenLayers.Feature.Vector(myline);
                         myFeature.attributes = { "type" : myGeometry.typeScheiding};

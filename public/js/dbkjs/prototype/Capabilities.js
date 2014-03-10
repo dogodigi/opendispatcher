@@ -10,7 +10,7 @@ dbkjs.Capabilities = dbkjs.Class({
     title: 'WMS lagen',
     onLayerLoadError: function(e) {
         /* Display error message, etc */
-        console.log(e);
+        alert(e);
     },
     initialize: function(options){
         this.options = OpenLayers.Util.extend({}, options);
