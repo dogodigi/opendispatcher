@@ -85,9 +85,9 @@ dbkjs.init = function() {
     });
     
     dbkjs.overview = new OpenLayers.Control.OverviewMap({
+        theme: null,
         div: document.getElementById('minimappanel_b'),
-        size: new OpenLayers.Size(180, 180),
-        theme: null
+        size: new OpenLayers.Size(180, 180)
     });
     dbkjs.map.addControl(dbkjs.overview);
     dbkjs.map.addControl(new OpenLayers.Control.Zoom({
@@ -270,7 +270,7 @@ dbkjs.finishMap = function(){
 $(document).ready(function() {
     // Make sure i18n is initialized
     i18n.init({
-            // lng: "dev", debug: true 
+            lng: "nl", debug: false 
     }, function(t) {
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
         $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));

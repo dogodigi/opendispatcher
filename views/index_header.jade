@@ -10,13 +10,17 @@ html(lang=mylang)
     meta(name='description', content='safetymaps dbk - applicatie voor de digitale bereikbaarheidskaart')
     meta(name='generator', content='')
     title= t('app.title')
-    link(rel='stylesheet' href='css/dbk.css', type='text/css', media='screen')
-    //link(rel='stylesheet' href='css/bootstrap.min.css', type='text/css', media='screen')
-    link(rel='stylesheet' href='js/libs/bootstrap-3.1.0/css/bootstrap.min.css', type='text/css', media='screen')
-    link(rel='stylesheet' href='css/font-awesome.min.css', type='text/css', media='screen')
-    link(rel='stylesheet' href='css/daterangepicker-bs3.css', type='text/css', media='screen')
+    -if(mode === 'development'){
+      link(rel='stylesheet' href='css/dbk.css', type='text/css', media='screen')
+      link(rel='stylesheet' href='js/libs/bootstrap-3.1.0/css/bootstrap.min.css', type='text/css', media='screen')
+      link(rel='stylesheet' href='css/font-awesome.min.css', type='text/css', media='screen')
+      link(rel='stylesheet' href='css/daterangepicker-bs3.css', type='text/css', media='screen')
+      link(rel='stylesheet' href='css/typeahead.js-bootstrap.css', type='text/css', media='screen')
+    -} else {
+      link(rel='stylesheet' href='css/dbk.min.css', type='text/css', media='screen')
+    -}
     //[if lt IE 7]><link rel="stylesheet" href="css/font-awesome-ie7.min.css" /><![endif]
-    link(rel='stylesheet' href='css/typeahead.js-bootstrap.css', type='text/css', media='screen')
+
   body
     block content
 

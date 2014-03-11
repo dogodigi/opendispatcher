@@ -18,6 +18,8 @@
  *
  */
 
+// To run in production: NODE_ENV=production
+
 var express = require('express'),
         routes = require('./routes'),
         http = require('http'),
@@ -52,6 +54,7 @@ function clientErrorHandler(err, req, res, next) {
 }
 
 i18n.init({
+    lng: 'nl',
     detectLngQS: 'l',
     saveMissing: true,
     debug: false

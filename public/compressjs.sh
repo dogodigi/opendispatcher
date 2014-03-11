@@ -16,17 +16,12 @@
 #  You should have received a copy of the GNU General Public License
 #  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
  
- 
-cat js/libs/jquery-1.11.0/jquery-1.11.0.js \
-    js/libs/jquery.pagination.js \
+# Load jquery first! not included in the compressed file 
+cat js/libs/jquery.pagination.js \
     js/libs/jquery.drags.js \
     js/libs/jquery.sortable.js \
-    js/libs/jquery.daterangepicker.js \
     js/libs/jquery.typeahead.js \
-    js/libs/proj4js-compressed.js \
-    js/libs/OpenLayers.dbk.js \
-    js/libs/bootstrap-3.1.0/js/bootstrap.js \
-    js/libs/moment/moment.min.js \
+    js/libs/jquery.daterangepicker.js \
     js/dbkjs/util.js \
     js/dbkjs/config/styles.js \
     js/dbkjs/prototype/Class.js \
@@ -49,7 +44,7 @@ cat js/libs/jquery-1.11.0/jquery-1.11.0.js \
     js/dbkjs/dbkjs.js | node ../node_modules/uglify-js/bin/uglifyjs -o js/dbk.min.js
 
 cat css/dbk.css \
-    css/bootstrap.min.css \
+    js/libs/bootstrap-3.1.0/css/bootstrap.min.css \
     css/font-awesome.min.css \
     css/daterangepicker-bs3.css \
     css/typeahead.js-bootstrap.css | node ../node_modules/clean-css/bin/cleancss -o css/dbk.min.css
