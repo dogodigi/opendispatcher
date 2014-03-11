@@ -119,14 +119,14 @@ dbkjs.modules.search = {
                     coords[1] = parseFloat(coords[1]);
                     if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
                         if (coords[0] > 50.0 && coords[0] < 54.0 && coords[1] > 2.0 && coords[1] < 8.0) { //wgs84
-                            loc = new OpenLayers.LonLat(coords[0], coords[1]).transform(new OpenLayers.Projection("EPSG:4326"), dbkjs.map.getProjectionObject());
+                            loc = new OpenLayers.LonLat(coords[1], coords[0]).transform(new OpenLayers.Projection("EPSG:4326"),dbkjs.map.getProjectionObject());
                             dbkjs.modules.updateFilter(0);
-                            dbkjs.map.setCenter(loc, 11);
+                            dbkjs.map.setCenter(loc, 11,false,true);
                             $('#search_input').removeClass('has-error');
                         } else if (coords[0] > -14000.0 && coords[0] < 293100.0 && coords[1] > 293100.0 && coords[1] < 650000.0) { //rd
                             loc = new OpenLayers.LonLat(coords[0], coords[1]).transform(new OpenLayers.Projection("EPSG:28992"), dbkjs.map.getProjectionObject());
                             dbkjs.modules.updateFilter(0);
-                            dbkjs.map.setCenter(loc, 11);
+                            dbkjs.map.setCenter(loc, 11,false,true);
                             $('#search_input').removeClass('has-error');
                         } else {
                             // @todo build function to handle map fault
@@ -149,7 +149,7 @@ dbkjs.modules.search = {
             }
             mdiv.removeClass('open');
             mdiv.removeClass('active');
-            e.preventDefault();
+            //e.preventDefault();
             return false;
         });
     }
