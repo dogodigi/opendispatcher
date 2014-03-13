@@ -133,7 +133,7 @@
     "tarry": {
         "from":"van",
         "to": "tot",
-        "ammount":"Hoeveelheid",
+        "ammount":"Aantal",
         "notSelfReliant": "Nzr",
         "group": "Groep",
         "days": "Dagen"
