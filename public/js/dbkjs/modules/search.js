@@ -33,6 +33,13 @@ dbkjs.modules.updateFilter = function(id) {
 };
 dbkjs.modules.search = {
     id: "dbk.modules.search",
+    style: {
+        strokeColor: '#CCCC00',
+        fillColor: '#ffffff',
+        strokeWidth: 0,
+        fillOpacity: 0.1
+    },
+    layer: null,
     register: function() {
         var search_div = $('#btn-grp-search');
         var search_group = $('<div class="input-group navbar-btn"></div>');
@@ -53,10 +60,81 @@ dbkjs.modules.search = {
         search_group.append(search_input);
         search_group.append(search_btn_grp);
         search_div.append(search_group);
+        this.layer = new OpenLayers.Layer.Vector('search');
+        dbkjs.map.addLayers([this.layer]);
         this.activate();
         search_div.show();
     },
+    zoomAndPulse: function(lonlat){
+        var _obj = dbkjs.modules.search;
+        _obj.layer.removeAllFeatures();
+        var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat)
+        var circle = new OpenLayers.Feature.Vector(
+            OpenLayers.Geometry.Polygon.createRegularPolygon(
+                point,
+                100,
+                40,
+                0
+            ),
+            {},
+            _obj.style
+        );
+        _obj.layer.addFeatures([
+            new OpenLayers.Feature.Vector(
+                point,
+                {},
+                {
+                    graphicName: 'circle',
+                    fillColor: '#ff0000',
+                    strokeColor: '#ff0000',
+                    strokeWidth: 3,
+                    fillOpacity: 0.1,
+                    pointRadius: 7
+                }
+            ),
+            circle
+        ]);
+        dbkjs.map.zoomToExtent(_obj.layer.getDataExtent());
+        _obj.pulsate(circle);
+    },
+    pulsate: function(feature) {
+        var _obj = dbkjs.modules.search;
+        var point = feature.geometry.getCentroid(),
+            bounds = feature.geometry.getBounds(),
+            radius = Math.abs((bounds.right - bounds.left)/2),
+            count = 0,
+            grow = 'up';
+
+        var resize = function(){
+            if (count>16) {
+                clearInterval(window.resizeInterval);
+                _obj.layer.removeFeatures(feature,{silent: true});
+            } else {
+                var interval = radius * 0.03;
+                var ratio = interval/radius;
+                switch(count) {
+                    case 4:
+                    case 12:
+                        grow = 'down'; break;
+                    case 8:
+                        grow = 'up'; break;
+                }
+                if (grow!=='up') {
+                    ratio = - Math.abs(ratio);
+                }
+                if(count>16){
+                    _obj.layer.removeFeatures(feature,{silent: true});
+                } else {
+                    feature.geometry.resize(1+ratio, point);
+                    _obj.layer.drawFeature(feature);
+                    count++;    
+                }
+            }
+        };
+        window.resizeInterval = window.setInterval(resize, 50, point, radius);
+    },
     activate: function() {
+        var _obj = dbkjs.modules.search;
         $('#search_input').typeahead({
             name: 'address',
             remote: {
@@ -83,11 +161,7 @@ dbkjs.modules.search = {
         });
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             dbkjs.modules.updateFilter(datum.id);
-            if (dbkjs.map.zoom < dbkjs.options.zoom) {
-                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), 11);
-            } else {
-                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat());
-            }
+            _obj.zoomAndPulse(datum.geometry.getBounds().getCenterLonLat());
         });
         $('#search_input').click(
                 //function(e) {
@@ -121,12 +195,12 @@ dbkjs.modules.search = {
                         if (coords[0] > 50.0 && coords[0] < 54.0 && coords[1] > 2.0 && coords[1] < 8.0) { //wgs84
                             loc = new OpenLayers.LonLat(coords[1], coords[0]).transform(new OpenLayers.Projection("EPSG:4326"),dbkjs.map.getProjectionObject());
                             dbkjs.modules.updateFilter(0);
-                            dbkjs.map.setCenter(loc, 11,false,true);
+                            _obj.zoomAndPulse(loc);
                             $('#search_input').removeClass('has-error');
                         } else if (coords[0] > -14000.0 && coords[0] < 293100.0 && coords[1] > 293100.0 && coords[1] < 650000.0) { //rd
                             loc = new OpenLayers.LonLat(coords[0], coords[1]).transform(new OpenLayers.Projection("EPSG:28992"), dbkjs.map.getProjectionObject());
                             dbkjs.modules.updateFilter(0);
-                            dbkjs.map.setCenter(loc, 11,false,true);
+                            _obj.zoomAndPulse(loc);
                             $('#search_input').removeClass('has-error');
                         } else {
                             // @todo build function to handle map fault
