@@ -7,6 +7,14 @@ html, body {
 #btn-grp-search {
     line-height: 0 !important;
 }
+.panel-collapse > img {
+    padding-left: 1.8em;
+}
+.panel-collapse > p {
+    margin-left: 1.8em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #cccccc;
+}
 .olDragDown {
     cursor: move;
 }

@@ -24,7 +24,8 @@ dbkjs.Layer = dbkjs.Class({
     id: null,
     layer: null,
     div: null,
-    initialize: function(name, url, params, options, parent, index) {
+    legend: null,
+    initialize: function(name, url, params, options, parent, index, metadata) {
         var defaultparams = {
             format: 'image/png', 
             transparent: true
@@ -49,6 +50,8 @@ dbkjs.Layer = dbkjs.Class({
                 params,
                 options
         );
+        var legend = url + "TRANSPARENT=true&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&EXCEPTIONS=application%2F" +
+            "vnd.ogc.se_xml&FORMAT=image%2Fpng&LAYER=" + ly.params["LAYERS"]; 
         ly.events.register("loadstart", ly, function() {
             dbkjs.util.loadingStart(ly);
         });
@@ -77,7 +80,12 @@ dbkjs.Layer = dbkjs.Class({
             dv_panel_heading.append(dv_panel_title);
             this.div.append(dv_panel_heading);
             var dv_panel_content = $('<div id="collapse_' + this.id + '" class="panel-collapse collapse"></div>');
-            //dv_panel_content.append('');
+            if(metadata){
+                dv_panel_content.append('<p>' + metadata + '</p>');
+            }
+            dv_panel_content.append('<img src="' + legend + '"/>');
+       
+
             this.div.append(dv_panel_content);
             $(parent).append(this.div);
             $(parent).sortable({handle: '.panel'});

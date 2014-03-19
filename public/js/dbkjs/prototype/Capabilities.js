@@ -71,7 +71,8 @@ dbkjs.Capabilities = dbkjs.Class({
                             {layers: lval.name},
                             {},
                             '#' + myID + '_panel',
-                            options.index + lkey
+                            options.index + lkey,
+                            lval.abstract
                         );
                     });
                     dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
