@@ -1,15 +1,25 @@
 {
     "name": "safetymapsdbk",
     "description": "safetymaps dbk - applicatie voor de digitale bereikbaarheidskaart",
-    "version": "1.0.0",
+    "version": "2.1.0",
+    "license": "GPL-3.0+",
+    "author": {
+        "name": "Milo van der Linden",
+        "email": "milo@dogodigi.net",
+        "url": "http://www.dogodigi.net/"
+    },
     "private": true,
     "scripts": {
-        "start": "node server.js"
+        "start": "node appr.js"
+    },
+    "repository" :  { 
+        "type" : "git",
+        "url" : "http://github.com/opengeogroep/safetymapsDBK.git"
     },
     "dependencies": {
         "express": "*",
         "i18next": "*",
-        "less-middleware": "*",
+        "less-middleware": "<2.0.0",
         "jade": "*",
         "nconf": "*",
         "any-db": "*",

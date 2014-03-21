@@ -57,25 +57,26 @@
         "emergencyMap": "map.emergencyMap",
         "emergencyOverlays": "map.emergencyOverlays",
         "systemOverlays": "map.systemOverlays",
-        "permalink": "map.permalink"
+        "permalink": "map.permalink",
+        "baselayers": "map.baselayers"
     },
-    "dialogs":{
-      "info": "dialogs.info",
-      "bag": "dialogs.bag",
-      "clickinfo": "dialogs.clickinfo",
-      "refmap": "dialogs.refmap",
-      "busyloading": "dialogs.busyloading",
-      "invalidImage": "dialogs.invalidImage",
-      "layerNotFound": "dialogs.layerNotFound",
-      "infoNotFound": "dialogs.infoNotFound",
-      "running": "dialogs.running"
+    "dialogs": {
+        "info": "dialogs.info",
+        "bag": "dialogs.bag",
+        "clickinfo": "dialogs.clickinfo",
+        "refmap": "dialogs.refmap",
+        "busyloading": "dialogs.busyloading",
+        "invalidImage": "dialogs.invalidImage",
+        "layerNotFound": "dialogs.layerNotFound",
+        "infoNotFound": "dialogs.infoNotFound",
+        "running": "dialogs.running"
     },
     "care": {
         "managementinfo": "care.managementinfo",
         "details": "care.details",
         "incidents": "care.ncidents",
         "incidentsOn": "care.incidentsOn",
-        "incidentsOff": "care.incidentsOff",        
+        "incidentsOff": "care.incidentsOff",
         "coverage": "care.coverage",
         "coverageOn": "care.coverageOn",
         "coverageOff": "care.coverageOff",
@@ -118,28 +119,28 @@
         "risk": "dbk.risk"
     },
     "chemicals": {
-      "type": "chemicals.type",
-      "name": "chemicals.name",
-      "quantity": "chemicals.quantity",
-      "indication": "chemicals.indication",
-      "information": "chemicals.information",
-      "unnumber": "chemicals.unnumber"
+        "type": "chemicals.type",
+        "name": "chemicals.name",
+        "quantity": "chemicals.quantity",
+        "indication": "chemicals.indication",
+        "information": "chemicals.information",
+        "unnumber": "chemicals.unnumber"
     },
-    "prevention":{
-      "type": "prevention.type",
-      "name": "prevention.name",
-      "comment": "prevention.comment"
+    "prevention": {
+        "type": "prevention.type",
+        "name": "prevention.name",
+        "comment": "prevention.comment"
     },
-    "contact":{
+    "contact": {
         "role": "contact.role",
         "name": "contact.name",
         "telephone": "contact.telephone"
     },
-    "particularies":{
+    "particularies": {
         "type": "particularies.type",
         "comment": "particularies.comment"
     },
-    "search":{
+    "search": {
         "search": "search.search",
         "dbk": "search.dbk",
         "dbkplaceholder": "search.dbkplaceholder",
@@ -157,6 +158,6 @@
         "abstract1": "Het VN-GHS beschrijft criteria voor de indeling en etikettering van chemische stoffen en mengsels op basis van hun gevaarseigenschappen. VN-GHS levert wereldwijde criteria voor gevaarscommunicatie over chemische stoffen en mengsels. De VN-GHS zelf is niet bindend. Dit systeem kan worden overgenomen in wetgeving over de levering, het gebruik en het transport van chemische stoffen en mengsels. De leden van de VN worden aangemoedigd de VN-GHS criteria op te nemen in nationale en/of internationale wetgeving voor het indelen en etiketteren van chemische stoffen en mengsels.",
         "abstract2": "De lidstaten in de Europese Unie (EU) hebben de Europese Commissie gevraagd om de VN-afspraken om te zetten in bindende Europese regelgeving voor de indeling en etikettering voor de levering en gebruik van chemische stoffen en mengsels. Met de verordening (EU-GHS/CLP) is het VN-GHS-systeem in de Europese wetgeving verankerd. De Europese Verordening is rechtstreeks werkend in alle lidstaten.",
         "abstract3": "EU-GHS/CLP bevat ook elementen uit de Stoffenrichtlijn (67/548/EEG) en de Preparatenrichtlijn (1999/45/EC) die niet in VN-GHS zijn opgenomen. Zo zijn in de verordening ook criteria voor het gebruik van  enkele risicozinnen (R-zinnen) opgenomen als EUH-zinnen. EU-GHS/CLP vervangt na een overgangsperiode de richtlijnen over indeling en etikettering van stoffen en mengsels (Stoffenrichtlijn 67/548/EG en Preparatenrichtlijn 1999/45/EG).",
-        "source": "bron:"        
+        "source": "bron:"
     }
 }

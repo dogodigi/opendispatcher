@@ -97,8 +97,7 @@ app.configure(function() {
     app.locals.pretty = true;
     app.use(express.favicon(__dirname + '/public/images/favicon.ico', {maxAge: 25920000000}));
     app.use(express.logger('dev'));
-    app.use(require('less-middleware')({
-        src: __dirname + '/less',
+    app.use(require('less-middleware')(path.join(__dirname,  'less'), {
         dest: __dirname + '/public',
         prefix: '/public',
         debug: true
@@ -138,6 +137,16 @@ app.get('/api/features', dbk.getFeatures);
 app.get('/api/bag/adres/:id', bag.getAdres);
 app.get('/api/bag/panden/:id', bag.getPanden);
 app.get('/api/autocomplete/:searchphrase', bag.autoComplete);
+app.all('/nominatim',function(req,res){
+ if(req.query){
+   var request = require('request');
+   var x = request({url: 'http://nominatim.openstreetmap.org/search', qs: req.query});
+    req.pipe(x);
+    x.pipe(res);
+ } else {
+    res.json({"booh": "Nah, nah, nah! You didn't say the magic words!"});
+ }
+});
 app.get('/api/organisation', dbk.getOrganisation);
 app.all('/proxy/',function(req,res){
  if(req.query){

@@ -3,6 +3,8 @@
 /public/css/dbk.min.css
 /public/js/dbk.min.js
 config.json
+.c9revisions/
+.settings
 config-true.json
 *~
 dummy.xml
