@@ -16,7 +16,7 @@ Node.js, Express, Postgresql/Postgis, Jade, Fontawesome, jQuery, OpenLayers, mom
 
 Vanaf een terminal:
 
-    git clone git@github.com:opengeogroep/safetymapsDBK.git
+    git clone -b express-versie git@github.com:opengeogroep/safetymapsDBK.git
     cd safetymapsDBK
     npm install .
     
