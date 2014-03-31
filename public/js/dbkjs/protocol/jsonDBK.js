@@ -458,7 +458,11 @@ dbkjs.protocol.jsonDBK = {
                     "fid": "brandweervoorziening_ft_" + idx 
                 };
                 var myrow = $('<tr>' +
-                        '<td>' + myFeature.attributes.type + '</td>' +
+                        '<td><img class="thumb" src="' + window.location.protocol + '//' + 
+                            window.location.hostname + "/images/" + myFeature.attributes.namespace + '/' + 
+                            myFeature.attributes.type + '.png" alt="'+ 
+                            myFeature.attributes.type +'" title="'+ 
+                            myFeature.attributes.type+'"></td>' +
                         '<td>' + myFeature.attributes.name + '</td>' +
                         '<td>' + myFeature.attributes.information + '</td>'
                         + '</tr>');
@@ -488,11 +492,10 @@ dbkjs.protocol.jsonDBK = {
             var bv_table = $('<table class="table table-hover"></table>');
             bv_table.append('<tr><th>' + 
                 i18n.t('chemicals.type') + '</th><th>' + 
+                i18n.t('chemicals.indication') + '</th><th>' + 
                 i18n.t('chemicals.name') + '</th><th>' + 
                 i18n.t('chemicals.quantity') + '</th><th>' + 
-                i18n.t('chemicals.indication') + '</th><th>' + 
-                i18n.t('chemicals.information') + '</th><th>' + 
-                i18n.t('chemicals.unnumber') + '</th></tr>');
+                i18n.t('chemicals.information') + '</th></tr>');
             var features = [];
              $.each(gevaarlijkestof, function(idx, myGeometry){
                 var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
@@ -506,13 +509,19 @@ dbkjs.protocol.jsonDBK = {
                     "fid": "gevaarlijkestof_ft_" + idx
                 };
                 var myrow = $('<tr>' +
-                        '<td>' + myFeature.attributes.type + '</td>' +
+                        '<td><img class="thumb" src="' + window.location.protocol + '//' + 
+                            window.location.hostname + '/images/eughs/' + 
+                            myFeature.attributes.type + '.png" alt="'+ 
+                            myFeature.attributes.type +'" title="'+ 
+                            myFeature.attributes.type+'"></td>' +
+                        '<td>' + '<div class="gevicode">' + myFeature.attributes.indication + 
+                            '</div><div class="unnummer">' + 
+                            myFeature.attributes.unnumber + '</div>' + '</td>' +
                         '<td>' + myFeature.attributes.name + '</td>' +
                         '<td>' + myFeature.attributes.quantity + '</td>' +
-                        '<td>' + myFeature.attributes.indication + '</td>' +
+                        
                         '<td>' + myFeature.attributes.information + '</td>' +
-                        '<td>' + myFeature.attributes.unnumber + '</td>'
-                        + '</tr>');
+                        '</tr>');
                 myrow.mouseover(function(){
                     dbkjs.selectControl.select(myFeature);
                 });
@@ -749,7 +758,7 @@ dbkjs.protocol.jsonDBK = {
             //the function is not recieving a feature, but a string
             fid = feature;
         }
-        $.getJSON('api/object/' + fid, params).done(function(data) {
+        $.getJSON('api/object/' + fid + '.json', params).done(function(data) {
                 dbkjs.protocol.jsonDBK.info(data);
             }).fail(function( jqxhr, textStatus, error ) {
                 dbkjs.options.feature = null;
@@ -776,7 +785,7 @@ dbkjs.protocol.jsonDBK = {
             //the function is not recieving a feature, but a string
             fid = feature;
         }
-        $.getJSON('api/gebied/' + fid, params).done(function(data) {
+        $.getJSON('api/gebied/' + fid + '.json', params).done(function(data) {
             dbkjs.protocol.jsonDBK.info(data);
         }).fail(function( jqxhr, textStatus, error ) {
             dbkjs.options.feature = null;

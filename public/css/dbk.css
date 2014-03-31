@@ -4,6 +4,10 @@ html, body {
     height: 100%;
     background-color: #cccccc;
 }
+.thumb {
+    width: 33%;
+    height: auto;
+}
 #btn-grp-search {
     line-height: 0 !important;
 }

@@ -130,10 +130,10 @@ i18n.serveClientScript(app)
 
 app.get('/', routes.index);
 app.get('/login', routes.login);
-app.get('/api/object/:id', dbk.getObject);
+app.get('/api/object/:id.json', dbk.getObject);
 app.post('/api/annotation', dbk.postAnnotation);
-app.get('/api/gebied/:id', dbk.getGebied);
-app.get('/api/features', dbk.getFeatures);
+app.get('/api/gebied/:id.json', dbk.getGebied);
+app.get('/api/features.json', dbk.getFeatures);
 app.get('/api/bag/adres/:id', bag.getAdres);
 app.get('/api/bag/panden/:id', bag.getPanden);
 app.get('/api/autocomplete/:searchphrase', bag.autoComplete);
@@ -147,7 +147,7 @@ app.all('/nominatim',function(req,res){
     res.json({"booh": "Nah, nah, nah! You didn't say the magic words!"});
  }
 });
-app.get('/api/organisation', dbk.getOrganisation);
+app.get('/api/organisation.json', dbk.getOrganisation);
 app.all('/proxy/',function(req,res){
  if(req.query){
    //res.json({"origin": req.query.q});

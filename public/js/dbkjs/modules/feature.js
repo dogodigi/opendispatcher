@@ -145,7 +145,7 @@ dbkjs.modules.feature = {
             srid: dbkjs.options.projection.srid,
             timestamp: new Date().getTime()
         };
-        $.getJSON('api/features', params).done(function(data) {
+        $.getJSON('api/features.json', params).done(function(data) {
             var geojson_format = new OpenLayers.Format.GeoJSON();
                 _obj.features = geojson_format.read(data);
 //                var test = data.features.where( "( el, i, res, param ) => el.properties.gevaarlijkestof !== null");
