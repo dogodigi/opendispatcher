@@ -109,12 +109,12 @@ dbkjs.config.styles = {
             },
             myicon: function(feature) {
                 if (feature.cluster) {
-                    return window.location.protocol + '//' + window.location.hostname + "/images/jcartier_city_3.png";
+                    return window.location.protocol + '//' + window.location.hostname + "/" + window.location.pathname + "/images/jcartier_city_3.png";
                 } else {
                     if (feature.attributes.typeFeature === 'Object') {
-                        return window.location.protocol + '//' + window.location.hostname +"/images/jcartier_building_1.png";
+                        return window.location.protocol + '//' + window.location.hostname + "/" + window.location.pathname + "/images/jcartier_building_1.png";
                     } else {
-                        return window.location.protocol + '//' + window.location.hostname +"/images/jcartier_event_1.png";
+                        return window.location.protocol + '//' + window.location.hostname + "/" + window.location.pathname + "/images/jcartier_event_1.png";
                     }
                 }
             },
@@ -510,7 +510,7 @@ dbkjs.config.styles = {
         }, {
             context: {
                 myicon: function(feature) {
-                    return window.location.protocol + '//' + window.location.hostname + "/images/" + feature.attributes.namespace + "/" + feature.attributes.type + ".png";
+                    return window.location.protocol + '//' + window.location.hostname + "/" + window.location.pathname +  "/images/" + feature.attributes.namespace + "/" + feature.attributes.type + ".png";
                 },
                 myrotation: function(feature) {
                     if(feature.attributes.rotation){
@@ -550,7 +550,7 @@ dbkjs.config.styles = {
         }, {
             context: {
                 myicon: function(feature) {
-                    return window.location.protocol + '//' + window.location.hostname + "/images/eughs/" + feature.attributes.type + ".png";
+                    return window.location.protocol + '//' + window.location.hostname + "/" + window.location.pathname + "/images/eughs/" + feature.attributes.type + ".png";
                 }
             }
         }), 'select': new OpenLayers.Style({

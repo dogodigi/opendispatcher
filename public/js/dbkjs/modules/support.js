@@ -125,7 +125,7 @@ dbkjs.modules.support = {
                         data.srid = dbkjs.options.projection.srid;
                         jQuery.ajax({
                             type: "POST",
-                            url: "api/annotation",
+                            url: "/api/annotation",
                             dataType: "html",
                             data: data,
                             success: function (result) {

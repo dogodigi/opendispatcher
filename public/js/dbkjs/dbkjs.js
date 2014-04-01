@@ -128,7 +128,7 @@ dbkjs.challengeAuth = function() {
     $.getJSON('login', params).done(function(data) {
         if(data.login === 'ok'){
             var params = {srid: dbkjs.options.projection.srid};
-            $.getJSON('/api/organisation.json', params).done(function(data) {
+            $.getJSON('api/organisation.json', params).done(function(data) {
                 if (data.organisation) {
                     dbkjs.options.organisation = data.organisation;
                     if (dbkjs.options.organisation.title) {

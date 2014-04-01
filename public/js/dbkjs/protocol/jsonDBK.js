@@ -459,7 +459,7 @@ dbkjs.protocol.jsonDBK = {
                 };
                 var myrow = $('<tr>' +
                         '<td><img class="thumb" src="' + window.location.protocol + '//' + 
-                            window.location.hostname + "/images/" + myFeature.attributes.namespace + '/' + 
+                            window.location.hostname + '/' + window.location.pathname + "/images/" + myFeature.attributes.namespace + '/' + 
                             myFeature.attributes.type + '.png" alt="'+ 
                             myFeature.attributes.type +'" title="'+ 
                             myFeature.attributes.type+'"></td>' +
@@ -510,7 +510,7 @@ dbkjs.protocol.jsonDBK = {
                 };
                 var myrow = $('<tr>' +
                         '<td><img class="thumb" src="' + window.location.protocol + '//' + 
-                            window.location.hostname + '/images/eughs/' + 
+                            window.location.hostname + '/' + window.location.pathname + '/images/eughs/' + 
                             myFeature.attributes.type + '.png" alt="'+ 
                             myFeature.attributes.type +'" title="'+ 
                             myFeature.attributes.type+'"></td>' +
@@ -663,7 +663,7 @@ dbkjs.protocol.jsonDBK = {
                     active = '';
                 }
                 var timestamp = new Date().getTime();
-                var realpath = window.location.protocol + '//' + window.location.hostname + 
+                var realpath = window.location.protocol + '//' + window.location.hostname + '/' + window.location.pathname +
                         '/media/' + waarde.URL;
                 if (waarde.filetype === "document" || waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
                     image_carousel_inner.append('<div class="item ' + active + 
