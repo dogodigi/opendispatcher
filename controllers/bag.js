@@ -150,17 +150,25 @@ exports.autoComplete = function(req, res) {
             }
 
             // Are there any spaces in the searchphrase? use to_tsquery!
+            if(searchphrase.trim().indexOf(' ') >= 0){
+                whereclause = "(textsearchable_adres @@ to_tsquery('dutch',$1)) ";
+                finalsearch = searchphrase.trim().toProperCase().replace(/ /g,"&");
+
+            } else {
+                whereclause = "openbareruimtenaam like $1 ";
+                finalsearch = searchphrase.trim().toProperCase() + '%';
+            }
+            
             var query_str = "select openbareruimtenaam || ' ' || " +
                     "CASE WHEN lower(woonplaatsnaam) = lower(gemeentenaam) THEN woonplaatsnaam " +
                     "ELSE woonplaatsnaam || ', ' || gemeentenaam END as display_name, " +
                     "st_x(st_transform(st_centroid(st_collect(geopunt)),$2)) as lon, " +
                     "st_y(st_transform(st_centroid(st_collect(geopunt)),$2)) as lat " +
                     "from bag8jan2014.adres where " +
-                    "openbareruimtenaam like $1 " + 
+                    whereclause + 
                     "group by woonplaatsnaam, gemeentenaam, openbareruimtenaam limit 10";
             //( textsearchable_adres @@ to_tsquery('dutch','spinellihof $1 limit 1';
-            console.log(query_str);
-            global.bag.query(query_str, [searchphrase.toProperCase() + '%', srid],
+            global.bag.query(query_str, [finalsearch, srid],
                 function(err, result) {
                     if (err) {
                         res.json(err);
