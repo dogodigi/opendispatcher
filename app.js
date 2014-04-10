@@ -28,7 +28,8 @@ var express = require('express'),
         anyDB = require('any-db'),
         web = require('./controllers/web.js'),
         dbk = require('./controllers/dbk.js'),
-        bag = require('./controllers/bag.js');
+        bag = require('./controllers/bag.js'),
+        emailer = require('./controllers/emailer.js');
 
 
 global.conf = require('nconf');
@@ -130,6 +131,7 @@ i18n.serveClientScript(app)
 
 app.get('/', routes.index);
 app.get('/login', routes.login);
+app.get('/batch', emailer.annotationbulk);
 app.get('/api/object/:id.json', dbk.getObject);
 app.post('/api/annotation', dbk.postAnnotation);
 app.get('/api/gebied/:id.json', dbk.getGebied);

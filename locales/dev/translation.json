@@ -151,6 +151,12 @@
         "coordinates": "search.coordinates",
         "coordplaceholder": "search.coordplaceholder"
     },
+    "email": {
+        "annotation": "email.annotation",
+        "annotationtitle": "email.annotationtitle",
+        "kindregards": "email.kindregards",
+        "team": "email.team"
+    },
     "eughs": {
         "intro": "Het Globally Harmonised System van de Verenigde Naties (VN-GHS) is in 2002 door de VN vastgesteld",
         "title": "EU-GHS",

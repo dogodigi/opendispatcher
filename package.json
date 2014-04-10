@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "express": "*",
+        "nodemailer": "*",
         "i18next": "*",
         "less-middleware": "<2.0.0",
         "jade": "*",
