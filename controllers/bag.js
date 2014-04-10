@@ -143,28 +143,34 @@ exports.autoComplete = function(req, res) {
     //where adresseerbaarobject = 796010000436352
     if (req.query) {
         searchphrase = req.params.searchphrase;
-        srid = req.query.srid;
-        if (!srid) {
-            srid = 4326;
+        if(searchphrase.length > 2){
+            srid = req.query.srid;
+            if (!srid) {
+                srid = 4326;
+            }
+
+            // Are there any spaces in the searchphrase? use to_tsquery!
+            var query_str = "select openbareruimtenaam || ' ' || " +
+                    "CASE WHEN lower(woonplaatsnaam) = lower(gemeentenaam) THEN woonplaatsnaam " +
+                    "ELSE woonplaatsnaam || ', ' || gemeentenaam END as display_name, " +
+                    "st_x(st_transform(st_centroid(st_collect(geopunt)),$2)) as lon, " +
+                    "st_y(st_transform(st_centroid(st_collect(geopunt)),$2)) as lat " +
+                    "from bag8jan2014.adres where " +
+                    "openbareruimtenaam like $1 " + 
+                    "group by woonplaatsnaam, gemeentenaam, openbareruimtenaam limit 10";
+            //( textsearchable_adres @@ to_tsquery('dutch','spinellihof $1 limit 1';
+            console.log(query_str);
+            global.bag.query(query_str, [searchphrase.toProperCase() + '%', srid],
+                function(err, result) {
+                    if (err) {
+                        res.json(err);
+                    } else {
+                        res.json(result.rows);
+                    }
+                return;
+            });
+        } else {
+            return res.json([]);
         }
-
-        // Are there any spaces in the searchphrase? use to_tsquery!
-        var query_str = "select openbareruimtenaam || ' ' || " +
-                "CASE WHEN lower(woonplaatsnaam) = lower(gemeentenaam) THEN woonplaatsnaam " +
-                "ELSE woonplaatsnaam || ', ' || gemeentenaam END as datum " +
-                "from bag8jan2014.adres where " +
-                "openbareruimtenaam like $1 " + 
-                "group by woonplaatsnaam, gemeentenaam, openbareruimtenaam limit 10";
-        //( textsearchable_adres @@ to_tsquery('dutch','spinellihof $1 limit 1';
-
-        global.bag.query(query_str, [searchphrase.toProperCase() + '%'],
-            function(err, result) {
-                if (err) {
-                    res.json(err);
-                } else {
-                    res.json(result.rows);
-                }
-            return;
-        });
     }
 };

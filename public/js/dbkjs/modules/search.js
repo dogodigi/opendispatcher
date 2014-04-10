@@ -138,7 +138,8 @@ dbkjs.modules.search = {
         $('#search_input').typeahead({
             name: 'address',
             remote: {
-                url: 'nominatim?format=json&countrycodes=nl&addressdetails=1&q=%QUERY',
+                //url: 'nominatim?format=json&countrycodes=nl&addressdetails=1&q=%QUERY',
+                url: 'api/autocomplete/%QUERY',
                 filter: function(parsedResponse) {
                     var dataset = [];
 
