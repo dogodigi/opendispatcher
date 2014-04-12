@@ -21,6 +21,17 @@
       "symbols": "/real/path/to/symbols"
     },
     "support": {
-        "sendto": "boo@default.com"
+        "sendto": "boo@default.com",
+        "from": "noreply@default.com",
+        "ccsender": true,
+        "smtp":{
+            "host": "smtphost",
+            "secureConnection": true,
+            "port": 465,
+            "auth": {
+                "user": "username",
+                "pass": "password"
+            }
+        }
     }
 }

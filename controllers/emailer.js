@@ -20,27 +20,8 @@
 
 var nodemailer = require("nodemailer");
 var i18n = require('i18next');
-var sender = "dogofind <no-reply@dogofind.net>";
 
-var options = {
-    //service: "Gmail",
-    host: "mail.dogofind.net", // hostname
-    secureConnection: true, // use SSL
-    port: 465, // port for secure SMTP
-    auth: {
-        user: "milo@dogofind.net",
-        pass: "qffxx9kaq4b9g9hq"
-    }
-};
-//var options = {
-//    service: "Gmail",
-//    auth: {
-//        user: "milovanderlinden@gmail.com",
-//        pass: "Drie maal drie is negen"
-//    }
-//};
-var smtp = nodemailer.createTransport("SMTP",options);
-
+var smtp = nodemailer.createTransport("SMTP",global.conf.get('support:smtp'));
 exports.annotationbulk = function(req, res) {
     email = global.conf.get('support:sendto');
     locale ='nl';
@@ -52,20 +33,14 @@ exports.annotationbulk = function(req, res) {
         //debug: true,
         resGetPath: './locales/__lng__/__ns__.json'
     }, function(t) {
-        //selecteer alle annotations waarvoor sent = false
-        // Are there any spaces in the searchphrase? use to_tsquery!
             var query_str = "select * from organisation.annotation where sent = false";
-            //( textsearchable_adres @@ to_tsquery('dutch','spinellihof $1 limit 1';
-            console.log(query_str);
             global.pool.query(query_str,
                 function(err, result) {
                     if (err) {
                         res.json(err);
                     } else {
-                        // nu loopen!
                         var errors = [];
                         var success = [];
-                        //console.log(result.rows);
                         for (index = 0; index < result.rows.length; ++index) {
                             
                             var htmltemplate = t("email.annotationtitle") + ',<br/><br/>' +
@@ -100,8 +75,8 @@ exports.annotationbulk = function(req, res) {
                                 t("email.kindregards") + ',\r\n\r\n' +
                                 t("email.team");
                             smtp.sendMail({
-                                from: sender,
-                                to: email,
+                                from: global.conf.get('support:from'),
+                                to: global.conf.get('support:sendto'),
                                 subject: t("email.annotation"),
                                 text: plaintemplate,
                                 html: htmltemplate,
