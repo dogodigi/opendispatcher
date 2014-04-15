@@ -21,11 +21,6 @@
 var nodemailer = require("nodemailer");
 var i18n = require('i18next');
 global.conf = require('nconf');
-
-// First consider commandline arguments and environment variables, respectively.
-global.conf.argv().env();
-
-// Then load configuration from a designated file.
 global.conf.file({ file: '../config.json' });
 
 var smtp = nodemailer.createTransport("SMTP",global.conf.get('support:smtp'));
