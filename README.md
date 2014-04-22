@@ -11,6 +11,11 @@ Node.js, Express, Postgresql/Postgis, Jade, Fontawesome, jQuery, OpenLayers, mom
 ## Requirements
 * [NodeJS & NPM](http://nodejs.org/download)
 * Git, uiteraard
+* [Python (versie 2.7)] (https://www.python.org/download/releases/2.7.6/) Windows: voeg aan de system variables PYTHON met als waarde de bestandsnaam python.exe (inclusief directory) toe.
+* [PostgreSQL (versie 9.3)] (http://www.postgresql.org/download/) Windows: voeg aan de system variables PATH met als waarde de bin directory van PostgreSQL toe.
+* Microsoft Visual Studio C++
+
+Windows: na aanpassen system variables opnieuw opstarten.
 
 ## Installatie
 
