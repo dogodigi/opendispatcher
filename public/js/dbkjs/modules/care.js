@@ -286,94 +286,95 @@ dbkjs.modules.care = {
     },
     panelIncident: function(response) {
         var _obj = dbkjs.modules.care;
-        //verwerk de featureinformatie
-        //g = new OpenLayers.Format.GML.v3();
         var geojson_format = new OpenLayers.Format.GeoJSON();
-        var features = geojson_format.read(response.responseText);
-        if (features.length > 0) {
+        //todo: conflicted with the Array.prototype.where, 
+        //removed that nasty function. Have to find another solution for that.
+        var results = geojson_format.read(response.responseText);
+        if (results.length > 0) {
             $('#carepanel_b').html('');
             dbkjs.util.changeDialogTitle('Incidenten', '#carepanel');
             var ft_div = $('<div class="table-responsive"></div>');
             var ft_tbl = $('<table id="incidenten_export" class="table table-hover table-condensed"></table>');
-            for (var feat in features) {
+            for (var feat in results) {
                 ft_tbl.append('<tr><td colspan="2">' + dbkjs.util.createPriority(
-                        features[feat].attributes.incidentnr,
-                        features[feat].attributes.locationdescription,
-                        features[feat].attributes.priority
+                        results[feat].attributes.incidentnr,
+                        results[feat].attributes.locationdescription,
+                        results[feat].attributes.priority
                         ) + '</td></tr>'
                         );
                 ft_tbl.append('<tr><td colspan="2">' + dbkjs.util.createClassification(
-                        features[feat].attributes.classification1,
-                        features[feat].attributes.classification2,
-                        features[feat].attributes.classification3
+                        results[feat].attributes.classification1,
+                        results[feat].attributes.classification2,
+                        results[feat].attributes.classification3
                         ) + '</td></tr>');
-                var datumtijd = moment(features[feat].attributes.datetimereported);
+                var datumtijd = moment(results[feat].attributes.datetimereported);
                 ft_tbl.append('<tr><td colspan="2">' + dbkjs.util.createAddress(
-                        features[feat].attributes.addresscity,
-                        features[feat].attributes.addressmunicipality,
-                        features[feat].attributes.addressstreet,
-                        features[feat].attributes.addresshousenr,
-                        features[feat].attributes.addresshousenradd,
-                        features[feat].attributes.addressname,
-                        features[feat].attributes.addresszipcode
+                        results[feat].attributes.addresscity,
+                        results[feat].attributes.addressmunicipality,
+                        results[feat].attributes.addressstreet,
+                        results[feat].attributes.addresshousenr,
+                        results[feat].attributes.addresshousenradd,
+                        results[feat].attributes.addressname,
+                        results[feat].attributes.addresszipcode
                         ).html() +
                         '</td></tr>');
 
                 ft_tbl.append('<tr><td>Datum/tijd</td><td>' + datumtijd.format('YYYY-MM-DD HH:mm:ss') + '</td></tr>');
-                if (!dbkjs.util.isJsonNull(features[feat].attributes.firestation)) {
-                    ft_tbl.append('<tr><td>Post</td><td>' + features[feat].attributes.firestation + '</td></tr>');
+                if (!dbkjs.util.isJsonNull(results[feat].attributes.firestation)) {
+                    ft_tbl.append('<tr><td>Post</td><td>' + results[feat].attributes.firestation + '</td></tr>');
                 }
-                if (features[feat].attributes.timespanintake !== 0) {
-                    ft_tbl.append('<tr><td>Aannametijd multi</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanintake, "seconds")) + '</td></tr>');
+                if (results[feat].attributes.timespanintake !== 0) {
+                    ft_tbl.append('<tr><td>Aannametijd multi</td><td>' + dbkjs.util.parseSeconds(moment.duration(results[feat].attributes.timespanintake, "seconds")) + '</td></tr>');
                 }
-                if (features[feat].attributes.timespanissued !== 0) {
-                    ft_tbl.append('<tr><td>Aanname en uitgiftetijd BRW</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanissued, "seconds")) + '</td></tr>');
+                if (results[feat].attributes.timespanissued !== 0) {
+                    ft_tbl.append('<tr><td>Aanname en uitgiftetijd BRW</td><td>' + dbkjs.util.parseSeconds(moment.duration(results[feat].attributes.timespanissued, "seconds")) + '</td></tr>');
                 }
-                if (features[feat].attributes.timespanprocessing !== 0) {
-                    ft_tbl.append('<tr><td>Verwerkingstijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanprocessing, "seconds")) + '</td></tr>');
+                if (results[feat].attributes.timespanprocessing !== 0) {
+                    ft_tbl.append('<tr><td>Verwerkingstijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(results[feat].attributes.timespanprocessing, "seconds")) + '</td></tr>');
                 }
-                if (features[feat].attributes.timespandeparted !== 0) {
-                    ft_tbl.append('<tr><td>Uitruktijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespandeparted, "seconds")) + '</td></tr>');
+                if (results[feat].attributes.timespandeparted !== 0) {
+                    ft_tbl.append('<tr><td>Uitruktijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(results[feat].attributes.timespandeparted, "seconds")) + '</td></tr>');
                 }
 
-                if (features[feat].attributes.timespandrivetime !== 0) {
-                    ft_tbl.append('<tr><td>Aanrijdtijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespandrivetime, "seconds")) + '</td></tr>');
+                if (results[feat].attributes.timespandrivetime !== 0) {
+                    ft_tbl.append('<tr><td>Aanrijdtijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(results[feat].attributes.timespandrivetime, "seconds")) + '</td></tr>');
                 }
-                if (features[feat].attributes.timespanattended !== 0) {
-                    ft_tbl.append('<tr><td>Opkomsttijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanattended, "seconds")) + '</td></tr>');
+                if (results[feat].attributes.timespanattended !== 0) {
+                    ft_tbl.append('<tr><td>Opkomsttijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(results[feat].attributes.timespanattended, "seconds")) + '</td></tr>');
                 }
-                if (features[feat].attributes.timespanonscene !== 0) {
-                    ft_tbl.append('<tr><td>Inzettijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(features[feat].attributes.timespanonscene, "seconds")) + '</td></tr>');
+                if (results[feat].attributes.timespanonscene !== 0) {
+                    ft_tbl.append('<tr><td>Inzettijd</td><td>' + dbkjs.util.parseSeconds(moment.duration(results[feat].attributes.timespanonscene, "seconds")) + '</td></tr>');
                 }
-                if (!dbkjs.util.isJsonNull(features[feat].attributes.objecttype)) {
-                    ft_tbl.append('<tr><td>Functie</td><td>' + features[feat].attributes.objecttype + '</td></tr>');
+                if (!dbkjs.util.isJsonNull(results[feat].attributes.objecttype)) {
+                    ft_tbl.append('<tr><td>Functie</td><td>' + results[feat].attributes.objecttype + '</td></tr>');
                 }
-                if (!dbkjs.util.isJsonNull(features[feat].attributes.objectyearconstructed)) {
-                    ft_tbl.append('<tr><td>Bouwjaar</td><td>' + features[feat].attributes.objectyearconstructed + '</td></tr>');
+                if (!dbkjs.util.isJsonNull(results[feat].attributes.objectyearconstructed)) {
+                    ft_tbl.append('<tr><td>Bouwjaar</td><td>' + results[feat].attributes.objectyearconstructed + '</td></tr>');
                 }
-                if (!dbkjs.util.isJsonNull(features[feat].attributes.sit1name)) {
+                if (!dbkjs.util.isJsonNull(results[feat].attributes.sit1name)) {
                     ft_tbl.append(dbkjs.util.createNorm(
-                            features[feat].attributes.sit1name,
-                            features[feat].attributes.sit1timespanarrivalfirstunit,
-                            features[feat].attributes.sit1maxtimespanarrivalfirstunit
+                            results[feat].attributes.sit1name,
+                            results[feat].attributes.sit1timespanarrivalfirstunit,
+                            results[feat].attributes.sit1maxtimespanarrivalfirstunit
                             ));
                 }
-                if (!dbkjs.util.isJsonNull(features[feat].attributes.sit2name)) {
+                if (!dbkjs.util.isJsonNull(results[feat].attributes.sit2name)) {
                     ft_tbl.append(dbkjs.util.createNorm(
-                            features[feat].attributes.sit2name,
-                            features[feat].attributes.sit2timespanarrivalfirstunit,
-                            features[feat].attributes.sit2maxtimespanarrivalfirstunit
+                            results[feat].attributes.sit2name,
+                            results[feat].attributes.sit2timespanarrivalfirstunit,
+                            results[feat].attributes.sit2maxtimespanarrivalfirstunit
                             ));
                 }
-                if (!dbkjs.util.isJsonNull(features[feat].attributes.sit3name)) {
+                if (!dbkjs.util.isJsonNull(results[feat].attributes.sit3name)) {
                     ft_tbl.append(dbkjs.util.createNorm(
-                            features[feat].attributes.sit3name,
-                            features[feat].attributes.sit3timespanarrivalfirstunit,
-                            features[feat].attributes.sit3maxtimespanarrivalfirstunit
+                            results[feat].attributes.sit3name,
+                            results[feat].attributes.sit3timespanarrivalfirstunit,
+                            results[feat].attributes.sit3maxtimespanarrivalfirstunit
                             ));
                 }
             }
             ft_div.append(ft_tbl);
+            console.log(ft_div);
             $('#carepanel_b').append(ft_div);
             $('#carepanel_f').html('');
             $('#carepanel').show();
@@ -382,11 +383,7 @@ dbkjs.modules.care = {
                 dbkjs.util.exportTableToCSV.apply(this, [$('#incidenten_export'), 'export.csv']);
                 $('#carepanel').toggle(true);
             });
-        } else {
-            //$('#carepanel').hide();
         }
-
-
     },
     panelNorm: function(response) {
         var _obj = dbkjs.modules.care;

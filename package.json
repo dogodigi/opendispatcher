@@ -17,7 +17,7 @@
         "url" : "http://github.com/opengeogroep/safetymapsDBK.git"
     },
     "dependencies": {
-        "express": "*",
+        "express": "3.5.0",
         "nodemailer": "*",
         "i18next": "*",
         "less-middleware": "<2.0.0",
