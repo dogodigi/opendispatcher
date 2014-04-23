@@ -292,7 +292,7 @@ dbkjs.modules.care = {
         var results = geojson_format.read(response.responseText);
         if (results.length > 0) {
             $('#carepanel_b').html('');
-            dbkjs.util.changeDialogTitle('Incidenten', '#carepanel');
+            dbkjs.util.changeDialogTitle(i18n.t('care.incidents'), '#carepanel');
             var ft_div = $('<div class="table-responsive"></div>');
             var ft_tbl = $('<table id="incidenten_export" class="table table-hover table-condensed"></table>');
             for (var feat in results) {
@@ -393,7 +393,7 @@ dbkjs.modules.care = {
         var features = geojson_format.read(response.responseText);
         if (features.length > 0) {
             $('#carepanel_b').html('');
-            dbkjs.util.changeDialogTitle('Dekkingsplan');
+            dbkjs.util.changeDialogTitle(i18n.t('care.coverage'));
             var ft_div = $('<div class="table-responsive"></div>');
             var ft_tbl = $('<table id="incidenten_export" class="table table-hover table-condensed"></table>');
 

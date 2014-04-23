@@ -53,17 +53,6 @@ exports.index = function(req, res) {
     res.render('index',{mylang: req.i18n.language(), mode: req.app.get('env')});
 };
 
-exports.login = function(req,res){
-    if(req.query){
-        var id = req.query.id;
-        if(id === 'milo'){
-            res.json({"login":"ok"});
-        } else {
-            res.send(401, 'Unauthorized');
-        }
-    }
-};
-
 exports.validate_GET = function(req, res) {
     var token = req.params.token;
     checkToken(token, res);

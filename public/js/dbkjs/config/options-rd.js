@@ -19,7 +19,7 @@
  */
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
-
+OpenLayers.ProxyHost = "proxy/?q=";
 OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 OpenLayers.Lang["nl"] = OpenLayers.Util.applyDefaults({'Scale = 1 : ${scaleDenom}': "Schaal 1 : ${scaleDenom}"});
 OpenLayers.Lang.setCode("nl");

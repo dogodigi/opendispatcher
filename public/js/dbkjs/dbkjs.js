@@ -122,25 +122,15 @@ dbkjs.activateClick = function() {
 };
 
 dbkjs.challengeAuth = function() {
-    var params = {
-        "id":"milo"
-    };
-    $.getJSON('login', params).done(function(data) {
-        if(data.login === 'ok'){
-            var params = {srid: dbkjs.options.projection.srid};
-            $.getJSON('api/organisation.json', params).done(function(data) {
-                if (data.organisation) {
-                    dbkjs.options.organisation = data.organisation;
-                    if (dbkjs.options.organisation.title) {
-                        document.title = dbkjs.options.organisation.title;
-                    }
-                    dbkjs.successAuth();
-                }
-            });
+    var params = {srid: dbkjs.options.projection.srid};
+    $.getJSON('api/organisation.json', params).done(function(data) {
+        if (data.organisation) {
+            dbkjs.options.organisation = data.organisation;
+            if (dbkjs.options.organisation.title) {
+                document.title = dbkjs.options.organisation.title;
+            }
+            dbkjs.successAuth();
         }
-    }).fail(function( jqxhr, textStatus, error ) {
-        dbkjs.options.feature = null;
-        dbkjs.util.alert('Fout', ' Aanmelden mislukt', 'alert-danger');
     });
 };
 
@@ -294,6 +284,35 @@ $(document).ready(function() {
                     if (dbkjs.modules.print) {
                         dbkjs.modules.print.printdirect(dbkjs.map, 2);
                     }
+                }
+            }
+        });
+        $('#zoom_prev').click(function() {
+            dbkjs.naviHis.previousTrigger();
+        });
+        $('#zoom_next').click(function() {
+            dbkjs.naviHis.nextTrigger();
+        });
+
+        $('#zoom_extent').click(function() {
+            if (dbkjs.options.organisation.modules.regio) {
+                dbkjs.modules.regio.zoomExtent();
+            } else {
+                if (dbkjs.options.organisation.area.geometry.type === "Point") {
+                    dbkjs.map.setCenter(
+                        new OpenLayers.LonLat(
+                                data.organisation.area.geometry.coordinates[0],
+                                data.organisation.area.geometry.coordinates[1]
+                                ).transform(
+                        new OpenLayers.Projection(dbkjs.options.projection.code),
+                        dbkjs.map.getProjectionObject()
+                        ),
+                        dbkjs.options.organisation.area.zoom
+                    );
+                } else if (dbkjs.options.organisation.area.geometry.type === "Polygon"){
+                    var areaGeometry = new OpenLayers.Format.GeoJSON().read(
+                            dbkjs.options.organisation.area.geometry, "Geometry");
+                    dbkjs.map.zoomToExtent(areaGeometry.getBounds());
                 }
             }
         });

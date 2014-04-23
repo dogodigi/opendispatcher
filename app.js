@@ -130,7 +130,6 @@ i18n.serveClientScript(app)
         .serveMissingKeyRoute(app);
 
 app.get('/', routes.index);
-app.get('/login', routes.login);
 app.get('/batch', emailer.annotationbulk);
 app.get('/api/object/:id.json', dbk.getObject);
 app.post('/api/annotation', dbk.postAnnotation);
