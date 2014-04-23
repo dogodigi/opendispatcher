@@ -21,6 +21,7 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.layout = {
+    id: 'dbk.layout',
     activate: function() {
         var _obj = dbkjs.layout;
         _obj.settingsDialog('#settingspanel_b');

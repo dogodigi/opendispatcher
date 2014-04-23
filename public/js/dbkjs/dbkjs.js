@@ -165,6 +165,7 @@ dbkjs.successAuth = function() {
     $.each(dbkjs.modules, function(mod_index, module) {
         if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
             if (module.register) {
+                console.log(module.id);
                 module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true});
             }
         }
@@ -265,6 +266,7 @@ $(document).ready(function() {
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
         $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
         $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
+        $('body').append(dbkjs.util.createModal('printpanel', '<i class="icon-print"></i> ' + t("app.print"), ''));
         dbkjs.wms_panel = dbkjs.util.createTabbable();
         $('#wmsclickpanel_b').append(dbkjs.wms_panel);
         $('body').append(dbkjs.util.createDialog('minimappanel', '<i class="icon-picture"></i> ' + i18n.t("dialogs.refmap"), 'bottom:0;'));
@@ -279,12 +281,6 @@ $(document).ready(function() {
                 $('#infopanel').toggle();
             } else if (this.id === "c_minimap") {
                 $('#minimappanel').toggle();
-            } else if (this.id === "c_print") {
-                if (dbkjs.map) {
-                    if (dbkjs.modules.print) {
-                        dbkjs.modules.print.printdirect(dbkjs.map, 2);
-                    }
-                }
             }
         });
         $('#zoom_prev').click(function() {

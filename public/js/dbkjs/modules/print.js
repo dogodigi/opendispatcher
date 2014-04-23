@@ -24,14 +24,24 @@ window.dbkjs = dbkjs;
 dbkjs.modules.print = {
     id: 'dbk.modules.print',
     register: function(options) {
-        var _obj = dbkjs.modules.print;
+            var _obj = dbkjs.modules.print;
+            _obj.printDialog('#printpanel_b');
         _obj.namespace = options.namespace || _obj.namespace;
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
-        $('#btngrp_3').append('<a id="btn_print" class="btn btn-default navbar-btn" href="#" title="' + i18n.t('app.print') + '"><i class="icon-print"></i></a>');
+        $('#btngrp_3').append(
+            '<a id="btn_print" class="btn btn-default navbar-btn" href="#" title="' + 
+            i18n.t('app.print') + 
+            '"><i class="icon-print"></i></a>'
+        );
 
         $('#btn_print').click(function() {
-            if (!dbkjs.util.isJsonNull(dbkjs.options.dbk) && dbkjs.options.dbk !== 0) {
+            //$('#printpanel').modal();
+            _obj.printdirect(dbkjs.map, 2);
+        });
+    },
+    doPrint: function(){
+        if (!dbkjs.util.isJsonNull(dbkjs.options.dbk) && dbkjs.options.dbk !== 0) {
                 var currentFeature = dbkjs.options.feature;
                 var testObject = {
                     "options": {
@@ -43,24 +53,31 @@ dbkjs.modules.print = {
                         "informelenaam": currentFeature.informelenaam || "",
                         "formelenaam": currentFeature.formelenaam,
                         "bouwlaag": currentFeature.bouwlaag || "",
-                        "objectgegevens": 'DBK ' + currentFeature.id + '\n\n' + currentFeature.informelenaam + '\n' + currentFeature.formelenaam + '\n' + currentFeature.bouwlaag + '\n\n'
+                        "objectgegevens": 'DBK ' + currentFeature.id + '\n\n' + 
+                                currentFeature.informelenaam + '\n' + 
+                                currentFeature.formelenaam + '\n' + 
+                                currentFeature.bouwlaag + '\n\n'
                     },
                     "pages": [{}]
                 };
                 if (currentFeature.omsnummer){
-                    testObject.options.objectgegevens += 'OMS nummer: ' + currentFeature.omsnummer + '\n';
+                    testObject.options.objectgegevens += 'OMS nummer: ' + 
+                            currentFeature.omsnummer + '\n';
                 }
                 if (currentFeature.bhvaanwezig){
                     testObject.options.objectgegevens += 'BHV: Aanwezig \n';
                 }
                 if (currentFeature.inzetprocedure){
-                    testObject.options.objectgegevens += 'Inzetprocedure: ' + currentFeature.inzetprocedure + '\n';
+                    testObject.options.objectgegevens += 'Inzetprocedure: ' + 
+                            currentFeature.inzetprocedure + '\n';
                 }
                 if (currentFeature.gebouwconstructie){
-                    testObject.options.objectgegevens += 'Gebouwconstructie: ' + currentFeature.gebouwconstructie + '\n';
+                    testObject.options.objectgegevens += 'Gebouwconstructie: ' + 
+                            currentFeature.gebouwconstructie + '\n';
                 }
                 if (currentFeature.gebruikstype){
-                    testObject.options.objectgegevens += 'Gebruikstype: ' + currentFeature.gebruikstype + '\n';
+                    testObject.options.objectgegevens += 'Gebruikstype: ' + 
+                            currentFeature.gebruikstype + '\n';
                 }
                 if (currentFeature.images) {
                     if (currentFeature.images.length > 0) {
@@ -107,7 +124,12 @@ dbkjs.modules.print = {
                 if (currentFeature.bijzonderheden) {
                     if (currentFeature.bijzonderheden.length > 0) {
                         var adr_str = '';
-                        var set = {"Algemeen":'Algemeen\n',"Preparatie":'Preparatie\n', "Preventie":'Preventie\n', "Repressie": 'Repressie\n'};
+                        var set = {
+                            "Algemeen":'Algemeen\n',
+                            "Preparatie":'Preparatie\n', 
+                            "Preventie":'Preventie\n', 
+                            "Repressie": 'Repressie\n'
+                        };
                         $.each(currentFeature.bijzonderheden, function(adr_index, adr) {
                             set[adr.soort] += '     * '  + adr.tekst + '\n';
                             //adr_str += adr.soort + ': ' + adr.tekst + '\n\n';
@@ -132,7 +154,11 @@ dbkjs.modules.print = {
                         } else {
                             set.Repressie += '\n';
                         }
-                        testObject.options.bijzonderheden = adr_str + set.Algemeen + set.Preparatie + set.Preventie + set.Repressie + '\n';
+                        testObject.options.bijzonderheden = adr_str + 
+                                set.Algemeen + 
+                                set.Preparatie + 
+                                set.Preventie + 
+                                set.Repressie + '\n';
                     }
                 }
                 
@@ -141,7 +167,10 @@ dbkjs.modules.print = {
                     if (currentFeature.verblijf.length > 0) {
                         var adr_str = '';
                         $.each(currentFeature.verblijf, function(adr_index, adr) {
-                            adr_str += adr.typeaanwezigheidsgroep + ': ' + adr.aantal + ' ' + adr.tijdvakbegintijd + ' - ' + adr.tijdvakeindtijd + '\n\n';
+                            adr_str += adr.typeaanwezigheidsgroep + ': ' + 
+                                    adr.aantal + ' ' + 
+                                    adr.tijdvakbegintijd + ' - ' + 
+                                    adr.tijdvakeindtijd + '\n\n';
                         });
                         testObject.options.verblijf = adr_str;
                     }
@@ -151,7 +180,9 @@ dbkjs.modules.print = {
                 testObject.pages[0].center = [center.lon, center.lat];
                 testObject.pages[0].scale = Math.ceil(dbkjs.map.getScale());
                 testObject.pages[0].rotation = 0;
-                dbkjs.modules.print.printdirect(dbkjs.map, testObject.pages, testObject.options);
+                dbkjs.modules.print.printdirect(dbkjs.map, 
+                    testObject.pages, 
+                    testObject.options);
             } else {
                 var testObject = {
                     "options": {
@@ -169,7 +200,6 @@ dbkjs.modules.print = {
                 testObject.pages[0].rotation = 0;
                 dbkjs.modules.print.printdirect(dbkjs.map, testObject.pages, testObject.options);                
             }
-        });
     },
     capabilities: null,
     method: "POST",
@@ -273,6 +303,15 @@ dbkjs.modules.print = {
                 alert(response.responseText);
             }
         });
+    },
+    printDialog: function(parent) {
+        var form = $('<form id="print-form" role="form"></form>');
+        //form.append('<p class="bg-info">' + "Kies de juiste instellingen" + '</p>');
+        var layoutgroup = $('<div class="form-group"></div>');
+        layoutgroup.append('<label for="layout">' + "Layout" + '</label>');
+        layoutgroup.append('<select name="layout"><option>Kies een layout</option></select>');
+        form.append(layoutgroup);
+        $(parent).append(form);
     },
     download: function(url) {
         var _obj = dbkjs.modules.print;
