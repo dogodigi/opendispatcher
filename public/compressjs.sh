@@ -33,9 +33,6 @@ cat js/libs/jquery.pagination.js \
     js/dbkjs/modules/search.js \
     js/dbkjs/modules/support.js \
     js/dbkjs/modules/print.js \
-    js/dbkjs/modules/regio.js \
-    js/dbkjs/modules/district.js \
-    js/dbkjs/modules/gemeente.js \
     js/dbkjs/modules/care.js \
     js/dbkjs/modules/filter.js \
     js/dbkjs/modules/bag.js \
