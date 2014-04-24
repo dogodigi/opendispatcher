@@ -21,7 +21,7 @@ Windows: na aanpassen system variables opnieuw opstarten.
 
 Vanaf een terminal:
 
-    git clone -b express-versie git@github.com:opengeogroep/safetymapsDBK.git
+    git clone git@github.com:opengeogroep/safetymapsDBK.git
     cd safetymapsDBK
     npm install .
     
