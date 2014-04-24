@@ -78,7 +78,7 @@ exports.annotationbulk = function(req, res) {
                                 t("email.team");
                             smtp.sendMail({
                                 from: global.conf.get('support:from'),
-                                to: global.conf.get('support:sendto'),
+                                to: global.conf.get('support:sendto') + ',' + result.rows[index].email,
                                 subject: t("email.annotation"),
                                 text: plaintemplate,
                                 html: htmltemplate,

@@ -89,12 +89,14 @@ dbkjs.modules.support = {
                 p.append(adres_input);
                 var gemeente_input = $('<div class="form-group"><label for="municipality">Gemeente</label><input id="municipality" name="municipality" type="text" class="form-control" placeholder="Gemeente"></div>');
                 p.append(gemeente_input);
+                var plaats_input = $('<div class="form-group"><label for="place">PLaats</label><input id="place" name="municipality" type="text" class="form-control" placeholder="Plaats"></div>');
+                p.append(plaats_input);
                 var user_input = $('<div class="form-group"><label for="name">Naam melder *</label><input id="name" name="name" type="text" class="form-control required" placeholder="Naam melder"></div>');
                 p.append(user_input);
                 var mail_input = $('<div class="form-group"><label for="email">E-mail *</label><input id="email" name="email" type="email" class="form-control required" placeholder="E-mail"></div>');
                 p.append(mail_input);
                 var tel_input = $('<div class="form-group"><label for="phone">Telefoon</label><input id="phone" name="phone" type="tel" class="form-control" placeholder="Telefoon"></div>');
-                p.append(tel_input);Object
+                p.append(tel_input);
                 var remarks_input = $('<div class="form-group"><label for="remarks">Melding *</label><textarea id="remarks" name="remarks" class="form-control required" placeholder="Melding"></textarea></div>');
                 p.append(remarks_input);
                 p.append('<p class="bg-danger">De velden met een sterretje <em>*</em> zijn verplicht!</p>');
