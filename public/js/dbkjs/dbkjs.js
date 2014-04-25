@@ -266,6 +266,7 @@ $(document).ready(function() {
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
         $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
         $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
+        $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;'));
         $('body').append(dbkjs.util.createModal('printpanel', '<i class="icon-print"></i> ' + t("app.print"), ''));
         dbkjs.wms_panel = dbkjs.util.createTabbable();
         $('#wmsclickpanel_b').append(dbkjs.wms_panel);

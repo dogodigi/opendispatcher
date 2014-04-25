@@ -80,15 +80,18 @@ dbkjs.protocol.jsonDBK = {
         ];
         _obj.selectlayers = [];
         _obj.hoverlayers = [
-            _obj.layerPandgeometrie, 
             _obj.layerBrandweervoorziening,
-            _obj.layerGevaarlijkestof
+            _obj.layerBrandcompartiment,
+            _obj.layerGevaarlijkestof,
+            _obj.layerHulplijn,
+            _obj.layerToegangterrein
         ];
         dbkjs.map.addLayers(_obj.layers);
         dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.hoverlayers));
         dbkjs.hoverControl.setLayer((dbkjs.hoverControl.layers || dbkjs.hoverControl.layer).concat(_obj.hoverlayers));
         dbkjs.hoverControl.activate();
         dbkjs.selectControl.activate();
+        
     },
     hideLayers: function(){
         var _obj = dbkjs.protocol.jsonDBK;
@@ -103,6 +106,8 @@ dbkjs.protocol.jsonDBK = {
         });
     },
     getfeatureinfo: function(e){
+        console.log(e.feature.layer);
+        $('#vectorclickpanel_h').html('<span class="h4"><i class="icon-info-sign">&nbsp;' + e.feature.layer.name + '</span>');
         html = '<div class="table-responsive">';
             html += '<table class="table table-hover">';
             for (var j in e.feature.attributes) {
@@ -115,8 +120,8 @@ dbkjs.protocol.jsonDBK = {
             html += "</table>";
         html += '</div>';
         //dbkjs.util.appendTab(dbkjs.wms_panel.attr("id"),'Brandcompartiment',html, true, 'br_comp_tab');
-        $('#wmsclickpanel_b').html(html);
-        $('#wmsclickpanel').show();
+        $('#vectorclickpanel_b').html(html);
+        $('#vectorclickpanel').show();
     },
     process: function(feature) {
         $('#infopanel_f').html('');
@@ -141,6 +146,17 @@ dbkjs.protocol.jsonDBK = {
                 }
             }
         }
+    },
+    activateSelect: function(layer){
+        var _obj = dbkjs.protocol.jsonDBK;
+        layer.events.on({
+            "featureselected": _obj.getfeatureinfo,
+            "featuresadded": function() {
+            },
+            "featureunselected": function(e) {
+               $('#vectorclickpanel').hide();
+            }
+        });
     },
     info: function(data) {
         var _obj = dbkjs.protocol.jsonDBK;
@@ -176,6 +192,7 @@ dbkjs.protocol.jsonDBK = {
                     features.push(myFeature);
                 });
                 _obj.layerPandgeometrie.addFeatures(features);
+                _obj.activateSelect(_obj.layerPandgeometrie);
             }
             if(dbkjs.options.feature.geometry){
                 //gebied!
@@ -184,6 +201,7 @@ dbkjs.protocol.jsonDBK = {
                 myFeature.attributes = { "id" : dbkjs.options.feature.identificatie, "type":"gebied"};
                 features.push(myFeature);
                 _obj.layerPandgeometrie.addFeatures(features);
+                _obj.activateSelect(_obj.layerPandgeometrie);
             }
             if(dbkjs.options.feature.hulplijn){
                 var features = [];
@@ -225,6 +243,7 @@ dbkjs.protocol.jsonDBK = {
                 _obj.layerHulplijn.addFeatures(features);
                 _obj.layerHulplijn1.addFeatures(features1);
                 _obj.layerHulplijn2.addFeatures(features2);
+                _obj.activateSelect(_obj.layerHulplijn);
             }
             if(dbkjs.options.feature.toegangterrein){
                 var features = [];
@@ -242,6 +261,7 @@ dbkjs.protocol.jsonDBK = {
                     features.push(myFeature);
                 });
                 _obj.layerToegangterrein.addFeatures(features);
+                _obj.activateSelect(_obj.layerToegangterrein);
             }
             if(dbkjs.options.feature.brandcompartiment){
                 var features = [];
@@ -268,6 +288,7 @@ dbkjs.protocol.jsonDBK = {
 
                 });
                 _obj.layerBrandcompartiment.addFeatures(features);
+                _obj.activateSelect(_obj.layerBrandcompartiment);           
             }
             
             if(dbkjs.options.feature.tekstobject){
@@ -283,6 +304,7 @@ dbkjs.protocol.jsonDBK = {
                     features.push(myFeature);
                 });
                 _obj.layerTekstobject.addFeatures(features);
+                _obj.activateSelect(_obj.layerTekstobject);
             }
             $('#infopanel').show();
             _obj.processing = false;
@@ -477,6 +499,7 @@ dbkjs.protocol.jsonDBK = {
                 
             });
             _obj.layerBrandweervoorziening.addFeatures(features);
+            _obj.activateSelect(_obj.layerBrandweervoorziening);
             bv_table_div.append(bv_table);
             bv_div.append(bv_table_div);
             _obj.panel_group.append(bv_div);
@@ -532,6 +555,7 @@ dbkjs.protocol.jsonDBK = {
                 features.push(myFeature);
             });
             _obj.layerGevaarlijkestof.addFeatures(features);
+            _obj.activateSelect(_obj.layerGevaarlijkestof);
             bv_table_div.append(bv_table);
             bv_div.append(bv_table_div);
             _obj.panel_group.append(bv_div);
