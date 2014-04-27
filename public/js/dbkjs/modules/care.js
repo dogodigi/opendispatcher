@@ -374,7 +374,6 @@ dbkjs.modules.care = {
                 }
             }
             ft_div.append(ft_tbl);
-            console.log(ft_div);
             $('#carepanel_b').append(ft_div);
             $('#carepanel_f').html('');
             $('#carepanel').show();

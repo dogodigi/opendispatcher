@@ -119,9 +119,7 @@ dbkjs.modules.feature = {
         //_obj.sketch.setZIndex(2002);
         _obj.layer.displayInLayerSwitcher = false;
         //_obj.sketch.displayInLayerSwitcher = false;
-        dbkjs.map.addLayers([
-            //_obj.sketch, 
-            _obj.layer]);
+        dbkjs.map.addLayer(_obj.layer);
         //Add the layer to the selectControl
         dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.layer));
         dbkjs.selectControl.activate();

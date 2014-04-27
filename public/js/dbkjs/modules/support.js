@@ -26,7 +26,7 @@ dbkjs.modules.support = {
     register: function() {
         var _obj = dbkjs.modules.support;
         _obj.layer = new OpenLayers.Layer.Vector("Support");
-        dbkjs.map.addLayers([_obj.layer]);
+        dbkjs.map.addLayer(_obj.layer);
         if (dbkjs.options.organisation.support) {
             $('body').append('<div id="foutknop" class="btn-group">' +
                     '<a class="btn btn-default navbar-btn">' +

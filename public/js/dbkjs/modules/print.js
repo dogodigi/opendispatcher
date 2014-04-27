@@ -24,8 +24,8 @@ window.dbkjs = dbkjs;
 dbkjs.modules.print = {
     id: 'dbk.modules.print',
     register: function(options) {
-            var _obj = dbkjs.modules.print;
-            _obj.printDialog('#printpanel_b');
+        var _obj = dbkjs.modules.print;
+        _obj.printDialog('#printpanel_b');
         _obj.namespace = options.namespace || _obj.namespace;
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
@@ -37,7 +37,8 @@ dbkjs.modules.print = {
 
         $('#btn_print').click(function() {
             //$('#printpanel').modal();
-            _obj.printdirect(dbkjs.map, 2);
+            //_obj.printdirect(dbkjs.map, 2, options);
+            _obj.doPrint();
         });
     },
     doPrint: function(){

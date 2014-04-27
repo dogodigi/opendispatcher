@@ -62,7 +62,7 @@ dbkjs.init = function() {
         bl.events.register("loadend", bl, function() {
             dbkjs.util.loadingEnd(bl);
         });
-        dbkjs.map.addLayers([bl]);
+        dbkjs.map.addLayer(bl);
         _li.click(function() {
             dbkjs.toggleBaseLayer(bl_index);
         });
@@ -165,7 +165,6 @@ dbkjs.successAuth = function() {
     $.each(dbkjs.modules, function(mod_index, module) {
         if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
             if (module.register) {
-                console.log(module.id);
                 module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true});
             }
         }
@@ -177,9 +176,14 @@ dbkjs.successAuth = function() {
                 var index = wms_v.index || 0;
                 if(wms_v.getcapabilities === true){
                     dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
-                    var myCapabilities = new dbkjs.Capabilities(
-                        {url: wms_v.url, title: wms_v.name, proxy: wms_v.proxy, index: index}
-                    );
+                    var options = {
+                        url: wms_v.url, 
+                        title: wms_v.name, 
+                        proxy: wms_v.proxy, 
+                        index: index, 
+                        parent: wms_v.parent
+                    };
+                    var myCapabilities = new dbkjs.Capabilities(options);
                 } else if (!wms_v.baselayer) {
                     var params = wms_v.params || {};
                     var options = wms_v.options || {};
@@ -254,7 +258,7 @@ dbkjs.finishMap = function(){
             dbkjs.map.zoomToMaxExtent();
         }
     }
-    var permalink = new OpenLayers.Control.Permalink('permalink');
+    var permalink = new dbkjs.permalink('permalink');
     dbkjs.map.addControl(permalink);
 };
 

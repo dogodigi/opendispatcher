@@ -35,7 +35,6 @@ dbkjs.protocol.jsonDBK = {
             styleMap: dbkjs.config.styles.dbkpand
         });
          dbkjs.map.events.register("moveend", null, function() {
-            //console.log("pandgeometrie: moveend" + dbkjs.map.zoom);
             if (dbkjs.map.zoom < 12){
                 _obj.hideLayers();
             } else {
@@ -106,7 +105,6 @@ dbkjs.protocol.jsonDBK = {
         });
     },
     getfeatureinfo: function(e){
-        console.log(e.feature.layer);
         $('#vectorclickpanel_h').html('<span class="h4"><i class="icon-info-sign">&nbsp;' + e.feature.layer.name + '</span>');
         html = '<div class="table-responsive">';
             html += '<table class="table table-hover">';
@@ -272,7 +270,6 @@ dbkjs.protocol.jsonDBK = {
                         var labelfeatures = [];
                         labelfeatures.push(myline);
                         //$.each(myline.components,function(cidx, component){
-                        //    console.log(component.getCentroid());
                         //    var labelFeature = myline.getCentroid();
                         //    labelfeatures.push(labelFeature);
                         //});

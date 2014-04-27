@@ -61,7 +61,7 @@ dbkjs.modules.search = {
         search_group.append(search_btn_grp);
         search_div.append(search_group);
         this.layer = new OpenLayers.Layer.Vector('search');
-        dbkjs.map.addLayers([this.layer]);
+        dbkjs.map.addLayer(this.layer);
         this.activate();
         search_div.show();
     },

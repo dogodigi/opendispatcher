@@ -25,7 +25,8 @@ dbkjs.Layer = dbkjs.Class({
     layer: null,
     div: null,
     legend: null,
-    initialize: function(name, url, params, options, parent, index, metadata) {
+    initialize: function(name, url, params, options, parent, index, metadata, layertype) {
+        var ly;
         var defaultparams = {
             format: 'image/png', 
             transparent: true
@@ -46,24 +47,41 @@ dbkjs.Layer = dbkjs.Class({
         this.div = $('<div class="panel"></div>');
         this.div.attr('id', 'panel_' + this.id);
         //layers moet worden meegegeven in de opties
-        var ly = new OpenLayers.Layer.WMS(name, url,
-                params,
-                options
-        );
-        var legend = url + "TRANSPARENT=true&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&EXCEPTIONS=application%2F" +
-            "vnd.ogc.se_xml&FORMAT=image%2Fpng&LAYER=" + ly.params["LAYERS"]; 
-        ly.events.register("loadstart", ly, function() {
-            dbkjs.util.loadingStart(ly);
-        });
-        ly.events.register("loadend", ly, function() {
-            dbkjs.util.loadingEnd(ly);
-        });
+        if(!layertype){
+            layertype = "WMS";
+        }
+        
+        switch (layertype) {
+            case "TMS":
+                var ly = new OpenLayers.Layer.TMS(name, url,
+                    params,
+                    options
+                );
+                break;
+            case "WMS":
+            default:
+                var ly = new OpenLayers.Layer.WMS(name, url,
+                    params,
+                    options
+                );
+                //TODO: sometimes legends fail, need to investigate why and how to handle errors
+                var legend = url + 
+                    "TRANSPARENT=true&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&EXCEPTIONS=application%2F" +
+                    "vnd.ogc.se_xml&FORMAT=image%2Fpng&LAYER=" + 
+                ly.params["LAYERS"]; 
+                ly.events.register("loadstart", ly, function() {
+                    dbkjs.util.loadingStart(ly);
+                });
+                ly.events.register("loadend", ly, function() {
+                    dbkjs.util.loadingEnd(ly);
+                });
+        }
+        
         this.layer  = ly;
         this.layer.dbkjsParent = this;
         //let op, de map moet worden meegegeven in de opties
-        var _obj = this;
 
-        dbkjs.map.addLayers([this.layer]);
+        dbkjs.map.addLayer(this.layer);
         if(!options.isBaseLayer) {
             // @todo functie maken om layerindex dynamisch te toveren 0 is onderop de stapel
             if(index){
@@ -106,6 +124,8 @@ dbkjs.Layer = dbkjs.Class({
         } else {
             //dbkjs.map.setLayerIndex(this.layer, 0);
             dbkjs.options.baselayers.push(this.layer);
+            //dirty fix to lower the baselayer so it will not overlap other layers
+            dbkjs.map.raiseLayer(this.layer, -1000);
             var _li = $('<li class="bl"><a href="#">' + name + '</a></li>');
             $('#baselayerpanel_ul').append(_li);
             _li.click(function() {

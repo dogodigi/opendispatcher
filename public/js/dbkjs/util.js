@@ -17,6 +17,8 @@
  *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+var dbkjs = dbkjs || {};
+window.dbkjs = dbkjs;
 $.browser = {};
 $.browser.mozilla = /mozilla/.test(navigator.userAgent.toLowerCase()) && !/webkit    /.test(navigator.userAgent.toLowerCase());
 $.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
@@ -24,6 +26,88 @@ $.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
 $.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 $.browser.device = (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase()));
 
+dbkjs.permalink = 
+    OpenLayers.Class(OpenLayers.Control.Permalink, {
+    SELECT_ARGUMENT_KEY: "select",
+    initialize: function(options) {
+        console.log("permalink.initialize");
+        OpenLayers.Control.Permalink.prototype.initialize.apply(this, arguments);
+    },
+
+    /**
+     * Method: updateLink 
+     */
+    updateLink: function() {
+        var separator = this.anchor ? '#' : '?';
+        var href = this.base;
+        var anchor = null;
+        if (href.indexOf("#") !==-1 && this.anchor === false) {
+            anchor = href.substring( href.indexOf("#"), href.length);
+        }
+        if (href.indexOf(separator) !== -1) {
+            href = href.substring( 0, href.indexOf(separator) );
+        }
+        var splits = href.split("#");
+        href = splits[0] + separator+ OpenLayers.Util.getParameterString(this.createParams(null, null, []));
+        if (anchor) {
+            href += anchor;
+        }
+        if (this.anchor && !this.element) {
+            window.location.href = href;
+        }
+        else {
+            this.element.href = href;
+        }
+    }, 
+    createParams: function(center, zoom, layers) {
+        center = center || this.map.getCenter();
+          
+        var params = OpenLayers.Util.getParameters(this.base);
+        
+        // If there's still no center, map is not initialized yet. 
+        // Break out of this function, and simply return the params from the
+        // base link.
+        if (center) { 
+
+            //zoom
+            params.zoom = zoom || this.map.getZoom(); 
+
+            //lon,lat
+            var lat = center.lat;
+            var lon = center.lon;
+            
+            if (this.displayProjection) {
+                var mapPosition = OpenLayers.Projection.transform(
+                  { x: lon, y: lat }, 
+                  this.map.getProjectionObject(), 
+                  this.displayProjection );
+                lon = mapPosition.x;  
+                lat = mapPosition.y;  
+            }       
+            params.lat = Math.round(lat*100000)/100000;
+            params.lon = Math.round(lon*100000)/100000;
+
+            /*
+            //layers        
+            layers = layers || this.map.layers;  
+            
+            params.layers = '';
+            for (var i=0, len=layers.length; i<len; i++) {
+                var layer = layers[i];
+    
+                if (layer.isBaseLayer) {
+                    params.layers += (layer == this.map.baseLayer) ? "B" : "0";
+                } else {
+                    params.layers += (layer.getVisibility()) ? "T" : "F";           
+                }
+            }
+            */
+        }
+
+        return params;
+    }, 
+    CLASS_NAME: "dbkjs.permalink"
+});
 
 //Override drawText function on openlayers SVG.js
 OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location) {
@@ -185,8 +269,6 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
 //    return res;
 //}
 
-var dbkjs = dbkjs || {};
-window.dbkjs = dbkjs;
 dbkjs.util = {
     layersLoading: [],
     /**
