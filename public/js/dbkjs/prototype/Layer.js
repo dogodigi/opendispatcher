@@ -99,7 +99,12 @@ dbkjs.Layer = dbkjs.Class({
             this.div.append(dv_panel_heading);
             var dv_panel_content = $('<div id="collapse_' + this.id + '" class="panel-collapse collapse"></div>');
             if(metadata){
-                dv_panel_content.append('<p>' + metadata + '</p>');
+                if(metadata.abstract){
+                    dv_panel_content.append('<p>' + metadata.abstract + '</p>');
+                }
+                if(metadata.pl){
+                    this.layer.metadata.pl = metadata.pl;
+                }
             }
             dv_panel_content.append('<img src="' + legend + '"/>');
        
@@ -114,6 +119,7 @@ dbkjs.Layer = dbkjs.Class({
                 }
                 var that = this;
                 $('input[name="box_' + this.id + '"]').click(function() {
+                    dbkjs.disableloadlayer = true;
                     if ($(this).is(':checked')) {
                         that.layer.setVisibility(true);
                     } else {
@@ -123,6 +129,14 @@ dbkjs.Layer = dbkjs.Class({
             }
         } else {
             //dbkjs.map.setLayerIndex(this.layer, 0);
+            if(metadata){
+                if(metadata.abstract){
+                    dv_panel_content.append('<p>' + metadata.abstract + '</p>');
+                }
+                if(metadata.pl){
+                    this.layer.metadata.pl = metadata.pl;
+                }
+            }
             dbkjs.options.baselayers.push(this.layer);
             //dirty fix to lower the baselayer so it will not overlap other layers
             dbkjs.map.raiseLayer(this.layer, -1000);

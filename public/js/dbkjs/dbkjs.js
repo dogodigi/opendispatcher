@@ -183,33 +183,50 @@ dbkjs.successAuth = function() {
                         index: index, 
                         parent: wms_v.parent
                     };
+                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
+                        options.pl = wms_v.pl;
+                    }
                     var myCapabilities = new dbkjs.Capabilities(options);
                 } else if (!wms_v.baselayer) {
                     var params = wms_v.params || {};
                     var options = wms_v.options || {};
                     var parent = wms_v.parent || null;
-                    
+                    var metadata = {};
+                    if (!dbkjs.util.isJsonNull(wms_v.abstract)){
+                        metadata.abstract = wms_v.abstract;
+                    }
+                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
+                        metadata.pl = wms_v.pl;
+                    }
                     var myLayer = new dbkjs.Layer(
                         wms_v.name,
                         wms_v.url,
                         params,
                         options,
                         parent,
-                        index
+                        index,
+                        metadata
                     );
                 } else {
                     var params = wms_v.params || {};
                     var options = wms_v.options || {};
                     options = OpenLayers.Util.extend({isBaseLayer: true}, options);
                     var parent = wms_v.parent || null;
-                    
+                    var metadata = {};
+                    if (!dbkjs.util.isJsonNull(wms_v.abstract)){
+                        metadata.abstract = wms_v.abstract;
+                    }
+                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
+                        metadata.pl = wms_v.pl;
+                    }
                     var myLayer = new dbkjs.Layer(
                         wms_v.name,
                         wms_v.url,
                         params,
                         options,
                         parent,
-                        index
+                        index,
+                        metadata
                     );
                 }
 
@@ -232,11 +249,12 @@ dbkjs.finishMap = function(){
     var hrefzoom = dbkjs.util.getQueryVariable('zoom');
     var hreflat = dbkjs.util.getQueryVariable('lat');
     var hreflon = dbkjs.util.getQueryVariable('lon');
-    var hreflayers = dbkjs.util.getQueryVariable('layers');
+    var hrefbase = dbkjs.util.getQueryVariable('b');
+    var hreflayers = dbkjs.util.getQueryVariable('ly');
 
-    if(hrefzoom && hreflat && hreflon &&hreflayers){
-        var argparser = new OpenLayers.Control.ArgParser();
-        dbkjs.map.addControl(argparser);
+    if(hrefzoom && hreflat && hreflon){
+        dbkjs.argparser = new dbkjs.argParser();
+        dbkjs.map.addControl(dbkjs.argparser);
     }else {
         if (dbkjs.options.organisation.area){
             if (dbkjs.options.organisation.area.geometry.type === "Point") {

@@ -90,13 +90,20 @@ dbkjs.Capabilities = dbkjs.Class({
                     
                     //loop through all the layers and make them available
                     $.each(c.capability.layers, function(lkey, lval) {
+                        var metadata = {};
+                        if (!dbkjs.util.isJsonNull(lval.abstract)){
+                            metadata.abstract = lval.abstract;
+                        }
+                        if (!dbkjs.util.isJsonNull(options.pl)){
+                            metadata.pl = options.pl + lkey;
+                        }
                         var myLayer = new dbkjs.Layer(lval.title,
                             _obj.url,
                             {layers: lval.name},
                             {},
                             '#' + myID + '_panel',
                             options.index + lkey,
-                            lval.abstract
+                            metadata
                         );
                     });
                     dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;

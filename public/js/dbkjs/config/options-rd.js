@@ -87,6 +87,7 @@ dbkjs.options.baselayers = [
             "http://openbasiskaart.nl/mapcache/tms/",
             {
                 layername: 'osm-nb@rd', type: "png", serviceVersion: "1.0.0",
+                metadata:{pl: "00"},
                 gutter: 0, buffer: 0, isBaseLayer: true, transitionEffect: 'resize',
                 tileOrigin: new OpenLayers.LonLat(-285401.92, 22598.08),
                 resolutions: dbkjs.options.pdok.resolutions,
@@ -103,6 +104,7 @@ dbkjs.options.baselayers = [
             dbkjs.options.pdok.tms.TMS,
             {
                 layername: 'brtachtergrondkaart',
+                metadata:{pl: "01"},
                 isBaseLayer: true,
                 displayInLayerSwitcher: true,
                 type: 'png',
@@ -119,6 +121,7 @@ dbkjs.options.baselayers = [
             dbkjs.options.pdok.tms.TMS,
             {
                 layername: 'top10nl',
+                metadata:{pl: "02"},
                 isBaseLayer: true,
                 displayInLayerSwitcher: true,
                 type: 'png',
