@@ -83,7 +83,6 @@ dbkjs.argParser =
                     }
                 }                
             }
-            console.log("finished loadlayers!");
         },    
         configureLayers: function() {
             var args = this.getParameters();
