@@ -82,11 +82,9 @@ dbkjs.modules.feature = {
             if (feature) {
                 dbkjs.options.dbk = feature.attributes.identificatie;
                 dbkjs.modules.updateFilter(dbkjs.options.dbk);
-                if (dbkjs.map.zoom <  dbkjs.options.zoom) {
-                    dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), dbkjs.options.zoom);
-                } else {
-                    dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
-                }
+                return feature;
+            } else {
+                return false;
             }
         }
     },
@@ -156,13 +154,13 @@ dbkjs.modules.feature = {
 //                console.log(test.length + ' DBK gebieden');
                 _obj.layer.addFeatures(_obj.features);
                 _obj.search_dbk();
-                _obj.getActive();
         }).fail(function( jqxhr, textStatus, error ) {
             dbkjs.options.feature = null;
             dbkjs.util.alert('Fout', ' Features konden niet worden ingelezen', 'alert-danger');
         });
     },
     featureInfohtml: function(feature) {
+        var _obj = dbkjs.modules.feature;
         var ret_title = $('<li></li>');
         ret_title.append('<a href="#">' + feature.attributes.formeleNaam + '</a>');
         //var ret_val = $('<td class="dbk_feature" id="dbk_' + feature.attributes.id + '"></td>');
@@ -173,11 +171,7 @@ dbkjs.modules.feature = {
             //dbkjs.options.dbk = feature.attributes.identificatie;
             dbkjs.modules.updateFilter(feature.attributes.identificatie);
             dbkjs.protocol.jsonDBK.process(feature);
-            if (dbkjs.map.zoom <  dbkjs.options.zoom) {
-                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(),  dbkjs.options.zoom);
-            } else {
-                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
-            }
+            _obj.zoomToFeature(feature);
             return false;
         });
         return ret_title;
@@ -207,11 +201,7 @@ dbkjs.modules.feature = {
             dbkjs.modules.updateFilter(datum.id);
             //@todo select the feature based on the datum
             dbkjs.protocol.jsonDBK.process(datum);
-            if (dbkjs.map.zoom <  dbkjs.options.zoom) {
-                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), dbkjs.options.zoom);
-            } else {
-                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat());
-            }
+            _obj.zoomToFeature(datum);
         });
     },
     search_oms: function() {
@@ -239,11 +229,7 @@ dbkjs.modules.feature = {
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             dbkjs.modules.updateFilter(datum.id);
             dbkjs.protocol.jsonDBK.process(datum);
-            if (dbkjs.map.zoom < dbkjs.options.zoom) {
-                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat(), dbkjs.options.zoom);
-            } else {
-                dbkjs.map.setCenter(datum.geometry.getBounds().getCenterLonLat());
-            }
+            _obj.zoomToFeature(datum);
         });
     },
     zoomToFeature: function(feature) {

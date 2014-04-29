@@ -74,14 +74,29 @@ dbkjs.argParser =
             //console.log("loadLayers");
             var args = this.getParameters();
             //console.log(args);
-            if(args.ly && args.b && !dbkjs.disableloadlayer) {
-                for(var i=0, len=this.map.layers.length; i<len; i++) {
-                    if (!this.map.layers[i].isBaseLayer && $.inArray(this.map.layers[i].metadata.pl, args.ly) !== -1) {
-                        this.map.layers[i].setVisibility(true);
-                    } else if (!this.map.layers[i].isBaseLayer && !dbkjs.util.isJsonNull(this.map.layers[i].metadata.pl)) {
-                        this.map.layers[i].setVisibility(false);
+            if(!dbkjs.disableloadlayer){
+                if(args.ly && args.b) {
+                    for(var i=0, len=this.map.layers.length; i<len; i++) {
+                        if (!this.map.layers[i].isBaseLayer && 
+                                $.inArray(this.map.layers[i].metadata.pl, args.ly) !== -1) {
+                            this.map.layers[i].setVisibility(true);
+                        } else if (!this.map.layers[i].isBaseLayer && 
+                                !dbkjs.util.isJsonNull(this.map.layers[i].metadata.pl)) {
+                            this.map.layers[i].setVisibility(false);
+                        }
+                    }                
+                }
+                if(args[i18n.t('app.queryDBK')] && dbkjs.modules.feature){
+                    dbkjs.options.dbk = args[i18n.t('app.queryDBK')];
+                    var feature = dbkjs.modules.feature.getActive();
+                    if(feature){
+                        dbkjs.protocol.jsonDBK.process(feature);
+                        if(!args.lat && !args.lon && !args.zoom){
+                            dbkjs.modules.feature.zoomToFeature(feature);
+                        }
                     }
-                }                
+                    //console.log('Got dbk ' + args[i18n.t('app.queryDBK')] + ', what now?');
+                }
             }
         },    
         configureLayers: function() {
@@ -92,17 +107,12 @@ dbkjs.argParser =
                         this.map.setBaseLayer(this.map.layers[i]);
                         this.map.raiseLayer(this.map.layers[i], -1000);
                     }
-//                    if (!this.map.layers[i].isBaseLayer && $.inArray(this.map.layers[i].metadata.pl, args.ly) !== -1) {
-//                        this.map.layers[i].setVisibility(true);
-//                    } else if (!this.map.layers[i].isBaseLayer && !dbkjs.util.isJsonNull(this.map.layers[i].metadata.pl)) {
-//                        this.map.layers[i].setVisibility(false);
-//                    }
                 }                
             }
         },     
         CLASS_NAME: "dbkjs.ArgParser"
     });
-dbkjs.permalink = 
+dbkjs.Permalink = 
     OpenLayers.Class(OpenLayers.Control.Permalink, {
     argParserClass: dbkjs.ArgParser,
     SELECT_ARGUMENT_KEY: "select",
@@ -138,6 +148,11 @@ dbkjs.permalink =
         // If there's still no center, map is not initialized yet. 
         // Break out of this function, and simply return the params from the
         // base link.
+        if(dbkjs.options){
+            if (dbkjs.options.dbk && dbkjs.options.dbk !== 0){
+                params[i18n.t('app.queryDBK')]  = dbkjs.options.dbk;
+            }
+        }
         if (center) { 
 
             //zoom
@@ -180,7 +195,7 @@ dbkjs.permalink =
 
         return params;
     }, 
-    CLASS_NAME: "dbkjs.permalink"
+    CLASS_NAME: "dbkjs.Permalink"
 });
 
 //Override drawText function on openlayers SVG.js

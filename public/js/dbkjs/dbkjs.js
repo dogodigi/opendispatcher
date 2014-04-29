@@ -249,13 +249,10 @@ dbkjs.finishMap = function(){
     var hrefzoom = dbkjs.util.getQueryVariable('zoom');
     var hreflat = dbkjs.util.getQueryVariable('lat');
     var hreflon = dbkjs.util.getQueryVariable('lon');
-    var hrefbase = dbkjs.util.getQueryVariable('b');
-    var hreflayers = dbkjs.util.getQueryVariable('ly');
-
     if(hrefzoom && hreflat && hreflon){
         dbkjs.argparser = new dbkjs.argParser();
         dbkjs.map.addControl(dbkjs.argparser);
-    }else {
+    } else {
         if (dbkjs.options.organisation.area){
             if (dbkjs.options.organisation.area.geometry.type === "Point") {
                 dbkjs.map.setCenter(
@@ -276,8 +273,9 @@ dbkjs.finishMap = function(){
             dbkjs.map.zoomToMaxExtent();
         }
     }
-    var permalink = new dbkjs.permalink('permalink');
-    dbkjs.map.addControl(permalink);
+    dbkjs.permalink = new dbkjs.Permalink('permalink');
+    dbkjs.map.addControl(dbkjs.permalink);
+    //get dbk!
 };
 
 $(document).ready(function() {

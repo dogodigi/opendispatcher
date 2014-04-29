@@ -367,6 +367,11 @@ dbkjs.protocol.jsonDBK = {
         dbkjs.options.feature.laagstebouwlaag = laagstebouwlaag;
         dbkjs.options.feature.hoogstebouwlaag = hoogstebouwlaag;
         var active_tab = _obj.active_tab === 'algemeen' ?  'active' : '';
+        dbkjs.options.dbk = DBKObject.identificatie;
+        dbkjs.disableloadlayer = true;
+        if(dbkjs.permalink){
+            dbkjs.permalink.updateLink();
+        }
         _obj.panel_algemeen = $('<div class="tab-pane ' + active_tab + '" id="collapse_algemeen_' + DBKObject.identificatie + '"></div>');
         var algemeen_table_div = $('<div class="table-responsive"></div>');
         var algemeen_table = $('<table class="table table-hover"></table>');
