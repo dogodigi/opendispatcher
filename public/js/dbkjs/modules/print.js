@@ -44,136 +44,131 @@ dbkjs.modules.print = {
     doPrint: function(){
         if (!dbkjs.util.isJsonNull(dbkjs.options.dbk) && dbkjs.options.dbk !== 0) {
                 var currentFeature = dbkjs.options.feature;
+                console.log(currentFeature);
                 var testObject = {
                     "options": {
                         "units": "m",
                         "srs": "EPSG:28992",
                         "layout": "A3 Landscape",
                         "dpi": 150,
-                        "mapTitle": dbkjs.options.organisation.title,
-                        "informelenaam": currentFeature.informelenaam || "",
-                        "formelenaam": currentFeature.formelenaam,
-                        "bouwlaag": currentFeature.bouwlaag || "",
-                        "objectgegevens": 'DBK ' + currentFeature.id + '\n\n' + 
-                                currentFeature.informelenaam + '\n' + 
-                                currentFeature.formelenaam + '\n' + 
-                                currentFeature.bouwlaag + '\n\n'
+                        "mapTitle": dbkjs.options.organisation.title
                     },
                     "pages": [{}]
                 };
-                if (currentFeature.omsnummer){
-                    testObject.options.objectgegevens += 'OMS nummer: ' + 
-                            currentFeature.omsnummer + '\n';
+                //add the features porperties
+                $.extend(testObject.options, currentFeature);
+                //remove unwanted stuff if available
+                if(currentFeature.adres){
+                    if (currentFeature.adres.length > 0) {
+                        var adr_str = '';
+                        $.each(currentFeature.adres, function(adr_index, adr) {
+                            adr_str += adr.openbareRuimteNaam + ' ' + adr.huisnummer + 
+                                adr.huisnummertoevoeging + adr.huisletter + '\n' + 
+                                adr.postcode + ' ' + adr.woonplaatsNaam + ' ' + adr.gemeenteNaam +
+                                '\n\n';
+                        });
+                        testObject.options.adres = adr_str;
+                    }
                 }
-                if (currentFeature.bhvaanwezig){
-                    testObject.options.objectgegevens += 'BHV: Aanwezig \n';
+                $.each(testObject.options, function(op_idx, op_val){
+                    if (dbkjs.util.isJsonNull(op_val)){
+                        delete testObject.options[op_idx];
+                    }
+                });
+                if (currentFeature.bijzonderheid){
+                    delete testObject.options.bijzonderheid;
+                    var adr_str = '';
+                        var set = {
+                            "Algemeen":'',
+                            "Preparatie":'', 
+                            "Preventie":'', 
+                            "Repressie": ''
+                        };
+                        $.each(currentFeature.bijzonderheid, function(adr_index, adr) {
+                            set[adr.soort] += ''  + adr.tekst + '\n';
+                            //adr_str += adr.soort + ': ' + adr.tekst + '\n\n';
+                        });
+                        if(set.Algemeen !== ''){
+                            testObject.options.bijz_algemeen = set.Algemeen;
+                        }
+                        if(set.Preparatie !== ''){
+                            testObject.options.bijz_preparatie = set.Preparatie;
+                        }
+                        if(set.Preventie !== ''){
+                            testObject.options.bijz_preventie = set.Preventie;
+                        }
+                        if(set.Repressie !== ''){
+                            testObject.options.bijz_preventie = set.Repressie;
+                        }
                 }
-                if (currentFeature.inzetprocedure){
-                    testObject.options.objectgegevens += 'Inzetprocedure: ' + 
-                            currentFeature.inzetprocedure + '\n';
+                if (currentFeature.brandcompartiment){
+                    delete testObject.options.brandcompartiment;
                 }
-                if (currentFeature.gebouwconstructie){
-                    testObject.options.objectgegevens += 'Gebouwconstructie: ' + 
-                            currentFeature.gebouwconstructie + '\n';
+                if (currentFeature.brandweervoorziening){
+                    delete testObject.options.brandweervoorziening;
                 }
-                if (currentFeature.gebruikstype){
-                    testObject.options.objectgegevens += 'Gebruikstype: ' + 
-                            currentFeature.gebruikstype + '\n';
+                if(currentFeature.contact){
+                    if (currentFeature.contact.length > 0) {
+                        var adr_str = '';
+                        $.each(currentFeature.contact, function(adr_index, adr) {
+                            adr_str += adr.naam + '\n' + 
+                                adr.telefoonnummer + '\n' + 
+                                '('  + adr.functie + ')\n\n';
+                        });
+                        testObject.options.contact = adr_str;
+                    }
                 }
+                if (currentFeature.foto){
+                    delete testObject.options.foto;
+                }
+                if (currentFeature.hulplijn){
+                    delete testObject.options.hulplijn;
+                }
+                if (currentFeature.pandgeometrie){
+                    delete testObject.options.pandgeometrie;
+                }
+                if (currentFeature.tekstobject){
+                    delete testObject.options.tekstobject;
+                }
+                if (currentFeature.toegangterrein){
+                    delete testObject.options.toegangterrein;
+                }
+                if (currentFeature.verdiepingen){
+                    delete testObject.options.verdiepingen;
+                }
+                
+                if(currentFeature.verblijf){
+                    if (currentFeature.verblijf.length > 0) {
+                        testObject.options.verblijf_title = 'groep\taantal\tbegin\teind\tniet zelfredzaam\n';
+                        $.each(currentFeature.verblijf, function(adr_index, adr) {
+                            adr_str += adr.typeAanwezigheidsgroep + '\t' + 
+                                adr.aantal + '\t' + 
+                                adr.tijdvakBegintijd + '\t' + 
+                                adr.tijdvakEindtijd + '\t' +
+                                adr.aantalNietZelfredzaam + '\n';
+                        });
+                        testObject.options.verblijf_entries = adr_str;
+                    }
+                    delete testObject.options.verblijf;
+                }
+                
                 if (currentFeature.images) {
+                    delete testObject.options.images;
                     if (currentFeature.images.length > 0) {
                         $.each(currentFeature.images, function(img_index, img) {
                             testObject.options["image" + (img_index + 1)] = encodeURI(img);
                         });
                     }
                 }
-                
-                testObject.options.adres = ' ';
-                if (currentFeature.adres) {
-                    if (currentFeature.adres.length > 0) {
-                        var adr_str = '';
-                        $.each(currentFeature.adres, function(adr_index, adr) {
-                            adr_str += adr + '\n\n';
-                        });
-                        testObject.options.adres = adr_str;
-                    }
-                }
-                testObject.options.contact = ' ';
-                if (currentFeature.contact) {
-                    if (currentFeature.contact.length > 0) {
-                        var adr_str = 'Contact:\n';
-                        $.each(currentFeature.contact, function(adr_index, adr) {
-                            adr_str += adr.naam + ' ' + adr.telefoonnummer + ' (' + adr.functie + ')' + '\n';
-                        });
-                        testObject.options.objectgegevens = adr_str;
-                    }
-                }
-                testObject.options.gevaarlijkestof = ' ';
                 if (currentFeature.gevaarlijkestof) {
                     if (currentFeature.gevaarlijkestof.length > 0) {
-                        var gev_str = 'Gevaarlijke stoffen:\n\ngevi/un           naam                              hoeveelheid              \n';
-                        gev_str += '-----------------------------------------------------------------------------\n';
+                        testObject.options.gevstof_title = 'gevi\tun\tnaam\thoeveelheid\t\informatie';
+                        var gev_str = '';
                         $.each(currentFeature.gevaarlijkestof, function(gev_index, gev) {
-                            gev_str += dbkjs.util.padspaces(gev.gevaarsindicatienummer + ' / ' + gev.UNnummer,'                  ') + 
-                                    dbkjs.util.padspaces(gev.naamStof,'                                  ') + 
-                                    dbkjs.util.padspaces(gev.hoeveelheid,'                  ') + '\n';
+                            gev_str += gev.gevaarsindicatienummer + '\t' + gev.UNnummer + 
+                                    gev.naamStof + '\t' + gev.hoeveelheid + '\t' + gev.aanvullendeInformatie + '\n';
                         });
-                        testObject.options.gevaarlijkestof = gev_str;
-                    }
-                }
-                testObject.options.bijzonderheden = ' ';
-                if (currentFeature.bijzonderheden) {
-                    if (currentFeature.bijzonderheden.length > 0) {
-                        var adr_str = '';
-                        var set = {
-                            "Algemeen":'Algemeen\n',
-                            "Preparatie":'Preparatie\n', 
-                            "Preventie":'Preventie\n', 
-                            "Repressie": 'Repressie\n'
-                        };
-                        $.each(currentFeature.bijzonderheden, function(adr_index, adr) {
-                            set[adr.soort] += '     * '  + adr.tekst + '\n';
-                            //adr_str += adr.soort + ': ' + adr.tekst + '\n\n';
-                        });
-                        if(set.Algemeen === 'Algemeen\n'){
-                            set.Algemeen = '';
-                        } else {
-                            set.Algemeen += '\n';
-                        }
-                        if(set.Preparatie === 'Preparatie\n'){
-                            set.Preparatie = '';
-                        }else {
-                            set.Preparatie += '\n';
-                        }
-                        if(set.Preventie === 'Preventie\n'){
-                            set.Preventie = '';
-                        } else {
-                            set.Preventie += '\n';
-                        }
-                        if(set.Repressie === 'Repressie\n'){
-                            set.Repressie = '';
-                        } else {
-                            set.Repressie += '\n';
-                        }
-                        testObject.options.bijzonderheden = adr_str + 
-                                set.Algemeen + 
-                                set.Preparatie + 
-                                set.Preventie + 
-                                set.Repressie + '\n';
-                    }
-                }
-                
-                testObject.options.verblijf = ' ';
-                if (currentFeature.verblijf) {
-                    if (currentFeature.verblijf.length > 0) {
-                        var adr_str = '';
-                        $.each(currentFeature.verblijf, function(adr_index, adr) {
-                            adr_str += adr.typeaanwezigheidsgroep + ': ' + 
-                                    adr.aantal + ' ' + 
-                                    adr.tijdvakbegintijd + ' - ' + 
-                                    adr.tijdvakeindtijd + '\n\n';
-                        });
-                        testObject.options.verblijf = adr_str;
+                        testObject.options.gevstof_entries = gev_str;
                     }
                 }
                 

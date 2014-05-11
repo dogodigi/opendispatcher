@@ -364,8 +364,6 @@ dbkjs.protocol.jsonDBK = {
             hoogstebouwlaag = i18n.t('dbk.unknown');
         };
         dbkjs.options.feature.bouwlaag = bouwlaag;
-        dbkjs.options.feature.laagstebouwlaag = laagstebouwlaag;
-        dbkjs.options.feature.hoogstebouwlaag = hoogstebouwlaag;
         var active_tab = _obj.active_tab === 'algemeen' ?  'active' : '';
         dbkjs.options.dbk = DBKObject.identificatie;
         dbkjs.disableloadlayer = true;
@@ -689,8 +687,11 @@ dbkjs.protocol.jsonDBK = {
                     active = '';
                 }
                 var timestamp = new Date().getTime();
-                var realpath = window.location.protocol + '//' + window.location.hostname + '/' + window.location.pathname +
-                        '/media/' + waarde.URL;
+                var extra = '';
+                if(window.location.pathname !== '/'){
+                    extra = window.location.pathname + '/';
+                }
+                var realpath = window.location.protocol + '//' + window.location.hostname + '/' + extra + 'media/' + waarde.URL;
                 if (waarde.filetype === "document" || waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
                     image_carousel_inner.append('<div class="item ' + active + 
                             '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath + 

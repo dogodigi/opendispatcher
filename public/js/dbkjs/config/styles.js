@@ -187,13 +187,11 @@ dbkjs.config.styles = {
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
             strokeWidth: "${mystrokewidth}",
-            strokeLinecap : "none",
             strokeDashstyle: "${mystrokedashstyle}",
             fontColor: "${mycolor}",
             pointRadius: 5,
             fontSize: "12px",
             fontWeight: "bold",
-            //rotation: "${rotation}",
             labelSelect: true,
             labelOutlineColor: "#ffffff",
             labelOutlineWidth: 1,
@@ -261,7 +259,6 @@ dbkjs.config.styles = {
     hulplijn: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
-            strokeLinecap : "none", 
             strokeDashstyle: "${mydash}",
             fillColor: "${mycolor}",
             fillOpacity: "${myopacity}",
