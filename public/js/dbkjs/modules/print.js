@@ -51,12 +51,16 @@ dbkjs.modules.print = {
                         "srs": "EPSG:28992",
                         "layout": "A3 Landscape",
                         "dpi": 150,
-                        "mapTitle": dbkjs.options.organisation.title
+                        "mapTitle": dbkjs.options.organisation.title,
+                        "titlepage": true
                     },
                     "pages": [{}]
                 };
                 //add the features porperties
                 $.extend(testObject.options, currentFeature);
+                testObject.options.informatie = {};
+                testObject.options.informatie.columns = ["soort", "tekst"];
+                testObject.options.informatie.data = [];
                 //remove unwanted stuff if available
                 if(currentFeature.adres){
                     if (currentFeature.adres.length > 0) {
@@ -76,7 +80,9 @@ dbkjs.modules.print = {
                     }
                 });
                 if (currentFeature.bijzonderheid){
-                    delete testObject.options.bijzonderheid;
+                    testObject.options.bijzonderheid = {};
+                    testObject.options.bijzonderheid.columns = ["soort", "tekst"];
+                    testObject.options.bijzonderheid.data = [];
                     var adr_str = '';
                         var set = {
                             "Algemeen":'',
@@ -89,24 +95,35 @@ dbkjs.modules.print = {
                             //adr_str += adr.soort + ': ' + adr.tekst + '\n\n';
                         });
                         if(set.Algemeen !== ''){
-                            testObject.options.bijz_algemeen = set.Algemeen;
+                            testObject.options.bijzonderheid.data.push({"soort": "Algemeen", "tekst": set.Algemeen});
                         }
                         if(set.Preparatie !== ''){
-                            testObject.options.bijz_preparatie = set.Preparatie;
+                            testObject.options.bijzonderheid.data.push({"soort": "Preparatie", "tekst": set.Preparatie});
                         }
                         if(set.Preventie !== ''){
-                            testObject.options.bijz_preventie = set.Preventie;
+                            testObject.options.bijzonderheid.data.push({"soort": "Preventie", "tekst": set.Preventie});
                         }
                         if(set.Repressie !== ''){
-                            testObject.options.bijz_preventie = set.Repressie;
+                            testObject.options.bijzonderheid.data.push({"soort": "Repressie", "tekst": set.Repressie});
                         }
                 }
                 if (currentFeature.brandcompartiment){
                     delete testObject.options.brandcompartiment;
+                    $.each(currentFeature.brandcompartiment, function(adr_index, adr) {
+                        if(!dbkjs.util.isJsonNull(adr.aanvullendeInformatie)){
+                            testObject.options.informatie.data.push({"soort": "Compartiment", "tekst": adr.typeScheiding + ": " +adr.aanvullendeInformatie});
+                        }
+                    });
                 }
                 if (currentFeature.brandweervoorziening){
                     delete testObject.options.brandweervoorziening;
+                    $.each(currentFeature.brandweervoorziening, function(adr_index, adr) {
+                        if(!dbkjs.util.isJsonNull(adr.aanvullendeInformatie)){
+                            testObject.options.informatie.data.push({"soort": "Voorziening", "tekst": adr.naamVoorziening + ": " + adr.aanvullendeInformatie});
+                        }
+                    });
                 }
+
                 if(currentFeature.contact){
                     if (currentFeature.contact.length > 0) {
                         var adr_str = '';
@@ -139,17 +156,13 @@ dbkjs.modules.print = {
                 
                 if(currentFeature.verblijf){
                     if (currentFeature.verblijf.length > 0) {
-                        testObject.options.verblijf_title = 'groep\taantal\tbegin\teind\tniet zelfredzaam\n';
+                        testObject.options.verblijf = {};
+                        testObject.options.verblijf.columns = ["groep", "aantal", "begin", "eind", "nietzelfredzaam"];
+                        testObject.options.verblijf.data = [];
                         $.each(currentFeature.verblijf, function(adr_index, adr) {
-                            adr_str += adr.typeAanwezigheidsgroep + '\t' + 
-                                adr.aantal + '\t' + 
-                                adr.tijdvakBegintijd + '\t' + 
-                                adr.tijdvakEindtijd + '\t' +
-                                adr.aantalNietZelfredzaam + '\n';
+                            testObject.options.verblijf.data.push(adr);
                         });
-                        testObject.options.verblijf_entries = adr_str;
                     }
-                    delete testObject.options.verblijf;
                 }
                 
                 if (currentFeature.images) {
@@ -162,14 +175,16 @@ dbkjs.modules.print = {
                 }
                 if (currentFeature.gevaarlijkestof) {
                     if (currentFeature.gevaarlijkestof.length > 0) {
-                        testObject.options.gevstof_title = 'gevi\tun\tnaam\thoeveelheid\t\informatie';
-                        var gev_str = '';
-                        $.each(currentFeature.gevaarlijkestof, function(gev_index, gev) {
-                            gev_str += gev.gevaarsindicatienummer + '\t' + gev.UNnummer + 
-                                    gev.naamStof + '\t' + gev.hoeveelheid + '\t' + gev.aanvullendeInformatie + '\n';
+                        testObject.options.gevaarlijkestof = {};
+                        testObject.options.gevaarlijkestof.columns = ["gevi", "un", "naam", "hoeveelheid", "informatie"];
+                        testObject.options.gevaarlijkestof.data = [];
+                        $.each(currentFeature.gevaarlijkestof, function(adr_index, adr) {
+                            testObject.options.gevaarlijkestof.data.push(adr);
                         });
-                        testObject.options.gevstof_entries = gev_str;
                     }
+                }
+                if(testObject.options.informatie.data.length === 0){
+                    delete testObject.options.informatie;
                 }
                 
                 var center = dbkjs.map.getCenter();
