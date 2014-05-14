@@ -176,9 +176,10 @@ dbkjs.modules.print = {
                 if (currentFeature.gevaarlijkestof) {
                     if (currentFeature.gevaarlijkestof.length > 0) {
                         testObject.options.gevaarlijkestof = {};
-                        testObject.options.gevaarlijkestof.columns = ["gevi", "un", "naam", "hoeveelheid", "informatie"];
+                        testObject.options.gevaarlijkestof.columns = ["icon", "gevaarsindicatienummer", "UNnummer", "naamStof", "hoeveelheid", "aanvullendeInformatie", "symboolCode"];
                         testObject.options.gevaarlijkestof.data = [];
                         $.each(currentFeature.gevaarlijkestof, function(adr_index, adr) {
+                            adr.icon = window.location.protocol + '//' + window.location.hostname + '/' + window.location.pathname + '/images/eughs/' + adr.symboolCode + '.png';
                             testObject.options.gevaarlijkestof.data.push(adr);
                         });
                     }

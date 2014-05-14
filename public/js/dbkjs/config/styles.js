@@ -187,6 +187,7 @@ dbkjs.config.styles = {
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
             strokeWidth: "${mystrokewidth}",
+            strokeLinecap : "butt",
             strokeDashstyle: "${mystrokedashstyle}",
             fontColor: "${mycolor}",
             pointRadius: 5,
@@ -259,6 +260,7 @@ dbkjs.config.styles = {
     hulplijn: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
+            strokeLinecap : "butt", 
             strokeDashstyle: "${mydash}",
             fillColor: "${mycolor}",
             fillOpacity: "${myopacity}",
