@@ -200,9 +200,9 @@ dbkjs.modules.print = {
                     "options": {
                         "units": "m",
                         "srs": "EPSG:28992",
-                        "layout": "A3 lplain",
+                        "layout": "A3 Landscape",
                         "dpi": 150,
-                        "mapTitle": dbkjs.options.organisation.titel
+                        "mapTitle": dbkjs.options.organisation.title
                     },
                     "pages": [{}]
                 };
