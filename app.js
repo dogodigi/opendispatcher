@@ -108,7 +108,6 @@ app.configure(function() {
     app.use(express.methodOverride());
     app.use('/locales', express.static(__dirname + '/locales'));
     app.use(express.static(path.join(__dirname, 'public')));
-    app.use('/web', express.static(__dirname + '/web'));
     app.use('/media', express.static(global.conf.get('media:path')));
     app.use('/symbols', express.static(global.conf.get('media:symbols')));
     app.use(app.router);
@@ -138,6 +137,13 @@ app.get('/api/features.json', dbk.getFeatures);
 app.get('/api/bag/adres/:id', bag.getAdres);
 app.get('/api/bag/panden/:id', bag.getPanden);
 app.get('/api/autocomplete/:searchphrase', bag.autoComplete);
+//app.get('/data/regio.json', routes.regio);
+app.get('/web/api/:id', web.getData);
+app.get('/web/api/bag/panden/:id.json', bag.getPanden);
+app.post('/web/api/validate', web.validate_POST);
+app.get('/web/api/validate/:token', web.validate_GET);
+app.use('/web', express.static(__dirname + '/web'));
+
 app.all('/nominatim',function(req,res){
  if(req.query){
    var request = require('request');
@@ -160,10 +166,6 @@ app.all('/proxy/',function(req,res){
     res.json({"booh": "Nah, nah, nah! You didn't say the magic words!"});
  }
 });
-//app.get('/data/regio.json', routes.regio);
-app.get('/webdata/:id', web.getData);
-app.post('/validate', web.validate_POST);
-app.get('/validate/:token', web.validate_GET);
 app.get('/eughs.html', routes.eughs);
 app.get('/nen1414.html', routes.nen1414);
 // Create an HTTP service.
