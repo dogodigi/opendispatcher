@@ -86,6 +86,13 @@ var dbk = require('./controllers/dbk.js');
 var anyDB = require('any-db');
 global.pool = anyDB.createPool(dbURL, {min: 2, max: 20});
 
+var deploy = global.conf.get("nodeless:deploy");
+if(deploy) {
+	console.log("Copying files from deploy dir %s...", deploy);
+
+	fsutil.copyRecursiveSync(deploy, outDir, copyOptions);
+}
+
 var organisationsDone = false, featuresDone = false, objectsToBeWritten = null;
 
 dbk.getOrganisation(
