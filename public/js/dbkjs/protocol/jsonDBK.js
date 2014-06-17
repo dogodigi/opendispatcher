@@ -228,6 +228,9 @@ dbkjs.protocol.jsonDBK = {
                     if(myGeometry.typeHulplijn === "Fence" ){
                         features1.push(myFeature.clone());
                     }
+                    if(myGeometry.typeHulplijn === "Fence_O" ){
+                        features1.push(myFeature.clone());
+                    }
                     if(myGeometry.typeHulplijn === "Gate" ){
                         features1.push(myFeature.clone());
                         features2.push(myFeature.clone());
