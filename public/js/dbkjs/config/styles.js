@@ -410,6 +410,9 @@ dbkjs.config.styles = {
                     case "Gate":
                         return "#ffffff";
                         break;
+                    case "Fence_O":
+                        return "#ff7f00";
+                        break;
                     default:
                         return "#000000";
                 }
