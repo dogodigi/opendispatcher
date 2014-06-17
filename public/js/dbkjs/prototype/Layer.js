@@ -53,6 +53,23 @@ dbkjs.Layer = dbkjs.Class({
         
         switch (layertype) {
             case "TMS":
+                // XXX in json you can't create OpenLayers objects. The following
+                // properties in params are converted to OpenLayers objects here:
+
+                // tileOrigin: [<lon>, <lat>] -> new OpenLayers.LonLat(<lon>, <lat>)
+                // maxExtent: [<minx>, <miny>, <maxx>, <maxy>] -> new OpenLayers.Bounds(<minx>, <miny>, <maxx>, <maxy>)
+                // projection: "EPSG:1234" -> new OpenLayers.Projection("EPSG:1234")
+
+                if($.isArray(params.tileOrigin)) {
+	                params.tileOrigin = new OpenLayers.LonLat(params.tileOrigin[0], params.tileOrigin[1]);
+                }
+                if($.isArray(params.maxExtent)) {
+	                var me = params.maxExtent;
+	                params.maxExtent = new OpenLayers.Bounds(me[0], me[1], me[2], me[3]);
+                }
+                if(typeof params.projection == "string") {
+	                params.projection = new OpenLayers.Projection(params.projection);
+                }
                 var ly = new OpenLayers.Layer.TMS(name, url,
                     params,
                     options
