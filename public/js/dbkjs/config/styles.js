@@ -292,6 +292,7 @@ dbkjs.config.styles = {
                     case "Conduit":
                     case "Gate":
                     case "Fence":
+                    case "Fence_O":
                         return 8;
                         break;
                      case "HEAT":
@@ -314,6 +315,7 @@ dbkjs.config.styles = {
                     case "Conduit":
                     case "Gate":
                     case "Fence":
+                    case "Fence_O":
                         return "1 20";
                         break;
 
@@ -337,6 +339,9 @@ dbkjs.config.styles = {
                     case "Gate":
                     case "Fence":
                         return "#000000";
+                        break;
+                    case "Fence_O":
+                        return "#ff7f00";
                         break;
                     case "Cable":
                         return "#ffff00";
@@ -381,6 +386,7 @@ dbkjs.config.styles = {
                     case "Conduit":
                     case "Gate":
                     case "Fence":
+                    case "Fence_O":
                         return 2;
                         break;
                     default:

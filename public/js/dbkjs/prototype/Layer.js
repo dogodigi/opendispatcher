@@ -106,7 +106,7 @@ dbkjs.Layer = dbkjs.Class({
                     this.layer.metadata.pl = metadata.pl;
                 }
             }
-            dv_panel_content.append('<img src="' + legend + '"/>');
+            dv_panel_content.append('<img src="' + (metadata.legend ? metadata.legend : legend) + '"/>');
        
 
             this.div.append(dv_panel_content);
