@@ -26,6 +26,16 @@ dbkjs.overlays = dbkjs.overlays || [];
 dbkjs.map = dbkjs.map || null;
 
 dbkjs.init = function() {
+
+    dbkjs.basePath = window.location.protocol + '//' + window.location.hostname;
+    var pathname = window.location.pathname;
+    // ensure basePath always ends with '/', remove 'index.html' if exists
+    if(pathname.charAt(pathname.length - 1) != '/') {
+        pathname = pathname.substring(0, pathname.lastIndexOf('/')+1);
+    }
+    // ensure single '/' between hostname and path
+    dbkjs.basePath = dbkjs.basePath + (pathname.charAt(0) == "/" ? pathname : "/" + pathname);
+
     dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
     dbkjs.options.organisation = {
         id: dbkjs.util.getQueryVariable(i18n.t('app.organisation'), 'demo')

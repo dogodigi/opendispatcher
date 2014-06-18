@@ -179,7 +179,7 @@ dbkjs.modules.print = {
                         testObject.options.gevaarlijkestof.columns = ["icon", "gevaarsindicatienummer", "UNnummer", "naamStof", "hoeveelheid", "aanvullendeInformatie", "symboolCode"];
                         testObject.options.gevaarlijkestof.data = [];
                         $.each(currentFeature.gevaarlijkestof, function(adr_index, adr) {
-                            adr.icon = window.location.protocol + '//' + window.location.hostname + '/' + window.location.pathname + '/images/eughs/' + adr.symboolCode + '.png';
+                            adr.icon = dbkjs.basePath + 'images/eughs/' + adr.symboolCode + '.png';
                             testObject.options.gevaarlijkestof.data.push(adr);
                         });
                     }

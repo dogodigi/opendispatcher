@@ -483,8 +483,7 @@ dbkjs.protocol.jsonDBK = {
                     "fid": "brandweervoorziening_ft_" + idx 
                 };
                 var myrow = $('<tr>' +
-                        '<td><img class="thumb" src="' + window.location.protocol + '//' + 
-                            window.location.hostname + '/' + window.location.pathname + "/images/" + myFeature.attributes.namespace + '/' + 
+                        '<td><img class="thumb" src="' + dbkjs.basePath + "images/" + myFeature.attributes.namespace + '/' + 
                             myFeature.attributes.type + '.png" alt="'+ 
                             myFeature.attributes.type +'" title="'+ 
                             myFeature.attributes.type+'"></td>' +
@@ -535,8 +534,7 @@ dbkjs.protocol.jsonDBK = {
                     "fid": "gevaarlijkestof_ft_" + idx
                 };
                 var myrow = $('<tr>' +
-                        '<td><img class="thumb" src="' + window.location.protocol + '//' + 
-                            window.location.hostname + '/' + window.location.pathname + '/images/eughs/' + 
+                        '<td><img class="thumb" src="' + dbkjs.basePath + 'images/eughs/' +
                             myFeature.attributes.type + '.png" alt="'+ 
                             myFeature.attributes.type +'" title="'+ 
                             myFeature.attributes.type+'"></td>' +
@@ -690,11 +688,7 @@ dbkjs.protocol.jsonDBK = {
                     active = '';
                 }
                 var timestamp = new Date().getTime();
-                var extra = '';
-                if(window.location.pathname !== '/'){
-                    extra = window.location.pathname + '/';
-                }
-                var realpath = window.location.protocol + '//' + window.location.hostname + '/' + extra + 'media/' + waarde.URL;
+                var realpath = dbkjs.basePath + 'media/' + waarde.URL;
                 if (waarde.filetype === "document" || waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
                     image_carousel_inner.append('<div class="item ' + active + 
                             '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath + 
