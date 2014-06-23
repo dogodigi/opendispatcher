@@ -35,33 +35,37 @@ exports.rmdirRecursiveSync = function(dir) {
 		}
 	}
 	fs.rmdirSync(dir);
-}
+};
 
 exports.copyRecursiveSync = function(from, to, options) {
-	if(typeof options == 'undefined') {
+	if(typeof options === 'undefined') {
 		options = {};
 	}
-	if(typeof options.onFileCopy == 'undefined') {
+	if(typeof options.onFileCopy === 'undefined') {
 		options.onFileCopy = function() {};
 	}
-	if(typeof options.onRecurseDirectory == 'undefined') {
+	if(typeof options.onRecurseDirectory === 'undefined') {
 		options.onRecurseDirectory = function() {};
 	}
 	
 	if(!fs.existsSync(to)) {
 		fs.mkdirSync(to);
 	}
+    try {
 	var files = fs.readdirSync(from);
-
-	for(var f in files) {
-		var fn = files[f];
-		var stats = fs.statSync(from + '/' + fn);
-		if(stats.isFile()) {
-			options.onFileCopy(from + '/' + fn, to + '/' + fn);
-			fs.writeFileSync(to + '/' + fn, fs.readFileSync(from + '/' + fn));
-		} else if(stats.isDirectory()) {
-			options.onRecurseDirectory(from + '/' + fn);
-			this.copyRecursiveSync(from + '/' + fn, to + '/' + fn, options);
-		}
-	}
-}
+    } catch (err) {
+        console.log('Cannot copy from ' + from + ' to '+ to);
+    } finally {
+        for(var f in files) {
+            var fn = files[f];
+            var stats = fs.statSync(from + '/' + fn);
+            if(stats.isFile()) {
+                options.onFileCopy(from + '/' + fn, to + '/' + fn);
+                fs.writeFileSync(to + '/' + fn, fs.readFileSync(from + '/' + fn));
+            } else if(stats.isDirectory()) {
+                options.onRecurseDirectory(from + '/' + fn);
+                this.copyRecursiveSync(from + '/' + fn, to + '/' + fn, options);
+            }
+        }
+    }
+};

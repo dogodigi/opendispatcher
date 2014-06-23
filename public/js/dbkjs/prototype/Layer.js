@@ -67,7 +67,7 @@ dbkjs.Layer = dbkjs.Class({
 	                var me = params.maxExtent;
 	                params.maxExtent = new OpenLayers.Bounds(me[0], me[1], me[2], me[3]);
                 }
-                if(typeof params.projection == "string") {
+                if(typeof params.projection === "string") {
 	                params.projection = new OpenLayers.Projection(params.projection);
                 }
                 var ly = new OpenLayers.Layer.TMS(name, url,
