@@ -49,7 +49,7 @@ var outDir = path.resolve(__dirname, "nodeless_output");
 try {
     fsutil.rmdirRecursiveSync(outDir);
 } catch(e) {
-	if(e.code !== 'ENOENT') {
+    if(e.code !== 'ENOENT') {
         throw e;
     }
 }
@@ -92,17 +92,16 @@ var organisationsDone = false, featuresDone = false, objectsToBeWritten = null;
 dbk.getOrganisation(
         {params: {id: 0}, query: {srid: 28992}},
 {json: function(json) {
-        if (json.organisation) {
-
-            var legendsToBeDownloaded = null;
+        var legendsToBeDownloaded = null;
+        if(json.organisation) {
 
             // cache legends locally
-	        if(json.organisation.wms) {
+            if(json.organisation.wms) {
                 legendsToBeDownloaded = 0;
-	            for(var i in json.organisation.wms) {
+                for(var i in json.organisation.wms) {
                     var wms = json.organisation.wms[i];
 
-	                if(typeof wms.legend === "string") {
+                    if(typeof wms.legend === "string") {
                         fs.mkdirSync(outDir + "/legend");
                         legendsToBeDownloaded++;
 
@@ -144,9 +143,9 @@ dbk.getOrganisation(
             console.log('An error occured, could not get organisation.json');
         }
         (function checkLegends(fn) {
-	            if(legendsToBeDownloaded !== null) {
-	                if(legendsToBeDownloaded !== 0) {
-	                    setTimeout(function() { checkLegends(fn) }, 50);
+            if(legendsToBeDownloaded !== null) {
+                if(legendsToBeDownloaded !== 0) {
+                    setTimeout(function() { checkLegends(fn) }, 50);
                 } else {
                     fn();
                 }
@@ -161,14 +160,12 @@ dbk.getOrganisation(
 }
 );
 
-var features;
-
 console.log("Create api/features.json...");
 fs.mkdirSync(outDir + '/api/object');
 dbk.getFeatures(
-	{ query: { srid: 28992 } }, 
-	{ json: function(json) {
-        features = json;
+    { query: { srid: 28992 } },
+    { json: function(json) {
+        var features = json;
         fs.writeFileSync(outDir + '/api/features.json', JSON.stringify(features));
 
         // write all /api/object/:id.json files
@@ -176,28 +173,28 @@ dbk.getFeatures(
         objectsToBeWritten = features.features.length;
         console.log("DBK objects: " + objectsToBeWritten);
 
-			for(var i in features.features) {
+        for(var i in features.features) {
             var feature = features.features[i];
 
-				if(feature.properties.identificatie) {
-					var filename = outDir + '/api/object/' + feature.properties.identificatie + '.json';
+            if(feature.properties.identificatie) {
+                var filename = outDir + '/api/object/' + feature.properties.identificatie + '.json';
 
                 var writeDbkObject = function(filename, identificatie) {
                     var req = {
-							query: { srid: 28992 },
-							params: { id: identificatie }
+                            query: { srid: 28992 },
+                            params: { id: identificatie }
                     };
 
-						dbk.getObject(req, { json: 
+                    dbk.getObject(req, { json:
                         function(json) {
                             // XXX can't detect error...
-								fs.writeFile(filename, JSON.stringify(json), function(err) {
-									if(err) throw err;
-                                    objectsToBeWritten--;
-                                });
+                            fs.writeFile(filename, JSON.stringify(json), function(err) {
+                                objectsToBeWritten--;
+                                if(err) throw err;
+                            });
                         }
                     });
-					}
+                }
 
                 writeDbkObject(filename, feature.properties.identificatie);
 
@@ -216,19 +213,19 @@ dbk.getFeatures(
 
 function copyDeploy() {
     var deploy = global.conf.get("nodeless:deploy");
-	if(deploy) {
+    if(deploy) {
         console.log("Copying files from deploy dir %s...", deploy);
 
         fsutil.copyRecursiveSync(deploy, outDir, copyOptions);
     }
 }
 function check() {
-    if (organisationsDone && featuresDone && (objectsToBeWritten && objectsToBeWritten === 0)) {
+    if (organisationsDone && featuresDone && (objectsToBeWritten !== null && objectsToBeWritten === 0)) {
         copyDeploy();
         console.log("Done");
         process.exit(0);
     } else {
-        setTimeout(check, 10);
+        setTimeout(check, 30);
     }
 }
 
