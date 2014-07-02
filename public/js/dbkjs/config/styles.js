@@ -49,11 +49,12 @@ dbkjs.scaleStyleValue = function(value, featureAttributeValue, attributeScaleFac
     }
     value = value + dbkjs.config.styleSizeAdjust;
     return value * dbkjs.getStyleScaleFactor();
-}
+};
 
 dbkjs.config.styles = {
     dbkfeature: new OpenLayers.StyleMap({
        "default" : new OpenLayers.Style({
+        cursor: "pointer",
         graphicWidth: "${mygraphicwidth}",
         graphicHeight: "${mygraphicheight}",
         fontColor: "${myfontcolor}",
