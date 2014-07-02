@@ -175,8 +175,8 @@ dbkjs.modules.feature = {
         return ret_title;
     },
     search_dbk: function() {
-        var _obj = dbkjs.modules.feature,
-            dbk_naam_array = _obj.getDbkSearchValues();
+        var _obj = dbkjs.modules.feature;
+        var dbk_naam_array = _obj.getDbkSearchValues();
         $('#search_input').typeahead('destroy');
         $('#search_input').val('');
         $('#search_input').typeahead({
@@ -189,8 +189,8 @@ dbkjs.modules.feature = {
         });
     },
     search_oms: function() {
-        var _obj = dbkjs.modules.feature,
-            dbk_naam_array = _obj.getOmsSearchValues();
+        var _obj = dbkjs.modules.feature;
+        var dbk_naam_array = _obj.getOmsSearchValues();
         $('#search_input').typeahead('destroy');
         $('#search_input').val('');
         $('#search_input').typeahead({
@@ -203,16 +203,18 @@ dbkjs.modules.feature = {
         });
     },
     getDbkSearchValues: function() {
-        var _obj = dbkjs.modules.feature,
-            dbk_naam_array = [];
+        var _obj = dbkjs.modules.feature
+        var dbk_naam_array = [];
         if(_obj.caches.hasOwnProperty('dbk')) {
             return _obj.caches.dbk;
         }
-        $.each(_obj.features, function(key, feature) {
-            // Extend feature object with value and id for searching
-            feature.value = feature.attributes.formeleNaam + ' ' + feature.attributes.informeleNaam;
-            feature.id = feature.attributes.identificatie;
-            dbk_naam_array.push(feature);
+        $.each(_obj.features, function(key, value) {
+            dbk_naam_array.push({
+                value: value.attributes.formeleNaam + ' ' + value.attributes.informeleNaam,
+                geometry: value.geometry,
+                id: value.attributes.identificatie,
+                attributes: value.attributes
+            });
         });
         _obj.caches.dbk = dbk_naam_array;
         return _obj.caches.dbk;
