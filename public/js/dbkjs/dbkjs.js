@@ -174,7 +174,7 @@ dbkjs.successAuth = function() {
         {
             clickout: true, 
             toggle: true,
-            multiple: false
+            multiple: false 
         }
     );
     dbkjs.selectControl.handlers.feature.stopDown = false;

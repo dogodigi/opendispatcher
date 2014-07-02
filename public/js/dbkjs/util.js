@@ -71,9 +71,7 @@ dbkjs.argParser =
             }
         },
         loadLayers: function() {
-            //console.log("loadLayers");
             var args = this.getParameters();
-            //console.log(args);
             if(!dbkjs.disableloadlayer){
                 if(args.ly && args.b) {
                     for(var i=0, len=this.map.layers.length; i<len; i++) {
@@ -95,7 +93,6 @@ dbkjs.argParser =
                             dbkjs.modules.feature.zoomToFeature(feature);
                         }
                     }
-                    //console.log('Got dbk ' + args[i18n.t('app.queryDBK')] + ', what now?');
                 }
             }
         },    

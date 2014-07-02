@@ -386,7 +386,7 @@ dbkjs.modules.search = {
             }
             mdiv.removeClass('open');
             mdiv.removeClass('active');
-            //e.preventDefault();
+            e.preventDefault();
             return false;
         });
     }

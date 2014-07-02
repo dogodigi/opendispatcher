@@ -138,7 +138,6 @@ dbkjs.Layer = dbkjs.Class({
                 }
                 var that = this;
                 dv_panel_heading.click(function(e) {
-                    //console.log(e.target.className);
                     if(e.target.className.indexOf('icon-info-sign') !== -1 || e.target.className.indexOf('accordion-toggle') !== -1) {
                         return;
                     }
