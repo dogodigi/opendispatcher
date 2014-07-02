@@ -40,30 +40,93 @@ dbkjs.modules.search = {
         fillOpacity: 0.1
     },
     layer: null,
-    register: function() {
+    searchPopup: null,
+    viewmode: 'default',
+    register: function(options) {
+        if(options && options.viewmode) {
+            this.viewmode = options.viewmode;
+        }
+        if(this.viewmode === 'fullscreen') {
+            this.fullscreenLayout();
+        } else {
+            this.inlineLayout();
+        }
+        this.layer = new OpenLayers.Layer.Vector('search');
+        dbkjs.map.addLayer(this.layer);
+    },
+    inlineLayout: function() {
         var search_div = $('#btn-grp-search');
-        var search_group = $('<div class="input-group navbar-btn"></div>');
+        var search_group = $('<div></div>').addClass('input-group navbar-btn');
         var search_pre = $('<span id="search-add-on" class="input-group-addon"><i class="icon-building"></i></span>');
         var search_input = $('<input id="search_input" name="search_input" type="text" class="form-control" placeholder="' + i18n.t("search.dbkplaceholder") + '">');
         var search_btn_grp = $(
-                '<div class="input-group-btn pull-right">' +
-                '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' + i18n.t("search.search") + ' <span class="caret"></span></button>' +
-                '<ul class="dropdown-menu pull-right">' +
+            '<div class="input-group-btn">' +
+                '<button type="button" class="btn btn-default dropdown-toggle needsclick" data-toggle="dropdown">' + i18n.t("search.search") + ' <span class="caret"></span></button>' +
+                '<ul class="dropdown-menu pull-right" id="search_dropdown">' +
                 '<li><a href="#" id="s_dbk"><i class="icon-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
                 '<li><a href="#" id="s_oms"><i class="icon-bell"></i> ' + i18n.t("search.oms") + '</a></li>' +
                 '<li><a href="#" id="s_adres"><i class="icon-home"></i> ' + i18n.t("search.address") + '</a></li>' +
                 '<li><a href="#" id="s_coord"><i class="icon-pushpin"></i> ' + i18n.t("search.coordinates") + '</a></li>' +
                 '</ul>' +
                 '</div>'
-                );
+        );
         search_group.append(search_pre);
         search_group.append(search_input);
         search_group.append(search_btn_grp);
         search_div.append(search_group);
-        this.layer = new OpenLayers.Layer.Vector('search');
-        dbkjs.map.addLayer(this.layer);
-        this.activate();
         search_div.show();
+        this.activate();
+    },
+    fullscreenLayout: function() {
+        var _obj = dbkjs.modules.search;
+        $('<a></a>')
+            .attr({
+                'id': 'btn_opensearch',
+                'class': 'btn btn-default navbar-btn',
+                'href': '#',
+                'title': i18n.t('map.search.search')
+            })
+            .append('<i class="icon-search"></i>')
+            .click(function(e) {
+                e.preventDefault();
+                _obj.showSearchPopup();
+            })
+            .appendTo('#btngrp_3');
+    },
+    showSearchPopup: function() {
+        var _obj = dbkjs.modules.search;
+        if(_obj.searchPopup === null) {
+            _obj.initSearchPopup();
+        }
+        _obj.searchPopup.show();
+        $('#search_input').focus();
+    },
+    initSearchPopup: function() {
+        var _obj = dbkjs.modules.search;
+        _obj.searchPopup = dbkjs.util.createModalPopup({
+            title: 'Zoeken'
+        });
+        _obj.searchPopup.getView().append(_obj.createSearchGroup());
+        _obj.searchPopup.getView().append('<div class="row"><div class="col-lg-12 search_result"></div></div>');
+        _obj.activateFullscreen();
+    },
+    createSearchGroup: function() {
+        var search_group = $('<div></div>').addClass('input-group input-group-lg');
+        var search_input = $('<input id="search_input" name="search_input" type="text" class="form-control" placeholder="' + i18n.t("search.dbkplaceholder") + '">');
+        var search_btn_grp = $(
+            '<span class="btn-group input-group-btn">' +
+                '<a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-building"></i> <span class="dropdown-text">' + i18n.t("search.dbk") + '</span> <span class="caret"></span></a>' +
+                '<ul class="dropdown-menu pull-right" id="search_dropdown" role="menu">' +
+                    '<li><a href="#" id="s_dbk"><i class="icon-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
+                    '<li><a href="#" id="s_oms"><i class="icon-bell"></i> ' + i18n.t("search.oms") + '</a></li>' +
+                    '<li><a href="#" id="s_adres"><i class="icon-home"></i> ' + i18n.t("search.address") + '</a></li>' +
+                    '<li><a href="#" id="s_coord"><i class="icon-pushpin"></i> ' + i18n.t("search.coordinates") + '</a></li>' +
+                '</ul>' +
+            '</span>'
+        );
+        search_group.append(search_input);
+        search_group.append(search_btn_grp);
+        return $('<div class="row"></div>').append($('<div class="col-lg-12"></div>').append(search_group));
     },
     zoomAndPulse: function(lonlat){
         var _obj = dbkjs.modules.search;
@@ -96,6 +159,9 @@ dbkjs.modules.search = {
         ]);
         dbkjs.map.zoomToExtent(_obj.layer.getDataExtent());
         _obj.pulsate(circle);
+        if(_obj.viewmode === 'fullscreen' && _obj.searchPopup) {
+            _obj.searchPopup.hide();
+        }
     },
     pulsate: function(feature) {
         var _obj = dbkjs.modules.search;
@@ -133,6 +199,142 @@ dbkjs.modules.search = {
         };
         window.resizeInterval = window.setInterval(resize, 50, point, radius);
     },
+    activateFullscreen: function() {
+        var _obj = dbkjs.modules.search,
+            searchField = $('#search_input'),
+            currentSearch = 'dbk',
+            dropdownConfig = {
+                's_adres': { 'icon': 'icon-home', 'text': i18n.t("search.address"), 'placeholder': i18n.t("search.addressplaceholder"), 'search': 'address' },
+                's_coord': { 'icon': 'icon-pushpin', 'text': i18n.t("search.coordinates"), 'placeholder': i18n.t("search.coordplaceholder"), 'search': 'coordinates' },
+                's_dbk': { 'icon': 'icon-building', 'text': i18n.t("search.dbk"), 'placeholder': i18n.t("search.dbkplaceholder"), 'search': 'dbk' },
+                's_oms': { 'icon': 'icon-bell', 'text': i18n.t("search.oms"), 'placeholder': i18n.t("search.omsplaceholder"), 'search': 'oms' }
+            };
+
+        searchField.on('keyup', function(e) {
+            var searchText = searchField.val();
+            if(searchText.length === 0) {
+                $('.search_result').html('');
+                return;
+            }
+            if(currentSearch === 'dbk') {
+                _obj.searchDbkOms(dbkjs.modules.feature.getDbkSearchValues(), searchText);
+            }
+            if(currentSearch === 'oms') {
+                _obj.searchDbkOms(dbkjs.modules.feature.getOmsSearchValues(), searchText);
+            }
+            if(currentSearch === 'coordinates') {
+                var loc = _obj.handleCoordinatesSearch();
+                if(loc && e.keyCode === 13) {
+                    dbkjs.modules.updateFilter(0);
+                    _obj.zoomAndPulse(loc);
+                }
+            }
+            if(currentSearch === 'address') {
+                _obj.handleAddressSearch(searchText);
+            }
+        });
+        $('#search_dropdown a').click(function(e) {
+            var searchType = $(this).attr('id'),
+                dropdownText = $('.dropdown-text'),
+                dropdownIcon = dropdownText.prev();
+            e.preventDefault();
+            if (dropdownConfig.hasOwnProperty(searchType)) {
+                dropdownIcon.attr( "class", dropdownConfig[searchType]['icon'] );
+                dropdownText.text(dropdownConfig[searchType]['text']);
+                searchField.attr("placeholder", dropdownConfig[searchType]['placeholder']);
+                currentSearch = dropdownConfig[searchType]['search'];
+                if(currentSearch === 'coordinates' || currentSearch === 'oms') {
+                    searchField.attr("type", 'number');
+                } else {
+                    searchField.attr("type", 'text');
+                }
+            }
+        });
+    },
+    searchDbkOms: function(searchValues, searchText) {
+        var _obj = dbkjs.modules.search,
+            regExp = new RegExp(searchText, 'ig');
+        _obj.showSearchResult(searchValues.filter(function(elem, pos) {
+            return regExp.test(elem.value);
+        }), function(value) {
+            dbkjs.modules.feature.handleDbkOmsSearch(value);
+        });
+    },
+    showSearchResult: function(searchResult, clickCallback) {
+        var _obj = dbkjs.modules.search,
+            searchResultContainer = $('.search_result'),
+            item_ul = $('<ul class="nav nav-pills nav-stacked"></ul>');
+        searchResultContainer.html('');
+        searchResult.forEach(function(value) {
+            item_ul.append($('<li><a href="#">' + value.value + '</a></li>').on('click', function(e) {
+                e.preventDefault();
+                if(clickCallback) {
+                    clickCallback(value);
+                }
+                _obj.searchPopup.hide();
+            }));
+        });
+        searchResultContainer.append(item_ul);
+    },
+    handleCoordinatesSearch: function() {
+        var _obj = dbkjs.modules.search;
+        var ruwe_input = $('#search_input').val();
+        var loc;
+        var coords = ruwe_input.split(/[\s,]+/);;
+        coords[0] = parseFloat(coords[0]);
+        coords[1] = parseFloat(coords[1]);
+        if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+            if (coords[0] > 50.0 && coords[0] < 54.0 && coords[1] > 2.0 && coords[1] < 8.0) { //wgs84
+                loc = new OpenLayers.LonLat(coords[1], coords[0]).transform(new OpenLayers.Projection("EPSG:4326"),dbkjs.map.getProjectionObject());
+                $('#search_input').removeClass('has-error');
+                return loc;
+            } else if (coords[0] > -14000.0 && coords[0] < 293100.0 && coords[1] > 293100.0 && coords[1] < 650000.0) { //rd
+                loc = new OpenLayers.LonLat(coords[0], coords[1]).transform(new OpenLayers.Projection("EPSG:28992"), dbkjs.map.getProjectionObject());
+                $('#search_input').removeClass('has-error');
+                return loc;
+            } else {
+                // @todo build function to handle map fault
+                //maak het vakje rood, geen geldige coordinaten
+                $('#search_input').addClass('has-error');
+            }
+        } else {
+            $('#search_input').addClass('has-error');
+        }
+        return null;
+    },
+    handleAddressSearch: function(searchText) {
+        var _obj = dbkjs.modules.search,
+            url = (dbkjs.options.urls && dbkjs.options.urls.autocomplete
+                   ? dbkjs.options.urls.autocomplete
+                   : dbkjs.basePath + 'api/autocomplete/')
+                 + encodeURI(searchText);
+        $.ajax(url, {
+            dataType: 'json',
+            success: function(parsedResponse) {
+                _obj.showSearchResult(_obj.parseAddressResponse(parsedResponse), function(value) {
+                    dbkjs.modules.updateFilter(value.id);
+                    _obj.zoomAndPulse(value.geometry.getBounds().getCenterLonLat());
+                });
+            }
+        });
+    },
+    parseAddressResponse: function(parsedResponse) {
+        var dataset = [];
+        for (i = 0; i < parsedResponse.length; i++) {
+            var pnt = new OpenLayers.Geometry.Point(
+                parsedResponse[i].lon,
+                parsedResponse[i].lat).transform(
+                    new OpenLayers.Projection("EPSG:4326"),
+                    dbkjs.map.getProjectionObject()
+                );
+            dataset.push({
+                value: parsedResponse[i].display_name,
+                id: parsedResponse[i].osm_id,
+                geometry: pnt
+            });
+        }
+        return dataset;
+    },
     activate: function() {
         var _obj = dbkjs.modules.search;
         $('#search_input').typeahead({
@@ -141,22 +343,7 @@ dbkjs.modules.search = {
                 //url: 'nominatim?format=json&countrycodes=nl&addressdetails=1&q=%QUERY',
                 url: 'api/autocomplete/%QUERY',
                 filter: function(parsedResponse) {
-                    var dataset = [];
-
-                    for (i = 0; i < parsedResponse.length; i++) {
-                        var pnt = new OpenLayers.Geometry.Point(
-                                parsedResponse[i].lon,
-                                parsedResponse[i].lat).transform(
-                                new OpenLayers.Projection("EPSG:4326"),
-                                dbkjs.map.getProjectionObject()
-                                );
-                        dataset.push({
-                            value: parsedResponse[i].display_name,
-                            id: parsedResponse[i].osm_id,
-                            geometry: pnt
-                        });
-                    }
-                    return dataset;
+                    return _obj.parseAddressResponse(parsedResponse);
                 }
             }
         });
@@ -164,13 +351,7 @@ dbkjs.modules.search = {
             dbkjs.modules.updateFilter(datum.id);
             _obj.zoomAndPulse(datum.geometry.getBounds().getCenterLonLat());
         });
-        $('#search_input').click(
-                //function(e) {
-                //    console.log(e);
-                //    $(this).val('');
-                //}
-        );
-        $('div.btn-group ul.dropdown-menu li a').click(function(e) {
+        $('#search_dropdown a').click(function(e) {
             $('#search_input').typeahead('destroy');
             $('#search_input').val('');
             var mdiv = $(this).parent().parent().parent();
@@ -187,29 +368,10 @@ dbkjs.modules.search = {
                 mbtn.html('<i class="icon-pushpin"></i>');
                 minp.attr("placeholder", i18n.t("search.coordplaceholder"));
                 $('#search_input').change(function() {
-                    var ruwe_input = $('#search_input').val();
-                    var loc;
-                    var coords = ruwe_input.split(/[\s,]+/);;
-                    coords[0] = parseFloat(coords[0]);
-                    coords[1] = parseFloat(coords[1]);
-                    if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
-                        if (coords[0] > 50.0 && coords[0] < 54.0 && coords[1] > 2.0 && coords[1] < 8.0) { //wgs84
-                            loc = new OpenLayers.LonLat(coords[1], coords[0]).transform(new OpenLayers.Projection("EPSG:4326"),dbkjs.map.getProjectionObject());
-                            dbkjs.modules.updateFilter(0);
-                            _obj.zoomAndPulse(loc);
-                            $('#search_input').removeClass('has-error');
-                        } else if (coords[0] > -14000.0 && coords[0] < 293100.0 && coords[1] > 293100.0 && coords[1] < 650000.0) { //rd
-                            loc = new OpenLayers.LonLat(coords[0], coords[1]).transform(new OpenLayers.Projection("EPSG:28992"), dbkjs.map.getProjectionObject());
-                            dbkjs.modules.updateFilter(0);
-                            _obj.zoomAndPulse(loc);
-                            $('#search_input').removeClass('has-error');
-                        } else {
-                            // @todo build function to handle map fault
-                            //maak het vakje rood, geen geldige coordinaten
-                            $('#search_input').addClass('has-error');
-                        }
-                    } else {
-                        $('#search_input').addClass('has-error');
+                    var loc = _obj.handleCoordinatesSearch();
+                    if(loc) {
+                        dbkjs.modules.updateFilter(0);
+                        _obj.zoomAndPulse(loc);
                     }
                     return false;
                 });

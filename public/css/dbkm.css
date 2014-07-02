@@ -8,14 +8,79 @@ html, body {
     width: 33%;
     height: auto;
 }
-#c_minimap, #c_settings, #tb01, #tb02, #permalink, #btn_refresh, #btn-grp-search, #footer, .drag-handle{
+#c_minimap, #c_settings, #zoom_prev, #zoom_next, #zoom_in, #zoom_out, #permalink, #btn_refresh,  #btn_measure_distance, #btn_measure_area, #footer, .drag-handle{
     display: none !important;
 }
 .dialog{
     width: 100%;
 }
-.btn, .close, #infopanel_h {
+.main-button-group {
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+}
+.main-button-group .btn {
+    font-size: 2.5em !important;
+}
+.main-button-group .btn.dbk-title {
+    margin-top: 8px;
+    margin-left: 100px;
+    float: left;
+    visibility: hidden;
+    font-size: 16px !important;
+    line-height: 50px;
+    max-width: 450px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+#tb03 {
+    text-shadow: -4px 0 white, 0 4px white, 4px 0 white, 0 -4px white;
+}
+.toggleObject {
+    background-color: #4cae4c !important;
+}
+.togglePreventive {
+    background-color: #ffff4f !important;
+}
+.togglePreparative {
+    background-color: #0e90d2 !important;
+}
+.toggleDanger {
+    background-color: #b92c28 !important;
+}
+.layertoggle-btn-group .btn {
+    text-shadow: -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white;
+    position: relative;
+}
+.layertoggle-btn-group .active:after {
+    content: ' ';
+    position: absolute;
+    display: block;
+    right: 3px;
+    top: 3px;
+    height: 10px;
+    width: 10px;
+    border-radius: 5px;
+    background-color: #4cd964;
+    border: 2px solid #FFF;
+}
+.close, #infopanel_h {
     font-size: 2em !important;
+}
+.modal-popup .panel-heading {
+    display: block;
+    padding: 10px 15px;
+    cursor: pointer;
+    color: #428bca;
+}
+.modal-popup .panel-heading .panel-title {
+    font-weight: normal;
+    font-size: 1em;
+}
+.modal-popup .panel-heading.active {
+    background-color: #428bca;
+    color: #FFF;
 }
 #btn-grp-search {
     line-height: 0 !important;
@@ -438,4 +503,80 @@ input[type="radio"], input[type="checkbox"] {
 }
 .olImageLoadError {
     display: none !important;
+}
+
+/* Toggles */
+.layertoggle-btn-group {
+    margin-right: 15px;
+}
+
+/* Modal popups */
+.modal-popup {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    width: 0px;
+    overflow: hidden;
+
+    -webkit-transition: width .25s;
+    transition: width .25s;
+
+    z-index: 10000;
+    background-color: #FFFFFF;
+    /*background-color: rgba(255, 255, 255, .95);*/
+}
+.modal-popup-active {
+    width: 100%;
+}
+.modal-popup-close {
+    float: left;
+    color: #428bca; /*#007AFF;*/
+    font-size: 16px;
+    padding: 15px;
+    display: block;
+    width: 90px;
+    height: 55px;
+}
+.modal-popup-close:hover {
+    text-decoration: none;
+}
+.modal-popup-title {
+    height: 55px;
+    padding: 15px;
+    overflow: hidden;
+    font-size: 16px;
+}
+.modal-popup-view {
+    padding: 0 15px 15px 15px;
+    overflow: auto;
+    position: absolute;
+    top: 55px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+/* Some search popup fixes */
+.modal-popup .input-group {
+    width: 100%;
+}
+.modal-popup .twitter-typeahead {
+    float: left;
+    width: 100%;
+    height: 46px;
+}
+.modal-popup .twitter-typeahead #search_input {
+    height: 46px;
+    font-size: 18px;
+    max-width: none !important;
+    width: 100%;
+}
+.modal-popup #search_input {
+    max-width: none !important;
+}
+.modal-popup .btn {
+    font-size: 18px !important;
+}
+.modal-popup .input-group-addon, .modal-popup .input-group-btn {
+    width: 1% !important;
 }

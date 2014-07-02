@@ -44,7 +44,7 @@ dbkjs.modules.print = {
     doPrint: function(){
         if (!dbkjs.util.isJsonNull(dbkjs.options.dbk) && dbkjs.options.dbk !== 0) {
                 var currentFeature = dbkjs.options.feature;
-                console.log(currentFeature);
+                //console.log(currentFeature);
                 var testObject = {
                     "options": {
                         "units": "m",

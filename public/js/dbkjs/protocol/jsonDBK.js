@@ -29,6 +29,7 @@ dbkjs.protocol.jsonDBK = {
     panel_tabs: null,
     panel_algemeen: null,
     active_tab:'algemeen',
+    layersVisible: false,
     init: function() {
         var _obj = dbkjs.protocol.jsonDBK;
         _obj.layerPandgeometrie = new OpenLayers.Layer.Vector("Pandgeometrie",{
@@ -94,14 +95,33 @@ dbkjs.protocol.jsonDBK = {
     },
     hideLayers: function(){
         var _obj = dbkjs.protocol.jsonDBK;
+        _obj.layersVisible = false;
         $.each(_obj.layers, function(lindex, lyr) {
             lyr.setVisibility(false);
         });
     },
     showLayers: function(){
         var _obj = dbkjs.protocol.jsonDBK;
+        _obj.layersVisible = true;
         $.each(_obj.layers, function(lindex, lyr) {
-            lyr.setVisibility(true);
+            //afhankelijkheid van module layertoggle kan niet worden afgedwongen.
+            if(dbkjs.modules.layertoggle){
+                if(dbkjs.modules.layertoggle.isLayerEnabled(lyr.name)) {
+                    lyr.setVisibility(true);
+                }
+            } else {
+                lyr.setVisibility(true);
+            }
+        });
+    },
+    resetLayers: function() {
+        var _obj = dbkjs.protocol.jsonDBK;
+        $.each(_obj.layers, function(lindex, lyr) {
+            var currentVisibility = _obj.layersVisible;
+            if(currentVisibility && !dbkjs.modules.layertoggle.isLayerEnabled(lyr.name)) {
+                currentVisibility = false;
+            }
+            lyr.setVisibility(currentVisibility);
         });
     },
     getfeatureinfo: function(e){
@@ -124,9 +144,22 @@ dbkjs.protocol.jsonDBK = {
     process: function(feature) {
         $('#infopanel_f').html('');
         if (feature && feature.attributes && feature.attributes.typeFeature) {
+            if(feature.data && feature.data.hasOwnProperty('formeleNaam') && feature.data.hasOwnProperty('informeleNaam')) {
+                $('.dbk-title')
+                    .text(feature.data.formeleNaam + ' ' + feature.data.informeleNaam)
+                    .css('visibility', 'visible')
+                    .on('click', function() {
+                        dbkjs.modules.feature.zoomToFeature(feature);
+                    });
+            }
             if (!dbkjs.options.feature || feature.id !== dbkjs.options.feature.id) {
                 if (!dbkjs.protocol.jsonDBK.processing) {
-                    $('#infopanel').hide();
+                    if(dbkjs.viewmode == 'fullscreen') {
+                        dbkjs.util.getModalPopup('infopanel').hide();
+                        dbkjs.util.getModalPopup('dbkinfopanel').hide();
+                    } else {
+                        $('#infopanel').hide();
+                    }
                     dbkjs.protocol.jsonDBK.processing = true;
                     dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>', i18n.t('dialogs.running'), 'alert-info');
                         if(feature.attributes.typeFeature === 'Object'){
@@ -138,9 +171,14 @@ dbkjs.protocol.jsonDBK = {
             } else {
                 //Check if processing is finished
                 if (!dbkjs.protocol.jsonDBK.processing) {
-                    $('#infopanel_b').html(dbkjs.options.feature.div);
-                    $('#infopanel_f').html('');
-                    $('#infopanel').show();
+
+                    if(dbkjs.viewmode === 'fullscreen') {
+                        $('#dbkinfopanel_b').html(dbkjs.options.feature.div);
+                    } else {
+                        $('#infopanel_b').html(dbkjs.options.feature.div);
+                        $('#infopanel_f').html('');
+                        $('#infopanel').show();
+                    }
                 }
             }
         }
@@ -179,7 +217,11 @@ dbkjs.protocol.jsonDBK = {
                 _obj.constructGevaarlijkestof(dbkjs.options.feature.gevaarlijkestof);
                 div.append(_obj.panel_group);
                 div.append(_obj.panel_tabs);
-                $('#infopanel_b').html(div);
+                if(dbkjs.viewmode === 'fullscreen') {
+                    $('#dbkinfopanel_b').html(div);
+                } else {
+                    $('#infopanel_b').html(div);
+                }
                 $('#systeem_meldingen').hide();
             }
             if(dbkjs.options.feature.pandgeometrie){
@@ -306,7 +348,11 @@ dbkjs.protocol.jsonDBK = {
                 _obj.layerTekstobject.addFeatures(features);
                 _obj.activateSelect(_obj.layerTekstobject);
             }
-            $('#infopanel').show();
+            if(dbkjs.viewmode == 'fullscreen') {
+                //dbkjs.util.getModalPopup('infopanel').show();
+            } else {
+                $('#infopanel').show();
+            }
             _obj.processing = false;
         } else {
             dbkjs.options.feature = null;
@@ -478,6 +524,7 @@ dbkjs.protocol.jsonDBK = {
                     "name": myGeometry.naamVoorziening,
                     "information": myGeometry.aanvullendeInformatie,
                     "rotation": myGeometry.hoek,
+                    "category": myGeometry.categorie,
                     "namespace": myGeometry.namespace,
                     "radius": myGeometry.radius,
                     "fid": "brandweervoorziening_ft_" + idx 
@@ -527,6 +574,7 @@ dbkjs.protocol.jsonDBK = {
                 myFeature.attributes = { 
                     "type" : myGeometry.symboolCode, 
                     "name": myGeometry.naamStof,
+                    "namespace": myGeometry.namespace,
                     "quantity": myGeometry.hoeveelheid,
                     "indication": myGeometry.gevaarsindicatienummer,
                     "information": myGeometry.aanvullendeInformatie,
@@ -534,7 +582,7 @@ dbkjs.protocol.jsonDBK = {
                     "fid": "gevaarlijkestof_ft_" + idx
                 };
                 var myrow = $('<tr>' +
-                        '<td><img class="thumb" src="' + dbkjs.basePath + 'images/eughs/' +
+                        '<td><img class="thumb" src="' + dbkjs.basePath + 'images/' + myFeature.attributes.namespace + '/' +
                             myFeature.attributes.type + '.png" alt="'+ 
                             myFeature.attributes.type +'" title="'+ 
                             myFeature.attributes.type+'"></td>' +

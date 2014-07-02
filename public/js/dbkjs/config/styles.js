@@ -22,6 +22,35 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.config = dbkjs.config || {};
 OpenLayers.Renderer.symbol.arrow = [0,2, 1,0, 2,2, 1,0, 0,2];
+
+// Set to true to enable style scaling according to map scale
+dbkjs.config.styleScaleAdjust = true;
+// Scale at which scaled values are returned as original
+dbkjs.config.originalScale = 595.2744;
+// User style value adjustment (before scaling)
+dbkjs.config.styleSizeAdjust = 0;
+
+// Factor to scale styling elements with
+dbkjs.getStyleScaleFactor = function() {
+    if(!dbkjs.config.styleScaleAdjust) {
+        return 1;
+    }
+    return dbkjs.config.originalScale / dbkjs.map.getScale();
+};
+
+// Return a styling value with user size adjustment and scaled according to map
+// map scale (if style scaling is enabled). If featureAttributeValue is not
+// undefined use that instead of the first argument. If attributeScaleFactor
+// is not undefined scale the featureAttributeValue by that factor.
+dbkjs.scaleStyleValue = function(value, featureAttributeValue, attributeScaleFactor) {
+    if(featureAttributeValue !== undefined) {
+        attributeScaleFactor = attributeScaleFactor ? attributeScaleFactor : 1;
+        value = featureAttributeValue * attributeScaleFactor;
+    }
+    value = value + dbkjs.config.styleSizeAdjust;
+    return value * dbkjs.getStyleScaleFactor();
+}
+
 dbkjs.config.styles = {
     dbkfeature: new OpenLayers.StyleMap({
        "default" : new OpenLayers.Style({
@@ -514,7 +543,8 @@ dbkjs.config.styles = {
         "default": new OpenLayers.Style({
             pointRadius: "${myradius}",
             externalGraphic: "${myicon}",
-            rotation: "${myrotation}"
+            rotation: "${myrotation}",
+            display: "${mydisplay}"
         }, {
             context: {
                 myicon: function(feature) {
@@ -528,50 +558,73 @@ dbkjs.config.styles = {
                     }
                 },
                 myradius: function(feature){
-                    if(feature.attributes.radius){
-                        return feature.attributes.radius;
+                    return dbkjs.scaleStyleValue(12, feature.radius);
+                },
+                mydisplay: function(feature) {
+                    if(dbkjs.options.visibleCategories
+                    && feature.attributes.category
+                    && dbkjs.options.visibleCategories[feature.attributes.category] === false) {
+                        return "none";
                     } else {
-                        return 12;
+                        // any string except "none" works here
+                        return "true";
                     }
                 }
             }
         }), 'select': new OpenLayers.Style({
-            pointRadius: 20
+            pointRadius: "${myradius}"
+        }, {
+            context: {
+                myradius: function(feature) {
+                    return dbkjs.scaleStyleValue(20, feature.radius, 1.66);
+                }
+            }
         }), 'temporary': new OpenLayers.Style({
             pointRadius: "${myradius}"
         }, {
             context: {
                 myradius: function(feature){
-                    if(feature.attributes.radius){
-                        return feature.attributes.radius * 2;
-                    } else {
-                        return 24;
-                    }
+                    return dbkjs.scaleStyleValue(24, feature.radius, 2);
                 }
             }
         })
     }),
     gevaarlijkestof: new OpenLayers.StyleMap({
         "default": new OpenLayers.Style({
-            pointRadius: 10,
+            pointRadius: "${myradius}",
             externalGraphic: "${myicon}"
         }, {
             context: {
+                myradius: function(feature){
+                    return dbkjs.scaleStyleValue(12);
+                },
                 myicon: function(feature) {
-                    return dbkjs.basePath + "images/eughs/" + feature.attributes.type + ".png";
+                    return dbkjs.basePath + "images/" + feature.attributes.namespace + "/" + feature.attributes.type + ".png";
                 }
             }
         }), 'select': new OpenLayers.Style({
-            pointRadius: 20
+            pointRadius: "${myradius}"
+        }, {
+            context: {
+                myradius: function(feature) {
+                    return dbkjs.scaleStyleValue(20);
+                }
+            }
         }), 'temporary': new OpenLayers.Style({
-            pointRadius: 25
+            pointRadius: "${myradius}"
+        }, {
+            context: {
+                myradius: function(feature) {
+                    return dbkjs.scaleStyleValue(25);
+                }
+            }
         })
     }),
     tekstobject: new OpenLayers.StyleMap({
         "default": new OpenLayers.Style({
             pointRadius: 0,
             //fontColor: "${myfontcolor}",
-            fontSize: "${scale}",
+            fontSize: "${mysize}",
             //fontWeight: "${myfontweight}",
             label: "${title}",
             rotation: "${rotation}",
@@ -582,6 +635,12 @@ dbkjs.config.styles = {
             //labelAlign: "${mylabelalign}",
             //labelXOffset: "${mylabelxoffset}",
             //labelYOffset: "${mylabelyoffset}"
+        }, {
+            context: {
+                mysize: function(feature) {
+                    return dbkjs.scaleStyleValue(12, feature.scale);
+                }
+            }
         }), 
         'select': new OpenLayers.Style({}), 
         'temporary': new OpenLayers.Style({})

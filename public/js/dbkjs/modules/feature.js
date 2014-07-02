@@ -48,6 +48,7 @@ dbkjs.modules.feature = {
 //            zIndexing: true
 //        }
 //    }),
+    caches: {},
     getActive: function() {
         var _obj = dbkjs.modules.feature;
         var feature;
@@ -123,11 +124,8 @@ dbkjs.modules.feature = {
         dbkjs.selectControl.activate();
         _obj.layer.events.on({
             "featureselected": _obj.getfeatureinfo,
-            "featuresadded": function() {
-            },
-            "featureunselected": function(e) {
-               // $('#infopanel').hide();
-            }
+            "featuresadded": function() {},
+            "featureunselected": function(e) {}
         });
         
         _obj.get();
@@ -177,18 +175,8 @@ dbkjs.modules.feature = {
         return ret_title;
     },
     search_dbk: function() {
-        var _obj = dbkjs.modules.feature;
-        //Voeg de DBK objecten toe aan de typeahead set..
-        var dbk_naam_array = [];
-
-        $.each(_obj.features, function(key, value) {
-            dbk_naam_array.push({
-                value: value.attributes.formeleNaam + ' ' + value.attributes.informeleNaam,
-                geometry: value.geometry,
-                id: value.attributes.identificatie,
-                attributes: value.attributes
-            });
-        });
+        var _obj = dbkjs.modules.feature,
+            dbk_naam_array = _obj.getDbkSearchValues();
         $('#search_input').typeahead('destroy');
         $('#search_input').val('');
         $('#search_input').typeahead({
@@ -197,28 +185,12 @@ dbkjs.modules.feature = {
             limit: 10
         });
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
-            //dbkjs.options.dbk = datum.id;
-            dbkjs.modules.updateFilter(datum.id);
-            //@todo select the feature based on the datum
-            dbkjs.protocol.jsonDBK.process(datum);
-            _obj.zoomToFeature(datum);
+            _obj.handleDbkOmsSearch(datum);
         });
     },
     search_oms: function() {
-        var _obj = dbkjs.modules.feature;
-        var dbk_naam_array = [];
-
-        $.each(_obj.features, function(key, value) {
-            //alert(value.properties.formeleNaam + ' (' + value.properties.identificatie_id + ')');
-            if (!dbkjs.util.isJsonNull(value.attributes.OMSNummer)) {
-                dbk_naam_array.push({
-                    value: value.attributes.OMSNummer + ' - ' + value.attributes.formeleNaam,
-                    geometry: value.geometry,
-                    attributes: value.attributes,
-                    id: value.attributes.identificatie
-                });
-            }
-        });
+        var _obj = dbkjs.modules.feature,
+            dbk_naam_array = _obj.getOmsSearchValues();
         $('#search_input').typeahead('destroy');
         $('#search_input').val('');
         $('#search_input').typeahead({
@@ -227,14 +199,55 @@ dbkjs.modules.feature = {
             limit: 10
         });
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
-            dbkjs.modules.updateFilter(datum.id);
-            dbkjs.protocol.jsonDBK.process(datum);
-            _obj.zoomToFeature(datum);
+            _obj.handleDbkOmsSearch(datum);
         });
     },
+    getDbkSearchValues: function() {
+        var _obj = dbkjs.modules.feature,
+            dbk_naam_array = [];
+        if(_obj.caches.hasOwnProperty('dbk')) {
+            return _obj.caches.dbk;
+        }
+        $.each(_obj.features, function(key, feature) {
+            // Extend feature object with value and id for searching
+            feature.value = feature.attributes.formeleNaam + ' ' + feature.attributes.informeleNaam;
+            feature.id = feature.attributes.identificatie;
+            dbk_naam_array.push(feature);
+        });
+        _obj.caches.dbk = dbk_naam_array;
+        return _obj.caches.dbk;
+    },
+    getOmsSearchValues: function() {
+        var _obj = dbkjs.modules.feature,
+            dbk_naam_array = [];
+        if(_obj.caches.hasOwnProperty('oms')) {
+            return _obj.caches.oms;
+        }
+        $.each(_obj.features, function(key, feature) {
+            if (!dbkjs.util.isJsonNull(feature.attributes.OMSNummer)) {
+                // Extend feature object with value and id for searching
+                feature.value = feature.attributes.OMSNummer + ' ' + feature.attributes.formeleNaam;
+                feature.id = feature.attributes.identificatie;
+                dbk_naam_array.push(feature);
+            }
+        });
+        _obj.caches.oms = dbk_naam_array;
+        return _obj.caches.oms;
+    },
+    handleDbkOmsSearch: function(object) {
+        var _obj = dbkjs.modules.feature;
+        dbkjs.modules.updateFilter(object.id);
+        dbkjs.protocol.jsonDBK.process(object);
+        _obj.zoomToFeature(object);
+    },
     zoomToFeature: function(feature) {
-        dbkjs.options.dbk = feature.attributes.identificatie;
-        dbkjs.modules.updateFilter(feature.attributes.identificatie);
+        if(feature.attributes && feature.attributes.identificatie){
+            dbkjs.options.dbk = feature.attributes.identificatie;
+        } else {
+            //Geen DBK (meer) geselecteerd, bijv. bij zoeken op adres.
+            dbkjs.options.dbk = 0;
+        }
+        dbkjs.modules.updateFilter(dbkjs.options.dbk);
         if (dbkjs.map.zoom < dbkjs.options.zoom) {
             dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), dbkjs.options.zoom);
         } else {
@@ -249,29 +262,52 @@ dbkjs.modules.feature = {
                 if (e.feature.cluster.length === 1) {
                     _obj.zoomToFeature(e.feature.cluster[0]);
                 } else {
-                    $('#infopanel_f').append('<ul id="Pagination" class="pagination"></ul>');
-                    $('#infopanel_f').show();
                     _obj.currentCluster = e.feature.cluster;
-                    $("#Pagination").pagination(e.feature.cluster.length, {
-                        items_per_page: 10,
-                        callback: function(page_index, jq) {
-                            var items_per_page = 10;
-                            var max_elem = Math.min((page_index + 1) * items_per_page, _obj.currentCluster.length);
-                            var item_ul = $('<ul class="nav nav-pills nav-stacked"></ul>');
-                            $('#infopanel_b').html('');
-                            for (var i = page_index * items_per_page; i < max_elem; i++) {
-                                item_ul.append(_obj.featureInfohtml(_obj.currentCluster[i]));
-                            }
-                            $('#infopanel_b').append(item_ul);
+                    if(dbkjs.viewmode === 'fullscreen') {
+                        var item_ul = $('<ul class="nav nav-pills nav-stacked"></ul>');
+                        $('#infopanel_b').html('');
+                        for(var i = 0; i < _obj.currentCluster.length; i++) {
+                            item_ul.append(_obj.featureInfohtml(_obj.currentCluster[i]));
                         }
-                    });
-                    $('#infopanel').show(true);
+                        $('#infopanel_b').append(item_ul);
+                        dbkjs.util.getModalPopup('infopanel').setHideCallback(function() {
+                            if(_obj.layer.selectedFeatures.length === 0) {
+                                return;
+                            }
+                            for(var i = 0; i < _obj.layer.features.length; i++) {
+                                dbkjs.selectControl.unselect(_obj.layer.features[i]);
+                            }
+                        });
+                        dbkjs.util.getModalPopup('infopanel').show();
+                    } else {
+                        $('#infopanel_f').append('<ul id="Pagination" class="pagination"></ul>');
+                        $('#infopanel_f').show();
+
+                        $("#Pagination").pagination(e.feature.cluster.length, {
+                            items_per_page: 10,
+                            callback: function(page_index, jq) {
+                                var items_per_page = 10;
+                                var max_elem = Math.min((page_index + 1) * items_per_page, _obj.currentCluster.length);
+                                var item_ul = $('<ul class="nav nav-pills nav-stacked"></ul>');
+                                $('#infopanel_b').html('');
+                                for (var i = page_index * items_per_page; i < max_elem; i++) {
+                                    item_ul.append(_obj.featureInfohtml(_obj.currentCluster[i]));
+                                }
+                                $('#infopanel_b').append(item_ul);
+                            }
+                        });
+                        $('#infopanel').show();
+                    }
                 }
             } else {
                 _obj.currentCluster = [];
                 dbkjs.protocol.jsonDBK.process(e.feature);
                 _obj.zoomToFeature(e.feature);
-                $('#infopanel').hide();
+                if(dbkjs.viewmode === 'fullscreen') {
+                    dbkjs.util.getModalPopup('infopanel').hide();
+                } else {
+                    $('#infopanel').hide();
+                }
             }
         }
     }

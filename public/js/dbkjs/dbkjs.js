@@ -25,6 +25,8 @@ dbkjs.overlays = dbkjs.overlays || [];
 
 dbkjs.map = dbkjs.map || null;
 
+dbkjs.viewmode = 'default';
+
 dbkjs.init = function() {
 
     dbkjs.basePath = window.location.protocol + '//' + window.location.hostname;
@@ -64,7 +66,7 @@ dbkjs.init = function() {
     
     var baselayer_ul = $('<ul id="baselayerpanel_ul" class="nav nav-pills nav-stacked">');
     $.each(dbkjs.options.baselayers, function(bl_index, bl) {
-        var _li = $('<li class="bl"><a href="#">' + bl.name + '</a></li>');
+        var _li = $('<li class="bl" id="bl' + bl_index + '"><a href="#">' + bl.name + '</a></li>');
         baselayer_ul.append(_li);
         bl.events.register("loadstart", bl, function() {
             dbkjs.util.loadingStart(bl);
@@ -73,8 +75,11 @@ dbkjs.init = function() {
             dbkjs.util.loadingEnd(bl);
         });
         dbkjs.map.addLayer(bl);
-        _li.click(function() {
+        _li.on('click', function() {
             dbkjs.toggleBaseLayer(bl_index);
+            if(dbkjs.viewmode === 'fullscreen') {
+                dbkjs.util.getModalPopup('baselayerpanel').hide();
+            }
         });
     });
     $('#baselayerpanel_b').append(baselayer_ul);
@@ -126,6 +131,14 @@ dbkjs.toggleBaseLayer = function(nr) {
     }
 };
 
+dbkjs.setDbkCategoryVisibility = function(category, visible) {
+    if(!dbkjs.options.visibleCategories) {
+        dbkjs.options.visibleCategories = {};
+    }
+    dbkjs.options.visibleCategories[category] = visible;
+    dbkjs.protocol.jsonDBK.layerBrandweervoorziening.redraw();
+}
+
 dbkjs.activateClick = function() {
     dbkjs.map.events.register('click', dbkjs.map, dbkjs.util.onClick);
     dbkjs.map.events.register('touchend', dbkjs.map, dbkjs.util.onClick);
@@ -161,7 +174,7 @@ dbkjs.successAuth = function() {
         {
             clickout: true, 
             toggle: true,
-            multiple: false 
+            multiple: false
         }
     );
     dbkjs.selectControl.handlers.feature.stopDown = false;
@@ -175,7 +188,7 @@ dbkjs.successAuth = function() {
     $.each(dbkjs.modules, function(mod_index, module) {
         if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
             if (module.register) {
-                module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true});
+                module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true, viewmode: dbkjs.viewmode });
             }
         }
     });
@@ -254,6 +267,8 @@ dbkjs.successAuth = function() {
         } else {
             dbkjs.finishMap();
         }
+
+    $(dbkjs).trigger('dbkjs_init_complete');
 };
 
 dbkjs.finishMap = function(){
@@ -301,33 +316,64 @@ $(document).ready(function() {
             lng: "nl", debug: false 
     }, function(t) {
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
-        $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
-        $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
-        $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;'));
-        $('body').append(dbkjs.util.createModal('printpanel', '<i class="icon-print"></i> ' + t("app.print"), ''));
-        dbkjs.wms_panel = dbkjs.util.createTabbable();
-        $('#wmsclickpanel_b').append(dbkjs.wms_panel);
-        $('body').append(dbkjs.util.createDialog('minimappanel', '<i class="icon-picture"></i> ' + i18n.t("dialogs.refmap"), 'bottom:0;'));
-        $('.dialog').drags({handle: '.panel-heading'});
-        $('.btn-group').drags({handle: '.drag-handle'});
-        dbkjs.util.setModalTitle('overlaypanel', i18n.t('map.overlays'));
-        dbkjs.util.setModalTitle('baselayerpanel', i18n.t('map.baselayers'));
+        if(dbkjs.viewmode !== 'fullscreen') {
+            $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
+        } else {
+            // Create the infopanel
+            dbkjs.util.createModalPopup({ name: 'infopanel' }).getView().append($('<div></div>').attr({ 'id': 'infopanel_b' }));
+            // Create the DBK infopanel
+            dbkjs.util.createModalPopup({ name: 'dbkinfopanel' }).getView().append($('<div></div>').attr({ 'id': 'dbkinfopanel_b' }));
+
+            // We are removing / moving some existing DIVS from HTML to convert prev. popups to fullscreen modal popups
+            $('#baselayerpanel').remove();
+            $('#overlaypanel').attr('id', 'tmp_overlaypanel');
+            var baseLayerPopup = dbkjs.util.createModalPopup({ name: 'baselayerpanel' });
+            baseLayerPopup.getView().append($('<div></div>').attr({ 'id': 'baselayerpanel_b' }));
+            var overlaypanelPopup = dbkjs.util.createModalPopup({ name: 'overlaypanel' });
+            overlaypanelPopup.getView().append($('#tmp_overlaypanel .tabbable'));
+            $('#tmp_overlaypanel').remove();
+
+            $('#tb01, #tb02').on('click', function(e) {
+                e.preventDefault();
+                var panelId = $(this).attr('href').replace('#', '');
+                if(panelId === 'baselayerpanel') {
+                    $.each(dbkjs.options.baselayers, function(bl_index, bl) {
+                        if(bl.getVisibility()) {
+                            $('#bl' + bl_index).addClass('active');
+                        }
+                    });
+                }
+                dbkjs.util.getModalPopup(panelId).show();
+            });
+
+        }
+        if(dbkjs.viewmode !== 'fullscreen') {
+            $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
+            $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;'));
+            $('body').append(dbkjs.util.createModal('printpanel', '<i class="icon-print"></i> ' + t("app.print"), ''));
+            dbkjs.wms_panel = dbkjs.util.createTabbable();
+            $('#wmsclickpanel_b').append(dbkjs.wms_panel);
+            $('body').append(dbkjs.util.createDialog('minimappanel', '<i class="icon-picture"></i> ' + i18n.t("dialogs.refmap"), 'bottom:0;'));
+            $('.dialog').drags({handle: '.panel-heading'});
+            $('.btn-group').drags({handle: '.drag-handle'});
+            dbkjs.util.setModalTitle('overlaypanel', i18n.t('map.overlays'));
+            dbkjs.util.setModalTitle('baselayerpanel', i18n.t('map.baselayers'));
+            
+        }
         dbkjs.init();
+
         $('#infopanel_b').html(dbkjs.options.info);
-        $('.btn').click(function() {
+        $('#tb03, #c_minimap').click(function() {
             if (this.id === "tb03") {
-                $('#infopanel').toggle();
+                if(dbkjs.viewmode !== 'fullscreen') {
+                    $('#infopanel').toggle();
+                } else {
+                    dbkjs.util.getModalPopup('dbkinfopanel').show();
+                }
             } else if (this.id === "c_minimap") {
                 $('#minimappanel').toggle();
             }
         });
-        $('#zoom_prev').click(function() {
-            dbkjs.naviHis.previousTrigger();
-        });
-        $('#zoom_next').click(function() {
-            dbkjs.naviHis.nextTrigger();
-        });
-
         $('#zoom_extent').click(function() {
             if (dbkjs.options.organisation.modules.regio) {
                 dbkjs.modules.regio.zoomExtent();
@@ -349,6 +395,36 @@ $(document).ready(function() {
                     dbkjs.map.zoomToExtent(areaGeometry.getBounds());
                 }
             }
+        });
+
+        $(dbkjs).bind('dbkjs_init_complete', function() {
+            
+             if(dbkjs.viewmode !== 'fullscreen') {
+                $('#zoom_prev').click(function() {
+                    dbkjs.naviHis.previousTrigger();
+                });
+                $('#zoom_next').click(function() {
+                    dbkjs.naviHis.nextTrigger();
+                });
+            } else {
+                //FastClick.attach(document.body);
+            }
+            (function() {
+                function calcMaxWidth() {
+                    // Calculate the max width for dbk title so other buttons are never pushed down when name is too long
+                    var childWidth = 0;
+                    $('.main-button-group .btn-group').each(function() {
+                        childWidth += $(this).outerWidth();
+                    });
+                    var maxWidth = $('.main-button-group').outerWidth() - childWidth;
+                    $('.dbk-title').css('max-width', (maxWidth - 120) + 'px');
+                }
+                // Listen for orientation changes
+                window.addEventListener("orientationchange", function() {
+                    calcMaxWidth();
+                }, false);
+                calcMaxWidth();
+            }());
         });
     });
 });

@@ -109,8 +109,8 @@ dbkjs.Layer = dbkjs.Class({
 
             var dv_panel_heading = $('<div class="panel-heading"></div>');
             var dv_panel_title = $('<h4 class="panel-title"></div>');
-            dv_panel_title.append('<input type="checkbox" name="box_' + this.id + '"/>&nbsp;');
-            dv_panel_title.append(name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
+            // dv_panel_title.append('<input type="checkbox" name="box_' + this.id + '"/>&nbsp;');
+            dv_panel_title.append(name + '&nbsp;<a class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
                     this.id + '" data-parent="' + parent + '" ><i class="icon-info-sign"></i></a>');
             dv_panel_heading.append(dv_panel_title);
             this.div.append(dv_panel_heading);
@@ -132,15 +132,22 @@ dbkjs.Layer = dbkjs.Class({
             if (this.layer) {
                 if (this.layer.getVisibility()) {
                     //checkbox aan
-                    $('input[name="box_' + this.id + '"]').attr('checked', 'checked');
+                    // $('input[name="box_' + this.id + '"]').attr('checked', 'checked');
+                    dv_panel_heading.addClass('active');
                 }
                 var that = this;
-                $('input[name="box_' + this.id + '"]').click(function() {
+                dv_panel_heading.click(function(e) {
+                    //console.log(e.target.className);
+                    if(e.target.className.indexOf('icon-info-sign') !== -1 || e.target.className.indexOf('accordion-toggle') !== -1) {
+                        return;
+                    }
                     dbkjs.disableloadlayer = true;
-                    if ($(this).is(':checked')) {
+                    if (!dv_panel_heading.hasClass('active')) {
                         that.layer.setVisibility(true);
+                        dv_panel_heading.addClass('active')
                     } else {
                         that.layer.setVisibility(false);
+                        dv_panel_heading.removeClass('active')
                     }
                 });
             }
@@ -161,6 +168,9 @@ dbkjs.Layer = dbkjs.Class({
             $('#baselayerpanel_ul').append(_li);
             _li.click(function() {
                 dbkjs.toggleBaseLayer($(this).index());
+                if(dbkjs.viewmode === 'fullscreen') {
+                    dbkjs.util.getModalPopup('baselayerpanel').hide();
+                }
             });
         }
     },
