@@ -134,6 +134,7 @@ dbkjs.Layer = dbkjs.Class({
                     //checkbox aan
                     // $('input[name="box_' + this.id + '"]').attr('checked', 'checked');
                     dv_panel_heading.addClass('active');
+                    dv_panel_heading.addClass('layActive');
                 }
                 var that = this;
                 dv_panel_heading.click(function(e) {
@@ -144,10 +145,12 @@ dbkjs.Layer = dbkjs.Class({
                     dbkjs.disableloadlayer = true;
                     if (!dv_panel_heading.hasClass('active')) {
                         that.layer.setVisibility(true);
-                        dv_panel_heading.addClass('active')
+                        dv_panel_heading.addClass('active');
+                        dv_panel_heading.addClass('layActive');
                     } else {
                         that.layer.setVisibility(false);
-                        dv_panel_heading.removeClass('active')
+                        dv_panel_heading.removeClass('active');
+                        dv_panel_heading.removeClass('layActive');
                     }
                 });
             }

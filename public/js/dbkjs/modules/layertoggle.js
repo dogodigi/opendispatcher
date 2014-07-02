@@ -78,6 +78,7 @@ dbkjs.modules.layertoggle = {
                 .append('<i class="' + toggleOptions.icon + '"></i>')
                 .click(function(e) {
                     e.preventDefault();
+                    console.log("layertoggle-click");
                     if (toggle.hasClass('active')) {
                         toggle.removeClass('active');
                         dbkjs.setDbkCategoryVisibility(toggleOptions.category, false);

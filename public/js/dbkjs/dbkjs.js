@@ -137,7 +137,7 @@ dbkjs.setDbkCategoryVisibility = function(category, visible) {
     }
     dbkjs.options.visibleCategories[category] = visible;
     dbkjs.protocol.jsonDBK.layerBrandweervoorziening.redraw();
-}
+};
 
 dbkjs.activateClick = function() {
     dbkjs.map.events.register('click', dbkjs.map, dbkjs.util.onClick);
@@ -272,6 +272,14 @@ dbkjs.successAuth = function() {
 };
 
 dbkjs.finishMap = function(){
+    //find the div that contains the baseLayer.name
+    var listItems = $("#baselayerpanel_ul li");
+    listItems.each(function(idx, li) {
+        var test = $(li).children(':first').text();
+        if(test === dbkjs.map.baseLayer.name){
+            $(li).addClass('active');
+        }
+    });
     if (dbkjs.layout) {
         dbkjs.layout.activate();
     }
@@ -308,6 +316,7 @@ dbkjs.finishMap = function(){
     dbkjs.permalink = new dbkjs.Permalink('permalink');
     dbkjs.map.addControl(dbkjs.permalink);
     //get dbk!
+    
 };
 
 $(document).ready(function() {
