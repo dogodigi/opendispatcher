@@ -23,11 +23,8 @@ window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.filter = {
     id: "dbk.modules.filter",
-    sel_district: null,
-    selectie: {
-        districten: [],
-        gemeenten: []
-    },
+    filter: {},
+    selectie: [],
     register: function(options) {
         var _obj = dbkjs.modules.filter;
         _obj.namespace = options.namespace || _obj.namespace;
@@ -37,9 +34,26 @@ dbkjs.modules.filter = {
                 '<i class="icon-filter"></i>' +
                 '</a>');
         $('body').append(dbkjs.util.createModal('filter_dialog', '<i class="icon-filter"></i> Filter'));
-        _obj.getDistricten();
-        _obj.getGemeenten();
         $('#btn_filter').click(function() {
+            //zet alle dbk's uit en zoom naar de regio.
+            dbkjs.modules.updateFilter(0);
+            $.each(dbkjs.protocol.jsonDBK.layers, function(idx, lyr){
+                lyr.destroyFeatures();
+            });
+            $('#zoom_extent').click();
+            if(dbkjs.modules.search){
+                //clear layers
+                dbkjs.modules.search.layer.removeAllFeatures();
+            }
+            
+            if(dbkjs.viewmode === 'fullscreen') {
+                dbkjs.util.getModalPopup('infopanel').hide();
+            } else {
+                $('#infopanel').hide();
+            }
+            _obj.getOmsFilter();
+            _obj.getRisicoKlasseFilter();
+            _obj.getFunctieFilter();
             $('#filter_dialog').modal('toggle');
         });
 
@@ -48,21 +62,7 @@ dbkjs.modules.filter = {
         $('#filter_dialog_b').append(btn_filter_set);
         $('#filter_dialog_b').append(btn_filter_reset);
         $('#btn_filter_set').click(function() {
-            _obj.selectie.districten = [];
-            $("#sel_district option").each(function() {
-
-                if (this.selected) {
-                    _obj.selectie.districten.push(this.value);
-                }
-            });
-            _obj.selectie.gemeenten = [];
-            $("#sel_gemeente option").each(function() {
-
-                if (this.selected) {
-                    _obj.selectie.gemeenten.push(this.value);
-                }
-            });
-            if(_obj.selectie.gemeenten.length > 0 || _obj.selectie.districten.length > 0){
+            if(_obj.selectie.length > 0){
                 $('#btn_filter').removeClass('btn-default');
                 $('#btn_filter').addClass('btn-warning');
                 $('#btn_filter').prop('title','Filter aanpassen');
@@ -71,110 +71,110 @@ dbkjs.modules.filter = {
                 $('#btn_filter').addClass('btn-default');
                 $('#btn_filter').prop('title','Filter instellen');
             }
-            dbkjs.modules.care.updateSelectieIncident();
+            $('#btn_refresh').click();
         });
         $('#btn_filter_reset').click(function() {
-            _obj.selectie.districten = [];
-            _obj.selectie.gemeenten = [];
-            $("#sel_gemeente option").prop("selected", false);
-            $("#sel_district option").prop("selected", false);
+            _obj.selectie = [];
             $('#btn_filter').removeClass('btn-warning');
             $('#btn_filter').addClass('btn-default');
             $('#btn_filter').prop('title','Filter instellen');
-            dbkjs.modules.care.updateSelectieIncident();
+            $('#btn_refresh').click();
         });
-
     },
-    //        if (_obj.layerIncident.params.CQL_FILTER) {
-    //            params.CQL_FILTER = _obj.layerIncident.params.CQL_FILTER;
-    //            params.CQL_FILTER += ' AND ' + 'district_nr = 1';
-    //        } else {
-    //            params.CQL_FILTER = 'district_nr = 1';
-    //        }
+
     getFilter: function() {
         var _obj = dbkjs.modules.filter;
-        var result = '';
-        if (_obj.selectie.gemeenten.length > 0) {
-            result += " AND gem_naam IN ('" + _obj.selectie.gemeenten.join("','") + "') ";
-        }
-        if (_obj.selectie.districten.length > 0) {
-            result += " AND district_naam IN ('" + _obj.selectie.districten.join("','") + "') ";
-        }
-        return result;
-    },
-    getDistricten: function() {
-        var _obj = dbkjs.modules.filter;
-        var params = {
-            bbox: dbkjs.map.getExtent().toBBOX(0),
-            service: "WFS",
-            version: "1.0.0",
-            request: "GetFeature",
-            typename: _obj.namespace + ":district_box",
-            outputFormat: "application/json"
-        };
-        $.ajax({
-            type: "GET",
-            url: _obj.url + 'ows',
-            data: params,
-            dataType: "json",
-            success: function(data) {
-                var geojson_format = new OpenLayers.Format.GeoJSON();
-                var districten = geojson_format.read(data);
-                $('#filter_dialog_b').append('<h5>District(en)</h5>');
-                _obj.sel_district = $('<select id="sel_district" multiple class="form-control"><select>');
-                //loop through districts.
-                //_obj.sel_district.append('<option>1</option>');
-                $.each(districten, function(district_idx, district) {
-                    _obj.sel_district.append('<option>' + district.attributes.naam + '</option>');
-                });
-                $('#filter_dialog_b').append(_obj.sel_district);
-            },
-            error: function() {
-                return false;
-            },
-            complete: function() {
-                return false;
+        var omsfilter = $("#sel_oms").val();
+        var risicofilter = $("#sel_risk").val();
+        var functiefilter = $("#sel_func").val();
+        //console.log("omsfilter: " + omsfilter + " risicofilter: " + risicofilter + " functiefilter: " + functiefilter);
+        _obj.selectie = [];
+        $.each(dbkjs.modules.feature.features, function(fix, feat){
+            var compliant = true;
+            if(omsfilter === 'F' && dbkjs.util.isJsonNull(feat.attributes.OMSNummer)){
+                compliant = false;
+            } else if (omsfilter === 'T' && !dbkjs.util.isJsonNull(feat.attributes.OMSNummer)){
+                compliant = false;
+            }
+            if(!dbkjs.util.isJsonNull(risicofilter)){
+                if (feat.attributes.risicoklasse !== risicofilter){
+                    compliant = false;
+                }
+            }
+            if(!dbkjs.util.isJsonNull(functiefilter)){
+                if (feat.attributes.functie !== functiefilter){
+                    compliant = false;
+                }
+            }
+            if(compliant){
+                _obj.selectie.push(feat.attributes.identificatie);
             }
         });
-
-
+        var test = _obj.selectie.unique();
+        _obj.selectie = test;
+        $('#filter_dialog_f').html(_obj.selectie.length + ' objecten geselecteerd');
+        return(_obj.selectie);
     },
-    getGemeenten: function() {
+    getOmsFilter: function() {
         var _obj = dbkjs.modules.filter;
-        var params = {
-            bbox: dbkjs.map.getExtent().toBBOX(0),
-            service: "WFS",
-            version: "1.0.0",
-            request: "GetFeature",
-            typename: _obj.namespace + ":gemeente_box",
-            outputFormat: "application/json"
-        };
-        $.ajax({
-            type: "GET",
-            url: _obj.url + 'ows',
-            data: params,
-            dataType: "json",
-            success: function(data) {
-                var geojson_format = new OpenLayers.Format.GeoJSON();
-                var gemeenten = geojson_format.read(data);
-                $('#filter_dialog_b').append('<h5>Gemeenten(en)</h5>');
-                _obj.sel_gemeente = $('<select id="sel_gemeente" multiple class="form-control"><select>');
-                //loop through districts.
-                //_obj.sel_district.append('<option>1</option>');
-                $.each(gemeenten, function(district_idx, gem) {
-                    _obj.sel_gemeente.append('<option>' + gem.attributes.naam + '</option>');
-                });
-                $('#filter_dialog_b').append(_obj.sel_gemeente);
-            },
-            error: function() {
-                return false;
-            },
-            complete: function() {
-                return false;
+        $('#filter_dialog_b').append('<label for="sel_oms">OMS:</label> ');
+        _obj.sel_oms = $('<select id="sel_oms" size="3" class="form-control"><select>');
+        _obj.sel_oms.append('<option value="" selected>Niet filteren</option>');
+        _obj.sel_oms.append('<option value="F">Zonder oms</option>');
+        _obj.sel_oms.append('<option value="T">Met oms</option>');
+        $('#filter_dialog_b').append(_obj.sel_oms);
+        $('#sel_oms').change(function(){
+            _obj.getFilter();
+        });
+    },
+    getRisicoKlasseFilter: function() {
+        var _obj = dbkjs.modules.filter;
+        var risicoklassen = [];
+        $.each(dbkjs.modules.feature.features, function(fix, feat){
+            if(!dbkjs.util.isJsonNull(feat.attributes.risicoklasse)){
+                risicoklassen.push(feat.attributes.risicoklasse);
             }
         });
-
-
+        var test = risicoklassen.unique();
+        if(test.length > 0){
+            $('#filter_dialog_b').append('<label for="sel_risico">Risicoklasse:</label> ');
+            _obj.sel_risk = $('<select id="sel_risico" size="6" class="form-control"><select>');
+            _obj.sel_risk.append('<option value="" selected>Niet filteren</option>');
+            $.each(test, function(rix, risk){
+                _obj.sel_risk.append('<option value="'+ risk +'">'+ risk +'</option>');
+            });
+        
+            $('#filter_dialog_b').append(_obj.sel_risk);
+            $('#sel_risk').change(function(){
+                _obj.getFilter();
+            });
+        } else {
+            $('#filter_dialog_b').append('<div>Er zijn geen risicoklassen ingevuld</div> ');
+        }
+    },
+    getFunctieFilter: function() {
+        var _obj = dbkjs.modules.filter;
+        var functies = [];
+        $.each(dbkjs.modules.feature.features, function(fix, feat){
+            if(!dbkjs.util.isJsonNull(feat.attributes.functie)){
+                functies.push(feat.attributes.functie);
+            }
+        });
+        var test = functies.unique();
+        if(test.length > 0){
+            $('#filter_dialog_b').append('<label for="sel_func">Functies:</label> ');
+            _obj.sel_func = $('<select id="sel_func" size="6" class="form-control"><select>');
+            _obj.sel_func.append('<option value="" selected>Niet filteren</option>');
+            $.each(test, function(rix, risk){
+                _obj.sel_func.append('<option value="'+ risk +'">'+ risk +'</option>');
+            });
+        
+            $('#filter_dialog_b').append(_obj.sel_func);
+            $('#sel_func').change(function(){
+                _obj.getFilter();
+            });
+        } else {
+            $('#filter_dialog_b').append('<div>Er zijn geen functies ingevuld</div> ');
+        }
     }
-
 };

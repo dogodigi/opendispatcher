@@ -150,7 +150,20 @@ dbkjs.modules.feature = {
 //                console.log(test.length + ' DBK objecten');
 //                var test = data.features.where( "( el, i, res, param ) => el.properties.typeFeature === 'Gebied'");
 //                console.log(test.length + ' DBK gebieden');
+            if(dbkjs.modules.filter && dbkjs.modules.filter.selectie.length > 0 ) {
+                console.log(dbkjs.modules.filter.selectie);
+                var selfeat = [];
+                $.each(_obj.features, function(fix,feat){
+                    if($.inArray(feat.attributes.identificatie, dbkjs.modules.filter.selectie) !== -1){
+                        //create a subselection from the features
+                        selfeat.push(feat);
+                    }
+                });
+                _obj.layer.addFeatures(selfeat);
+            } else {
                 _obj.layer.addFeatures(_obj.features);
+            }
+
                 _obj.search_dbk();
         }).fail(function( jqxhr, textStatus, error ) {
             dbkjs.options.feature = null;

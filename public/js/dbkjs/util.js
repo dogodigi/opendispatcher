@@ -17,6 +17,11 @@
  *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+Array.prototype.unique = function(){
+  return this.filter(
+      function(a){return !this[a] ? this[a] = true : false;}, {}
+  );
+};
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 $.browser = {};
@@ -804,8 +809,10 @@ dbkjs.util = {
         var modal_content = $('<div class="modal-content"></div>');
         var modal_header = $('<div id="' + id + '_h" class="modal-header"><h4 class="modal-title">' + title + '</h4></div>');
         var modal_body = $('<div id="' + id + '_b" class="modal-body"></div>');
+        var modal_footer = $('<div id="' + id + '_f" class="modal-footer"></div>');
         modal_content.append(modal_header);
         modal_content.append(modal_body);
+        modal_content.append(modal_footer);
         modal_wrapper.append(modal_dialog.append(modal_content));
         modal_wrapper.modal('hide');
         return modal_wrapper;
@@ -924,7 +931,7 @@ dbkjs.util = {
             if(hideCallback) {
                 hideCallback();
             }
-        }
+        };
 
         // Return object to handle popup related functions
         this.modalPopupStore[options.name] = {
