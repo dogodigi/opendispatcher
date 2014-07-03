@@ -660,6 +660,14 @@ dbkjs.config.styles = {
             context: {
                 mysize: function(feature) {
                     return dbkjs.scaleStyleValue(12, feature.scale);
+                },
+                myRotation: function(feature){
+                    if (parseFloat(feature.attributes.rotation) !== 0.0){
+                        var ori = parseFloat(feature.attributes.rotation);
+                        return -ori;
+                    } else {
+                        return parseFloat(0);
+                    }
                 }
             }
         }), 
