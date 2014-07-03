@@ -111,7 +111,6 @@ dbkjs.modules.feature = {
                     threshold: 2
                 })
             ],
-            minResolution: 1,
             styleMap: dbkjs.config.styles.dbkfeature
         });
         _obj.layer.setZIndex(2006);
@@ -267,6 +266,8 @@ dbkjs.modules.feature = {
         } else {
             dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
         }
+        // getActive() changed, hide it
+        this.layer.redraw();
     },
     getfeatureinfo: function(e) {
         var _obj = dbkjs.modules.feature;

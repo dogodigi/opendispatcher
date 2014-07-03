@@ -39,6 +39,7 @@ dbkjs.options = {
     REMARKS: "",
     INFO: "",
     zoom: 13,
+    alwaysShowDbkFeature: true,
     /**
      * PDOK settings, particular for the Netherlands national geodata services
      *
