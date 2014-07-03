@@ -151,7 +151,6 @@ dbkjs.modules.feature = {
 //                var test = data.features.where( "( el, i, res, param ) => el.properties.typeFeature === 'Gebied'");
 //                console.log(test.length + ' DBK gebieden');
             if(dbkjs.modules.filter && dbkjs.modules.filter.selectie.length > 0 ) {
-                console.log(dbkjs.modules.filter.selectie);
                 var selfeat = [];
                 $.each(_obj.features, function(fix,feat){
                     if($.inArray(feat.attributes.identificatie, dbkjs.modules.filter.selectie) !== -1){
