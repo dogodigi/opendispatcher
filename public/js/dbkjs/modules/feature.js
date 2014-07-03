@@ -215,7 +215,7 @@ dbkjs.modules.feature = {
         });
     },
     getDbkSearchValues: function() {
-        var _obj = dbkjs.modules.feature
+        var _obj = dbkjs.modules.feature;
         var dbk_naam_array = [];
         if(_obj.caches.hasOwnProperty('dbk')) {
             return _obj.caches.dbk;
