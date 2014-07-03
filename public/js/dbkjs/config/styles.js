@@ -648,7 +648,7 @@ dbkjs.config.styles = {
             fontSize: "${mysize}",
             //fontWeight: "${myfontweight}",
             label: "${title}",
-            rotation: "${rotation}",
+            rotation: "${myRotation}",
             labelSelect: true,
             labelOutlineColor: "#ffffff",
             labelOutlineWidth: 1
