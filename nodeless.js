@@ -102,7 +102,13 @@ dbk.getOrganisation(
                     var wms = json.organisation.wms[i];
 
                     if(typeof wms.legend === "string") {
-                        fs.mkdirSync(outDir + "/legend");
+                        try {
+	                       fs.mkdirSync(outDir + "/legend");
+	            		} catch(e) {
+                            if(e.code !== 'EEXIST') {
+                                throw e;
+                            }
+                        }
                         legendsToBeDownloaded++;
 
                         (function downloadLegend(wms) {
