@@ -965,5 +965,24 @@ dbkjs.util = {
             };
         }
         return this.modalPopupStore[name];
+    },
+    isMultitouchCapableBrowser: function() {
+        var _browser = {}, uagent = navigator.userAgent.toLowerCase();
+        try {
+            _browser.opera = /mozilla/.test(uagent) && /applewebkit/.test(uagent) && /chrome/.test(uagent) && /safari/.test(uagent) && /opr/.test(uagent);
+            _browser.safari = /applewebkit/.test(uagent) && /safari/.test(uagent) && !/chrome/.test(uagent);
+            _browser.firefox = /mozilla/.test(uagent) && /firefox/.test(uagent);
+            _browser.chrome = /webkit/.test(uagent) && /chrome/.test(uagent);
+            _browser.msie = /msie/.test(uagent);
+            _browser.browsername = _browser.opera ? 'opr' : _browser.safari ? 'safari' : _browser.firefox ? 'firefox' : _browser.chrome ? 'chrome' : 'msie';
+            _browser.version = uagent.match(new RegExp("(" + _browser.browsername + ")( |/)([0-9]+)"))[3];
+            _browser.touchevents = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
+            // For now just Firefox and IE below version 11 are regarded as not multitouch capable
+            if(!_browser.touchevents || (_browser.msie && _browser.version <= 11) || _browser.firefox) {
+                return false;
+            }
+            return true;
+        } catch(e) {}
+        return true;
     }
 };
