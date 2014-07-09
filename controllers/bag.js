@@ -36,7 +36,7 @@ exports.getAdres = function(req, res) {
         var query_str = 'select a.openbareruimtenaam, a.huisnummer, a.huisletter, a.huisnummertoevoeging, a.postcode, a.woonplaatsnaam, ' + 
                 'a.gemeentenaam, a.provincienaam, a.typeadresseerbaarobject, a.adresseerbaarobject, a.nummeraanduiding, a.nevenadres, ' + 
                 'st_asgeojson(st_force2d(st_transform(a.geopunt,$2))) geopunt, vp.gerelateerdpand as pand '+ 
-                'from bag8jan2014.adres a left join bag8jan2014.verblijfsobjectpand vp on a.adresseerbaarobject = vp.identificatie ' + 
+                'from bag_actueel.adres a left join bag_actueel.verblijfsobjectpand vp on a.adresseerbaarobject = vp.identificatie ' + 
                 'where a.adresseerbaarobject = $1';
         global.bag.query(query_str, [id,srid],
             function(err, result){
@@ -94,7 +94,7 @@ exports.getPanden = function(req, res) {
         if(!srid){
             srid = 4326;
         }
-        var query_str = 'select st_astext(a.geopunt) geopunt, vp.gerelateerdpand as pand from bag8jan2014.adres a left join bag8jan2014.verblijfsobjectpand vp on a.adresseerbaarobject = vp.identificatie where adresseerbaarobject = $1 limit 1';
+        var query_str = 'select st_astext(a.geopunt) geopunt, vp.gerelateerdpand as pand from bag_actueel.adres a left join bag_actueel.verblijfsobjectpand vp on a.adresseerbaarobject = vp.identificatie where adresseerbaarobject = $1 limit 1';
         global.bag.query(query_str, [id],
             function(err, result){
                 if(err) {
@@ -102,7 +102,7 @@ exports.getPanden = function(req, res) {
                 } else {
                     var geopunt = result.rows[0].geopunt;
                     var pandid = result.rows[0].pand;
-                    var query_str = 'select p.identificatie, p.pandstatus, p.bouwjaar, st_asgeojson(st_force_2d(st_transform(p.geovlak,$2))) geovlak from bag8jan2014.pandactueelbestaand p where (ST_Overlaps(' + 
+                    var query_str = 'select p.identificatie, p.pandstatus, p.bouwjaar, st_asgeojson(st_force_2d(st_transform(p.geovlak,$2))) geovlak from bag_actueel.pandactueelbestaand p where (ST_Overlaps(' + 
                             'ST_BUFFER(st_setSRID(ST_GeomFromText($1),28992), 100), p.geovlak) OR ST_Within(p.geovlak, ST_BUFFER(st_setSRID(ST_GeomFromText($1),28992), 100)))';
                     
                     global.bag.query(query_str,[geopunt,srid], function(err,result){
@@ -164,7 +164,7 @@ exports.autoComplete = function(req, res) {
                     "ELSE woonplaatsnaam || ', ' || gemeentenaam END as display_name, " +
                     "st_x(st_transform(st_centroid(st_collect(geopunt)),$2)) as lon, " +
                     "st_y(st_transform(st_centroid(st_collect(geopunt)),$2)) as lat " +
-                    "from bag8jan2014.adres where " +
+                    "from bag_actueel.adres where " +
                     whereclause + 
                     "group by woonplaatsnaam, gemeentenaam, openbareruimtenaam limit 10";
             //( textsearchable_adres @@ to_tsquery('dutch','spinellihof $1 limit 1';
