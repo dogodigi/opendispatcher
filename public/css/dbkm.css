@@ -8,9 +8,6 @@ html, body {
     width: 33%;
     height: auto;
 }
-#c_minimap, #c_settings, #zoom_prev, #zoom_next, #zoom_in, #zoom_out, #permalink, #btn_refresh,  #btn_measure_distance, #btn_measure_area, #footer, .drag-handle{
-    display: none !important;
-}
 .dialog{
     width: 100%;
 }
@@ -22,10 +19,11 @@ html, body {
 }
 .main-button-group .btn {
     font-size: 2.5em !important;
+    line-height: 50px;
 }
 .main-button-group .btn.dbk-title {
     margin-top: 8px;
-    margin-left: 100px;
+    margin-left: 8px;
     float: left;
     visibility: hidden;
     font-size: 16px !important;
@@ -34,11 +32,16 @@ html, body {
     text-overflow: ellipsis;
     overflow: hidden;
 }
-#tb03 {
-    text-shadow: -4px 0 white, 0 4px white, 4px 0 white, 0 -4px white;
+.main-button-group .btn.layer-toggle-btn {
+    text-shadow: -1px -1px 0 #ffffff, 1px -1px 0 #ffffff, -1px 1px 0 #ffffff, 1px 1px 0 #ffffff;
+    font-size: 1em !important;
+}
+.main-button-group .btn.layer-toggle-btn span {
+    line-height: normal;
 }
 .toggleObject {
     background-color: #4cae4c !important;
+    line-height: 25px !important; /* double text line */
 }
 .togglePreventive {
     background-color: #ffff4f !important;
@@ -50,7 +53,6 @@ html, body {
     background-color: #b92c28 !important;
 }
 .layertoggle-btn-group .btn {
-    text-shadow: -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white;
     position: relative;
 }
 .layertoggle-btn-group .active:after {
@@ -423,6 +425,7 @@ input[type="radio"], input[type="checkbox"] {
         width: 100%;
         height: 100%;
         z-index: 0;
+        -ms-touch-action: none;
     }
     /*.infocontent{
         display: inherit;
@@ -467,6 +470,13 @@ input[type="radio"], input[type="checkbox"] {
     .panel {
         z-index: 302;
     }
+
+    .btn#zoom_in, .btn#zoom_out {
+        display: none;
+    }
+    #c_minimap, #zoom_prev, #zoom_next, #permalink, #btn_refresh,  #btn_measure_distance, #btn_measure_area, #footer, .drag-handle.btn {
+        display: none !important;
+    }
 }
 @media screen and (max-width: 600px) {
     #logo{
@@ -478,6 +488,7 @@ input[type="radio"], input[type="checkbox"] {
         position: absolute;
         left: 0;
         top: 0;
+        display: none;
     }
 
     .panel div {
@@ -499,6 +510,7 @@ input[type="radio"], input[type="checkbox"] {
         position: absolute;
         left: 0;
         top: 0;
+        display: none;
     }
 }
 .olImageLoadError {
@@ -507,7 +519,7 @@ input[type="radio"], input[type="checkbox"] {
 
 /* Toggles */
 .layertoggle-btn-group {
-    margin-right: 15px;
+    margin-right: 10px;
 }
 
 /* Modal popups */
