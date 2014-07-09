@@ -46,4 +46,5 @@ cat css/dbk.css \
     js/libs/bootstrap-3.1.0/css/bootstrap.min.css \
     css/font-awesome.min.css \
     css/daterangepicker-bs3.css \
-    css/typeahead.js-bootstrap.css | node ../node_modules/clean-css/bin/cleancss -o css/dbk.min.css
+    css/typeahead.js-bootstrap.css \
+    css/slider.css | node ../node_modules/clean-css/bin/cleancss -o css/dbk.min.css
