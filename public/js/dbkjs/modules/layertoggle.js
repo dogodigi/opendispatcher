@@ -40,22 +40,22 @@ dbkjs.modules.layertoggle = {
      */
     availableToggles: {
         'toggleObject': {
-            'icon': 'icon-home',
+            'label': 'Object</br />informatie',
             'layers': [ ],
             'category': 'objectinformatie'
         },
         'togglePreventive': {
-            'icon': 'icon-home',
+            'label': 'Preventief',
             'layers': [ 'Brandcompartiment' ],
             'category': 'preventief'
         },
         'togglePreparative': {
-            'icon': 'icon-home',
+            'label': 'Preparatief',
             'layers': [  ],
             'category': 'preparatief'
         },
         'toggleDanger': {
-            'icon': 'icon-home',
+            'label': 'Repressief',
             'layers': [ 'Gevaarlijke stoffen' ],
             'category': 'repressief'
         }
@@ -71,11 +71,12 @@ dbkjs.modules.layertoggle = {
             var toggle = $('<a></a>')
                 .attr({
                     'id': 'btn_' + toggleKey,
-                    'class': 'btn btn-default navbar-btn active ' + toggleKey,
+                    'class': 'btn btn-default navbar-btn active layer-toggle-btn ' + toggleKey,
                     'href': '#',
                     'title': i18n.t('map.toggle.' + toggleKey)
                 })
-                .append('<i class="' + toggleOptions.icon + '"></i>')
+                // .append('<i class="' + toggleOptions.icon + '"></i>')
+                .append(toggleOptions.label)
                 .click(function(e) {
                     e.preventDefault();
                     if (toggle.hasClass('active')) {
