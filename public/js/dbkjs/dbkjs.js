@@ -174,7 +174,7 @@ dbkjs.successAuth = function() {
         {
             clickout: true, 
             toggle: true,
-            multiple: false 
+            multiple: false
         }
     );
     dbkjs.selectControl.handlers.feature.stopDown = false;
@@ -316,7 +316,6 @@ dbkjs.finishMap = function(){
     dbkjs.permalink = new dbkjs.Permalink('permalink');
     dbkjs.map.addControl(dbkjs.permalink);
     //get dbk!
-    
 };
 
 $(document).ready(function() {
@@ -416,7 +415,7 @@ $(document).ready(function() {
                     dbkjs.naviHis.nextTrigger();
                 });
             } else {
-                //FastClick.attach(document.body);
+                FastClick.attach(document.body);
             }
             (function() {
                 function calcMaxWidth() {
@@ -426,7 +425,7 @@ $(document).ready(function() {
                         childWidth += $(this).outerWidth();
                     });
                     var maxWidth = $('.main-button-group').outerWidth() - childWidth;
-                    $('.dbk-title').css('max-width', (maxWidth - 120) + 'px');
+                    $('.dbk-title').css('max-width', (maxWidth - 25) + 'px');
                 }
                 // Listen for orientation changes
                 window.addEventListener("orientationchange", function() {
