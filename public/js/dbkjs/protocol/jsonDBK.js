@@ -154,7 +154,7 @@ dbkjs.protocol.jsonDBK = {
             }
             if (!dbkjs.options.feature || feature.id !== dbkjs.options.feature.id) {
                 if (!dbkjs.protocol.jsonDBK.processing) {
-                    if(dbkjs.viewmode == 'fullscreen') {
+                    if(dbkjs.viewmode === 'fullscreen') {
                         dbkjs.util.getModalPopup('infopanel').hide();
                         dbkjs.util.getModalPopup('dbkinfopanel').hide();
                     } else {
@@ -348,7 +348,7 @@ dbkjs.protocol.jsonDBK = {
                 _obj.layerTekstobject.addFeatures(features);
                 _obj.activateSelect(_obj.layerTekstobject);
             }
-            if(dbkjs.viewmode == 'fullscreen') {
+            if(dbkjs.viewmode === 'fullscreen') {
                 //dbkjs.util.getModalPopup('infopanel').show();
             } else {
                 $('#infopanel').show();
