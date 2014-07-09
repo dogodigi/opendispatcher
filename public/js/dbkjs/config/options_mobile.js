@@ -33,13 +33,25 @@ dbkjs.options = {
             numDigits: 0
         }
     },
-    VERSION: "2.0",
-    RELEASEDATE: "10-03-2014",
+    VERSION: "2.5",
+    RELEASEDATE: "10-07-2014",
     APPLICATION: "safetymapsDBK",
     REMARKS: "",
     INFO: "",
     zoom: 13,
+
+    // If false labels are shown on select and temporary render intents
+    alwaysShowInformationLabels: false,
+
+    // Set to true to enable style scaling according to map scale
+    styleScaleAdjust: true,
+    // Scale at which scaled values are returned as original
+    originalScale: 595.2744,
+    // User style value adjustment (before scaling)
+    styleSizeAdjust: 0,
+
     alwaysShowDbkFeature: true,
+
     /**
      * PDOK settings, particular for the Netherlands national geodata services
      *
