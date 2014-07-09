@@ -123,9 +123,6 @@ dbkjs.Layer = dbkjs.Class({
                     this.layer.metadata.pl = metadata.pl;
                 }
             }
-            dv_panel_content.append('<img src="' + (metadata.legend ? metadata.legend : legend) + '"/>');
-       
-
             this.div.append(dv_panel_content);
             $(parent).append(this.div);
             $(parent).sortable({handle: '.panel'});
@@ -139,6 +136,11 @@ dbkjs.Layer = dbkjs.Class({
                 var that = this;
                 dv_panel_heading.click(function(e) {
                     if(e.target.className.indexOf('icon-info-sign') !== -1 || e.target.className.indexOf('accordion-toggle') !== -1) {
+                        //click on the info sign
+                        //check to see if the legend is there already
+                        if($('#legend_'+that.id).length === 0) {
+                            dv_panel_content.append('<img id="legend_' + that.id + '" src="' + (metadata.legend ? metadata.legend : legend) + '"/>');
+                        }
                         return;
                     }
                     dbkjs.disableloadlayer = true;
