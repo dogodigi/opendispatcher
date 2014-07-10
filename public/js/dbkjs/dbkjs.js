@@ -75,7 +75,6 @@ dbkjs.init = function() {
             dbkjs.util.loadingEnd(bl);
         });
         dbkjs.map.addLayer(bl);
-        dbkjs.util.configureLayers();
         _li.on('click', function() {
             dbkjs.toggleBaseLayer(bl_index);
             if(dbkjs.viewmode === 'fullscreen') {
@@ -317,6 +316,7 @@ dbkjs.finishMap = function(){
     }
     dbkjs.permalink = new dbkjs.Permalink('permalink');
     dbkjs.map.addControl(dbkjs.permalink);
+    dbkjs.util.configureLayers();
     //get dbk!
 };
 
