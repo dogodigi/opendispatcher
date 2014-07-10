@@ -75,6 +75,7 @@ dbkjs.init = function() {
             dbkjs.util.loadingEnd(bl);
         });
         dbkjs.map.addLayer(bl);
+        dbkjs.util.configureLayers();
         _li.on('click', function() {
             dbkjs.toggleBaseLayer(bl_index);
             if(dbkjs.viewmode === 'fullscreen') {
@@ -126,6 +127,7 @@ dbkjs.toggleBaseLayer = function(nr) {
         } else {
             $(layerbuttons[nr]).addClass("active", true);
             dbkjs.options.baselayers[nr].setVisibility(true);
+            console.log('dbkjs.js>toggleBaseLayer>setBaseLayer');
             dbkjs.map.setBaseLayer(dbkjs.options.baselayers[nr]);
         }
     }
