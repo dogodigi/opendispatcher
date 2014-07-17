@@ -460,7 +460,7 @@ dbkjs.protocol.jsonDBK = {
                     if (!dbkjs.util.isJsonNull(waarde.bagId)){
                         var bag_div = $('<td></td>');
                         var bag_p = $('<p></p>');
-                        var bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + waarde.bagId + '</button>');
+                        var bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + dbkjs.util.pad(waarde.bagId,16) + '</button>');
                         bag_p.append(bag_button);
                         bag_button.click(function() {
                             if($.inArray('bag', dbkjs.options.organisation.modules) > -1) {
@@ -471,7 +471,7 @@ dbkjs.protocol.jsonDBK = {
                                             '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
                                             '<strong>' + i18n.t('app.fail') +
                                             '</strong>' +
-                                             waarde.bagId + ' ' + i18n.t('dialogs.infoNotFound') +
+                                             dbkjs.util.pad(waarde.bagId,16) + ' ' + i18n.t('dialogs.infoNotFound') +
                                             '</div>'
                                         );
                                     } else {

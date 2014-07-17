@@ -126,6 +126,7 @@ dbkjs.toggleBaseLayer = function(nr) {
         } else {
             $(layerbuttons[nr]).addClass("active", true);
             dbkjs.options.baselayers[nr].setVisibility(true);
+            console.log('dbkjs.js>toggleBaseLayer>setBaseLayer');
             dbkjs.map.setBaseLayer(dbkjs.options.baselayers[nr]);
         }
     }
@@ -315,6 +316,7 @@ dbkjs.finishMap = function(){
     }
     dbkjs.permalink = new dbkjs.Permalink('permalink');
     dbkjs.map.addControl(dbkjs.permalink);
+    dbkjs.util.configureLayers();
     //get dbk!
 };
 
