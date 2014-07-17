@@ -102,7 +102,7 @@ dbkjs.modules.bag = {
             _visibility = true;
 
             var _obj = dbkjs.modules.bag;
-            $('body').append(dbkjs.util.createDialog('bagpanel', '<i class="icon-home"></i> ' + i18n.t("dialogs.bag"), 'right:0;bottom:0;'));
+            $('body').append(dbkjs.util.createDialog('bagpanel', '<i class="fa fa-home"></i> ' + i18n.t("dialogs.bag"), 'right:0;bottom:0;'));
             _obj.layer = new OpenLayers.Layer.WMS("BAG", "/bag/wms?",
                     {layers: 'pand,standplaats,ligplaats', format: 'image/png', transparent: true, maxScale: 5000},
             {transitionEffect: 'none', singleTile: true, buffer: 0, isBaseLayer: false, visibility: _visibility});
@@ -125,7 +125,7 @@ dbkjs.modules.bag = {
             dv_panel_title.append(
                     _obj.layer.name + '&nbsp;<a  class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
                     _obj.id +
-                    '" data-parent="#overlaypanel_b1" ><i class="icon-info-sign"></i></a>'
+                    '" data-parent="#overlaypanel_b1" ><i class="fa fa-info-circle"></i></a>'
                     );
             dv_panel_heading.append(dv_panel_title);
             dv_panel.append(dv_panel_heading);
@@ -137,7 +137,7 @@ dbkjs.modules.bag = {
                     '<p>' +
                     '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#cccccc;border:3px solid #000000;">&nbsp;</div></div><div class="col-xs-10"> Panden</div></div>' +
                     '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#D7DF01;border:2px solid #ff0000;">&nbsp;</div></div><div class="col-xs-10"> Geselecteerd pand</div></div>' +
-                    '<div class="row"><div class="col-xs-2 text-center"><i class="icon-circle" style="color:#610B21;"></i></div><div class="col-xs-10"> Verblijfsobject(en) in geselecteerd pand</div></div>' +
+                    '<div class="row"><div class="col-xs-2 text-center"><i class="fa fa-circle" style="color:#610B21;"></i></div><div class="col-xs-10"> Verblijfsobject(en) in geselecteerd pand</div></div>' +
                     '</p></div>');
             dv_panel.append(dv_panel_content);
             $('#overlaypanel_b1').append(dv_panel);
@@ -305,7 +305,7 @@ dbkjs.modules.bag = {
         var _obj = dbkjs.modules.bag;
         if (_obj.layer.getVisibility() && dbkjs.map.zoom > 10) {
             if (typeof(e.feature) !== "undefined") {
-                dbkjs.util.changeDialogTitle('<i class="icon-home"></i> Pand ' + e.feature.attributes.identificatie, '#bagpanel');
+                dbkjs.util.changeDialogTitle('<i class="fa fa-home"></i> Pand ' + e.feature.attributes.identificatie, '#bagpanel');
                 _obj.pandInfo(e.feature);
                 $('#bagpanel_f').html('Fouten ontdekt in de BAG? <a href="https://www.kadaster.nl/web/formulier/BAG-formulieren/BAG-terugmelding.htm">Meld het!</a>');
                 $('#bagpanel').show();

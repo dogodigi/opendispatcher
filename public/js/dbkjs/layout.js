@@ -33,8 +33,8 @@ dbkjs.layout = {
                 '<input id="input_contrast" type="text" class="form-control">' +
                 '</div></div>' +
                 '<div class="col-xs-6"><span class="button-grp">' +
-                '<button id="click_contrast_down" class="btn btn-default" type="button"><i class="icon-adjust"></i>&nbsp;<i class="icon-minus"></i></button>' +
-                '<button id="click_contrast_up" class="btn btn-default" type="button"><i class="icon-plus">&nbsp;<i class="icon-adjust"></i></button>' +
+                '<button id="click_contrast_down" class="btn btn-default" type="button"><i class="fa fa-adjust"></i>&nbsp;<i class="fa fa-minus"></i></button>' +
+                '<button id="click_contrast_up" class="btn btn-default" type="button"><i class="fa fa-plus">&nbsp;<i class="fa fa-adjust"></i></button>' +
                 '</span></div></div></p>'
                 );
         $(parent).append('<hr>');

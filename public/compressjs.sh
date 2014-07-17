@@ -43,7 +43,7 @@ cat js/libs/jquery.pagination.js \
     js/dbkjs/dbkjs.js | node ../node_modules/uglify-js/bin/uglifyjs -o js/dbk.min.js
 
 cat css/dbk.css \
-    js/libs/bootstrap-3.1.0/css/bootstrap.min.css \
+    js/libs/bootstrap-3.2.0-dist/css/bootstrap.min.css \
     css/font-awesome.min.css \
     css/daterangepicker-bs3.css \
     css/typeahead.js-bootstrap.css \

@@ -29,9 +29,9 @@ dbkjs.modules.measure = {
     register: function() {
         var _obj = dbkjs.modules.measure;
         $('#btngrp_3').append('<a id="btn_measure_distance" class="btn btn-default navbar-btn" href="#" title="' + 
-                i18n.t('map.measureDistance') + '"><i class="icon-resize-horizontal rotate_45"></i></a>');
+                i18n.t('map.measureDistance') + '"><i class="fa fa-arrows-v fa-rotate-45"></i></a>');
         $('#btngrp_3').append('<a id="btn_measure_area" class="btn btn-default navbar-btn" href="#" title="' + 
-                i18n.t('map.measureArea') + '"><i class="icon-bookmark-empty rotate_45"></i></a>');
+                i18n.t('map.measureArea') + '"><i class="fa fa-bookmark-o fa-rotate-45"></i></a>');
 
         // style the sketch fancy
         var sketchSymbolizers = {

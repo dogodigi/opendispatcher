@@ -75,7 +75,6 @@ dbkjs.modules.layertoggle = {
                     'href': '#',
                     'title': i18n.t('map.toggle.' + toggleKey)
                 })
-                // .append('<i class="' + toggleOptions.icon + '"></i>')
                 .append(toggleOptions.label)
                 .click(function(e) {
                     e.preventDefault();

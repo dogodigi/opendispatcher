@@ -93,9 +93,10 @@ dbkjs.modules.feature = {
         var _obj = dbkjs.modules.feature;
         $('#btngrp_navigation').append(
             '<a id="btn_refresh" class="btn btn-default navbar-btn" href="#" title="'+
-            i18n.t('app.refresh') + '"><i class="icon-refresh"></i></a>'
+            i18n.t('app.refresh') + '"><i class="fa fa-refresh"></i></a>'
         );
         $('#btn_refresh').click(function() {
+            $('#btn_refresh > i').addClass('fa-spin');
             _obj.get();
         });
         _obj.namespace = options.namespace || _obj.namespace;
@@ -161,9 +162,10 @@ dbkjs.modules.feature = {
             } else {
                 _obj.layer.addFeatures(_obj.features);
             }
-
+            $('#btn_refresh > i').removeClass('fa-spin');
                 _obj.search_dbk();
         }).fail(function( jqxhr, textStatus, error ) {
+            $('#btn_refresh > i').removeClass('fa-spin');
             dbkjs.options.feature = null;
             dbkjs.util.alert('Fout', ' Features konden niet worden ingelezen', 'alert-danger');
         });

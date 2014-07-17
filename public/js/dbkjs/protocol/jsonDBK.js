@@ -125,7 +125,7 @@ dbkjs.protocol.jsonDBK = {
         });
     },
     getfeatureinfo: function(e){
-        $('#vectorclickpanel_h').html('<span class="h4"><i class="icon-info-sign">&nbsp;' + e.feature.layer.name + '</span>');
+        $('#vectorclickpanel_h').html('<span class="h4"><i class="fa fa-info-circle">&nbsp;' + e.feature.layer.name + '</span>');
         html = '<div class="table-responsive">';
             html += '<table class="table table-hover">';
             for (var j in e.feature.attributes) {
@@ -161,7 +161,7 @@ dbkjs.protocol.jsonDBK = {
                         $('#infopanel').hide();
                     }
                     dbkjs.protocol.jsonDBK.processing = true;
-                    dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>', i18n.t('dialogs.running'), 'alert-info');
+                    dbkjs.util.alert('<i class="fa fa-spinner fa-spin"></i>', i18n.t('dialogs.running'), 'alert-info');
                         if(feature.attributes.typeFeature === 'Object'){
                             dbkjs.protocol.jsonDBK.getObject(feature);
                         } else if (feature.attributes.typeFeature === 'Gebied') {
@@ -370,7 +370,7 @@ dbkjs.protocol.jsonDBK = {
     constructAlgemeen: function(DBKObject, dbktype) {
         var _obj = dbkjs.protocol.jsonDBK;
         /** Algemene dbk info **/
-        dbkjs.util.changeDialogTitle('<i class="icon-building"></i> ' + DBKObject.formeleNaam);
+        dbkjs.util.changeDialogTitle('<i class="fa fa-building"></i> ' + DBKObject.formeleNaam);
         var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+ 
                 i18n.t('dbk.unknown')+ '</span>' : DBKObject.controleDatum;
         var bhvaanwezig = '<span class="label label-warning">'+ 
@@ -740,13 +740,13 @@ dbkjs.protocol.jsonDBK = {
                 if (waarde.filetype === "document" || waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
                     image_carousel_inner.append('<div class="item ' + active + 
                             '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath + 
-                            '" target="_blank"><h1><i class="icon-download icon-large"></h1></i></a><h3>' + 
+                            '" target="_blank"><h1><i class="fa fa-download fa-3"></h1></i></a><h3>' + 
                             waarde.naam + 
                             '</h3><a href="' + realpath + '" target="_blank"><h2>' + i18n.t('app.download')  + '</h2></a></div></div>');
                 } else if(waarde.filetype === "weblink") {
                     image_carousel_inner.append('<div class="item ' + active + 
                             '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL + 
-                            '" target="_blank"><h1><i class="icon-external-link icon-large"></i></h1><h2>' + 
+                            '" target="_blank"><h1><i class="fa fa-external-link fa-3"></i></h1><h2>' + 
                             i18n.t('app.hyperlink')  + '</h2></a></div></div>'
                         );
                 } else if(waarde.filetype === 'afbeelding') {
@@ -764,9 +764,9 @@ dbkjs.protocol.jsonDBK = {
             image_carousel.append(image_carousel_inner);
             if (foto.length > 1) {
                 image_carousel.append('<a class="left carousel-control" href="#' + car_id + '" data-slide="prev">' +
-                        '<span class="icon-prev"></span></a>');
+                        '<span class="fa fa-arrow-left"></span></a>');
                 image_carousel.append('<a class="right carousel-control" href="#' + car_id + '" data-slide="next">' +
-                        '<span class="icon-next"></span></a>');
+                        '<span class="fa fa-arrow-right"></span></a>');
             }
             foto_div.append(image_carousel);
             _obj.panel_group.append(foto_div);

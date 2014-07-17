@@ -41,8 +41,8 @@ dbkjs.modules.care = {
     register: function(options) {
         var _obj = dbkjs.modules.care;
         $('#btngrp_3').append('<a id="btn_care" class="btn btn-default navbar-btn" href="#" title="' + 
-                i18n.t('care.managementinfo') + '"><i class="icon-fire"></i></a>');
-        $('body').append(dbkjs.util.createDialog('carepanel', '<i class="icon-fire"></i> ' + i18n.t('care.details'), 'right:0;bottom:0;'));
+                i18n.t('care.managementinfo') + '"><i class="fa fa-fire"></i></a>');
+        $('body').append(dbkjs.util.createDialog('carepanel', '<i class="fa fa-fire"></i> ' + i18n.t('care.details'), 'right:0;bottom:0;'));
         $('#btn_care').click(function() {
             $('#care_dialog').toggle();
         });
@@ -107,7 +107,7 @@ dbkjs.modules.care = {
         dbkjs.map.addLayers([_obj.layerIncident, _obj.layerNorm]);
 
         //Care heeft zijn eigen panel:
-        _obj.dialog = dbkjs.util.createDialog('care_dialog', '<i class="icon-fire"></i> ' + i18n.t('care.incidentsAndCoverage'));
+        _obj.dialog = dbkjs.util.createDialog('care_dialog', '<i class="fa fa-fire"></i> ' + i18n.t('care.incidentsAndCoverage'));
         $('body').append(_obj.dialog);
         _obj.sel_care = $('<input id="sel_care" name="sel_care" type="text" class="form-control" placeholder="' + 
                 i18n.t('care.selectPeriod') + '">');

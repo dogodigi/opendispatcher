@@ -32,9 +32,9 @@ dbkjs.modules.filter = {
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
         $('#btngrp_3').append('<a id="btn_filter" class="btn btn-default navbar-btn" href="#" title="Filter activeren">' +
-                '<i class="icon-filter"></i>' +
+                '<i class="fa fa-filter"></i>' +
                 '</a>');
-        $('body').append(dbkjs.util.createModal('filter_dialog', '<i class="icon-filter"></i> Filter'));
+        $('body').append(dbkjs.util.createModal('filter_dialog', '<i class="fa fa-filter"></i> Filter'));
         $('#btn_filter').click(function() {
             //zet alle dbk's uit en zoom naar de regio.
             dbkjs.modules.updateFilter(0);

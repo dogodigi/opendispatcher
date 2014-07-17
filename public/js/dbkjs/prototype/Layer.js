@@ -111,7 +111,7 @@ dbkjs.Layer = dbkjs.Class({
             var dv_panel_title = $('<h4 class="panel-title"></div>');
             // dv_panel_title.append('<input type="checkbox" name="box_' + this.id + '"/>&nbsp;');
             dv_panel_title.append(name + '&nbsp;<a class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
-                    this.id + '" data-parent="' + parent + '" ><i class="icon-info-sign"></i></a>');
+                    this.id + '" data-parent="' + parent + '" ><i class="fa fa-info-circle"></i></a>');
             dv_panel_heading.append(dv_panel_title);
             this.div.append(dv_panel_heading);
             var dv_panel_content = $('<div id="collapse_' + this.id + '" class="panel-collapse collapse"></div>');
@@ -135,7 +135,7 @@ dbkjs.Layer = dbkjs.Class({
                 }
                 var that = this;
                 dv_panel_heading.click(function(e) {
-                    if(e.target.className.indexOf('icon-info-sign') !== -1 || e.target.className.indexOf('accordion-toggle') !== -1) {
+                    if(e.target.className.indexOf('fa-info-circle') !== -1 || e.target.className.indexOf('accordion-toggle') !== -1) {
                         //click on the info sign
                         //check to see if the legend is there already
                         if($('#legend_'+that.id).length === 0) {
