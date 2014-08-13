@@ -29,6 +29,7 @@ var express = require('express'),
         web = require('./controllers/web.js'),
         dbk = require('./controllers/dbk.js'),
         bag = require('./controllers/bag.js'),
+        incidents = require('./controllers/incidents.js'),        
         emailer = require('./controllers/emailer.js');
 
 
@@ -137,6 +138,11 @@ app.get('/api/features.json', dbk.getFeatures);
 app.get('/api/bag/adres/:id', bag.getAdres);
 app.get('/api/bag/panden/:id', bag.getPanden);
 app.get('/api/autocomplete/:searchphrase', bag.autoComplete);
+app.get('/api/incidents/list/class/1', incidents.getGroupByClass1);
+app.get('/api/incidents/list/class/2', incidents.getGroupByClass2);
+app.get('/api/incidents/list/class/3', incidents.getGroupByClass3);
+app.get('/api/incidents/list/priorities', incidents.getGroupByPriority);
+app.get('/api/incidents/list/firestations', incidents.getGroupByFirestation);
 //app.get('/data/regio.json', routes.regio);
 app.get('/web/api/:id', web.getData);
 app.get('/web/api/bag/panden/:id.json', bag.getPanden);
