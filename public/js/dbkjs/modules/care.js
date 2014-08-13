@@ -290,12 +290,15 @@ dbkjs.modules.care = {
         //todo: conflicted with the Array.prototype.where, 
         //removed that nasty function. Have to find another solution for that.
         var results = geojson_format.read(response.responseText);
+        console.log(results);
         if (results.length > 0) {
             $('#carepanel_b').html('');
             dbkjs.util.changeDialogTitle(i18n.t('care.incidents'), '#carepanel');
             var ft_div = $('<div class="table-responsive"></div>');
             var ft_tbl = $('<table id="incidenten_export" class="table table-hover table-condensed"></table>');
-            for (var feat in results) {
+            var feat;
+            for (feat = 0; feat < results.length; feat++) { 
+                console.log(feat);
                 ft_tbl.append('<tr><td colspan="2">' + dbkjs.util.createPriority(
                         results[feat].attributes.incidentnr,
                         results[feat].attributes.locationdescription,
