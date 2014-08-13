@@ -31,7 +31,7 @@ exports.getGroupByClass1 = function(req, res) {
         global.pool.query(query_str,
             function(err, result){
                 if(err) {
-                    res.json(err);
+                    res.json([]);
                 } else {
                     res.json(result.rows);
                 }
@@ -53,7 +53,7 @@ exports.getGroupByClass2 = function(req, res) {
         global.pool.query(query_str,
             function(err, result){
                 if(err) {
-                    res.json(err);
+                    res.json([]);
                 } else {
                     res.json(result.rows);
                 }
@@ -75,7 +75,7 @@ exports.getGroupByClass3 = function(req, res) {
         global.pool.query(query_str,
             function(err, result){
                 if(err) {
-                    res.json(err);
+                    res.json([]);
                 } else {
                     res.json(result.rows);
                 }
@@ -98,7 +98,7 @@ exports.getGroupByPriority = function(req, res) {
         global.pool.query(query_str,
             function(err, result){
                 if(err) {
-                    res.json(err);
+                    res.json([]);
                 } else {
                     res.json(result.rows);
                 }
@@ -121,7 +121,7 @@ exports.getGroupByFirestation = function(req, res) {
         global.pool.query(query_str,
             function(err, result){
                 if(err) {
-                    res.json(err);
+                    res.json([]);
                 } else {
                     res.json(result.rows);
                 }
