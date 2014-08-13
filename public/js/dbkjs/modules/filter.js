@@ -108,10 +108,9 @@ dbkjs.modules.filter = {
         _obj.selectie = [];
         $.each(dbkjs.modules.feature.features, function(fix, feat){
             var compliant = true;
-            
-            if(gevstoffilter === 'F' && feat.attributes.gevaarlijkestoffen === 0){
+            if(gevstoffilter === 'F' && feat.attributes.gevaarlijkestoffen !== 0){
                 compliant = false;
-            } else if (gevstoffilter === 'T' && feat.attributes.gevaarlijkestoffen > 0){
+            } else if (gevstoffilter === 'T' && feat.attributes.gevaarlijkestoffen === 0){
                 compliant = false;
             }
             if(inzetfilter === 'F' && !dbkjs.util.isJsonNull(feat.attributes.inzetprocedure)){
