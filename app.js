@@ -138,6 +138,7 @@ app.get('/api/features.json', dbk.getFeatures);
 app.get('/api/bag/adres/:id', bag.getAdres);
 app.get('/api/bag/panden/:id', bag.getPanden);
 app.get('/api/autocomplete/:searchphrase', bag.autoComplete);
+app.get('/api/incidents/list/classifications', incidents.getGroupByClasses);
 app.get('/api/incidents/list/class/1', incidents.getGroupByClass1);
 app.get('/api/incidents/list/class/2', incidents.getGroupByClass2);
 app.get('/api/incidents/list/class/3', incidents.getGroupByClass3);

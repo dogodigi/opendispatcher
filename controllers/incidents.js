@@ -17,7 +17,30 @@
  *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
+/**
+ * 
+ * @param {type} req
+ * @param {type} res
+ * @returns {undefined}
+ */
+exports.getGroupByClasses = function(req, res) {
+    //where identificatie = 1369659645
+    if (req.query) {
+        var query_str = 'select classification1 as c1, classification2 as c2, classification3 as c3, count(*) from incidents."Interventions" ' + 
+                'group by classification1,classification2,classification3 ' + 
+                'order by classification1,classification2,classification3';
+        global.pool.query(query_str,
+            function(err, result){
+                if(err) {
+                    res.json(err);
+                } else {
+                    res.json(result.rows);
+                }
+                return;
+            }
+        );
+    }
+};
 /**
  * 
  * @param {type} req
