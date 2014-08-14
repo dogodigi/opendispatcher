@@ -24,6 +24,9 @@ dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.care = {
     id: "dbk.modules.care",
     visibility: false,
+    classification1:"",
+    classification2:"",
+    classification3:"",
     layer: {visibility: true},
     sel_array: [],
     sel_care: null,
@@ -140,6 +143,94 @@ dbkjs.modules.care = {
                 '<input name="chk_prio" type="checkbox" checked="checked"/><span>' + i18n.t('care.prio3') + '</span>'
             ]
         ));
+        //haal class1Sel op;
+        //http://localhost/api/incidents/list/class/1
+        $.getJSON('api/incidents/list/class/1').done(function(data) {
+            if (data.length > 0) {
+                var myselect = $('<select id="class1Selsel" class="form-control"></select>');
+                myselect.append('<option selected>' + i18n.t('care.all') + '</option>')
+                $.each(data, function(d_index, d_item) {
+                    myselect.append('<option>' + d_item.name + '</option>')
+                });
+                incidentSel.append('<h5>' + i18n.t('care.class1')+ '</h5>');
+                incidentSel.append(myselect);
+                myselect.on('change', function() {
+                    //refresh!
+                    dbkjs.modules.care.classification1 = this.value;
+                    if(this.value !== i18n.t('care.all')){
+                        $.getJSON('api/incidents/list/class/2/' + this.value).done(function(data) {
+                            if (data.length > 0) {
+                                var myselect2;
+                                
+                                if($('#class2Selsel').length !== 0){
+                                    myselect2 = $('#class2Selsel')
+                                            .find('option')
+                                            .remove()
+                                            .end();
+                                } else {
+                                    myselect2 = $('<select id="class2Selsel" class="form-control"></select>');
+                                    incidentSel.append('<h5 id="class2Selselh">' + i18n.t('care.class2')+ '</h5>');
+                                    incidentSel.append(myselect2);
+                                }
+                                myselect2.append('<option selected>' + i18n.t('care.all') + '</option>')
+                                $.each(data, function(d_index, d_item) {
+                                    myselect2.append('<option>' + d_item.name + '</option>')
+                                });
+
+                                myselect2.on('change', function() {
+                                    //refresh!
+                                    dbkjs.modules.care.classification2 = this.value;
+                                    if(this.value !== i18n.t('care.all')){
+                                        $.getJSON('api/incidents/list/class/3/' + this.value).done(function(data) {
+                                            if (data.length > 0) {
+                                                var myselect3;
+                                                if($('#class3Selsel').length !== 0){
+                                                    myselect3 = $('#class3Selsel')
+                                                            .find('option')
+                                                            .remove()
+                                                            .end();
+                                                } else {
+                                                    myselect3 = $('<select id="class3Selsel" class="form-control"></select>');
+                                                    incidentSel.append('<h5 id="class3Selselh">' + i18n.t('care.class3')+ '</h5>');
+                                                    incidentSel.append(myselect3);
+                                                }
+                                                myselect3.append('<option selected>' + i18n.t('care.all') + '</option>')
+                                                $.each(data, function(d_index, d_item) {
+                                                    myselect3.append('<option>' + d_item.c3 + '</option>')
+                                                });
+                                                myselect3.on('change', function() {
+                                                    //refresh!
+                                                    if(this.value !== i18n.t('care.all')){
+                                                        dbkjs.modules.care.classification3 = this.value;
+                                                    } else {
+                                                        dbkjs.modules.care.classification3 = "";
+                                                    }
+                                                    dbkjs.modules.care.refreshCQL();
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        //destroy!
+                                        $('#class3Selselh').remove();
+                                        $('#class3Selsel').remove();
+                                        dbkjs.modules.care.classification2 = "";
+                                        dbkjs.modules.care.classification3 = "";
+                                    }
+                                    dbkjs.modules.care.refreshCQL();
+                                });
+                            }
+                        });
+                    } else {
+                        //destroy!
+                        $('#class2Selselh').remove();
+                        $('#class2Selsel').remove();
+                        dbkjs.modules.care.classification1 = "";
+                        dbkjs.modules.care.classification2 = "";
+                    }
+                    dbkjs.modules.care.refreshCQL();
+                });
+            }
+        });
         incidentSel.append(dbkjs.util.createListGroup(
             [
                 '<input name="chk_koppel" type="checkbox"/><span>' + i18n.t('care.combinedWithCoverage')+'</span>'
@@ -182,6 +273,7 @@ dbkjs.modules.care = {
         $('#care_dialog_b').append(incidentSel);
         $('#care_dialog_b').append(dekkingsplan_button);
         $('#care_dialog_b').append(normSel);
+
         $.each(dbkjs.options.organisation.care, function (care_k, care_v){
             var btn = $('<button class="btn btn-block btn_5px" type="button">' + care_v.button + '</button>');
             $(btn).click(function() {
@@ -210,8 +302,30 @@ dbkjs.modules.care = {
             _obj.cql_array = arr;
             _obj.layerIncident.mergeNewParams({'cql_filter': "priority IN (" + 
                 _obj.cql_array.join() + ")"});
-
         });
+    },
+    refreshCQL: function(){
+        var _obj = dbkjs.modules.care;
+        //_obj.layerIncident.mergeNewParams
+        var classArr = [];
+        if (_obj.classification1 !== ""){
+            classArr.push("classification1='" + _obj.classification1 + "'");
+        }
+        if (_obj.classification2 !== ""){
+            classArr.push("classification2='" + _obj.classification2 + "'");
+        }
+        if (_obj.classification3 !== ""){
+            classArr.push("classification3='" + _obj.classification3 + "'");
+        }
+        var out = classArr.join(' AND ');
+        var cqlfilterfinal;
+        if (_obj.layerIncident.params.CQL_FILTER) {
+            cqlfilterfinal = _obj.layerIncident.params.CQL_FILTER;
+            cqlfilterfinal += ' AND ' + out;
+        } else {
+            cqlfilterfinal = out;
+        }
+        _obj.layerIncident.mergeNewParams({'cql_filter': cqlfilterfinal});
     },
     getfeatureinfo: function(e) {
         if (this.layerIncident.getVisibility()) {
@@ -290,7 +404,6 @@ dbkjs.modules.care = {
         //todo: conflicted with the Array.prototype.where, 
         //removed that nasty function. Have to find another solution for that.
         var results = geojson_format.read(response.responseText);
-        console.log(results);
         if (results.length > 0) {
             $('#carepanel_b').html('');
             dbkjs.util.changeDialogTitle(i18n.t('care.incidents'), '#carepanel');
@@ -298,7 +411,6 @@ dbkjs.modules.care = {
             var ft_tbl = $('<table id="incidenten_export" class="table table-hover table-condensed"></table>');
             var feat;
             for (feat = 0; feat < results.length; feat++) { 
-                console.log(feat);
                 ft_tbl.append('<tr><td colspan="2">' + dbkjs.util.createPriority(
                         results[feat].attributes.incidentnr,
                         results[feat].attributes.locationdescription,

@@ -91,7 +91,11 @@
         "prio1": "care.prio1",
         "prio2": "care.prio2",
         "prio3": "care.prio3",
-        "combinedWithCoverage": "care.combinedWithCoverage"
+        "combinedWithCoverage": "care.combinedWithCoverage",
+        "class1": "care.class1",
+        "class2": "care.class2",
+        "class3": "care.class3",
+        "all": "care.all"
     },
     "dbk": {
         "alternativeName": "dbk.alternativeName",

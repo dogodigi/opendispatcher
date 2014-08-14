@@ -72,17 +72,33 @@ exports.getGroupByClass1 = function(req, res) {
 exports.getGroupByClass2 = function(req, res) {
     //where identificatie = 1369659645
     if (req.query) {
-        var query_str = 'select classification2 as name, count(*) from incidents."Interventions" where not classification2 is null and length(classification2) <> 0 group by classification2 order by classification2';
-        global.pool.query(query_str,
-            function(err, result){
-                if(err) {
-                    res.json([]);
-                } else {
-                    res.json(result.rows);
+        c1 = req.params.c1;
+        if(!c1){
+            var query_str = 'select classification2 as name, count(*) from incidents."Interventions" where not classification2 is null and length(classification2) <> 0 group by classification2 order by classification2';
+            global.pool.query(query_str,
+                function(err, result){
+                    if(err) {
+                        res.json([]);
+                    } else {
+                        res.json(result.rows);
+                    }
+                    return;
                 }
-                return;
-            }
-        );
+            );
+        } else {
+            var query_str = 'select classification2 as name, count(*) from incidents."Interventions" where classification1 = $1 group by classification2 order by classification2';
+            global.pool.query(query_str,[c1],
+                function(err, result){
+                    if(err) {
+                        res.json(err);
+                    } else {
+                        res.json(result.rows);
+                    }
+                    return;
+                }
+            );
+        }
+        
     }
 };
 /**
@@ -94,17 +110,46 @@ exports.getGroupByClass2 = function(req, res) {
 exports.getGroupByClass3 = function(req, res) {
     //where identificatie = 1369659645
     if (req.query) {
-        var query_str = 'select classification3 as name, count(*) from incidents."Interventions" where not classification3 is null and length(classification3) <> 0 group by classification3 order by classification3';
-        global.pool.query(query_str,
-            function(err, result){
-                if(err) {
-                    res.json([]);
-                } else {
-                    res.json(result.rows);
+        c1 = req.params.c1;
+        c2 = req.params.c2;
+        console.log(req.params);
+        if(!c1 && !c2){
+            var query_str = 'select classification3 as c3, count(*) from incidents."Interventions" group by classification3 order by classification3';
+            global.pool.query(query_str,
+                function(err, result){
+                    if(err) {
+                        res.json([]);
+                    } else {
+                        res.json(result.rows);
+                    }
+                    return;
                 }
-                return;
-            }
-        );
+            );
+        } else if(c2 && !c1) {
+            var query_str = 'select classification3 as c3, count(*) from incidents."Interventions" where classification2 = $1 group by classification3 order by classification3';
+            global.pool.query(query_str,[c2],
+                function(err, result){
+                    if(err) {
+                        res.json(err);
+                    } else {
+                        res.json(result.rows);
+                    }
+                    return;
+                }
+            );
+        } else if(c1 && c2) {
+            var query_str = 'select classification3 as c3, count(*) from incidents."Interventions" where classification1 = $1 and classification2 = $2 group by classification3 order by classification3';
+            global.pool.query(query_str,[c1,c2],
+                function(err, result){
+                    if(err) {
+                        res.json(err);
+                    } else {
+                        res.json(result.rows);
+                    }
+                    return;
+                }
+            );
+        }
     }
 };
 
@@ -138,18 +183,5 @@ exports.getGroupByPriority = function(req, res) {
  * @returns {undefined}
  */
 exports.getGroupByFirestation = function(req, res) {
-    //where identificatie = 1369659645
-    if (req.query) {
-        var query_str = 'select firestation as name, count(*) from incidents."Interventions" group by firestation order by firestation';
-        global.pool.query(query_str,
-            function(err, result){
-                if(err) {
-                    res.json([]);
-                } else {
-                    res.json(result.rows);
-                }
-                return;
-            }
-        );
-    }
+
 };

@@ -91,7 +91,11 @@
         "prio1": "Prio 1",
         "prio2": "Prio 2",
         "prio3": "Prio 3",
-        "combinedWithCoverage": "Gekoppeld aan dekkingsplan"
+        "combinedWithCoverage": "Gekoppeld aan dekkingsplan",
+        "class1": "Classificatie 1",
+        "class2": "Classificatie 2",
+        "class3": "Classificatie 3",
+        "all": "Alles"
     },
     "dbk": {
         "alternativeName": "Informele naam",

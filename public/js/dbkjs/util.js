@@ -988,7 +988,6 @@ dbkjs.util = {
     configureLayers: function() {
         for(var i=0, len=dbkjs.map.layers.length; i<len; i++) {
             if (dbkjs.map.layers[i].isBaseLayer && dbkjs.map.layers[i].visibility) {
-                console.log(dbkjs.map.layers[i].name);
                 dbkjs.map.setBaseLayer(dbkjs.map.layers[i]);
                 dbkjs.map.raiseLayer(dbkjs.map.layers[i], -1000);
             }
