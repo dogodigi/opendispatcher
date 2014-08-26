@@ -292,22 +292,31 @@ dbkjs.modules.care = {
 
         });
         $('input[name="chk_prio"]').click(function() {
-            var arr = [];
-            $.each($('input[name="chk_prio"]'), function(chk_idx, chk) {
-                if ($(chk).is(':checked')) {
-                    arr.push("'" + $(chk).next().text() + "'");
-                }
-            });
-            _obj.cql_array = arr;
-            _obj.layerIncident.mergeNewParams({'cql_filter': "priority IN (" + 
-                _obj.cql_array.join() + ")"});
-
+            _obj.refreshCQL();
+            //var arr = [];
+            //$.each($('input[name="chk_prio"]'), function(chk_idx, chk) {
+            //    if ($(chk).is(':checked')) {
+            //        arr.push("'" + $(chk).next().text() + "'");
+            //    }
+            //});
+            //_obj.cql_array = arr;
+            //_obj.layerIncident.mergeNewParams({'cql_filter': "priority IN (" + 
+            //    _obj.cql_array.join() + ")"});
         });
     },
     refreshCQL: function(){
         var _obj = dbkjs.modules.care;
+        var prioArr = [];
+        $.each($('input[name="chk_prio"]'), function(chk_idx, chk) {
+            if ($(chk).is(':checked')) {
+                prioArr.push("'" + $(chk).next().text() + "'");
+            }
+        });
+        var prioFilter = "priority IN (" + prioArr.join() + ")";
+        
         //_obj.layerIncident.mergeNewParams
         var classArr = [];
+        classArr.push(prioFilter);
         if (_obj.classification1 !== ""){
             classArr.push("classification1='" + _obj.classification1 + "'");
         }
@@ -317,14 +326,16 @@ dbkjs.modules.care = {
         if (_obj.classification3 !== ""){
             classArr.push("classification3='" + _obj.classification3 + "'");
         }
+        console.log(classArr.length);
         var out = classArr.join(' AND ');
         var cqlfilterfinal;
-        if (_obj.layerIncident.params.CQL_FILTER) {
-            cqlfilterfinal = _obj.layerIncident.params.CQL_FILTER;
-            cqlfilterfinal += ' AND ' + out;
-        } else {
+        //if (_obj.layerIncident.params.CQL_FILTER) {
+        //    cqlfilterfinal = _obj.layerIncident.params.CQL_FILTER;
+        //    cqlfilterfinal += ' AND ' + out;
+        //} else {
             cqlfilterfinal = out;
-        }
+        //}
+        //console.log(cqlfilterfinal);
         _obj.layerIncident.mergeNewParams({'cql_filter': cqlfilterfinal});
     },
     getfeatureinfo: function(e) {

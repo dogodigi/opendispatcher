@@ -103,7 +103,7 @@ dbkjs.config.styles = {
                     if(dbkjs.options.alwaysShowDbkFeature) {
                         // Always show feature except the active feature
                         var activeFeature = dbkjs.modules.feature.getActive();
-                        if(activeFeature && feature.id == activeFeature.id) {
+                        if(activeFeature && feature.id === activeFeature.id) {
                             return "none";
                         } else {
                             return "true";
