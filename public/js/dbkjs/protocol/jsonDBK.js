@@ -194,7 +194,7 @@ dbkjs.protocol.jsonDBK = {
             }
         });
     },
-    info: function(data) {
+    info: function(data, noZoom) {
         var _obj = dbkjs.protocol.jsonDBK;
         var objecttype = "object";
         if (data.DBKObject || data.DBKGebied) {
@@ -348,9 +348,10 @@ dbkjs.protocol.jsonDBK = {
                 _obj.layerTekstobject.addFeatures(features);
                 _obj.activateSelect(_obj.layerTekstobject);
             }
-
-            if(!noZoom && dbkjs.options.zoomToPandgeometrie) {
-                dbkjs.modules.feature.zoomToPandgeometrie();
+            if(!noZoom){
+                if(dbkjs.options.zoomToPandgeometrie) {
+                    dbkjs.modules.feature.zoomToPandgeometrie();
+                }
             }
 
             if(dbkjs.viewmode === 'fullscreen') {
