@@ -33,8 +33,8 @@ dbkjs.options = {
             numDigits: 0
         }
     },
-    VERSION: "2.5",
-    RELEASEDATE: "10-07-2014",
+    VERSION: "2.7",
+    RELEASEDATE: "01-09-2014",
     APPLICATION: "safetymapsDBK",
     REMARKS: "",
     INFO: "",

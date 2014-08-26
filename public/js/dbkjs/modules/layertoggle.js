@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 B3Partners (info@b3partners.nl)
- * 
+ *
  *  This file is part of safetymapDBK
- *  
+ *
  *  safetymapDBK is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -17,9 +17,9 @@
  *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
  *
  */
- 
+
  // IE workaround from http://stackoverflow.com/questions/2790001/fixing-javascript-array-functions-in-internet-explorer-indexof-foreach-etc
- 
+
  if (!('filter' in Array.prototype)) {
     Array.prototype.filter= function(filter, that /*opt*/) {
         var other= [], v;
@@ -40,22 +40,22 @@ dbkjs.modules.layertoggle = {
      */
     availableToggles: {
         'toggleObject': {
-            'label': 'Object</br />informatie',
+            'label': 'Algemeen',
             'layers': [ ],
             'category': 'objectinformatie'
         },
         'togglePreventive': {
-            'label': 'Preventief',
+            'label': 'Preventie',
             'layers': [ 'Brandcompartiment' ],
             'category': 'preventief'
         },
         'togglePreparative': {
-            'label': 'Preparatief',
+            'label': 'Preparatie',
             'layers': [  ],
             'category': 'preparatief'
         },
         'toggleDanger': {
-            'label': 'Repressief',
+            'label': 'Repressie',
             'layers': [ 'Gevaarlijke stoffen' ],
             'category': 'repressief'
         }

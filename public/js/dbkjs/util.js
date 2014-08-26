@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of safetymapDBK
- *  
+ *
  *  safetymapDBK is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -30,7 +30,7 @@ $.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
 $.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
 $.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 $.browser.device = (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase()));
-dbkjs.argParser = 
+dbkjs.argParser =
     OpenLayers.Class(OpenLayers.Control.ArgParser, {
         setMap: function(map) {
             OpenLayers.Control.prototype.setMap.apply(this, arguments);
@@ -41,12 +41,12 @@ dbkjs.argParser =
                 if ( (control !== this) &&
                      (control.CLASS_NAME === "OpenLayers.Control.ArgParser") ) {
 
-                    // If a second argparser is added to the map, then we 
+                    // If a second argparser is added to the map, then we
                     // override the displayProjection to be the one added to the
-                    // map. 
+                    // map.
                     if (control.displayProjection !== this.displayProjection) {
                         this.displayProjection = control.displayProjection;
-                    }    
+                    }
 
                     break;
                 }
@@ -56,8 +56,8 @@ dbkjs.argParser =
                 var args = this.getParameters();
                 // Be careful to set layer first, to not trigger unnecessary layer loads
                 if (args.b) {
-                    // when we add a new layer, set its visibility 
-                    this.map.events.register('addlayer', this, 
+                    // when we add a new layer, set its visibility
+                    this.map.events.register('addlayer', this,
                                              this.configureLayers);
                     this.configureLayers();
                 }
@@ -69,7 +69,7 @@ dbkjs.argParser =
                     }
 
                     // when we add a new baselayer to see when we can set the center
-                    this.map.events.register('changebaselayer', this, 
+                    this.map.events.register('changebaselayer', this,
                                              this.setCenter);
                     this.setCenter();
                 }
@@ -80,14 +80,14 @@ dbkjs.argParser =
             if(!dbkjs.disableloadlayer){
                 if(args.ly && args.b) {
                     for(var i=0, len=this.map.layers.length; i<len; i++) {
-                        if (!this.map.layers[i].isBaseLayer && 
+                        if (!this.map.layers[i].isBaseLayer &&
                                 $.inArray(this.map.layers[i].metadata.pl, args.ly) !== -1) {
                             this.map.layers[i].setVisibility(true);
-                        } else if (!this.map.layers[i].isBaseLayer && 
+                        } else if (!this.map.layers[i].isBaseLayer &&
                                 !dbkjs.util.isJsonNull(this.map.layers[i].metadata.pl)) {
                             this.map.layers[i].setVisibility(false);
                         }
-                    }                
+                    }
                 }
                 if(args[i18n.t('app.queryDBK')] && dbkjs.modules.feature){
                     dbkjs.options.dbk = args[i18n.t('app.queryDBK')];
@@ -100,7 +100,7 @@ dbkjs.argParser =
                     }
                 }
             }
-        },    
+        },
         configureLayers: function() {
             var args = this.getParameters();
             if(args.ly && args.b){
@@ -109,12 +109,12 @@ dbkjs.argParser =
                         this.map.setBaseLayer(this.map.layers[i]);
                         this.map.raiseLayer(this.map.layers[i], -1000);
                     }
-                }                
+                }
             }
-        },     
+        },
         CLASS_NAME: "dbkjs.ArgParser"
     });
-dbkjs.Permalink = 
+dbkjs.Permalink =
     OpenLayers.Class(OpenLayers.Control.Permalink, {
     argParserClass: dbkjs.ArgParser,
     SELECT_ARGUMENT_KEY: "select",
@@ -142,12 +142,12 @@ dbkjs.Permalink =
         else {
             this.element.href = href;
         }
-    }, 
+    },
     createParams: function(center, zoom, layers) {
         center = center || this.map.getCenter();
-          
+
         var params = OpenLayers.Util.getParameters(this.base);
-        // If there's still no center, map is not initialized yet. 
+        // If there's still no center, map is not initialized yet.
         // Break out of this function, and simply return the params from the
         // base link.
         if(dbkjs.options){
@@ -155,28 +155,28 @@ dbkjs.Permalink =
                 params[i18n.t('app.queryDBK')]  = dbkjs.options.dbk;
             }
         }
-        if (center) { 
+        if (center) {
 
             //zoom
-            params.zoom = zoom || this.map.getZoom(); 
+            params.zoom = zoom || this.map.getZoom();
 
             //lon,lat
             var lat = center.lat;
             var lon = center.lon;
-            
+
             if (this.displayProjection) {
                 var mapPosition = OpenLayers.Projection.transform(
-                  { x: lon, y: lat }, 
-                  this.map.getProjectionObject(), 
+                  { x: lon, y: lat },
+                  this.map.getProjectionObject(),
                   this.displayProjection );
-                lon = mapPosition.x;  
-                lat = mapPosition.y;  
-            }       
+                lon = mapPosition.x;
+                lat = mapPosition.y;
+            }
             params.lat = Math.round(lat*100000)/100000;
             params.lon = Math.round(lon*100000)/100000;
 
-            
-            //layers        
+
+            //layers
             layers = this.map.layers;
             params.ly = [];
             for (var i=0, len=layers.length; i<len; i++) {
@@ -189,14 +189,14 @@ dbkjs.Permalink =
                     if (layer.metadata.pl && layer.getVisibility()){
                         params.ly.push(layer.metadata.pl);
                     }
-                    //params.layers += (layer.getVisibility()) ? "T" : "F";           
+                    //params.layers += (layer.getVisibility()) ? "T" : "F";
                 }
             }
-            
+
         }
 
         return params;
-    }, 
+    },
     CLASS_NAME: "dbkjs.Permalink"
 });
 
@@ -319,7 +319,7 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
 //        if ( fn.length > 0 ) p = fn.pop()
 //            .replace(/^\s*|\s(?=\s)|\s*$|,/g, '').split(' ') ;
 //        // prepend a return if not already there.
-//        fn = ( ( ! /\s*return\s+/.test( b ) ) ? "return " : "" ) + b ;   
+//        fn = ( ( ! /\s*return\s+/.test( b ) ) ? "return " : "" ) + b ;
 //        p.push( fn ) ;
 //        try {
 //            return Function.apply( {}, p ) ;
@@ -329,7 +329,7 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
 //    };
 //
 //    var fn = f;
-//    // if type of parameter is string         
+//    // if type of parameter is string
 //    if (typeof f === "string")
 //        // try to make it into a function
 //        if ((fn = lambda(fn)) === null)
@@ -340,7 +340,7 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
 //    var l = this.length;
 //    // set up parameters for filter function call
 //    var p = [0, 0, res];
-//    // append any pass-through parameters to parameter array               
+//    // append any pass-through parameters to parameter array
 //    for (var i = 1; i < arguments.length; i++)
 //        p.push(arguments[i]);
 //    // for each array element, pass to filter function
@@ -348,11 +348,11 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
 //        // skip missing elements
 //        if (typeof this[ i ] === "undefined")
 //            continue;
-//        // param1 = array element             
+//        // param1 = array element
 //        p[ 0 ] = this[ i ];
 //        // param2 = current indeex
 //        p[ 1 ] = i;
-//        // call filter function. if return true, copy element to results            
+//        // call filter function. if return true, copy element to results
 //        if (!!fn.apply(this, p))
 //            res.push(this[i]);
 //    }
@@ -364,7 +364,7 @@ dbkjs.util = {
     layersLoading: [],
     modalPopupStore: {},
     /**
-     * script voor updaten zichtbaarheid van overlays 
+     * script voor updaten zichtbaarheid van overlays
      * @param {<OpenLayers.Layer>} obj
      */
     toggleOverlay: function(obj) {
@@ -428,7 +428,7 @@ dbkjs.util = {
         return hr + min + ':' + sec;
     },
     /**
-     * 
+     *
      * @param {String} variable
      * @param {String} defaultvalue
      * @returns {String} the value for the given queryparameter
@@ -698,7 +698,7 @@ dbkjs.util = {
     },
     /**
      * Verander de titel van de opgegeven panel
-     * 
+     *
      * @param {string} title
      * @param {string} dialogid
      */
@@ -715,7 +715,7 @@ dbkjs.util = {
         }
     },
     /**
-     * 
+     *
      * @param {string} id (optioneel)
      * @returns {jQuery.DOMElement} de nieuwe tabtabel
      */
@@ -732,10 +732,10 @@ dbkjs.util = {
         return tabbable;
     },
     /**
-     * Retourneert de tab_content id placeholder zodat hierop 
+     * Retourneert de tab_content id placeholder zodat hierop
      * kan worden ingevoerd, kan eventueel met een bestaande id worden
      * aangeroepen.
-     * 
+     *
      * @param {string} parent_id
      * @param {string} tab_title
      * @param {string} tab_content
@@ -864,6 +864,12 @@ dbkjs.util = {
             return '\n' + url;
         });
     },
+    nl2br: function(s) {
+        return s === null ? null : s.replace(/\n/g, "<br>");
+    },
+    endsWith: function(str, suffix) {
+        return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    },
     renderHTML: function(text) {
         var rawText = this.strip(text);
         var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
@@ -884,7 +890,7 @@ dbkjs.util = {
         var angle = 360/(2*Math.PI)*angle_rad;
         if (ax < 0){
             return 360 - angle;
-        } else { 
+        } else {
             return angle;
         }
     },
@@ -931,7 +937,7 @@ dbkjs.util = {
             if(hideCallback) {
                 hideCallback();
             }
-        };
+        }
 
         // Return object to handle popup related functions
         this.modalPopupStore[options.name] = {
@@ -991,6 +997,6 @@ dbkjs.util = {
                 dbkjs.map.setBaseLayer(dbkjs.map.layers[i]);
                 dbkjs.map.raiseLayer(dbkjs.map.layers[i], -1000);
             }
-        }                
-    } 
+        }
+    }
 };

@@ -273,7 +273,6 @@ dbkjs.modules.care = {
         $('#care_dialog_b').append(incidentSel);
         $('#care_dialog_b').append(dekkingsplan_button);
         $('#care_dialog_b').append(normSel);
-
         $.each(dbkjs.options.organisation.care, function (care_k, care_v){
             var btn = $('<button class="btn btn-block btn_5px" type="button">' + care_v.button + '</button>');
             $(btn).click(function() {
@@ -302,6 +301,7 @@ dbkjs.modules.care = {
             _obj.cql_array = arr;
             _obj.layerIncident.mergeNewParams({'cql_filter': "priority IN (" + 
                 _obj.cql_array.join() + ")"});
+
         });
     },
     refreshCQL: function(){

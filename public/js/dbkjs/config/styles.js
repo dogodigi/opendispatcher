@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of safetymapDBK
- *  
+ *
  *  safetymapDBK is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -49,6 +49,33 @@ dbkjs.scaleStyleValue = function(value, featureAttributeValue, attributeScaleFac
     value = value + (dbkjs.options.styleSizeAdjust ? dbkjs.options.styleSizeAdjust : 0);
     return value * dbkjs.getStyleScaleFactor();
 };
+
+dbkjs.config.styleUtils = {
+    gevaarlijkestofLabel: function(f) {
+        var a = f.attributes;
+        var s = (a.information !== "0" && a.information !== "" ? a.information + "\n": "" );
+        if(a.indication || a.quantity || a.name) {
+            s += "(";
+            if(a.indication && a.indication !== 0) {
+                s += a.indication + "/" + a.unnumber;
+            }
+            if(a.quantity && a.quantity !== 0) {
+                if(!dbkjs.util.endsWith(s, "(")) {
+                    s += ", ";
+                }
+                s += a.quantity;
+            }
+            if(a.name) {
+                if(!dbkjs.util.endsWith(s, "(")) {
+                    s += ", ";
+                }
+                s += a.name;
+            }
+            s += ")";
+        }
+        return s;
+    }
+}
 
 dbkjs.config.styles = {
     dbkfeature: new OpenLayers.StyleMap({
@@ -265,7 +292,7 @@ dbkjs.config.styles = {
                     default:
                         return "#000000";
                 }
- 
+
             },
             mystrokewidth: function(feature) {
                 switch(feature.attributes.type) {
@@ -276,7 +303,7 @@ dbkjs.config.styles = {
                     default:
                         return 2;
                 }
- 
+
             },
             mystrokedashstyle: function(feature) {
                 switch(feature.attributes.type) {
@@ -309,7 +336,7 @@ dbkjs.config.styles = {
     hulplijn: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
-            strokeLinecap : "butt", 
+            strokeLinecap : "butt",
             strokeDashstyle: "${mydash}",
             fillColor: "${mycolor}",
             fillOpacity: "${myopacity}",
@@ -404,7 +431,7 @@ dbkjs.config.styles = {
                     default:
                         return "#000000";
                 }
- 
+
             },
             mygraphic: function(feature) {
                 switch(feature.attributes.type) {
@@ -414,7 +441,7 @@ dbkjs.config.styles = {
                     default:
                         return "";
                 }
- 
+
             }
         }
     })
@@ -532,7 +559,7 @@ dbkjs.config.styles = {
                     default:
                         return "#00ff00";
                 }
- 
+
             },
             mygraphic: function(feature) {
                 return "triangle";
@@ -540,9 +567,9 @@ dbkjs.config.styles = {
         }
     }),
         'select': new OpenLayers.Style({
-            
+
         }), 'temporary': new OpenLayers.Style({
-            
+
         })
     }),
     pandstylemap : new OpenLayers.StyleMap({
@@ -672,7 +699,7 @@ dbkjs.config.styles = {
                 },
                 mylabel: function(feature) {
                     if(dbkjs.options.alwaysShowInformationLabels) {
-                        return feature.attributes.information ? feature.attributes.information : "";
+                        return dbkjs.config.styleUtil.gevaarlijkestofLabel(feature);
                     } else {
                         return "";
                     }
@@ -695,7 +722,7 @@ dbkjs.config.styles = {
                     return dbkjs.scaleStyleValue(20);
                 },
                 mylabel: function(feature) {
-                    return feature.attributes.information ? feature.attributes.information : "";
+                    return dbkjs.config.styleUtils.gevaarlijkestofLabel(feature);
                 },
                 myfontsize: function(feature) {
                     return dbkjs.scaleStyleValue(20);
@@ -715,7 +742,7 @@ dbkjs.config.styles = {
                     return dbkjs.scaleStyleValue(25);
                 },
                 mylabel: function(feature) {
-                    return feature.attributes.information ? feature.attributes.information : "";
+                    return dbkjs.config.styleUtils.gevaarlijkestofLabel(feature);
                 },
                 myfontsize: function(feature) {
                     return dbkjs.scaleStyleValue(25);
@@ -755,8 +782,8 @@ dbkjs.config.styles = {
                     }
                 }
             }
-        }), 
-        'select': new OpenLayers.Style({}), 
+        }),
+        'select': new OpenLayers.Style({}),
         'temporary': new OpenLayers.Style({})
     })
 };

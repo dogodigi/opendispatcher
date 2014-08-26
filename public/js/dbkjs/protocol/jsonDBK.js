@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of safetymapDBK
- *  
+ *
  *  safetymapDBK is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -68,11 +68,11 @@ dbkjs.protocol.jsonDBK = {
             styleMap: dbkjs.config.styles.tekstobject
         });
         _obj.layers = [
-            _obj.layerPandgeometrie, 
+            _obj.layerPandgeometrie,
             _obj.layerBrandcompartiment,
             _obj.layerHulplijn2,
             _obj.layerHulplijn1,
-            _obj.layerHulplijn, 
+            _obj.layerHulplijn,
             _obj.layerToegangterrein,
             _obj.layerBrandweervoorziening,
             _obj.layerGevaarlijkestof,
@@ -91,7 +91,7 @@ dbkjs.protocol.jsonDBK = {
         dbkjs.hoverControl.setLayer((dbkjs.hoverControl.layers || dbkjs.hoverControl.layer).concat(_obj.hoverlayers));
         dbkjs.hoverControl.activate();
         dbkjs.selectControl.activate();
-        
+
     },
     hideLayers: function(){
         var _obj = dbkjs.protocol.jsonDBK;
@@ -250,7 +250,7 @@ dbkjs.protocol.jsonDBK = {
                 $.each(dbkjs.options.feature.hulplijn, function(idx, myGeometry){
                     var myBearing = 0;
                     var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
-                    var myFeature = new OpenLayers.Feature.Vector(myline); 
+                    var myFeature = new OpenLayers.Feature.Vector(myline);
                     if (myGeometry.typeHulplijn === "Arrow"){
                         var myVertices = myline.getVertices();
                         var myEndpoint = myVertices[myVertices.length -1];
@@ -281,7 +281,7 @@ dbkjs.protocol.jsonDBK = {
                         features1.push(myFeature.clone());
                         features2.push(myFeature.clone());
                     }
-                    
+
                 });
                 _obj.layerHulplijn.addFeatures(features);
                 _obj.layerHulplijn1.addFeatures(features1);
@@ -293,7 +293,7 @@ dbkjs.protocol.jsonDBK = {
                 $.each(dbkjs.options.feature.toegangterrein, function(idx, myGeometry){
                     var myBearing = 0;
                     var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
-                    var myFeature = new OpenLayers.Feature.Vector(myline); 
+                    var myFeature = new OpenLayers.Feature.Vector(myline);
                     var myVertices = myline.getVertices();
                     var myEndpoint = myVertices[myVertices.length -1];
                         //revert bearing. Don't knwo why, but it works ;-)
@@ -325,20 +325,20 @@ dbkjs.protocol.jsonDBK = {
                        } else {
                         var myFeature = new OpenLayers.Feature.Vector(myline);
                         myFeature.attributes = { "type" : myGeometry.typeScheiding};
-                        features.push(myFeature); 
+                        features.push(myFeature);
                     }
 
                 });
                 _obj.layerBrandcompartiment.addFeatures(features);
-                _obj.activateSelect(_obj.layerBrandcompartiment);           
+                _obj.activateSelect(_obj.layerBrandcompartiment);
             }
-            
+
             if(dbkjs.options.feature.tekstobject){
                 var features = [];
                 $.each(dbkjs.options.feature.tekstobject, function(idx, myGeometry){
                     var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
                     //@todo: De omschrijving moet er nog bij, ook in de database!
-                    myFeature.attributes = { 
+                    myFeature.attributes = {
                         "title" : myGeometry.tekst,
                         "rotation" : myGeometry.hoek,
                         "scale": myGeometry.schaal + 2
@@ -348,6 +348,11 @@ dbkjs.protocol.jsonDBK = {
                 _obj.layerTekstobject.addFeatures(features);
                 _obj.activateSelect(_obj.layerTekstobject);
             }
+
+            if(!noZoom && dbkjs.options.zoomToPandgeometrie) {
+                dbkjs.modules.feature.zoomToPandgeometrie();
+            }
+
             if(dbkjs.viewmode === 'fullscreen') {
                 //dbkjs.util.getModalPopup('infopanel').show();
             } else {
@@ -371,16 +376,16 @@ dbkjs.protocol.jsonDBK = {
         var _obj = dbkjs.protocol.jsonDBK;
         /** Algemene dbk info **/
         dbkjs.util.changeDialogTitle('<i class="fa fa-building"></i> ' + DBKObject.formeleNaam);
-        var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+ 
+        var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+
                 i18n.t('dbk.unknown')+ '</span>' : DBKObject.controleDatum;
-        var bhvaanwezig = '<span class="label label-warning">'+ 
+        var bhvaanwezig = '<span class="label label-warning">'+
                 i18n.t('dbk.noEmergencyResponse') +'</span>';
         if(!dbkjs.util.isJsonNull(DBKObject.BHVaanwezig)) {
            if(DBKObject.BHVaanwezig === true){
-              bhvaanwezig = '<span class="label label-success">'+ 
-                i18n.t('dbk.emergencyResponsePresent') + '</span>'; 
+              bhvaanwezig = '<span class="label label-success">'+
+                i18n.t('dbk.emergencyResponsePresent') + '</span>';
            } else {
-           bhvaanwezig = '<span class="label label-warning">'+ 
+           bhvaanwezig = '<span class="label label-warning">'+
                 i18n.t('dbk.noEmergencyResponse') +'</span>';
            }
         }
@@ -390,7 +395,7 @@ dbkjs.protocol.jsonDBK = {
         var gebouwconstructie = dbkjs.util.isJsonNull(DBKObject.gebouwconstructie) ? '' : DBKObject.gebouwconstructie;
         var inzetprocedure = dbkjs.util.isJsonNull(DBKObject.inzetprocedure) ? '' : DBKObject.inzetprocedure;
         var gebruikstype = dbkjs.util.isJsonNull(DBKObject.gebruikstype) ? '' : DBKObject.gebruikstype;
-        
+
         // @todo: Losse regel voor laagste en hoogste
         // Hoogste altijd positief (zegt Dennis, ik sla hem kort als het niet zo is)
         // Laagste; minnetje er voor, bij 0 niet tonen.
@@ -450,7 +455,7 @@ dbkjs.protocol.jsonDBK = {
                 var postcode = dbkjs.util.isJsonNull(waarde.postcode) ? '' : ' ' + waarde.postcode;
                 var woonplaatsnaam = dbkjs.util.isJsonNull(waarde.woonplaatsNaam) ? '' : ' ' + waarde.woonplaatsNaam;
                 var gemeentenaam = dbkjs.util.isJsonNull(waarde.gemeenteNaam) ? '' : ' ' + waarde.gemeenteNaam;
-                var adresText = openbareruimtenaam + 
+                var adresText = openbareruimtenaam +
                     huisnummer + huisnummertoevoeging + huisletter + '<br/>' +
                     woonplaatsnaam + postcode + gemeentenaam;
                 adres_div.append(adresText);
@@ -491,7 +496,7 @@ dbkjs.protocol.jsonDBK = {
                     }
                 } else {
                     adres_row.append('<td></td>');
-                } 
+                }
             });
         }
         algemeen_table_div.append(algemeen_table);
@@ -512,27 +517,27 @@ dbkjs.protocol.jsonDBK = {
             var bv_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var bv_table_div = $('<div class="table-responsive"></div>');
             var bv_table = $('<table class="table table-hover"></table>');
-            bv_table.append('<tr><th>' + 
-                    i18n.t('prevention.type') + '</th><th>' + 
-                    i18n.t('prevention.name') + '</th><th>' + 
+            bv_table.append('<tr><th>' +
+                    i18n.t('prevention.type') + '</th><th>' +
+                    i18n.t('prevention.name') + '</th><th>' +
                     i18n.t('prevention.comment') + '</th></tr>');
             var features = [];
             $.each(brandweervoorziening, function(idx, myGeometry){
                 var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                myFeature.attributes = { 
-                    "type" : myGeometry.typeVoorziening, 
+                myFeature.attributes = {
+                    "type" : myGeometry.typeVoorziening,
                     "name": myGeometry.naamVoorziening,
                     "information": myGeometry.aanvullendeInformatie,
                     "rotation": myGeometry.hoek,
                     "category": myGeometry.categorie,
                     "namespace": myGeometry.namespace,
                     "radius": myGeometry.radius,
-                    "fid": "brandweervoorziening_ft_" + idx 
+                    "fid": "brandweervoorziening_ft_" + idx
                 };
                 var myrow = $('<tr>' +
-                        '<td><img class="thumb" src="' + dbkjs.basePath + "images/" + myFeature.attributes.namespace + '/' + 
-                            myFeature.attributes.type + '.png" alt="'+ 
-                            myFeature.attributes.type +'" title="'+ 
+                        '<td><img class="thumb" src="' + dbkjs.basePath + "images/" + myFeature.attributes.namespace + '/' +
+                            myFeature.attributes.type + '.png" alt="'+
+                            myFeature.attributes.type +'" title="'+
                             myFeature.attributes.type+'"></td>' +
                         '<td>' + myFeature.attributes.name + '</td>' +
                         '<td>' + myFeature.attributes.information + '</td>'
@@ -545,7 +550,7 @@ dbkjs.protocol.jsonDBK = {
                 });
                 bv_table.append(myrow);
                 features.push(myFeature);
-                
+
             });
             _obj.layerBrandweervoorziening.addFeatures(features);
             _obj.activateSelect(_obj.layerBrandweervoorziening);
@@ -562,20 +567,20 @@ dbkjs.protocol.jsonDBK = {
             var bv_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var bv_table_div = $('<div class="table-responsive"></div>');
             var bv_table = $('<table class="table table-hover"></table>');
-            bv_table.append('<tr><th>' + 
-                i18n.t('chemicals.type') + '</th><th>' + 
-                i18n.t('chemicals.indication') + '</th><th>' + 
-                i18n.t('chemicals.name') + '</th><th>' + 
-                i18n.t('chemicals.quantity') + '</th><th>' + 
+            bv_table.append('<tr><th>' +
+                i18n.t('chemicals.type') + '</th><th>' +
+                i18n.t('chemicals.indication') + '</th><th>' +
+                i18n.t('chemicals.name') + '</th><th>' +
+                i18n.t('chemicals.quantity') + '</th><th>' +
                 i18n.t('chemicals.information') + '</th></tr>');
             var features = [];
              $.each(gevaarlijkestof, function(idx, myGeometry){
                 var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                myFeature.attributes = { 
-                    "type" : myGeometry.symboolCode, 
+                myFeature.attributes = {
+                    "type" : myGeometry.symboolCode,
                     "name": myGeometry.naamStof,
                     "namespace": myGeometry.namespace,
-                    "quantity": myGeometry.hoeveelheid,
+                    "quantity": myGeometry.hoeveelheid ? myGeometry.hoeveelheid.replace(/([0-9]+)([lL])/,"$1\u2113") : myGeometry.hoeveelheid,
                     "indication": myGeometry.gevaarsindicatienummer,
                     "information": myGeometry.aanvullendeInformatie,
                     "unnumber": myGeometry.UNnummer,
@@ -583,15 +588,15 @@ dbkjs.protocol.jsonDBK = {
                 };
                 var myrow = $('<tr>' +
                         '<td><img class="thumb" src="' + dbkjs.basePath + 'images/' + myFeature.attributes.namespace + '/' +
-                            myFeature.attributes.type + '.png" alt="'+ 
-                            myFeature.attributes.type +'" title="'+ 
+                            myFeature.attributes.type + '.png" alt="'+
+                            myFeature.attributes.type +'" title="'+
                             myFeature.attributes.type+'"></td>' +
-                        '<td>' + '<div class="gevicode">' + myFeature.attributes.indication + 
-                            '</div><div class="unnummer">' + 
+                        '<td>' + '<div class="gevicode">' + myFeature.attributes.indication +
+                            '</div><div class="unnummer">' +
                             myFeature.attributes.unnumber + '</div>' + '</td>' +
                         '<td>' + myFeature.attributes.name + '</td>' +
                         '<td>' + myFeature.attributes.quantity + '</td>' +
-                        
+
                         '<td>' + myFeature.attributes.information + '</td>' +
                         '</tr>');
                 myrow.mouseover(function(){
@@ -619,22 +624,25 @@ dbkjs.protocol.jsonDBK = {
             var verdiepingen_div = $('<div class="tab-pane ' + active_tab + '" id="' + id + '"></div>');
             var verdiepingen_table_div = $('<div class="table-responsive"></div>');
             var verdiepingen_table = $('<table class="table table-hover"></table>');
-            verdiepingen_table.append('<tr><th>' + 
+            verdiepingen_table.append('<tr><th>' +
                     i18n.t('dbk.floor') + '</th></tr>');
             $.each(verdiepingen, function(verdiepingen_index, waarde) {
                 var myrow;
                 var sterretje = '';
                 if (waarde.type === 'hoofdobject'){
-                 sterretje = ' (' + i18n.t('dbk.mainobject') + ')';   
+                 sterretje = ' (' + i18n.t('dbk.mainobject') + ')';
                 }
                 if(waarde.identificatie !== dbkjs.options.feature.identificatie){
-                        
+
                         //Show the hyperlink!
                         myrow = $('<tr>' +
                             '<td>' + waarde.bouwlaag + sterretje +'</td>' +
                             '</tr>');
                         myrow.click(function(){
-                            _obj.getObject(waarde.identificatie, 'verdiepingen');
+                            _obj.getObject(waarde.identificatie, 'verdiepingen', true);
+                            if(dbkjs.viewmode === 'fullscreen') {
+                                dbkjs.util.getModalPopup('dbkinfopanel').hide();
+                            }
                         });
                 } else {
                     //No hyperlink, current object
@@ -663,9 +671,9 @@ dbkjs.protocol.jsonDBK = {
             var contact_div = $('<div class="tab-pane" ' + active_tab + ' id="' + id + '"></div>');
             var contact_table_div = $('<div class="table-responsive"></div>');
             var contact_table = $('<table class="table table-hover"></table>');
-            contact_table.append('<tr><th>' + 
-                    i18n.t('contact.role') + '</th><th>' + 
-                    i18n.t('contact.name') + '</th><th>' + 
+            contact_table.append('<tr><th>' +
+                    i18n.t('contact.role') + '</th><th>' +
+                    i18n.t('contact.name') + '</th><th>' +
                     i18n.t('contact.telephone') + '</th></tr>');
             $.each(contact, function(contact_index, waarde) {
                 contact_table.append(
@@ -738,25 +746,25 @@ dbkjs.protocol.jsonDBK = {
                 var timestamp = new Date().getTime();
                 var realpath = dbkjs.basePath + 'media/' + waarde.URL;
                 if (waarde.filetype === "document" || waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
-                    image_carousel_inner.append('<div class="item ' + active + 
-                            '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath + 
-                            '" target="_blank"><h1><i class="fa fa-download fa-3"></h1></i></a><h3>' + 
-                            waarde.naam + 
+                    image_carousel_inner.append('<div class="item ' + active +
+                            '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath +
+                            '" target="_blank"><h1><i class="fa fa-download fa-3"></h1></i></a><h3>' +
+                            waarde.naam +
                             '</h3><a href="' + realpath + '" target="_blank"><h2>' + i18n.t('app.download')  + '</h2></a></div></div>');
                 } else if(waarde.filetype === "weblink") {
-                    image_carousel_inner.append('<div class="item ' + active + 
-                            '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL + 
-                            '" target="_blank"><h1><i class="fa fa-external-link fa-3"></i></h1><h2>' + 
+                    image_carousel_inner.append('<div class="item ' + active +
+                            '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL +
+                            '" target="_blank"><h1><i class="fa fa-external-link fa-3"></i></h1><h2>' +
                             i18n.t('app.hyperlink')  + '</h2></a></div></div>'
                         );
                 } else if(waarde.filetype === 'afbeelding') {
-                    image_carousel_inner.append('<div class="item ' + active + '"><img src="' + realpath + 
-                            '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' + 
+                    image_carousel_inner.append('<div class="item ' + active + '"><img src="' + realpath +
+                            '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' +
                             waarde.naam + '</h3></div></div>');
                     dbkjs.options.feature.images.push(realpath);
                 }
                 if (foto.length > 1) {
-                    image_carousel_nav.append('<li data-target="#' + car_id + '" data-slide-to="' + 
+                    image_carousel_nav.append('<li data-target="#' + car_id + '" data-slide-to="' +
                             foto_index + '" class="' + active + '"></li>');
                 }
             });
@@ -780,11 +788,11 @@ dbkjs.protocol.jsonDBK = {
             var verblijf_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var verblijf_table_div = $('<div class="table-responsive"></div>');
             var verblijf_table = $('<table class="table table-hover"></table>');
-            verblijf_table.append('<tr><th>' + i18n.t('tarry.from')+ '</th><th>' + 
-                    i18n.t('tarry.to')+ '</th><th>' + 
-                    i18n.t('tarry.ammount')+ '</th><th>' + 
-                    i18n.t('tarry.notSelfReliant')+ '</th><th>' + 
-                    i18n.t('tarry.group')+ '</th><th>' + 
+            verblijf_table.append('<tr><th>' + i18n.t('tarry.from')+ '</th><th>' +
+                    i18n.t('tarry.to')+ '</th><th>' +
+                    i18n.t('tarry.ammount')+ '</th><th>' +
+                    i18n.t('tarry.notSelfReliant')+ '</th><th>' +
+                    i18n.t('tarry.group')+ '</th><th>' +
                     i18n.t('tarry.days')+ '</th></tr>');
             $.each(verblijf, function(verblijf_index, waarde) {
                 var dagen = '';
@@ -810,10 +818,10 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.tarry')+ '</a></li>');
         }
     },
-    getObject: function(feature, activetab) {
+    getObject: function(feature, activetab, noZoom) {
         var _obj = dbkjs.protocol.jsonDBK;
         if(activetab){
-         _obj.active_tab = activetab;   
+         _obj.active_tab = activetab;
         }
         //clear all layers first!
         $.each(_obj.layers, function(idx, lyr){
@@ -831,7 +839,7 @@ dbkjs.protocol.jsonDBK = {
             fid = feature;
         }
         $.getJSON('api/object/' + fid + '.json', params).done(function(data) {
-                dbkjs.protocol.jsonDBK.info(data);
+                dbkjs.protocol.jsonDBK.info(data, noZoom);
             }).fail(function( jqxhr, textStatus, error ) {
                 dbkjs.options.feature = null;
                 dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
@@ -840,7 +848,7 @@ dbkjs.protocol.jsonDBK = {
     getGebied: function(feature, activetab) {
         var _obj = dbkjs.protocol.jsonDBK;
         if(activetab){
-            _obj.active_tab = activetab;   
+            _obj.active_tab = activetab;
         }
         //clear all layers first!
         $.each(_obj.layers, function(idx, lyr){

@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of safetymapDBK
- *  
+ *
  *  safetymapDBK is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -127,7 +127,7 @@ dbkjs.modules.feature = {
             "featuresadded": function() {},
             "featureunselected": function(e) {}
         });
-        
+
         _obj.get();
     },
     get: function() {
@@ -263,13 +263,32 @@ dbkjs.modules.feature = {
             dbkjs.options.dbk = 0;
         }
         dbkjs.modules.updateFilter(dbkjs.options.dbk);
-        if (dbkjs.map.zoom < dbkjs.options.zoom) {
-            dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), dbkjs.options.zoom);
+        if(!dbkjs.options.zoomToPandgeometrie) {
+            if (dbkjs.map.zoom < dbkjs.options.zoom) {
+                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), dbkjs.options.zoom);
+            } else {
+                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+            }
         } else {
-            dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+            this.zoomToPandgeometrie();
         }
         // getActive() changed, hide it
         this.layer.redraw();
+    },
+    zoomToPandgeometrie: function() {
+        // Pandgeometrie layer must be loaded
+
+        var bounds = dbkjs.protocol.jsonDBK.layerPandgeometrie.getDataExtent();
+        if(bounds) {
+            var margin = dbkjs.options.zoomToPandgeometrieMargin || 50;
+            var boundCoords = bounds.toArray();
+            var extendedBounds = OpenLayers.Bounds.fromArray([
+                boundCoords[0] - margin,
+                boundCoords[1] - margin,
+                boundCoords[2] + margin,
+                boundCoords[3] + margin]);
+            dbkjs.map.zoomToExtent(extendedBounds);
+        }
     },
     getfeatureinfo: function(e) {
         var _obj = dbkjs.modules.feature;
@@ -279,7 +298,10 @@ dbkjs.modules.feature = {
                 if (e.feature.cluster.length === 1) {
                     _obj.zoomToFeature(e.feature.cluster[0]);
                 } else {
-                    _obj.currentCluster = e.feature.cluster;
+                    _obj.currentCluster = e.feature.cluster.slice();
+                    _obj.currentCluster.sort(function(lhs, rhs) {
+                        return lhs.attributes.formeleNaam.localeCompare(rhs.attributes.formeleNaam);
+                    });
                     if(dbkjs.viewmode === 'fullscreen') {
                         var item_ul = $('<ul class="nav nav-pills nav-stacked"></ul>');
                         $('#infopanel_b').html('');
