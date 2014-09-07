@@ -44,7 +44,6 @@ cat js/libs/jquery.pagination.js \
 
 cat css/dbk.css \
     js/libs/bootstrap-3.2.0-dist/css/bootstrap.min.css \
-    css/font-awesome.min.css \
     css/daterangepicker-bs3.css \
     css/typeahead.js-bootstrap.css \
     css/slider.css | node ../node_modules/clean-css/bin/cleancss -o css/dbk.min.css

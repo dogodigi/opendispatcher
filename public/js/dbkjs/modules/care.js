@@ -37,9 +37,7 @@ dbkjs.modules.care = {
     },
     updateSelectieIncident: function() {
         var _obj = dbkjs.modules.care;
-        _obj.layerIncident.mergeNewParams({
-            cql_filter: "priority IN (" + _obj.cql_array.join() + ") " 
-                + dbkjs.modules.filter.getFilter()});
+        _obj.refreshCQL();
     },
     register: function(options) {
         var _obj = dbkjs.modules.care;
@@ -172,9 +170,9 @@ dbkjs.modules.care = {
                                     incidentSel.append('<h5 id="class2Selselh">' + i18n.t('care.class2')+ '</h5>');
                                     incidentSel.append(myselect2);
                                 }
-                                myselect2.append('<option selected>' + i18n.t('care.all') + '</option>')
+                                myselect2.append('<option selected>' + i18n.t('care.all') + '</option>');
                                 $.each(data, function(d_index, d_item) {
-                                    myselect2.append('<option>' + d_item.name + '</option>')
+                                    myselect2.append('<option>' + d_item.name + '</option>');
                                 });
 
                                 myselect2.on('change', function() {
@@ -194,9 +192,9 @@ dbkjs.modules.care = {
                                                     incidentSel.append('<h5 id="class3Selselh">' + i18n.t('care.class3')+ '</h5>');
                                                     incidentSel.append(myselect3);
                                                 }
-                                                myselect3.append('<option selected>' + i18n.t('care.all') + '</option>')
+                                                myselect3.append('<option selected>' + i18n.t('care.all') + '</option>');
                                                 $.each(data, function(d_index, d_item) {
-                                                    myselect3.append('<option>' + d_item.c3 + '</option>')
+                                                    myselect3.append('<option>' + d_item.c3 + '</option>');
                                                 });
                                                 myselect3.on('change', function() {
                                                     //refresh!
@@ -293,15 +291,6 @@ dbkjs.modules.care = {
         });
         $('input[name="chk_prio"]').click(function() {
             _obj.refreshCQL();
-            //var arr = [];
-            //$.each($('input[name="chk_prio"]'), function(chk_idx, chk) {
-            //    if ($(chk).is(':checked')) {
-            //        arr.push("'" + $(chk).next().text() + "'");
-            //    }
-            //});
-            //_obj.cql_array = arr;
-            //_obj.layerIncident.mergeNewParams({'cql_filter': "priority IN (" + 
-            //    _obj.cql_array.join() + ")"});
         });
     },
     refreshCQL: function(){
@@ -326,7 +315,6 @@ dbkjs.modules.care = {
         if (_obj.classification3 !== ""){
             classArr.push("classification3='" + _obj.classification3 + "'");
         }
-        console.log(classArr.length);
         var out = classArr.join(' AND ');
         var cqlfilterfinal;
         //if (_obj.layerIncident.params.CQL_FILTER) {
