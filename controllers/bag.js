@@ -173,7 +173,36 @@ exports.autoComplete = function(req, res) {
                     if (err) {
                         res.json(err);
                     } else {
-                        res.json(result.rows);
+                        //If the result is only one record, rerun it to get more details!
+                        if(result.rows.length === 1){
+                            var query_str = "select openbareruimtenaam || ' ' || " +
+                                "COALESCE(CAST(huisnummer as varchar) || ' ','') || " +
+                                "COALESCE(CAST(huisletter as varchar) || ' ','') || " +
+                                "COALESCE(CAST(huisnummertoevoeging as varchar) || ' ','') || " +
+                                "COALESCE(CAST(postcode as varchar) || ' ','') || " +
+                                "CASE WHEN lower(woonplaatsnaam) = lower(gemeentenaam) THEN woonplaatsnaam " +
+                                "ELSE woonplaatsnaam || ', ' || gemeentenaam END as display_name, " +
+                                "st_x(st_transform(st_centroid(st_collect(geopunt)),$2)) as lon, " +
+                                "st_y(st_transform(st_centroid(st_collect(geopunt)),$2)) as lat " +
+                                "from bag_actueel.adres where " +
+                                whereclause + 
+                                "group by woonplaatsnaam, gemeentenaam, openbareruimtenaam, huisnummer, huisletter, huisnummertoevoeging, postcode limit 10";
+                        console.log(query_str);
+                        //( textsearchable_adres @@ to_tsquery('dutch','spinellihof $1 limit 1';
+                        global.bag.query(query_str, [finalsearch, srid],
+                            function(err, result) {
+                                if (err) {
+                                    res.json(err);
+                                } else {
+                                    //If the result is only one record, rerun it to get more details!
+                                    res.json(result.rows);
+                                }
+                            return;
+                        });
+                        } else {
+                                
+                            res.json(result.rows);
+                        }
                     }
                 return;
             });
