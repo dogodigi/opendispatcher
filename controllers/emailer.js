@@ -27,8 +27,8 @@ var smtp = nodemailer.createTransport("SMTP",global.conf.get('support:smtp'));
 exports.annotationbulk = function(req, res) {
     email = global.conf.get('support:sendto');
     locale ='nl';
-    console.log(email);
-    console.log(locale);
+    //console.log(email);
+    //console.log(locale);
     //TODO: Make sure the locale is always picked up from the right directory!
     i18n.init({
         lng: locale, 

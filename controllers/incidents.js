@@ -112,7 +112,7 @@ exports.getGroupByClass3 = function(req, res) {
     if (req.query) {
         c1 = req.params.c1;
         c2 = req.params.c2;
-        console.log(req.params);
+        //console.log(req.params);
         if(!c1 && !c2){
             var query_str = 'select classification3 as c3, count(*) from incidents."Interventions" group by classification3 order by classification3';
             global.pool.query(query_str,

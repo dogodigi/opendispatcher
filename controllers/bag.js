@@ -187,7 +187,7 @@ exports.autoComplete = function(req, res) {
                                 "from bag_actueel.adres where " +
                                 whereclause + 
                                 "group by woonplaatsnaam, gemeentenaam, openbareruimtenaam, huisnummer, huisletter, huisnummertoevoeging, postcode limit 10";
-                        console.log(query_str);
+                        //console.log(query_str);
                         //( textsearchable_adres @@ to_tsquery('dutch','spinellihof $1 limit 1';
                         global.bag.query(query_str, [finalsearch, srid],
                             function(err, result) {
