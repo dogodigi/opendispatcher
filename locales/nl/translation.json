@@ -123,7 +123,8 @@
         "media": "Media",
         "prevention": "Brandweervoorziening",
         "chemicals": "Gevaarlijke stoffen",
-        "risk": "Risicoklasse"
+        "risk": "Risicoklasse",
+        "omsdetail": "OMS contacten"
     },
     "chemicals": {
       "type": "Soort",
@@ -149,6 +150,11 @@
     "particularies":{
         "type": "Soort",
         "comment": "Informatie"
+    },
+    "omsdetail":{
+      "name":"Naam",  
+      "mobile":"Tel. mobiel",
+      "telephone":"Tel. vast"
     },
     "contact":{
         "role": "Functie",

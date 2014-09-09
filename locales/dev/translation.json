@@ -123,7 +123,8 @@
         "media": "dbk.media",
         "prevention": "dbk.prevention",
         "chemicals": "dbk.chemicals",
-        "risk": "dbk.risk"
+        "risk": "dbk.risk",
+        "omsdetail": "dbk.omsdetail"
     },
     "chemicals": {
         "type": "chemicals.type",
@@ -137,6 +138,11 @@
         "type": "prevention.type",
         "name": "prevention.name",
         "comment": "prevention.comment"
+    },
+    "omsdetail":{
+      "name":"omsdetail.name",  
+      "mobile":"omsdetail.mobile",
+      "telephone":"omsdetail.telephone"
     },
     "contact": {
         "role": "contact.role",

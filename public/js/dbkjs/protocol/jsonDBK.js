@@ -207,8 +207,10 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_group = $('<div class="tab-content"></div>');
             _obj.panel_tabs = $('<ul class="nav nav-pills"></ul>');
             var div = $('<div class="tabbable"></div>');
+            //console.log(dbkjs.options.feature);
             if (_obj.constructAlgemeen(dbkjs.options.feature, objecttype)) {
                 _obj.constructContact(dbkjs.options.feature.contact);
+                _obj.constructOmsdetail(dbkjs.options.feature.oms_details);
                 _obj.constructBijzonderheid(dbkjs.options.feature.bijzonderheid);
                 _obj.constructVerblijf(dbkjs.options.feature.verblijf);
                 _obj.constructMedia(dbkjs.options.feature.foto);
@@ -689,6 +691,49 @@ dbkjs.protocol.jsonDBK = {
             contact_div.append(contact_table_div);
             _obj.panel_group.append(contact_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.contact')+ '</a></li>');
+        }
+    },
+    constructOmsdetail: function(omsdetail) {
+        //console.log(omsdetail);
+        var _obj = dbkjs.protocol.jsonDBK;
+        var id = 'collapse_omsdetail_' + dbkjs.options.feature.identificatie;
+        if (omsdetail) {
+            var active_tab = _obj.active_tab === 'gevaarlijkestof' ?  'active' : '';
+            var omsdetail_div = $('<div class="tab-pane" ' + active_tab + ' id="' + id + '"></div>');
+            var omsdetail_table_div = $('<div class="table-responsive"></div>');
+            var omsdetail_table = $('<table class="table table-hover"></table>');
+            omsdetail_table.append('<tr><th>' +
+                    i18n.t('omsdetail.name') + '</th><th>' +
+                    i18n.t('omsdetail.mobile') + '</th><th>' +
+                    i18n.t('omsdetail.telephone') + '</th></tr>');
+            $.each(omsdetail, function(omsdetail_index, waarde) {
+                omsdetail_table.append(
+                        '<tr>' +
+                        '<td>Algemeen</td>' +
+                        '<td> </td>' +
+                        '<td>' + waarde.tel_alg + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td>' + waarde.sh_1_naam + '</td>' +
+                        '<td>' + waarde.sh_1_tel_vast + '</td>' +
+                        '<td>' + waarde.sh_1_tel_mob + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td>' + waarde.sh_2_naam + '</td>' +
+                        '<td>' + waarde.sh_2_tel_vast + '</td>' +
+                        '<td>' + waarde.sh_2_tel_mob + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td>' + waarde.sh_3_naam + '</td>' +
+                        '<td>' + waarde.sh_3_tel_vast + '</td>' +
+                        '<td>' + waarde.sh_3_tel_mob + '</td>' +
+                        '</tr>'
+                        );
+            });
+            omsdetail_table_div.append(omsdetail_table);
+            omsdetail_div.append(omsdetail_table_div);
+            _obj.panel_group.append(omsdetail_div);
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.omsdetail')+ '</a></li>');
         }
     },
     constructBijzonderheid: function(bijzonderheid) {
