@@ -22,6 +22,7 @@
         "telephone": "Telefoonnummer",
         "refresh": "DBK's verversen",
         "contrast": "Contrast",
+        "scale": "Schaal 1 : ${scaleDenom}",
         "selectContrast": "Kies een contrastwaarde van 0 tot 1 waarbij 0: doorzichtig en 1: volledig ondoorzichtig.",
         "layout": "Layout instellingen",
         "scaleStyle": "Schaal iconen op basis van zoomniveau",

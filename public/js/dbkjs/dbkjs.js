@@ -17,9 +17,18 @@
  *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+OpenLayers.ProxyHost = "proxy/?q=";
+OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
+Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <>";
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
+dbkjs.options.VERSION = "2.9";
+dbkjs.options.RELEASEDATE = "01-09-2014";
+dbkjs.options.APPLICATION = "safetymapsDBK";
+dbkjs.options.REMARKS = "";
+dbkjs.options.INFO = "";
+
 dbkjs.modules = dbkjs.modules || [];
 dbkjs.overlays = dbkjs.overlays || [];
 
@@ -334,7 +343,7 @@ dbkjs.finishMap = function () {
 $(document).ready(function () {
     // Make sure i18n is initialized
     i18n.init({
-        lng: "nl", debug: false, postProcess: "doReplacements"
+        lng: dbkjsLang, debug: false, postProcess: "doReplacements"
     }, function (t) {
         i18n.addPostProcessor("doReplacements", function (val, key, options) {
             if (dbkjs.options.i18nReplacements) {
@@ -346,6 +355,10 @@ $(document).ready(function () {
             return val;
         });
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
+        OpenLayers.Lang[dbkjsLang] = OpenLayers.Util.applyDefaults(
+            {'Scale = 1 : ${scaleDenom}': t("app.scale")}
+        );
+        OpenLayers.Lang.setCode(dbkjsLang);
         if (dbkjs.viewmode !== 'fullscreen') {
             $('body').append(dbkjs.util.createDialog('infopanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
         } else {

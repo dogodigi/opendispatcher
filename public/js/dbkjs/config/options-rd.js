@@ -19,12 +19,6 @@
  */
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
-OpenLayers.ProxyHost = "proxy/?q=";
-OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
-OpenLayers.Lang["nl"] = OpenLayers.Util.applyDefaults({'Scale = 1 : ${scaleDenom}': "Schaal 1 : ${scaleDenom}"});
-OpenLayers.Lang.setCode("nl");
-Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <>";
-
 dbkjs.options = {
     projection: {
         code: "EPSG:28992",
@@ -33,11 +27,6 @@ dbkjs.options = {
             numDigits: 0
         }
     },
-    VERSION: "2.7",
-    RELEASEDATE: "01-09-2014",
-    APPLICATION: "safetymapsDBK",
-    REMARKS: "",
-    INFO: "",
     zoom: 13,
     /**
      * PDOK settings, particular for the Netherlands national geodata services

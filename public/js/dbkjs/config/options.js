@@ -17,13 +17,8 @@
  *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
-OpenLayers.ProxyHost = "proxy/?q=";
-OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
-OpenLayers.Lang["nl"] = OpenLayers.Util.applyDefaults({'Scale = 1 : ${scaleDenom}': "Schaal 1 : ${scaleDenom}"});
-OpenLayers.Lang.setCode("nl");
 dbkjs.options = {
     projection: {
         code: "EPSG:900913",
@@ -32,11 +27,6 @@ dbkjs.options = {
             numDigits: 4
         }
     },
-    VERSION: "2.7",
-    RELEASEDATE: "10-03-2014",
-    APPLICATION: "safetymapsDBK",
-    REMARKS: "",
-    INFO: "",
     zoom: 19,
     map: {
         options : {

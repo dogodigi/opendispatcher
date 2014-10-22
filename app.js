@@ -59,7 +59,9 @@ i18n.init({
     lng: 'nl',
     detectLngQS: 'l',
     saveMissing: true,
-    debug: false
+    useCookie: false,
+    debug: false,
+    fallbackLng: 'nl'
 });
 var dbURL = 'postgres://' + 
         global.conf.get('database:user') + ':' + 
