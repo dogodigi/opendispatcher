@@ -90,7 +90,7 @@ dbkjs.modules.care = {
             attribution: "Falck"
         }
         );
-        _obj.layerIncident.dbkjsParent = _obj;
+        _obj.layerNorm.dbkjsParent = _obj;
         this.updateLayerIncident();
         _obj.layerIncident.events.register("loadstart", _obj.layerIncident, function () {
             dbkjs.util.loadingStart(_obj.layerIncident);
@@ -494,17 +494,19 @@ dbkjs.modules.care = {
     },
     panelNorm: function (response) {
         var _obj = dbkjs.modules.care;
+        
         //verwerk de featureinformatie
         //g = new OpenLayers.Format.GML.v3();
         var geojson_format = new OpenLayers.Format.GeoJSON();
         var features = geojson_format.read(response.responseText);
+        $('#carepanel').hide();
         if (features.length > 0) {
             $('#carepanel_b').html('');
             dbkjs.util.changeDialogTitle(i18n.t('care.coverage'));
             var ft_div = $('<div class="table-responsive"></div>');
             var ft_tbl = $('<table id="incidenten_export" class="table table-hover table-condensed"></table>');
 
-            for (var feat in features) {
+            for (var feat = 0;feat < features.length; feat++) {
                 ft_tbl.append('<tr><td colspan="2">' + dbkjs.util.createAddress(
                         features[feat].attributes.addresscity,
                         features[feat].attributes.addressmunicipality,
