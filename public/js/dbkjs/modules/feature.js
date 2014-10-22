@@ -158,9 +158,13 @@ dbkjs.modules.feature = {
                         selfeat.push(feat);
                     }
                 });
-                _obj.layer.addFeatures(selfeat);
+                if(selfeat.length > 0){
+                    _obj.layer.addFeatures(selfeat);
+                }
             } else {
-                _obj.layer.addFeatures(_obj.features);
+                if(_obj.features){
+                    _obj.layer.addFeatures(_obj.features);
+                }
             }
             $('#btn_refresh > i').removeClass('fa-spin');
                 _obj.search_dbk();

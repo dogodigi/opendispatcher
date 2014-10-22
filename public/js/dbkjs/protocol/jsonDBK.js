@@ -207,7 +207,6 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_group = $('<div class="tab-content"></div>');
             _obj.panel_tabs = $('<ul class="nav nav-pills"></ul>');
             var div = $('<div class="tabbable"></div>');
-            //console.log(dbkjs.options.feature);
             if (_obj.constructAlgemeen(dbkjs.options.feature, objecttype)) {
                 _obj.constructContact(dbkjs.options.feature.contact);
                 _obj.constructOmsdetail(dbkjs.options.feature.oms_details);
@@ -694,7 +693,6 @@ dbkjs.protocol.jsonDBK = {
         }
     },
     constructOmsdetail: function(omsdetail) {
-        //console.log(omsdetail);
         var _obj = dbkjs.protocol.jsonDBK;
         var id = 'collapse_omsdetail_' + dbkjs.options.feature.identificatie;
         if (omsdetail) {

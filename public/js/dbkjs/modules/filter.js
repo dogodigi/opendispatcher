@@ -104,7 +104,6 @@ dbkjs.modules.filter = {
         var functiefilter = $("#sel_func").val();
         var gevstoffilter = $("#sel_gevstof").val();
         var inzetfilter = $("#sel_inzet").val();
-        //console.log("omsfilter: " + omsfilter + " risicofilter: " + risicofilter + " functiefilter: " + functiefilter);
         _obj.selectie = [];
         $.each(dbkjs.modules.feature.features, function(fix, feat){
             var compliant = true;

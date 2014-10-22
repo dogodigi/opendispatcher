@@ -24,27 +24,27 @@ dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.care = {
     id: "dbk.modules.care",
     visibility: false,
-    classification1:"",
-    classification2:"",
-    classification3:"",
+    classification1: "",
+    classification2: "",
+    classification3: "",
     layer: {visibility: true},
     sel_array: [],
     sel_care: null,
     cql_array: ["'Prio 1'", "'Prio 2'", "'Prio 3'"],
-    updateLayerIncident: function(string) {
+    updateLayerIncident: function (string) {
         var _obj = dbkjs.modules.care;
         _obj.layerIncident.mergeNewParams({'time': string});
     },
-    updateSelectieIncident: function() {
+    updateSelectieIncident: function () {
         var _obj = dbkjs.modules.care;
         _obj.refreshCQL();
     },
-    register: function(options) {
+    register: function (options) {
         var _obj = dbkjs.modules.care;
-        $('#btngrp_3').append('<a id="btn_care" class="btn btn-default navbar-btn" href="#" title="' + 
+        $('#btngrp_3').append('<a id="btn_care" class="btn btn-default navbar-btn" href="#" title="' +
                 i18n.t('care.managementinfo') + '"><i class="fa fa-fire"></i></a>');
         $('body').append(dbkjs.util.createDialog('carepanel', '<i class="fa fa-fire"></i> ' + i18n.t('care.details'), 'right:0;bottom:0;'));
-        $('#btn_care').click(function() {
+        $('#btn_care').click(function () {
             $('#care_dialog').toggle();
         });
         _obj.namespace = options.namespace || _obj.namespace;
@@ -92,17 +92,17 @@ dbkjs.modules.care = {
         );
         _obj.layerIncident.dbkjsParent = _obj;
         this.updateLayerIncident();
-        _obj.layerIncident.events.register("loadstart", _obj.layerIncident, function() {
+        _obj.layerIncident.events.register("loadstart", _obj.layerIncident, function () {
             dbkjs.util.loadingStart(_obj.layerIncident);
         });
 
-        _obj.layerIncident.events.register("loadend", _obj.layerIncident, function() {
+        _obj.layerIncident.events.register("loadend", _obj.layerIncident, function () {
             dbkjs.util.loadingEnd(_obj.layerIncident);
         });
-        _obj.layerNorm.events.register("loadstart", _obj.layerNorm, function() {
+        _obj.layerNorm.events.register("loadstart", _obj.layerNorm, function () {
             dbkjs.util.loadingStart(_obj.layerNorm);
         });
-        _obj.layerNorm.events.register("loadend", _obj.layerNorm, function() {
+        _obj.layerNorm.events.register("loadend", _obj.layerNorm, function () {
             dbkjs.util.loadingEnd(_obj.layerNorm);
         });
         dbkjs.map.addLayers([_obj.layerIncident, _obj.layerNorm]);
@@ -110,17 +110,17 @@ dbkjs.modules.care = {
         //Care heeft zijn eigen panel:
         _obj.dialog = dbkjs.util.createDialog('care_dialog', '<i class="fa fa-fire"></i> ' + i18n.t('care.incidentsAndCoverage'));
         $('body').append(_obj.dialog);
-        _obj.sel_care = $('<input id="sel_care" name="sel_care" type="text" class="form-control" placeholder="' + 
+        _obj.sel_care = $('<input id="sel_care" name="sel_care" type="text" class="form-control" placeholder="' +
                 i18n.t('care.selectPeriod') + '">');
         $('.dialog').drags({handle: '.panel-heading'});
 
         //_obj.updateLayer(moment().format('YYYY-MM-DD'));
         var incidentSel = $('<div id="incidentSel" style="display:none;"></div>');
         var normSel = $('<div id="normSel" style="display:none;"></div>');
-        var normSel_minuten = $('<input id="sel_care" name="normSel_minuten" type="text" class="form-control" placeholder="'+ 
-                i18n.t('care.excesses')+'">');
+        var normSel_minuten = $('<input id="sel_care" name="normSel_minuten" type="text" class="form-control" placeholder="' +
+                i18n.t('care.excesses') + '">');
         normSel.append(normSel_minuten);
-        incidentSel.append('<h5>'+ i18n.t('care.dateRange') + '</h5>');
+        incidentSel.append('<h5>' + i18n.t('care.dateRange') + '</h5>');
         incidentSel.append(_obj.sel_care);
         var default_range = moment().startOf('week').format('YYYY-MM-DD') + '/' + moment().endOf('week').format('YYYY-MM-DD');
         _obj.sel_care.daterangepicker({
@@ -128,77 +128,77 @@ dbkjs.modules.care = {
             startDate: moment().startOf('week').format('YYYY-MM-DD'),
             endDate: moment().endOf('week').format('YYYY-MM-DD')
         },
-        function(start, end) {
+        function (start, end) {
             _obj.updateLayerIncident(start.format('YYYY-MM-DD') + '/' + end.format('YYYY-MM-DD'));
         });
         _obj.sel_care.val(default_range);
         _obj.updateLayerIncident(default_range);
-        incidentSel.append('<h5>' + i18n.t('care.priority')+ '</h5>');
+        incidentSel.append('<h5>' + i18n.t('care.priority') + '</h5>');
         incidentSel.append(dbkjs.util.createListGroup(
-            [
-                '<input name="chk_prio" type="checkbox" checked="checked"/><span>' + i18n.t('care.prio1') + '</span>',
-                '<input name="chk_prio" type="checkbox" checked="checked"/><span>' + i18n.t('care.prio2') + '</span>',
-                '<input name="chk_prio" type="checkbox" checked="checked"/><span>' + i18n.t('care.prio3') + '</span>'
-            ]
-        ));
+                [
+                    '<input name="chk_prio" type="checkbox" checked="checked"/><span>' + i18n.t('care.prio1') + '</span>',
+                    '<input name="chk_prio" type="checkbox" checked="checked"/><span>' + i18n.t('care.prio2') + '</span>',
+                    '<input name="chk_prio" type="checkbox" checked="checked"/><span>' + i18n.t('care.prio3') + '</span>'
+                ]
+                ));
         //haal class1Sel op;
         //http://localhost/api/incidents/list/class/1
-        $.getJSON('api/incidents/list/class/1').done(function(data) {
+        $.getJSON('api/incidents/list/class/1').done(function (data) {
             if (data.length > 0) {
                 var myselect = $('<select id="class1Selsel" class="form-control"></select>');
                 myselect.append('<option selected>' + i18n.t('care.all') + '</option>')
-                $.each(data, function(d_index, d_item) {
+                $.each(data, function (d_index, d_item) {
                     myselect.append('<option>' + d_item.name + '</option>')
                 });
-                incidentSel.append('<h5>' + i18n.t('care.class1')+ '</h5>');
+                incidentSel.append('<h5>' + i18n.t('care.class1') + '</h5>');
                 incidentSel.append(myselect);
-                myselect.on('change', function() {
+                myselect.on('change', function () {
                     //refresh!
                     dbkjs.modules.care.classification1 = this.value;
-                    if(this.value !== i18n.t('care.all')){
-                        $.getJSON('api/incidents/list/class/2/' + this.value).done(function(data) {
+                    if (this.value !== i18n.t('care.all')) {
+                        $.getJSON('api/incidents/list/class/2/' + this.value).done(function (data) {
                             if (data.length > 0) {
                                 var myselect2;
-                                
-                                if($('#class2Selsel').length !== 0){
+
+                                if ($('#class2Selsel').length !== 0) {
                                     myselect2 = $('#class2Selsel')
                                             .find('option')
                                             .remove()
                                             .end();
                                 } else {
                                     myselect2 = $('<select id="class2Selsel" class="form-control"></select>');
-                                    incidentSel.append('<h5 id="class2Selselh">' + i18n.t('care.class2')+ '</h5>');
+                                    incidentSel.append('<h5 id="class2Selselh">' + i18n.t('care.class2') + '</h5>');
                                     incidentSel.append(myselect2);
                                 }
                                 myselect2.append('<option selected>' + i18n.t('care.all') + '</option>');
-                                $.each(data, function(d_index, d_item) {
+                                $.each(data, function (d_index, d_item) {
                                     myselect2.append('<option>' + d_item.name + '</option>');
                                 });
 
-                                myselect2.on('change', function() {
+                                myselect2.on('change', function () {
                                     //refresh!
                                     dbkjs.modules.care.classification2 = this.value;
-                                    if(this.value !== i18n.t('care.all')){
-                                        $.getJSON('api/incidents/list/class/3/' + this.value).done(function(data) {
+                                    if (this.value !== i18n.t('care.all')) {
+                                        $.getJSON('api/incidents/list/class/3/' + this.value).done(function (data) {
                                             if (data.length > 0) {
                                                 var myselect3;
-                                                if($('#class3Selsel').length !== 0){
+                                                if ($('#class3Selsel').length !== 0) {
                                                     myselect3 = $('#class3Selsel')
                                                             .find('option')
                                                             .remove()
                                                             .end();
                                                 } else {
                                                     myselect3 = $('<select id="class3Selsel" class="form-control"></select>');
-                                                    incidentSel.append('<h5 id="class3Selselh">' + i18n.t('care.class3')+ '</h5>');
+                                                    incidentSel.append('<h5 id="class3Selselh">' + i18n.t('care.class3') + '</h5>');
                                                     incidentSel.append(myselect3);
                                                 }
                                                 myselect3.append('<option selected>' + i18n.t('care.all') + '</option>');
-                                                $.each(data, function(d_index, d_item) {
+                                                $.each(data, function (d_index, d_item) {
                                                     myselect3.append('<option>' + d_item.c3 + '</option>');
                                                 });
-                                                myselect3.on('change', function() {
+                                                myselect3.on('change', function () {
                                                     //refresh!
-                                                    if(this.value !== i18n.t('care.all')){
+                                                    if (this.value !== i18n.t('care.all')) {
                                                         dbkjs.modules.care.classification3 = this.value;
                                                     } else {
                                                         dbkjs.modules.care.classification3 = "";
@@ -230,11 +230,11 @@ dbkjs.modules.care = {
             }
         });
         incidentSel.append(dbkjs.util.createListGroup(
-            [
-                '<input name="chk_koppel" type="checkbox"/><span>' + i18n.t('care.combinedWithCoverage')+'</span>'
-            ]
-        ));
-        var incidenten_button = $('<button class="btn btn-block btn_5px" type="button">'+ 
+                [
+                    '<input name="chk_koppel" type="checkbox"/><span>' + i18n.t('care.combinedWithCoverage') + '</span>'
+                ]
+                ));
+        var incidenten_button = $('<button class="btn btn-block btn_5px" type="button">' +
                 i18n.t('care.incidentsOn') + '</button>');
         var dekkingsplan_button = $('<button class="btn btn-block btn_5px" type="button">' +
                 i18n.t('care.coverageOn') + '</button>');
@@ -247,7 +247,7 @@ dbkjs.modules.care = {
             dekkingsplan_button.addClass('btn-primary').html(i18n.t('care.coverageOff'));
         }
 
-        $(incidenten_button).click(function() {
+        $(incidenten_button).click(function () {
             incidentSel.toggle();
             if (_obj.layerIncident.getVisibility()) {
                 incidenten_button.removeClass('btn-primary').html(i18n.t('care.incidentsOn'));
@@ -257,7 +257,7 @@ dbkjs.modules.care = {
                 _obj.layerIncident.setVisibility(true);
             }
         });
-        $(dekkingsplan_button).click(function() {
+        $(dekkingsplan_button).click(function () {
             normSel.toggle();
             if (_obj.layerNorm.getVisibility()) {
                 dekkingsplan_button.removeClass('btn-primary').html(i18n.t('care.coverageOn'));
@@ -271,16 +271,16 @@ dbkjs.modules.care = {
         $('#care_dialog_b').append(incidentSel);
         $('#care_dialog_b').append(dekkingsplan_button);
         $('#care_dialog_b').append(normSel);
-        $.each(dbkjs.options.organisation.care, function (care_k, care_v){
+        $.each(dbkjs.options.organisation.care, function (care_k, care_v) {
             var btn = $('<button class="btn btn-block btn_5px" type="button">' + care_v.button + '</button>');
-            $(btn).click(function() {
+            $(btn).click(function () {
                 window.open(care_v.url);
                 return false;
             });
             $('#care_dialog_b').append(btn);
         });
-        $('input[name="chk_koppel"]').click(function() {
-            $.each($('input[name="chk_koppel"]'), function(chk_idx, chk) {
+        $('input[name="chk_koppel"]').click(function () {
+            $.each($('input[name="chk_koppel"]'), function (chk_idx, chk) {
                 if ($(chk).is(':checked')) {
                     _obj.layerIncident.mergeNewParams({typename: _obj.namespace + ":incidentscare", layers: _obj.namespace + ":incidentscare", styles: 'careincidenten'});
                 } else {
@@ -289,44 +289,38 @@ dbkjs.modules.care = {
             });
 
         });
-        $('input[name="chk_prio"]').click(function() {
+        $('input[name="chk_prio"]').click(function () {
             _obj.refreshCQL();
         });
     },
-    refreshCQL: function(){
+    refreshCQL: function () {
         var _obj = dbkjs.modules.care;
         var prioArr = [];
-        $.each($('input[name="chk_prio"]'), function(chk_idx, chk) {
+        $.each($('input[name="chk_prio"]'), function (chk_idx, chk) {
             if ($(chk).is(':checked')) {
                 prioArr.push("'" + $(chk).next().text() + "'");
             }
         });
         var prioFilter = "priority IN (" + prioArr.join() + ")";
-        
+
         //_obj.layerIncident.mergeNewParams
         var classArr = [];
         classArr.push(prioFilter);
-        if (_obj.classification1 !== ""){
+        if (_obj.classification1 !== "") {
             classArr.push("classification1='" + _obj.classification1 + "'");
         }
-        if (_obj.classification2 !== ""){
+        if (_obj.classification2 !== "") {
             classArr.push("classification2='" + _obj.classification2 + "'");
         }
-        if (_obj.classification3 !== ""){
+        if (_obj.classification3 !== "") {
             classArr.push("classification3='" + _obj.classification3 + "'");
         }
         var out = classArr.join(' AND ');
         var cqlfilterfinal;
-        //if (_obj.layerIncident.params.CQL_FILTER) {
-        //    cqlfilterfinal = _obj.layerIncident.params.CQL_FILTER;
-        //    cqlfilterfinal += ' AND ' + out;
-        //} else {
-            cqlfilterfinal = out;
-        //}
-        //console.log(cqlfilterfinal);
+        cqlfilterfinal = out;
         _obj.layerIncident.mergeNewParams({'cql_filter': cqlfilterfinal});
     },
-    getfeatureinfo: function(e) {
+    getfeatureinfo: function (e) {
         if (this.layerIncident.getVisibility()) {
             this.getIncidentInfo(e);
         }
@@ -334,7 +328,7 @@ dbkjs.modules.care = {
             this.getNormInfo(e);
         }
     },
-    getNormInfo: function(e) {
+    getNormInfo: function (e) {
         var _obj = dbkjs.modules.care;
         var llMin = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x - 12, e.xy.y + 12));
         var llMax = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x + 12, e.xy.y - 12));
@@ -361,7 +355,7 @@ dbkjs.modules.care = {
         OpenLayers.Request.GET({url: _obj.url + 'wfs', "params": params, callback: _obj.panelNorm});
         //OpenLayers.Event.stop(e);
     },
-    getIncidentInfo: function(e) {
+    getIncidentInfo: function (e) {
         var _obj = dbkjs.modules.care;
         var llMin = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x - 12, e.xy.y + 12));
         var llMax = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x + 12, e.xy.y - 12));
@@ -397,7 +391,7 @@ dbkjs.modules.care = {
         }
         OpenLayers.Request.GET({url: _obj.url + 'wfs', "params": params, callback: _obj.panelIncident});
     },
-    panelIncident: function(response) {
+    panelIncident: function (response) {
         var _obj = dbkjs.modules.care;
         var geojson_format = new OpenLayers.Format.GeoJSON();
         //todo: conflicted with the Array.prototype.where, 
@@ -409,7 +403,7 @@ dbkjs.modules.care = {
             var ft_div = $('<div class="table-responsive"></div>');
             var ft_tbl = $('<table id="incidenten_export" class="table table-hover table-condensed"></table>');
             var feat;
-            for (feat = 0; feat < results.length; feat++) { 
+            for (feat = 0; feat < results.length; feat++) {
                 ft_tbl.append('<tr><td colspan="2">' + dbkjs.util.createPriority(
                         results[feat].attributes.incidentnr,
                         results[feat].attributes.locationdescription,
@@ -491,14 +485,14 @@ dbkjs.modules.care = {
             $('#carepanel_b').append(ft_div);
             $('#carepanel_f').html('');
             $('#carepanel').show();
-            $(".export").on('click', function() {
+            $(".export").on('click', function () {
                 // CSV
                 dbkjs.util.exportTableToCSV.apply(this, [$('#incidenten_export'), 'export.csv']);
                 $('#carepanel').toggle(true);
             });
         }
     },
-    panelNorm: function(response) {
+    panelNorm: function (response) {
         var _obj = dbkjs.modules.care;
         //verwerk de featureinformatie
         //g = new OpenLayers.Format.GML.v3();
@@ -543,7 +537,7 @@ dbkjs.modules.care = {
             $('#carepanel_b').append(ft_div);
             $('#carepanel_f').html('');
             $('#carepanel').show();
-            $(".export").on('click', function() {
+            $(".export").on('click', function () {
                 // CSV
                 dbkjs.util.exportTableToCSV.apply(this, [$('#dekkingsplan_export'), 'export.csv']);
                 $('#carepanel').toggle(true);

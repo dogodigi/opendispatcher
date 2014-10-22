@@ -20,7 +20,7 @@
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
-
+OpenLayers.ProxyHost = "proxy/?q=";
 OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 OpenLayers.Lang["nl"] = OpenLayers.Util.applyDefaults({'Scale = 1 : ${scaleDenom}': "Schaal 1 : ${scaleDenom}"});
 OpenLayers.Lang.setCode("nl");
@@ -32,7 +32,7 @@ dbkjs.options = {
             numDigits: 4
         }
     },
-    VERSION: "2.0",
+    VERSION: "2.7",
     RELEASEDATE: "10-03-2014",
     APPLICATION: "safetymapsDBK",
     REMARKS: "",

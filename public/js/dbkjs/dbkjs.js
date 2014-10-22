@@ -27,17 +27,16 @@ dbkjs.map = dbkjs.map || null;
 
 dbkjs.viewmode = 'default';
 
-dbkjs.init = function() {
+dbkjs.init = function () {
 
     dbkjs.basePath = window.location.protocol + '//' + window.location.hostname;
     var pathname = window.location.pathname;
     // ensure basePath always ends with '/', remove 'index.html' if exists
-    if(pathname.charAt(pathname.length - 1) !== '/') {
-        pathname = pathname.substring(0, pathname.lastIndexOf('/')+1);
+    if (pathname.charAt(pathname.length - 1) !== '/') {
+        pathname = pathname.substring(0, pathname.lastIndexOf('/') + 1);
     }
     // ensure single '/' between hostname and path
     dbkjs.basePath = dbkjs.basePath + (pathname.charAt(0) === "/" ? pathname : "/" + pathname);
-
     dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
     dbkjs.options.organisation = {
         id: dbkjs.util.getQueryVariable(i18n.t('app.organisation'), 'demo')
@@ -65,25 +64,25 @@ dbkjs.init = function() {
     dbkjs.naviHis.activate();
 
     var baselayer_ul = $('<ul id="baselayerpanel_ul" class="nav nav-pills nav-stacked">');
-    $.each(dbkjs.options.baselayers, function(bl_index, bl) {
+    $.each(dbkjs.options.baselayers, function (bl_index, bl) {
         var _li = $('<li class="bl" id="bl' + bl_index + '"><a href="#">' + bl.name + '</a></li>');
         baselayer_ul.append(_li);
-        bl.events.register("loadstart", bl, function() {
+        bl.events.register("loadstart", bl, function () {
             dbkjs.util.loadingStart(bl);
         });
-        bl.events.register("loadend", bl, function() {
+        bl.events.register("loadend", bl, function () {
             dbkjs.util.loadingEnd(bl);
         });
         dbkjs.map.addLayer(bl);
-        _li.on('click', function() {
+        _li.on('click', function () {
             dbkjs.toggleBaseLayer(bl_index);
-            if(dbkjs.viewmode === 'fullscreen') {
+            if (dbkjs.viewmode === 'fullscreen') {
                 dbkjs.util.getModalPopup('baselayerpanel').hide();
             }
         });
     });
     $('#baselayerpanel_b').append(baselayer_ul);
-    dbkjs.map.events.register("moveend", dbkjs.map, function() {
+    dbkjs.map.events.register("moveend", dbkjs.map, function () {
         //check if the naviHis has any content
         if (dbkjs.naviHis.nextStack.length > 0) {
             //enable next button
@@ -106,17 +105,17 @@ dbkjs.init = function() {
     });
     dbkjs.map.addControl(dbkjs.overview);
     dbkjs.map.addControl(new OpenLayers.Control.Zoom({
-            zoomInId: "zoom_in",
-            zoomOutId: "zoom_out"
-        })
-    );
+        zoomInId: "zoom_in",
+        zoomOutId: "zoom_out"
+    })
+            );
 };
 
 /**
  * Functie voor updaten van de zichtbaarheid van baselayers
  * @param {integer} nr
  */
-dbkjs.toggleBaseLayer = function(nr) {
+dbkjs.toggleBaseLayer = function (nr) {
     var layerbuttons = $(".bl");
     var i;
     for (i = 0; i < layerbuttons.length; i++) {
@@ -131,51 +130,62 @@ dbkjs.toggleBaseLayer = function(nr) {
     }
 };
 
-dbkjs.setDbkCategoryVisibility = function(category, visible) {
-    if(!dbkjs.options.visibleCategories) {
+dbkjs.setDbkCategoryVisibility = function (category, visible) {
+    if (!dbkjs.options.visibleCategories) {
         dbkjs.options.visibleCategories = {};
     }
     dbkjs.options.visibleCategories[category] = visible;
     dbkjs.protocol.jsonDBK.layerBrandweervoorziening.redraw();
 };
 
-dbkjs.activateClick = function() {
+dbkjs.activateClick = function () {
     dbkjs.map.events.register('click', dbkjs.map, dbkjs.util.onClick);
     dbkjs.map.events.register('touchend', dbkjs.map, dbkjs.util.onClick);
 };
 
-dbkjs.challengeAuth = function() {
+dbkjs.challengeAuth = function () {
     var params = {srid: dbkjs.options.projection.srid};
-    $.getJSON('api/organisation.json', params).done(function(data) {
+    $.getJSON('api/organisation.json', params).done(function (data) {
         if (data.organisation) {
             dbkjs.options.organisation = data.organisation;
             if (dbkjs.options.organisation.title) {
                 document.title = dbkjs.options.organisation.title;
             }
             dbkjs.successAuth();
+        } else {
+            //drop back to default
+            $.getJSON('data/organisation.sample.json', params).done(function (data) {
+                if (data.organisation) {
+                    dbkjs.options.organisation = data.organisation;
+                    if (dbkjs.options.organisation.title) {
+                        document.title = dbkjs.options.organisation.title;
+                    }
+                    dbkjs.successAuth();
+                }
+            });
         }
     });
 };
 
-dbkjs.successAuth = function() {
+dbkjs.successAuth = function () {
     dbkjs.hoverControl = new OpenLayers.Control.SelectFeature(
-        [],
-        {
-            hover: true,
-            highlightOnly: true,
-            renderIntent: "temporary"
-        }
+            [],
+            {
+                hover: true,
+                highlightOnly: true,
+                renderIntent: "temporary"
+            }
     );
     dbkjs.hoverControl.handlers.feature.stopDown = false;
     dbkjs.hoverControl.handlers.feature.stopUp = false;
     dbkjs.map.addControl(dbkjs.hoverControl);
     dbkjs.selectControl = new OpenLayers.Control.SelectFeature(
-        [],
-        {
-            clickout: true,
-            toggle: true,
-            multiple: false
-        }
+            [],
+            {
+                clickout: true,
+                toggle: true,
+                multiple: false
+            }
     );
     dbkjs.selectControl.handlers.feature.stopDown = false;
     dbkjs.selectControl.handlers.feature.stopUp = false;
@@ -185,98 +195,98 @@ dbkjs.successAuth = function() {
         $('#logo').css('background-image', 'url(' + dbkjs.options.organisation.logo + ')');
     }
     //register modules
-    $.each(dbkjs.modules, function(mod_index, module) {
+    $.each(dbkjs.modules, function (mod_index, module) {
         if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
             if (module.register) {
-                module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true, viewmode: dbkjs.viewmode });
+                module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true, viewmode: dbkjs.viewmode});
             }
         }
     });
 
-    if(dbkjs.options.organisation.wms){
+    if (dbkjs.options.organisation.wms) {
         dbkjs.loadingcapabilities = 0;
-            $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v){
-                var index = wms_v.index || 0;
-                if(wms_v.getcapabilities === true){
-                    dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
-                    var options = {
-                        url: wms_v.url,
-                        title: wms_v.name,
-                        proxy: wms_v.proxy,
-                        index: index,
-                        parent: wms_v.parent
-                    };
-                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
-                        options.pl = wms_v.pl;
-                    }
-                    var myCapabilities = new dbkjs.Capabilities(options);
-                } else if (!wms_v.baselayer) {
-                    var params = wms_v.params || {};
-                    var options = wms_v.options || {};
-                    var parent = wms_v.parent || null;
-                    var metadata = {};
-                    if (!dbkjs.util.isJsonNull(wms_v.abstract)){
-                        metadata.abstract = wms_v.abstract;
-                    }
-                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
-                        metadata.pl = wms_v.pl;
-                    }
-                    if (!dbkjs.util.isJsonNull(wms_v.legend)){
-                        metadata.legend = wms_v.legend;
-                    }
-                    var layertype = wms_v.layertype || null;
-                    var myLayer = new dbkjs.Layer(
-                        wms_v.name,
-                        wms_v.url,
-                        params,
-                        options,
-                        parent,
-                        index,
-                        metadata,
-                        layertype
-                    );
-                } else {
-                    var params = wms_v.params || {};
-                    var options = wms_v.options || {};
-                    options = OpenLayers.Util.extend({isBaseLayer: true}, options);
-                    var parent = wms_v.parent || null;
-                    var metadata = {};
-                    if (!dbkjs.util.isJsonNull(wms_v.abstract)){
-                        metadata.abstract = wms_v.abstract;
-                    }
-                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
-                        metadata.pl = wms_v.pl;
-                    }
-                    var layertype = wms_v.layertype || null;
-                    var myLayer = new dbkjs.Layer(
-                        wms_v.name,
-                        wms_v.url,
-                        params,
-                        options,
-                        parent,
-                        index,
-                        metadata,
-                        layertype
-                    );
+        $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v) {
+            var index = wms_v.index || 0;
+            if (wms_v.getcapabilities === true) {
+                dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
+                var options = {
+                    url: wms_v.url,
+                    title: wms_v.name,
+                    proxy: wms_v.proxy,
+                    index: index,
+                    parent: wms_v.parent
+                };
+                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
+                    options.pl = wms_v.pl;
                 }
-
-            });
-            if(dbkjs.loadingcapabilities === 0){
-                dbkjs.finishMap();
+                var myCapabilities = new dbkjs.Capabilities(options);
+            } else if (!wms_v.baselayer) {
+                var params = wms_v.params || {};
+                var options = wms_v.options || {};
+                var parent = wms_v.parent || null;
+                var metadata = {};
+                if (!dbkjs.util.isJsonNull(wms_v.abstract)) {
+                    metadata.abstract = wms_v.abstract;
+                }
+                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
+                    metadata.pl = wms_v.pl;
+                }
+                if (!dbkjs.util.isJsonNull(wms_v.legend)) {
+                    metadata.legend = wms_v.legend;
+                }
+                var layertype = wms_v.layertype || null;
+                var myLayer = new dbkjs.Layer(
+                        wms_v.name,
+                        wms_v.url,
+                        params,
+                        options,
+                        parent,
+                        index,
+                        metadata,
+                        layertype
+                        );
+            } else {
+                var params = wms_v.params || {};
+                var options = wms_v.options || {};
+                options = OpenLayers.Util.extend({isBaseLayer: true}, options);
+                var parent = wms_v.parent || null;
+                var metadata = {};
+                if (!dbkjs.util.isJsonNull(wms_v.abstract)) {
+                    metadata.abstract = wms_v.abstract;
+                }
+                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
+                    metadata.pl = wms_v.pl;
+                }
+                var layertype = wms_v.layertype || null;
+                var myLayer = new dbkjs.Layer(
+                        wms_v.name,
+                        wms_v.url,
+                        params,
+                        options,
+                        parent,
+                        index,
+                        metadata,
+                        layertype
+                        );
             }
-        } else {
+
+        });
+        if (dbkjs.loadingcapabilities === 0) {
             dbkjs.finishMap();
         }
+    } else {
+        dbkjs.finishMap();
+    }
 
     $(dbkjs).trigger('dbkjs_init_complete');
 };
 
-dbkjs.finishMap = function(){
+dbkjs.finishMap = function () {
     //find the div that contains the baseLayer.name
     var listItems = $("#baselayerpanel_ul li");
-    listItems.each(function(idx, li) {
+    listItems.each(function (idx, li) {
         var test = $(li).children(':first').text();
-        if(test === dbkjs.map.baseLayer.name){
+        if (test === dbkjs.map.baseLayer.name) {
             $(li).addClass('active');
         }
     });
@@ -289,11 +299,11 @@ dbkjs.finishMap = function(){
     var hrefzoom = dbkjs.util.getQueryVariable('zoom');
     var hreflat = dbkjs.util.getQueryVariable('lat');
     var hreflon = dbkjs.util.getQueryVariable('lon');
-    if(hrefzoom && hreflat && hreflon){
+    if (hrefzoom && hreflat && hreflon) {
         dbkjs.argparser = new dbkjs.argParser();
         dbkjs.map.addControl(dbkjs.argparser);
     } else {
-        if (dbkjs.options.organisation.area){
+        if (dbkjs.options.organisation.area) {
             if (dbkjs.options.organisation.area.geometry.type === "Point") {
                 dbkjs.map.setCenter(
                         new OpenLayers.LonLat(
@@ -305,9 +315,11 @@ dbkjs.finishMap = function(){
                         ),
                         dbkjs.options.organisation.area.zoom
                         );
-            } else if (dbkjs.options.organisation.area.geometry.type === "Polygon"){
+            } else if (dbkjs.options.organisation.area.geometry.type === "Polygon") {
+                //get the projection for the Polygon
+                var crs = dbkjs.options.organisation.area.geometry.crs.properties.name || "EPSG:4326";
                 var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
-                dbkjs.map.zoomToExtent(areaGeometry.getBounds());
+                dbkjs.map.zoomToExtent(areaGeometry.getBounds().transform(crs, dbkjs.map.getProjectionObject()));
             }
         } else {
             dbkjs.map.zoomToMaxExtent();
@@ -319,44 +331,44 @@ dbkjs.finishMap = function(){
     //get dbk!
 };
 
-$(document).ready(function() {
+$(document).ready(function () {
     // Make sure i18n is initialized
     i18n.init({
-            lng: "nl", debug: false, postProcess: "doReplacements"
-    }, function(t) {
-        i18n.addPostProcessor("doReplacements", function(val, key, options) {
-            if(dbkjs.options.i18nReplacements) {
+        lng: "nl", debug: false, postProcess: "doReplacements"
+    }, function (t) {
+        i18n.addPostProcessor("doReplacements", function (val, key, options) {
+            if (dbkjs.options.i18nReplacements) {
                 var lngReplacements = dbkjs.options.i18nReplacements[i18n.lng()];
-                if(lngReplacements && lngReplacements[key]) {
+                if (lngReplacements && lngReplacements[key]) {
                     return lngReplacements[key];
                 }
             }
             return val;
         });
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
-        if(dbkjs.viewmode !== 'fullscreen') {
+        if (dbkjs.viewmode !== 'fullscreen') {
             $('body').append(dbkjs.util.createDialog('infopanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
         } else {
             // Create the infopanel
-            dbkjs.util.createModalPopup({ name: 'infopanel' }).getView().append($('<div></div>').attr({ 'id': 'infopanel_b' }));
+            dbkjs.util.createModalPopup({name: 'infopanel'}).getView().append($('<div></div>').attr({'id': 'infopanel_b'}));
             // Create the DBK infopanel
-            dbkjs.util.createModalPopup({ name: 'dbkinfopanel' }).getView().append($('<div></div>').attr({ 'id': 'dbkinfopanel_b' }));
+            dbkjs.util.createModalPopup({name: 'dbkinfopanel'}).getView().append($('<div></div>').attr({'id': 'dbkinfopanel_b'}));
 
             // We are removing / moving some existing DIVS from HTML to convert prev. popups to fullscreen modal popups
             $('#baselayerpanel').remove();
             $('#overlaypanel').attr('id', 'tmp_overlaypanel');
-            var baseLayerPopup = dbkjs.util.createModalPopup({ name: 'baselayerpanel' });
-            baseLayerPopup.getView().append($('<div></div>').attr({ 'id': 'baselayerpanel_b' }));
-            var overlaypanelPopup = dbkjs.util.createModalPopup({ name: 'overlaypanel' });
+            var baseLayerPopup = dbkjs.util.createModalPopup({name: 'baselayerpanel'});
+            baseLayerPopup.getView().append($('<div></div>').attr({'id': 'baselayerpanel_b'}));
+            var overlaypanelPopup = dbkjs.util.createModalPopup({name: 'overlaypanel'});
             overlaypanelPopup.getView().append($('#tmp_overlaypanel .tabbable'));
             $('#tmp_overlaypanel').remove();
 
-            $('#tb01, #tb02').on('click', function(e) {
+            $('#tb01, #tb02').on('click', function (e) {
                 e.preventDefault();
                 var panelId = $(this).attr('href').replace('#', '');
-                if(panelId === 'baselayerpanel') {
-                    $.each(dbkjs.options.baselayers, function(bl_index, bl) {
-                        if(bl.getVisibility()) {
+                if (panelId === 'baselayerpanel') {
+                    $.each(dbkjs.options.baselayers, function (bl_index, bl) {
+                        if (bl.getVisibility()) {
                             $('#bl' + bl_index).addClass('active');
                         }
                     });
@@ -365,7 +377,7 @@ $(document).ready(function() {
             });
 
         }
-        if(dbkjs.viewmode !== 'fullscreen') {
+        if (dbkjs.viewmode !== 'fullscreen') {
             $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
             $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;'));
             $('body').append(dbkjs.util.createModal('printpanel', '<i class="fa fa-print"></i> ' + t("app.print"), ''));
@@ -376,14 +388,14 @@ $(document).ready(function() {
             $('.btn-group').drags({handle: '.drag-handle'});
             dbkjs.util.setModalTitle('overlaypanel', i18n.t('map.overlays'));
             dbkjs.util.setModalTitle('baselayerpanel', i18n.t('map.baselayers'));
-            
+
         }
         dbkjs.init();
 
         $('#infopanel_b').html(dbkjs.options.info);
-        $('#tb03, #c_minimap').click(function() {
+        $('#tb03, #c_minimap').click(function () {
             if (this.id === "tb03") {
-                if(dbkjs.viewmode !== 'fullscreen') {
+                if (dbkjs.viewmode !== 'fullscreen') {
                     $('#infopanel').toggle();
                 } else {
                     dbkjs.util.getModalPopup('dbkinfopanel').show();
@@ -392,53 +404,53 @@ $(document).ready(function() {
                 $('#minimappanel').toggle();
             }
         });
-        $('#zoom_extent').click(function() {
+        $('#zoom_extent').click(function () {
             if (dbkjs.options.organisation.modules.regio) {
                 dbkjs.modules.regio.zoomExtent();
             } else {
                 if (dbkjs.options.organisation.area.geometry.type === "Point") {
                     dbkjs.map.setCenter(
-                        new OpenLayers.LonLat(
-                                data.organisation.area.geometry.coordinates[0],
-                                data.organisation.area.geometry.coordinates[1]
-                                ).transform(
-                        new OpenLayers.Projection(dbkjs.options.projection.code),
-                        dbkjs.map.getProjectionObject()
-                        ),
-                        dbkjs.options.organisation.area.zoom
-                    );
-                } else if (dbkjs.options.organisation.area.geometry.type === "Polygon"){
-                    var areaGeometry = new OpenLayers.Format.GeoJSON().read(
-                            dbkjs.options.organisation.area.geometry, "Geometry");
-                    dbkjs.map.zoomToExtent(areaGeometry.getBounds());
+                            new OpenLayers.LonLat(
+                                    data.organisation.area.geometry.coordinates[0],
+                                    data.organisation.area.geometry.coordinates[1]
+                                    ).transform(
+                            new OpenLayers.Projection(dbkjs.options.projection.code),
+                            dbkjs.map.getProjectionObject()
+                            ),
+                            dbkjs.options.organisation.area.zoom
+                            );
+                } else if (dbkjs.options.organisation.area.geometry.type === "Polygon") {
+                    var crs = dbkjs.options.organisation.area.geometry.crs.properties.name || "EPSG:4326";
+                    var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
+                    dbkjs.map.zoomToExtent(areaGeometry.getBounds().transform(crs, dbkjs.map.getProjectionObject()));
                 }
             }
         });
 
-        $(dbkjs).bind('dbkjs_init_complete', function() {
-            
-             if(dbkjs.viewmode !== 'fullscreen') {
-                $('#zoom_prev').click(function() {
+        $(dbkjs).bind('dbkjs_init_complete', function () {
+
+            if (dbkjs.viewmode !== 'fullscreen') {
+                $('#zoom_prev').click(function () {
                     dbkjs.naviHis.previousTrigger();
                 });
-                $('#zoom_next').click(function() {
+                $('#zoom_next').click(function () {
                     dbkjs.naviHis.nextTrigger();
                 });
             } else {
                 FastClick.attach(document.body);
             }
-            (function() {
+            (function () {
                 function calcMaxWidth() {
                     // Calculate the max width for dbk title so other buttons are never pushed down when name is too long
                     var childWidth = 0;
-                    $('.main-button-group .btn-group').each(function() {
+                    $('.main-button-group .btn-group').each(function () {
                         childWidth += $(this).outerWidth();
                     });
                     var maxWidth = $('.main-button-group').outerWidth() - childWidth;
                     $('.dbk-title').css('max-width', (maxWidth - 25) + 'px');
                 }
                 // Listen for orientation changes
-                window.addEventListener("orientationchange", function() {
+                window.addEventListener("orientationchange", function () {
                     calcMaxWidth();
                 }, false);
                 calcMaxWidth();
