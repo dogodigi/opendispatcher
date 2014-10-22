@@ -43,10 +43,28 @@
 -if(mylang!=='dev' && mylang!=='en'){
   script(src='js/libs/moment/lang/#{mylang}.js', type='text/javascript')
   script(src='js/dbkjs/config/options-rd.js', type='text/javascript')
-  script(type='text/javascript') var dbkjsLang = 'nl';
+  script(type='text/javascript').
+    var dbkjsLang = 'nl';
+    var dbkjs = dbkjs || {};
+    window.dbkjs = dbkjs;
+    dbkjs.options = dbkjs.options || {};
+    dbkjs.options.VERSION = "2.9";
+    dbkjs.options.RELEASEDATE = "01-09-2014";
+    dbkjs.options.APPLICATION = "safetymapsDBK";
+    dbkjs.options.REMARKS = "";
+    dbkjs.options.INFO = "";
 - } else {
   script(src='js/dbkjs/config/options.js', type='text/javascript')
-  script(type='text/javascript') var dbkjsLang = '#{mylang}';
+  script(type='text/javascript').
+    var dbkjsLang = '#{mylang}';
+    var dbkjs = dbkjs || {};
+    window.dbkjs = dbkjs;
+    dbkjs.options = dbkjs.options || {};
+    dbkjs.options.VERSION = "2.9";
+    dbkjs.options.RELEASEDATE = "01/09/2014";
+    dbkjs.options.APPLICATION = "safetymapsDBK";
+    dbkjs.options.REMARKS = "";
+    dbkjs.options.INFO = "";
 - }
 
 
