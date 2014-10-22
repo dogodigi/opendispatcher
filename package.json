@@ -10,7 +10,7 @@
     },
     "private": true,
     "scripts": {
-        "start": "node appr.js"
+        "start": "node app.js"
     },
     "repository" :  { 
         "type" : "git",

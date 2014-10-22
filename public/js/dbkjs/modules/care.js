@@ -499,10 +499,9 @@ dbkjs.modules.care = {
         //g = new OpenLayers.Format.GML.v3();
         var geojson_format = new OpenLayers.Format.GeoJSON();
         var features = geojson_format.read(response.responseText);
-        $('#carepanel').hide();
         if (features.length > 0) {
             $('#carepanel_b').html('');
-            dbkjs.util.changeDialogTitle(i18n.t('care.coverage'));
+            dbkjs.util.changeDialogTitle(i18n.t('care.coverage'), '#carepanel');
             var ft_div = $('<div class="table-responsive"></div>');
             var ft_tbl = $('<table id="incidenten_export" class="table table-hover table-condensed"></table>');
 
@@ -544,10 +543,6 @@ dbkjs.modules.care = {
                 dbkjs.util.exportTableToCSV.apply(this, [$('#dekkingsplan_export'), 'export.csv']);
                 $('#carepanel').toggle(true);
             });
-        } else {
-            //$('#carepanel').hide();
         }
-
-
     }
 };
