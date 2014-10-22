@@ -588,14 +588,18 @@ dbkjs.protocol.jsonDBK = {
                     "unnumber": myGeometry.UNnummer,
                     "fid": "gevaarlijkestof_ft_" + idx
                 };
+                var geviblock = '';
+                if(myFeature.attributes.indication !== 0 && myFeature.attributes.unnumber !== 0){
+                    geviblock = '<div class="gevicode">' + myFeature.attributes.indication +
+                            '</div><div class="unnummer">' +
+                            myFeature.attributes.unnumber + '</div>';
+                }
                 var myrow = $('<tr>' +
                         '<td><img class="thumb" src="' + dbkjs.basePath + 'images/' + myFeature.attributes.namespace + '/' +
                             myFeature.attributes.type + '.png" alt="'+
                             myFeature.attributes.type +'" title="'+
                             myFeature.attributes.type+'"></td>' +
-                        '<td>' + '<div class="gevicode">' + myFeature.attributes.indication +
-                            '</div><div class="unnummer">' +
-                            myFeature.attributes.unnumber + '</div>' + '</td>' +
+                        '<td>' + geviblock + '</td>' +
                         '<td>' + myFeature.attributes.name + '</td>' +
                         '<td>' + myFeature.attributes.quantity + '</td>' +
 
