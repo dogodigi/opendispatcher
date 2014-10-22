@@ -180,35 +180,37 @@ dbkjs.Layer = dbkjs.Class({
     },
     getfeatureinfo: function (e) {
         _obj = this;
-        if (this.layer.visibility) {
-            var params = {
-                REQUEST: "GetFeatureInfo",
-                EXCEPTIONS: "application/vnd.ogc.se_xml",
-                BBOX: dbkjs.map.getExtent().toBBOX(),
-                SERVICE: "WMS",
-                INFO_FORMAT: 'application/vnd.ogc.gml',
-                QUERY_LAYERS: this.layer.params.LAYERS,
-                FEATURE_COUNT: 50,
-                Layers: this.layer.params.LAYERS,
-                WIDTH: dbkjs.map.size.w,
-                HEIGHT: dbkjs.map.size.h,
-                format: 'image/png',
-                styles: this.layer.params.STYLES,
-                srs: this.layer.params.SRS
-            };
+        if (!this.layer.options.hidefeatureinfo) {
+            if (this.layer.visibility) {
+                var params = {
+                    REQUEST: "GetFeatureInfo",
+                    EXCEPTIONS: "application/vnd.ogc.se_xml",
+                    BBOX: dbkjs.map.getExtent().toBBOX(),
+                    SERVICE: "WMS",
+                    INFO_FORMAT: 'application/vnd.ogc.gml',
+                    QUERY_LAYERS: this.layer.params.LAYERS,
+                    FEATURE_COUNT: 50,
+                    Layers: this.layer.params.LAYERS,
+                    WIDTH: dbkjs.map.size.w,
+                    HEIGHT: dbkjs.map.size.h,
+                    format: 'image/png',
+                    styles: this.layer.params.STYLES,
+                    srs: this.layer.params.SRS
+                };
 
-            // handle the wms 1.3 vs wms 1.1 madness
-            if (this.layer.params.VERSION === "1.3.0") {
-                params.version = "1.3.0";
-                params.j = e.xy.x;
-                params.i = e.xy.y;
-            } else {
-                params.version = "1.1.1";
-                params.x = e.xy.x;
-                params.y = e.xy.y;
+                // handle the wms 1.3 vs wms 1.1 madness
+                if (this.layer.params.VERSION === "1.3.0") {
+                    params.version = "1.3.0";
+                    params.j = e.xy.x;
+                    params.i = e.xy.y;
+                } else {
+                    params.version = "1.1.1";
+                    params.x = e.xy.x;
+                    params.y = e.xy.y;
+                }
+                OpenLayers.Request.GET({url: this.layer.url, "params": params, callback: this.panel, scope: _obj});
+                //OpenLayers.Event.stop(e);
             }
-            OpenLayers.Request.GET({url: this.layer.url, "params": params, callback: this.panel, scope: _obj});
-            //OpenLayers.Event.stop(e);
         }
     },
     panel: function (response) {
