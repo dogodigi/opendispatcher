@@ -25,13 +25,13 @@ dbkjs.Layer = dbkjs.Class({
     layer: null,
     div: null,
     legend: null,
-    initialize: function(name, url, params, options, parent, index, metadata, layertype) {
+    initialize: function (name, url, params, options, parent, index, metadata, layertype) {
         var ly;
         var defaultparams = {
-            format: 'image/png', 
+            format: 'image/png',
             transparent: true
-            //tiled: true,
-            //tilesorigin: [dbkjs.map.maxExtent.left, dbkjs.map.maxExtent.bottom]
+                    //tiled: true,
+                    //tilesorigin: [dbkjs.map.maxExtent.left, dbkjs.map.maxExtent.bottom]
         };
         var defaultoptions = {
             transitionEffect: 'resize',
@@ -40,17 +40,17 @@ dbkjs.Layer = dbkjs.Class({
             isBaseLayer: false,
             visibility: false
         };
-        
+
         params = OpenLayers.Util.extend(defaultparams, params);
         options = OpenLayers.Util.extend(defaultoptions, options);
         this.id = OpenLayers.Util.createUniqueID("dbkjs_layer_");
         this.div = $('<div class="panel"></div>');
         this.div.attr('id', 'panel_' + this.id);
         //layers moet worden meegegeven in de opties
-        if(!layertype){
+        if (!layertype) {
             layertype = "WMS";
         }
-        
+
         switch (layertype) {
             case "TMS":
                 // XXX in json you can't create OpenLayers objects. The following
@@ -60,48 +60,48 @@ dbkjs.Layer = dbkjs.Class({
                 // maxExtent: [<minx>, <miny>, <maxx>, <maxy>] -> new OpenLayers.Bounds(<minx>, <miny>, <maxx>, <maxy>)
                 // projection: "EPSG:1234" -> new OpenLayers.Projection("EPSG:1234")
 
-                if($.isArray(params.tileOrigin)) {
-	                params.tileOrigin = new OpenLayers.LonLat(params.tileOrigin[0], params.tileOrigin[1]);
+                if ($.isArray(params.tileOrigin)) {
+                    params.tileOrigin = new OpenLayers.LonLat(params.tileOrigin[0], params.tileOrigin[1]);
                 }
-                if($.isArray(params.maxExtent)) {
-	                var me = params.maxExtent;
-	                params.maxExtent = new OpenLayers.Bounds(me[0], me[1], me[2], me[3]);
+                if ($.isArray(params.maxExtent)) {
+                    var me = params.maxExtent;
+                    params.maxExtent = new OpenLayers.Bounds(me[0], me[1], me[2], me[3]);
                 }
-                if(typeof params.projection === "string") {
-	                params.projection = new OpenLayers.Projection(params.projection);
+                if (typeof params.projection === "string") {
+                    params.projection = new OpenLayers.Projection(params.projection);
                 }
                 var ly = new OpenLayers.Layer.TMS(name, url,
-                    params,
-                    options
-                );
+                        params,
+                        options
+                        );
                 break;
             case "WMS":
             default:
                 var ly = new OpenLayers.Layer.WMS(name, url,
-                    params,
-                    options
-                );
+                        params,
+                        options
+                        );
                 //TODO: sometimes legends fail, need to investigate why and how to handle errors
-                var legend = url + 
-                    "TRANSPARENT=true&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&EXCEPTIONS=application%2F" +
-                    "vnd.ogc.se_xml&FORMAT=image%2Fpng&LAYER=" + 
-                ly.params["LAYERS"]; 
-                ly.events.register("loadstart", ly, function() {
+                var legend = url +
+                        "TRANSPARENT=true&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&EXCEPTIONS=application%2F" +
+                        "vnd.ogc.se_xml&FORMAT=image%2Fpng&LAYER=" +
+                        ly.params["LAYERS"];
+                ly.events.register("loadstart", ly, function () {
                     dbkjs.util.loadingStart(ly);
                 });
-                ly.events.register("loadend", ly, function() {
+                ly.events.register("loadend", ly, function () {
                     dbkjs.util.loadingEnd(ly);
                 });
         }
-        
-        this.layer  = ly;
+
+        this.layer = ly;
         this.layer.dbkjsParent = this;
         //let op, de map moet worden meegegeven in de opties
 
         dbkjs.map.addLayer(this.layer);
-        if(!options.isBaseLayer) {
+        if (!options.isBaseLayer) {
             // @todo functie maken om layerindex dynamisch te toveren 0 is onderop de stapel
-            if(index){
+            if (index) {
                 dbkjs.map.setLayerIndex(this.layer, index);
             } else {
                 dbkjs.map.setLayerIndex(this.layer, 0);
@@ -115,11 +115,11 @@ dbkjs.Layer = dbkjs.Class({
             dv_panel_heading.append(dv_panel_title);
             this.div.append(dv_panel_heading);
             var dv_panel_content = $('<div id="collapse_' + this.id + '" class="panel-collapse collapse"></div>');
-            if(metadata){
-                if(metadata.abstract){
+            if (metadata) {
+                if (metadata.abstract) {
                     dv_panel_content.append('<p>' + metadata.abstract + '</p>');
                 }
-                if(metadata.pl){
+                if (metadata.pl) {
                     this.layer.metadata.pl = metadata.pl;
                 }
             }
@@ -134,11 +134,11 @@ dbkjs.Layer = dbkjs.Class({
                     dv_panel_heading.addClass('layActive');
                 }
                 var that = this;
-                dv_panel_heading.click(function(e) {
-                    if(e.target.className.indexOf('fa-info-circle') !== -1 || e.target.className.indexOf('accordion-toggle') !== -1) {
+                dv_panel_heading.click(function (e) {
+                    if (e.target.className.indexOf('fa-info-circle') !== -1 || e.target.className.indexOf('accordion-toggle') !== -1) {
                         //click on the info sign
                         //check to see if the legend is there already
-                        if($('#legend_'+that.id).length === 0) {
+                        if ($('#legend_' + that.id).length === 0) {
                             dv_panel_content.append('<img id="legend_' + that.id + '" src="' + (metadata.legend ? metadata.legend : legend) + '"/>');
                         }
                         return;
@@ -157,11 +157,11 @@ dbkjs.Layer = dbkjs.Class({
             }
         } else {
             //dbkjs.map.setLayerIndex(this.layer, 0);
-            if(metadata){
-                if(metadata.abstract){
+            if (metadata) {
+                if (metadata.abstract) {
                     dv_panel_content.append('<p>' + metadata.abstract + '</p>');
                 }
-                if(metadata.pl){
+                if (metadata.pl) {
                     this.layer.metadata.pl = metadata.pl;
                 }
             }
@@ -170,46 +170,48 @@ dbkjs.Layer = dbkjs.Class({
             dbkjs.map.raiseLayer(this.layer, -1000);
             var _li = $('<li class="bl"><a href="#">' + name + '</a></li>');
             $('#baselayerpanel_ul').append(_li);
-            _li.click(function() {
+            _li.click(function () {
                 dbkjs.toggleBaseLayer($(this).index());
-                if(dbkjs.viewmode === 'fullscreen') {
+                if (dbkjs.viewmode === 'fullscreen') {
                     dbkjs.util.getModalPopup('baselayerpanel').hide();
                 }
             });
         }
     },
-    getfeatureinfo: function(e) {
+    getfeatureinfo: function (e) {
         _obj = this;
-        var params = {
-            REQUEST: "GetFeatureInfo",
-            EXCEPTIONS: "application/vnd.ogc.se_xml",
-            BBOX: dbkjs.map.getExtent().toBBOX(),
-            SERVICE: "WMS",
-            INFO_FORMAT: 'application/vnd.ogc.gml',
-            QUERY_LAYERS: this.layer.params.LAYERS,
-            FEATURE_COUNT: 50,
-            Layers: this.layer.params.LAYERS,
-            WIDTH: dbkjs.map.size.w,
-            HEIGHT: dbkjs.map.size.h,
-            format: 'image/png',
-            styles: this.layer.params.STYLES,
-            srs: this.layer.params.SRS
-        };
+        if (this.layer.visibility) {
+            var params = {
+                REQUEST: "GetFeatureInfo",
+                EXCEPTIONS: "application/vnd.ogc.se_xml",
+                BBOX: dbkjs.map.getExtent().toBBOX(),
+                SERVICE: "WMS",
+                INFO_FORMAT: 'application/vnd.ogc.gml',
+                QUERY_LAYERS: this.layer.params.LAYERS,
+                FEATURE_COUNT: 50,
+                Layers: this.layer.params.LAYERS,
+                WIDTH: dbkjs.map.size.w,
+                HEIGHT: dbkjs.map.size.h,
+                format: 'image/png',
+                styles: this.layer.params.STYLES,
+                srs: this.layer.params.SRS
+            };
 
-        // handle the wms 1.3 vs wms 1.1 madness
-        if (this.layer.params.VERSION === "1.3.0") {
-            params.version = "1.3.0";
-            params.j = e.xy.x;
-            params.i = e.xy.y;
-        } else {
-            params.version = "1.1.1";
-            params.x = e.xy.x;
-            params.y = e.xy.y;
+            // handle the wms 1.3 vs wms 1.1 madness
+            if (this.layer.params.VERSION === "1.3.0") {
+                params.version = "1.3.0";
+                params.j = e.xy.x;
+                params.i = e.xy.y;
+            } else {
+                params.version = "1.1.1";
+                params.x = e.xy.x;
+                params.y = e.xy.y;
+            }
+            OpenLayers.Request.GET({url: this.layer.url, "params": params, callback: this.panel, scope: _obj});
+            //OpenLayers.Event.stop(e);
         }
-        OpenLayers.Request.GET({url: this.layer.url, "params": params, callback: this.panel, scope: _obj});
-        //OpenLayers.Event.stop(e);
     },
-    panel: function(response) {
+    panel: function (response) {
         _obj = this;
         //verwerk de featureinformatie
         g = new OpenLayers.Format.GML.v3();
