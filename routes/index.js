@@ -42,6 +42,13 @@ exports.nen1414 = function(req, res) {
 };
 
 exports.index = function(req, res) {
+    var activelang;
+    if(req.i18n.language() !== 'nl' && req.i18n.language() !== 'dev' && req.i18n.language() !== 'en'){
+        req.i18n.setLng('nl');
+        activelang = 'nl';
+    } else {
+        activelang = req.i18n.language();
+    }
     if(req.headers['x-safetymaps-dn']){
         var arr1 = req.headers['x-safetymaps-dn'].split('/');
         var user = {};
@@ -50,7 +57,7 @@ exports.index = function(req, res) {
             user[arr2[0]] = arr2[1];
         }
     }
-    res.render('index',{mylang: req.i18n.language(), mode: req.app.get('env')});
+    res.render('index',{mylang: activelang, mode: req.app.get('env')});
 };
 
 exports.validate_GET = function(req, res) {
