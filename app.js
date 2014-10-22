@@ -29,18 +29,13 @@ var express = require('express'),
         web = require('./controllers/web.js'),
         dbk = require('./controllers/dbk.js'),
         bag = require('./controllers/bag.js'),
-        incidents = require('./controllers/incidents.js'),        
+        incidents = require('./controllers/incidents.js'),
         emailer = require('./controllers/emailer.js');
-
-
 global.conf = require('nconf');
-
 // First consider commandline arguments and environment variables, respectively.
 global.conf.argv().env();
-
 // Then load configuration from a designated file.
-global.conf.file({ file: 'config.json' });
-
+global.conf.file({file: 'config.json'});
 // Provide default values for settings not provided above.
 global.conf.defaults({
     'http': {
@@ -63,19 +58,18 @@ i18n.init({
     debug: false,
     fallbackLng: 'nl'
 });
-var dbURL = 'postgres://' + 
-        global.conf.get('database:user') + ':' + 
-        global.conf.get('database:password') + '@' + 
-        global.conf.get('database:host') + ':' + 
-        global.conf.get('database:port') + '/' + 
+var dbURL = 'postgres://' +
+        global.conf.get('database:user') + ':' +
+        global.conf.get('database:password') + '@' +
+        global.conf.get('database:host') + ':' +
+        global.conf.get('database:port') + '/' +
         global.conf.get('database:dbname');
-var bagURL = 'postgres://' + 
-        global.conf.get('bag:user') + ':' + 
-        global.conf.get('bag:password') + '@' + 
-        global.conf.get('bag:host') + ':' + 
-        global.conf.get('bag:port') + '/' + 
+var bagURL = 'postgres://' +
+        global.conf.get('bag:user') + ':' +
+        global.conf.get('bag:password') + '@' +
+        global.conf.get('bag:host') + ':' +
+        global.conf.get('bag:port') + '/' +
         global.conf.get('bag:dbname');
-
 global.pool = anyDB.createPool(dbURL, {min: 2, max: 20});
 global.bag = anyDB.createPool(bagURL, {min: 2, max: 20});
 var app = express(
@@ -85,12 +79,11 @@ var app = express(
 //        // will make it to the route specified.
 //        rejectUnauthorized: true
 //    }
-);
-
+        );
 // all environments
-app.configure(function() {
+app.configure(function () {
     app.set('port', process.env.PORT || global.conf.get('http:port'));
-    app.use(function(err, req, res, next) {
+    app.use(function (err, req, res, next) {
         console.error(err.stack);
         res.send(500, 'Something broke!');
     });
@@ -101,13 +94,12 @@ app.configure(function() {
     app.locals.pretty = true;
     app.use(express.favicon(__dirname + '/public/images/favicon.ico', {maxAge: 25920000000}));
     app.use(express.logger('dev'));
-    app.use(require('less-middleware')(path.join(__dirname,  'less'), {
+    app.use(require('less-middleware')(path.join(__dirname, 'less'), {
         dest: __dirname + '/public',
         prefix: '/public',
         debug: true
     }));
     app.use(express.bodyParser());
-
     app.use(express.methodOverride());
     app.use('/locales', express.static(__dirname + '/locales'));
     app.use(express.static(path.join(__dirname, 'public')));
@@ -115,7 +107,7 @@ app.configure(function() {
     app.use('/symbols', express.static(global.conf.get('media:symbols')));
     app.use(app.router);
     app.use(clientErrorHandler);
-    app.use(function(err, req, res, next) {
+    app.use(function (err, req, res, next) {
         var errobj = {};
         errobj.url = req.protocol + "://" + req.get('host') + req.url;
         errobj.body = req.body;
@@ -125,12 +117,10 @@ app.configure(function() {
         res.render('error', {title: 'error', request: JSON.stringify(errobj), error: err});
     });
 });
-
 i18n.registerAppHelper(app);
 i18n.serveClientScript(app)
         .serveDynamicResources(app)
         .serveMissingKeyRoute(app);
-
 app.get('/', routes.index);
 app.get('/batch', emailer.annotationbulk);
 app.get('/api/object/:id.json', dbk.getObject);
@@ -155,33 +145,45 @@ app.get('/web/api/bag/panden/:id.json', bag.getPanden);
 app.post('/web/api/validate', web.validate_POST);
 app.get('/web/api/validate/:token', web.validate_GET);
 app.use('/web', express.static(__dirname + '/web'));
-
-app.all('/nominatim',function(req,res){
- if(req.query){
-   var request = require('request');
-   var x = request({url: 'http://nominatim.openstreetmap.org/search', qs: req.query});
-    req.pipe(x);
-    x.pipe(res);
- } else {
-    res.json({"booh": "Nah, nah, nah! You didn't say the magic words!"});
- }
+app.all('/nominatim', function (req, res) {
+    if (req.query) {
+        var request = require('request');
+        var x = request({url: 'http://nominatim.openstreetmap.org/search', qs: req.query});
+        req.pipe(x);
+        x.pipe(res);
+    } else {
+        res.json({"booh": "Nah, nah, nah! You didn't say the magic words!"});
+    }
 });
 app.get('/api/organisation.json', dbk.getOrganisation);
-app.all('/proxy/',function(req,res){
- if(req.query){
-   //res.json({"origin": req.query.q});
-   var request = require('request');
-   var x = request(req.query.q);
-    req.pipe(x);
-    x.pipe(res);
- } else {
-    res.json({"booh": "Nah, nah, nah! You didn't say the magic words!"});
- }
+app.all('/proxy/', function (req, res) {
+    if (req.query) {
+        var options = {
+            url: req.query.q,
+            headers: {
+                'User-Agent': 'safetymapsDBK'
+            },
+            timeout: 6000 //6 seconds
+        };
+        //res.json({"origin": req.query.q});
+        var request = require('request');
+        var x = request(options);
+        req.pipe(x);
+        x.pipe(res);
+        x.on('error', function(err) {
+            //console.log(err);
+            res.json({
+                "error": "Timeout on proxy"
+            }) 
+        });
+    } else {
+        res.json({"error": "wrong use of proxy"});
+    }
 });
 app.get('/eughs.html', routes.eughs);
 app.get('/nen1414.html', routes.nen1414);
 // Create an HTTP service.
-app.listen(app.get('port'), function() {
+app.listen(app.get('port'), function () {
     console.log("Express server listening on port " + app.get('port'));
 });
 
