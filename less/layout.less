@@ -1,74 +1,415 @@
-// less for layout
-blockpadding {
-  padding: .5em 1em;
-  margin: 0 auto;
-  max-width: 40em;
+html, body {
+    width: 100%;
+    height: 100%;
 }
 
-main:extend(blockpadding) {
-
-  display: block;
-  margin-top: 4em;
+.thumb {
+    width: 33%;
+    height: auto;
+}
+#btn-grp-search {
+    line-height: 0 !important;
+}
+.panel-collapse > img {
+    padding-left: 1.8em;
+}
+.panel-collapse > p {
+    margin-left: 1.8em;
+    padding-bottom: 0.3em;
+    border-bottom: @border;
 }
 
-#header {
-  background: @primary-color;
-  position: fixed;
-  width: 100%;
-  top: 0;
-  left: 0;
-  z-index: 5;
-  & .container:extend(blockpadding) {
-    background: url(img/logo.svg) no-repeat center right;
-    height: 2em;
-    a {
-      color: #fff;
+.has-error {
+    border-color: #a94442 !important;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075) !important;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075) !important;
+}
+    .tt-suggestion {
+        line-height: 1 !important;
     }
-
-  }
+/* Prevent the text contents of draggable elements from being selectable. */
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
 }
 
-.top-navigation {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-  border-bottom: 1px solid @primary-color
+.column {
+    height: 150px;
+    width: 150px;
+    float: left;
+    border: 2px solid #666666;
+    background-color: #ccc;
+    margin-right: 5px;
+    -webkit-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 3px #000;
+    -ms-box-shadow: inset 0 0 3px #000;
+    box-shadow: inset 0 0 3px #000;
+    text-align: center;
+    cursor: move;
 }
-
-.top-navigation-item {
-
-  display: table-cell;
-  border: 1px solid rgba(255,255,255,.3);
-  border-bottom: 0;
-  padding: .15em;
-  text-align: center;
-  width:  3.4%;
-  width: calc(6.25% - .3em - 2px);
-
-  a {
+.column header {
     color: #fff;
+    text-shadow: #000 0 1px;
+    box-shadow: 5px;
+    padding: 5px;
+    background: -moz-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+    background: -webkit-gradient(linear, left top, right top,
+        color-stop(0, rgb(0,0,0)),
+        color-stop(0.50, rgb(79,79,79)),
+        color-stop(1, rgb(21,21,21)));
+    background: -webkit-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+    background: -ms-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+    border-bottom: 1px solid #ddd;
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -ms-border-radius-topleft: 10px;
+    border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -ms-border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-right-radius: 10px;
+}
 
-    font-size: .8em;
-  }
-  &.done {
-    background-color: #fff;
+.btn_5px {
+    margin-bottom: 5px !important;
+}
+#noordpijl {
+    position: absolute;
+    left: 20px;
+    bottom: 40px;
+    z-index: 3000;
+}
 
-    a {
-      color: @primary-color;
-    }
-  }
-  &.active {
-    font-size: 1.1em;
-    margin-top: -.2em;
-    border-color:@primary-color;
+.fa-rotate-45 {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+  -webkit-trasform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.classification {
+    margin-bottom: 0 !important;
+    padding: 4px 4px !important;
+}
+.gevicode{
+    border: 3px solid #000000;
+    background-color: #FF6600;
     font-weight: bold;
-  }
+    text-align: center;
+}
+.unnummer{
+    border-bottom: 3px solid #000000;
+    border-right: 3px solid #000000;
+    border-left: 3px solid #000000;
+    background-color: #FF6600;
+    font-weight: bold;
+    text-align: center;
+}
+@media (max-width: 999px) {
+    #foutknop {
+        left: 8px;
+        bottom: 0;
+        position: absolute;
+    }
+    #btn_care {
+        display: none;
+    }
+    #btn_print {
+        display: none;
+    }
+}
+@media (min-width: 1000px) and (orientation: landscape) {
+    #foutknop {
+        left: 8px;
+        bottom: 0;
+        position: absolute;
+    }
+}
+.drag-handle {
+    color: #cccccc !important;
+}
+.image-wrapper{
+    height: 100px;
+    width: 200px;
+}
+.symbol-block{
+    margin: 20px;
+    height: 200px;
+    width: 200px;
+}
+.milotron{
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+    margin-top: 10px;
+    margin-bottom: 10px;
+        
+}
+h4, h5, h6 {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+}
+.tab-content{
+    height: 380px;
+    overflow: auto;
+}
+.accordion-heading a.accordion-toggle { display: inline-block; }
+.input-group-addon, .input-group-btn {
+    width: auto !important;
 }
 
-.map {
-  height: 400px;
-  .leaflet-top, .leaflet-bottom {
-    z-index: 2;
-  }
+.input-group-addon {
+    background-color: #ffffff !important;
+}
+.pagination {
+    margin: 0 !important;
 }
 
+.daterangepicker {
+    z-index: 2000 !important;
+}
+#systeem_meldingen {
+    position:absolute;
+    width:400px;
+    margin-left:-200px;
+    bottom:0;
+    left:50%;
+    z-index:2001;
+    margin-bottom: 0 !important;
+}
+.btn-group {
+    z-index: 1001;
+}
+#header {
+
+    position: absolute;
+    right: 1em;
+}
+#search_input {
+    background-color: #ffffff !important;
+    max-width: 180px !important;
+}
+.dialog{
+    z-index: 300;
+    position: absolute;
+}
+.h4 {
+    padding-right: 1em;
+}
+input[type="radio"], input[type="checkbox"] {
+    line-height: normal;
+    margin: 0 1em 0 0 !important;
+}
+#infopanel{
+    margin-bottom: 0 !important;
+}
+#infopanel_b{
+    width: 500px;
+    overflow: auto;
+}
+#minimappanel{
+    margin-bottom: 0 !important;
+}
+.panel-heading {
+    cursor: pointer;
+}
+
+.panel-heading:hover, .panel-heading:focus {
+    text-decoration: none;
+    background-color: #EEE;
+}
+
+.layActive {
+    background-color: #3276b1 !important;
+    opacity: 1 !important;
+    filter: alpha(opacity=100) !important; /* For IE8 and earlier */
+    color: #ffffff;
+}
+
+#footer {
+    /*background: none repeat scroll 0 0 rgba(53, 126, 189, 0.3);*/
+    background: none repeat scroll 0 0 #ffffff;
+    border-radius: 5px 0 0 0;
+    bottom: 0;
+    color: #000000;
+    font-size: 10px;
+    position: absolute;
+    text-align: right;
+    width: 100%;
+    padding-right: 1em;
+}
+#footer span {
+    padding-left: 20px;
+}
+
+@media screen {
+    .aan {
+        background-color: #AA0009 !important;
+        opacity: 1 !important;
+        filter: alpha(opacity=100) !important; /* For IE8 and earlier */
+        color: #ffffff;
+    }
+    .uitleg {
+        position:absolute;
+        padding: 0.3em;
+        padding-top:0.8em;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
+    ul.icons {
+        list-style-type: none;
+        margin-left: -1em;
+        text-indent: -0.4em;
+    }
+    li [class^="icon-"], li [class*=" icon-"] {
+        width: 0.4em !important;
+    }
+    .mtab {
+        border-bottom: 1px solid #cccccc;
+        border-left: 1px solid #cccccc;
+        border-right: 1px solid #cccccc;
+        color: #000000;
+        -moz-border-radius-bottomleft: 10px 10px;
+        border-bottom-left-radius: 10px 10px;
+        -moz-border-radius-bottomright: 10px 10px;
+        border-bottom-right-radius: 10px 10px;
+        width: 1.2em;
+        text-align: center;
+        font-size: 3em;
+        position: absolute;
+        float: right;
+        top: 0;
+        z-index: 303;
+        cursor: pointer;
+        background-color: #ffffff;
+    }
+
+    .info {
+        right: 0;
+        z-index: 302 !important;
+    }
+    .zoek {
+        background: #cccc00 url('../images/zoek_wit.png') no-repeat center center scroll;
+        right: 13.5em;
+        margin-right: 1%;
+    }
+
+    .olControlZoom {
+        display: none !important;
+    }
+    .baselayertitle{
+        color: #797979;
+        border-bottom: 1px solid #cc9933 !important;
+    }
+    #mapc1map1 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+    }
+    .infofieldtitle{
+        color: #cc9933;
+    }
+    .olControlScaleLineBottom{
+        display: none;
+    }
+    #zoekpanel{
+        display: none;
+        border: 1px solid #cccccc;
+        -moz-border-radius-topleft: 10px 10px;
+        border-top-left-radius: 10px 10px;
+        -moz-border-radius-topright: 10px 10px;
+        border-top-right-radius: 10px 10px;
+        position: absolute;
+        opacity:0.9;
+        filter:alpha(opacity=90); /* For IE8 and earlier */
+        width: 98%;
+        padding: 1%;
+        bottom: 0;
+        z-index: 301;
+        background-color: #ffffff;
+        overflow: hidden;
+    }
+
+    #zoekpanel div {
+        font-size: 1.6em;
+        padding: 0.8em;
+        text-align: center;
+    }
+
+    .panel {
+        z-index: 302;
+    }
+}
+@media screen and (max-width: 600px) {
+    #logo{
+        background: url('../images/brandweer-nederland_alpha_shaded-s.png') no-repeat center center scroll;
+        height: 60px;
+        width: 60px;
+        margin: 1em;
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    .panel div {
+        font-size: 1.6em;
+        padding: 0.2em;
+        text-align: center;
+    }
+}
+.featureinfo{
+    border-bottom: @border;
+    margin-bottom: 1em;
+}
+@media screen and (min-width: 601px) {
+    #logo{
+        background: url('../images/brandweer-nederland_alpha_shaded.png') no-repeat center center scroll;
+        height: 90px;
+        width: 90px;
+        margin: 0;
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}
+
+/* OpenLayers override */
+.olImageLoadError {
+    display: none !important;
+}
+.olDragDown {
+    cursor: move;
+}
+.olControlDragFeatureActive.olControlDragFeatureOver.olDragDown {
+    cursor: -moz-grabbing;
+}
+.olControlOverviewMapElement {
+    padding: 0 !important;
+}
+.olControlOverviewMapExtentRectangle{
+    cursor: move;
+    border: 2px dotted red;
+}
+.olHandlerBoxZoomBox {
+    border: 3px solid #357EBD;
+    position: absolute;
+    background-color: #cccccc;
+    opacity: 0.40;
+    font-size: 1px;
+    filter: alpha(opacity=40);
+}

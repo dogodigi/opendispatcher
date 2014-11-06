@@ -1,33 +1,42 @@
 {
-    "name": "safetymapsdbk",
-    "description": "safetymaps dbk - applicatie voor de digitale bereikbaarheidskaart",
-    "version": "2.9.0",
-    "license": "GPL-3.0+",
-    "author": {
-        "name": "Milo van der Linden",
-        "email": "milo@dogodigi.net",
-        "url": "http://www.dogodigi.net/"
-    },
-    "private": true,
-    "scripts": {
-        "start": "node app.js"
-    },
-    "repository" :  { 
-        "type" : "git",
-        "url" : "http://github.com/opengeogroep/safetymapsDBK.git"
-    },
-    "dependencies": {
-        "express": "3.5.0",
-        "nodemailer": "*",
-        "i18next": "*",
-        "less-middleware": "<2.0.0",
-        "jade": "*",
-        "nconf": "*",
-        "any-db": "*",
-        "any-db-postgres": "*",
-        "pg": "*",
-        "request":"*",
-        "uglify-js": "*",
-        "clean-css": "*"
-    }
+  "name": "safetymapsdbk",
+  "description": "safetymaps dbk - applicatie voor de digitale bereikbaarheidskaart",
+  "version": "2.9.0",
+  "license": "GPL-3.0+",
+  "author": {
+    "name": "Milo van der Linden",
+    "email": "milo@dogodigi.net",
+    "url": "http://www.dogodigi.net/"
+  },
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/opengeogroep/safetymapsDBK.git"
+  },
+  "dependencies": {
+    "express": "3.5.0",
+    "nodemailer": "*",
+    "i18next": "*",
+    "less-middleware": "<2.0.0",
+    "jade": "*",
+    "nconf": "*",
+    "any-db": "*",
+    "any-db-postgres": "*",
+    "pg": "*",
+    "request": "*",
+    "uglify-js": "*",
+    "clean-css": "*"
+  },
+  "devDependencies": {
+    "db-migrate": "^0.7.1",
+    "grunt": "^0.4.5",
+    "grunt-contrib-cssmin": "^0.10.0",
+    "grunt-contrib-less": "^0.12.0",
+    "grunt-contrib-nodeunit": "^0.4.1",
+    "nodeunit-express": "0.0.1",
+    "sqlite3": "^3.0.2"
+  }
 }
