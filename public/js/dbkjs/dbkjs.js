@@ -25,22 +25,20 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || [];
 dbkjs.overlays = dbkjs.overlays || [];
-
 dbkjs.map = dbkjs.map || null;
+dbkjs.dataPath = dbkjs.dataPath || null;
+dbkjs.mediaPath = dbkjs.mediaPath || null;
+dbkjs.basePath = dbkjs.basePath || null;
 
 dbkjs.viewmode = 'default';
 
 dbkjs.init = function () {
 
-    dbkjs.basePath = window.location.protocol + '//' + window.location.hostname;
-    var pathname = window.location.pathname;
-    // ensure basePath always ends with '/', remove 'index.html' if exists
-    if (pathname.charAt(pathname.length - 1) !== '/') {
-        pathname = pathname.substring(0, pathname.lastIndexOf('/') + 1);
-    }
-    // ensure single '/' between hostname and path
-    dbkjs.basePath = dbkjs.basePath + (pathname.charAt(0) === "/" ? pathname : "/" + pathname);
-    dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
+    dbkjs.setPaths();
+
+    if (!dbkjs.map) {
+      dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
+    };
     dbkjs.options.organisation = {
         id: dbkjs.util.getQueryVariable(i18n.t('app.organisation'), 'demo')
     };
@@ -48,70 +46,13 @@ dbkjs.init = function () {
     dbkjs.options.omsnummer = dbkjs.util.getQueryVariable(i18n.t('app.queryNumber'));
     dbkjs.options.dbk = dbkjs.util.getQueryVariable(i18n.t('app.queryDBK'));
     dbkjs.challengeAuth();
-    // Show mouseposition
-    var mousePos = new OpenLayers.Control.MousePosition({
-        numDigits: dbkjs.options.projection.coordinates.numDigits,
-        div: OpenLayers.Util.getElement('coords')
-    });
 
-    dbkjs.map.addControl(mousePos);
-    var attribution = new OpenLayers.Control.Attribution({
-        div: OpenLayers.Util.getElement('attribution')
-    });
-    dbkjs.map.addControl(attribution);
+    dbkjs.mapcontrols.createMapControls();
 
-    var scalebar = new OpenLayers.Control.Scale(OpenLayers.Util.getElement('scale'));
-    dbkjs.map.addControl(scalebar);
-    dbkjs.naviHis = new OpenLayers.Control.NavigationHistory();
-    dbkjs.map.addControl(dbkjs.naviHis);
-    dbkjs.naviHis.activate();
+    dbkjs.mapcontrols.registerMapEvents(dbkjs.layers.createBaseLayers());
 
-    var baselayer_ul = $('<ul id="baselayerpanel_ul" class="nav nav-pills nav-stacked">');
-    $.each(dbkjs.options.baselayers, function (bl_index, bl) {
-        var _li = $('<li class="bl" id="bl' + bl_index + '"><a href="#">' + bl.name + '</a></li>');
-        baselayer_ul.append(_li);
-        bl.events.register("loadstart", bl, function () {
-            dbkjs.util.loadingStart(bl);
-        });
-        bl.events.register("loadend", bl, function () {
-            dbkjs.util.loadingEnd(bl);
-        });
-        dbkjs.map.addLayer(bl);
-        _li.on('click', function () {
-            dbkjs.toggleBaseLayer(bl_index);
-            if (dbkjs.viewmode === 'fullscreen') {
-                dbkjs.util.getModalPopup('baselayerpanel').hide();
-            }
-        });
-    });
-    $('#baselayerpanel_b').append(baselayer_ul);
-    dbkjs.map.events.register("moveend", dbkjs.map, function () {
-        //check if the naviHis has any content
-        if (dbkjs.naviHis.nextStack.length > 0) {
-            //enable next button
-            $('#zoom_next').removeClass('disabled');
-        } else {
-            $('#zoom_next').addClass('disabled');
-        }
-        if (dbkjs.naviHis.previousStack.length > 1) {
-            //enable previous button
-            $('#zoom_prev').removeClass('disabled');
-        } else {
-            $('#zoom_prev').addClass('disabled');
-        }
-    });
+    dbkjs.showStatus = false;
 
-    dbkjs.overview = new OpenLayers.Control.OverviewMap({
-        theme: null,
-        div: document.getElementById('minimappanel_b'),
-        size: new OpenLayers.Size(180, 180)
-    });
-    dbkjs.map.addControl(dbkjs.overview);
-    dbkjs.map.addControl(new OpenLayers.Control.Zoom({
-        zoomInId: "zoom_in",
-        zoomOutId: "zoom_out"
-    })
-            );
 };
 
 /**
@@ -148,7 +89,7 @@ dbkjs.activateClick = function () {
 
 dbkjs.challengeAuth = function () {
     var params = {srid: dbkjs.options.projection.srid};
-    $.getJSON('api/organisation.json', params).done(function (data) {
+    $.getJSON(dbkjs.dataPath + 'organisation.json', params).done(function(data) {
         if (data.organisation) {
             dbkjs.options.organisation = data.organisation;
             if (dbkjs.options.organisation.title) {
@@ -194,9 +135,9 @@ dbkjs.successAuth = function () {
     dbkjs.selectControl.handlers.feature.stopUp = false;
     dbkjs.map.addControl(dbkjs.selectControl);
     dbkjs.protocol.jsonDBK.init();
-    if (dbkjs.options.organisation.logo) {
-        $('#logo').css('background-image', 'url(' + dbkjs.options.organisation.logo + ')');
-    }
+
+    dbkjs.gui.setLogo();
+
     //register modules
     $.each(dbkjs.modules, function (mod_index, module) {
         if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
@@ -206,82 +147,78 @@ dbkjs.successAuth = function () {
         }
     });
 
-    if (dbkjs.options.organisation.wms) {
+    dbkjs.loadOrganisationCapabilities();
+    $(dbkjs).trigger('dbkjs_init_complete');
+};
+
+//@TODO: Deze goed controleren, er was een haakjes conflict na de resolve
+dbkjs.loadOrganisationCapabilities = function() {
+    if(dbkjs.options.organisation.wms){
         dbkjs.loadingcapabilities = 0;
-        $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v) {
-            var index = wms_v.index || 0;
-            if (wms_v.getcapabilities === true) {
-                dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
-                var options = {
-                    url: wms_v.url,
-                    title: wms_v.name,
-                    proxy: wms_v.proxy,
-                    index: index,
-                    parent: wms_v.parent
-                };
-                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
-                    options.pl = wms_v.pl;
-                }
-                var myCapabilities = new dbkjs.Capabilities(options);
-            } else if (!wms_v.baselayer) {
-                var params = wms_v.params || {};
-                var options = wms_v.options || {};
-                var parent = wms_v.parent || null;
-                var metadata = {};
-                if (!dbkjs.util.isJsonNull(wms_v.abstract)) {
-                    metadata.abstract = wms_v.abstract;
-                }
-                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
-                    metadata.pl = wms_v.pl;
-                }
-                if (!dbkjs.util.isJsonNull(wms_v.legend)) {
-                    metadata.legend = wms_v.legend;
-                }
-                var layertype = wms_v.layertype || null;
-                var myLayer = new dbkjs.Layer(
+            $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v){
+                var index = wms_v.index || 0;
+                if(wms_v.getcapabilities === true){
+                    dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
+                    var options = {
+                        url: wms_v.url,
+                        title: wms_v.name,
+                        proxy: wms_v.proxy,
+                        index: index,
+                        parent: wms_v.parent
+                    };
+                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
+                        options.pl = wms_v.pl;
+                    }
+                    var myCapabilities = new dbkjs.Capabilities(options);
+                } else if (!wms_v.baselayer) {
+                    var params = wms_v.params || {};
+                    var options = wms_v.options || {};
+                    var parent = wms_v.parent || null;
+                    var metadata = {};
+                    if (!dbkjs.util.isJsonNull(wms_v.abstract)){
+                        metadata.abstract = wms_v.abstract;
+                    }
+                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
+                        metadata.pl = wms_v.pl;
+                    }
+                    var myLayer = new dbkjs.Layer(
                         wms_v.name,
                         wms_v.url,
                         params,
                         options,
                         parent,
                         index,
-                        metadata,
-                        layertype
-                        );
-            } else {
-                var params = wms_v.params || {};
-                var options = wms_v.options || {};
-                options = OpenLayers.Util.extend({isBaseLayer: true}, options);
-                var parent = wms_v.parent || null;
-                var metadata = {};
-                if (!dbkjs.util.isJsonNull(wms_v.abstract)) {
-                    metadata.abstract = wms_v.abstract;
-                }
-                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
-                    metadata.pl = wms_v.pl;
-                }
-                var layertype = wms_v.layertype || null;
-                var myLayer = new dbkjs.Layer(
+                        metadata
+                    );
+                } else {
+                    var params = wms_v.params || {};
+                    var options = wms_v.options || {};
+                    options = OpenLayers.Util.extend({isBaseLayer: true}, options);
+                    var parent = wms_v.parent || null;
+                    var metadata = {};
+                    if (!dbkjs.util.isJsonNull(wms_v.abstract)){
+                        metadata.abstract = wms_v.abstract;
+                    }
+                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
+                        metadata.pl = wms_v.pl;
+                    }
+                    var myLayer = new dbkjs.Layer(
                         wms_v.name,
                         wms_v.url,
                         params,
                         options,
                         parent,
                         index,
-                        metadata,
-                        layertype
-                        );
+                        metadata
+                    );
+                }
+
+            });
+            if(dbkjs.loadingcapabilities === 0){
+                dbkjs.finishMap();
             }
 
-        });
-        if (dbkjs.loadingcapabilities === 0) {
-            dbkjs.finishMap();
-        }
-    } else {
-        dbkjs.finishMap();
-    }
-
-    $(dbkjs).trigger('dbkjs_init_complete');
+         }
 };
 
 dbkjs.finishMap = function () {
@@ -334,7 +271,30 @@ dbkjs.finishMap = function () {
     //get dbk!
 };
 
-$(document).ready(function () {
+dbkjs.setPaths = function() {
+    if (!dbkjs.basePath) {
+        dbkjs.basePath = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
+        var pathname = window.location.pathname;
+        // ensure basePath always ends with '/', remove 'index.html' if exists
+        if(pathname.charAt(pathname.length - 1) !== '/') {
+            pathname = pathname.substring(0, pathname.lastIndexOf('/')+1);
+        }
+        // ensure single '/' between hostname and path
+        dbkjs.basePath = dbkjs.basePath + (pathname.charAt(0) === "/" ? pathname : "/" + pathname);
+    }
+
+    if (!dbkjs.dataPath) {
+        dbkjs.dataPath = 'api/';
+    }
+
+    if (!dbkjs.mediaPath) {
+        dbkjs.mediaPath = dbkjs.basePath + 'media/';
+    }
+
+};
+
+// dbkjs.js: $(document).ready
+dbkjs.documentReady = function() {
     // Make sure i18n is initialized
     i18n.init({
         lng: dbkjsLang, debug: false, postProcess: "doReplacements"
@@ -434,10 +394,10 @@ $(document).ready(function () {
             }
         });
 
-        $(dbkjs).bind('dbkjs_init_complete', function () {
+        $(dbkjs).bind('dbkjs_init_complete', function() {
 
-            if (dbkjs.viewmode !== 'fullscreen') {
-                $('#zoom_prev').click(function () {
+             if(dbkjs.viewmode !== 'fullscreen') {
+                $('#zoom_prev').click(function() {
                     dbkjs.naviHis.previousTrigger();
                 });
                 $('#zoom_next').click(function () {
@@ -464,4 +424,8 @@ $(document).ready(function () {
             }());
         });
     });
+};
+
+$(document).ready(function() {
+    dbkjs.documentReady();
 });

@@ -524,7 +524,7 @@ dbkjs.util = {
         if (msg) {
             msg.html('<a href="' + e.src + '">' + e.src + '</a><br>' + i18n.t('dialogs.invalidImage'));
         }
-        e.src = "images/missing.gif";
+        e.src = dbkjs.basePath + "images/missing.gif";
         e.onerror = "";
         return true;
     },
@@ -882,6 +882,10 @@ dbkjs.util = {
             }
         });
     },
+    // Get the outerHtml of an element.
+    outerHtml: function(element) {
+      return element.clone().wrap('<p>').parent().html();
+    },
     bearing: function(pt1,pt2){
         var bx = 0;
         var by = 1;
@@ -938,7 +942,7 @@ dbkjs.util = {
             if(hideCallback) {
                 hideCallback();
             }
-        }
+        };
 
         // Return object to handle popup related functions
         this.modalPopupStore[options.name] = {

@@ -101,6 +101,7 @@
     "dbk": {
         "alternativeName": "dbk.alternativeName",
         "dateChecked": "dbk.dateChecked",
+        "status": "dbk.status",
         "emergencyResponse": "dbk.emergencyResponse",
         "to": "dbk.to",
         "level": "dbk.level",

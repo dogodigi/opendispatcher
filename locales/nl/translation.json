@@ -101,6 +101,7 @@
     "dbk": {
         "alternativeName": "Informele naam",
         "dateChecked": "Controledatum",
+        "status": "Status",
         "emergencyResponse": "BHV",
         "to": "t/m",
         "level": "Bouwlaag",

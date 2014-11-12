@@ -27,3 +27,5 @@ nodeless_output
 
 npm-debug.log
 node_modules
+/app_aris.js
+/public/api/
