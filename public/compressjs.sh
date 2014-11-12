@@ -27,7 +27,10 @@ cat js/libs/jquery.pagination.js \
     js/dbkjs/prototype/Class.js \
     js/dbkjs/prototype/Layer.js \
     js/dbkjs/prototype/Capabilities.js \
+    js/dbkjs/gui.js \
+    js/dbkjs/layers.js \
     js/dbkjs/layout.js \
+    js/dbkjs/mapcontrols.js \
     js/dbkjs/modules/geolocate.js \
     js/dbkjs/protocol/jsonDBK.js \
     js/dbkjs/modules/search.js \

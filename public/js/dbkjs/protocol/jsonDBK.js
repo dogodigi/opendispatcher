@@ -125,8 +125,8 @@ dbkjs.protocol.jsonDBK = {
         });
     },
     getfeatureinfo: function(e){
-        $('#vectorclickpanel_h').html('<span class="h4"><i class="fa fa-info-circle">&nbsp;' + e.feature.layer.name + '</span>');
-        html = '<div class="table-responsive">';
+        dbkjs.gui.detailsPanelUpdateTitle(e.feature.layer.name);
+        html = '<div style:"width: 100%" class="table-responsive">';
             html += '<table class="table table-hover">';
             for (var j in e.feature.attributes) {
                 //if ($.inArray(j, ['Omschrijving', 'GEVIcode', 'UNnr', 'Hoeveelheid', 'NaamStof']) > -1) {
@@ -135,14 +135,14 @@ dbkjs.protocol.jsonDBK = {
                     }
                 //}
             }
-            html += "</table>";
+            html += '</table>';
         html += '</div>';
         //dbkjs.util.appendTab(dbkjs.wms_panel.attr("id"),'Brandcompartiment',html, true, 'br_comp_tab');
-        $('#vectorclickpanel_b').html(html);
-        $('#vectorclickpanel').show();
+        dbkjs.gui.detailsPanelUpdateHtml(html);
+        dbkjs.gui.detailsPanelShow();
     },
     process: function(feature) {
-        $('#infopanel_f').html('');
+        dbkjs.gui.infoPanelUpdateFooterHtml('');
         if (feature && feature.attributes && feature.attributes.typeFeature) {
             if(feature.data && feature.data.hasOwnProperty('formeleNaam') && feature.data.hasOwnProperty('informeleNaam')) {
                 $('.dbk-title')
@@ -158,7 +158,7 @@ dbkjs.protocol.jsonDBK = {
                         dbkjs.util.getModalPopup('infopanel').hide();
                         dbkjs.util.getModalPopup('dbkinfopanel').hide();
                     } else {
-                        $('#infopanel').hide();
+                        dbkjs.gui.infoPanelHide();
                     }
                     dbkjs.protocol.jsonDBK.processing = true;
                     dbkjs.util.alert('<i class="fa fa-spinner fa-spin"></i>', i18n.t('dialogs.running'), 'alert-info');
@@ -175,9 +175,9 @@ dbkjs.protocol.jsonDBK = {
                     if(dbkjs.viewmode === 'fullscreen') {
                         $('#dbkinfopanel_b').html(dbkjs.options.feature.div);
                     } else {
-                        $('#infopanel_b').html(dbkjs.options.feature.div);
-                        $('#infopanel_f').html('');
-                        $('#infopanel').show();
+                        dbkjs.gui.infoPanelUpdateHtml(dbkjs.options.feature.div);
+                        dbkjs.gui.infoPanelUpdateFooterHtml('');
+                        dbkjs.gui.infoPanelShow();
                     }
                 }
             }
@@ -190,7 +190,7 @@ dbkjs.protocol.jsonDBK = {
             "featuresadded": function() {
             },
             "featureunselected": function(e) {
-               $('#vectorclickpanel').hide();
+               dbkjs.gui.detailsPanelHide();
             }
         });
     },
@@ -208,147 +208,35 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs = $('<ul class="nav nav-pills"></ul>');
             var div = $('<div class="tabbable"></div>');
             if (_obj.constructAlgemeen(dbkjs.options.feature, objecttype)) {
-                _obj.constructContact(dbkjs.options.feature.contact);
-                _obj.constructOmsdetail(dbkjs.options.feature.oms_details);
-                _obj.constructBijzonderheid(dbkjs.options.feature.bijzonderheid);
-                _obj.constructVerblijf(dbkjs.options.feature.verblijf);
-                _obj.constructMedia(dbkjs.options.feature.foto);
-                _obj.constructFloors(dbkjs.options.feature.verdiepingen);
-                _obj.constructBrandweervoorziening(dbkjs.options.feature.brandweervoorziening);
-                _obj.constructGevaarlijkestof(dbkjs.options.feature.gevaarlijkestof);
+                dbkjs.gui.infoPanelUpdateTitle('<i class="fa fa-building"></i> ' + dbkjs.options.feature.formeleNaam);
+                _obj.constructContact(dbkjs.options.feature);
+                _obj.constructOmsdetail(dbkjs.options.feature);
+                _obj.constructBijzonderheid(dbkjs.options.feature);
+                _obj.constructVerblijf(dbkjs.options.feature);
+                _obj.constructMedia(dbkjs.options.feature);
+                _obj.constructFloors(dbkjs.options.feature);
+                _obj.constructBrandweervoorziening(dbkjs.options.feature);
+                _obj.constructGevaarlijkestof(dbkjs.options.feature);
                 div.append(_obj.panel_group);
                 div.append(_obj.panel_tabs);
                 if(dbkjs.viewmode === 'fullscreen') {
                     $('#dbkinfopanel_b').html(div);
                 } else {
-                    $('#infopanel_b').html(div);
+                dbkjs.gui.infoPanelUpdateHtml('');
+                dbkjs.gui.infoPanelAddItems(div);
                 }
                 $('#systeem_meldingen').hide();
             }
-            if(dbkjs.options.feature.pandgeometrie){
-                var features = [];
-                $.each(dbkjs.options.feature.pandgeometrie, function(idx, myGeometry){
-                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                    myFeature.attributes = { "id" : myGeometry.bagId,"status":myGeometry.bagStatus};
-                    features.push(myFeature);
-                });
-                _obj.layerPandgeometrie.addFeatures(features);
-                _obj.activateSelect(_obj.layerPandgeometrie);
-            }
-            if(dbkjs.options.feature.geometry){
-                //gebied!
-                var features = [];
-                var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(dbkjs.options.feature.geometry, "Geometry"));
-                myFeature.attributes = { "id" : dbkjs.options.feature.identificatie, "type":"gebied"};
-                features.push(myFeature);
-                _obj.layerPandgeometrie.addFeatures(features);
-                _obj.activateSelect(_obj.layerPandgeometrie);
-            }
-            if(dbkjs.options.feature.hulplijn){
-                var features = [];
-                var features1 = [];
-                var features2 = [];
-                $.each(dbkjs.options.feature.hulplijn, function(idx, myGeometry){
-                    var myBearing = 0;
-                    var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
-                    var myFeature = new OpenLayers.Feature.Vector(myline);
-                    if (myGeometry.typeHulplijn === "Arrow"){
-                        var myVertices = myline.getVertices();
-                        var myEndpoint = myVertices[myVertices.length -1];
-                        //revert bearing. Don't knwo why, but it works ;-)
-                        myBearing = -(dbkjs.util.bearing(myVertices[myVertices.length -2], myVertices[myVertices.length -1]));
-                        myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Collection([myline,myEndpoint]));
-                    }
-                    var aanvinfo =  dbkjs.util.isJsonNull(myGeometry.aanvullendeInformatie) ? '': myGeometry.aanvullendeInformatie;
-                    myFeature.attributes = { "type": myGeometry.typeHulplijn, "rotation": myBearing, "information": aanvinfo};
-                    features.push(myFeature);
-                    if(myGeometry.typeHulplijn === "Cable" ){
-                        features1.push(myFeature.clone());
-                    }
-                    if(myGeometry.typeHulplijn === "Conduit" ){
-                        features1.push(myFeature.clone());
-                    }
-                    if(myGeometry.typeHulplijn === "Fence" ){
-                        features1.push(myFeature.clone());
-                    }
-                    if(myGeometry.typeHulplijn === "Fence_O" ){
-                        features1.push(myFeature.clone());
-                    }
-                    if(myGeometry.typeHulplijn === "Gate" ){
-                        features1.push(myFeature.clone());
-                        features2.push(myFeature.clone());
-                    }
-                    if(myGeometry.typeHulplijn === "Bbarrier" ){
-                        features1.push(myFeature.clone());
-                        features2.push(myFeature.clone());
-                    }
 
-                });
-                _obj.layerHulplijn.addFeatures(features);
-                _obj.layerHulplijn1.addFeatures(features1);
-                _obj.layerHulplijn2.addFeatures(features2);
-                _obj.activateSelect(_obj.layerHulplijn);
-            }
-            if(dbkjs.options.feature.toegangterrein){
-                var features = [];
-                $.each(dbkjs.options.feature.toegangterrein, function(idx, myGeometry){
-                    var myBearing = 0;
-                    var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
-                    var myFeature = new OpenLayers.Feature.Vector(myline);
-                    var myVertices = myline.getVertices();
-                    var myEndpoint = myVertices[myVertices.length -1];
-                        //revert bearing. Don't knwo why, but it works ;-)
-                    myBearing = -(dbkjs.util.bearing(myVertices[myVertices.length -2], myVertices[myVertices.length -1]));
-                    myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Collection([myline,myEndpoint]));
-                    myFeature.attributes = { "primary": myGeometry.primair, "rotation": myBearing,
-                    "title": myGeometry.naamRoute, "information": myGeometry.aanvullendeInformatie };
-                    features.push(myFeature);
-                });
-                _obj.layerToegangterrein.addFeatures(features);
-                _obj.activateSelect(_obj.layerToegangterrein);
-            }
-            if(dbkjs.options.feature.brandcompartiment){
-                var features = [];
-                $.each(dbkjs.options.feature.brandcompartiment, function(idx, myGeometry){
-                    var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
-                    if(!dbkjs.util.isJsonNull(myGeometry.Label)){
-                        //create a feature for every center of every segment of the line, place the label there
-                        var labelfeatures = [];
-                        labelfeatures.push(myline);
-                        //$.each(myline.components,function(cidx, component){
-                        //    var labelFeature = myline.getCentroid();
-                        //    labelfeatures.push(labelFeature);
-                        //});
-                        //labelfeatures.push(myFeature);
-                        var outFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Collection(labelfeatures));
-                        outFeature.attributes = { "type" : myGeometry.typeScheiding, "label": myGeometry.Label};
-                        features.push(outFeature);
-                       } else {
-                        var myFeature = new OpenLayers.Feature.Vector(myline);
-                        myFeature.attributes = { "type" : myGeometry.typeScheiding};
-                        features.push(myFeature);
-                    }
+            // Construct additional geometries.
+            _obj.constructPandGeometrie(dbkjs.options.feature);
+            _obj.constructGeometrie(dbkjs.options.feature);
+            _obj.constructHulplijn(dbkjs.options.feature);
+            _obj.constructToegangterrein(dbkjs.options.feature);
+            _obj.constructBrandcompartiment(dbkjs.options.feature);
+            _obj.constructTekstobject(dbkjs.options.feature);
 
-                });
-                _obj.layerBrandcompartiment.addFeatures(features);
-                _obj.activateSelect(_obj.layerBrandcompartiment);
-            }
 
-            if(dbkjs.options.feature.tekstobject){
-                var features = [];
-                $.each(dbkjs.options.feature.tekstobject, function(idx, myGeometry){
-                    var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                    //@todo: De omschrijving moet er nog bij, ook in de database!
-                    myFeature.attributes = {
-                        "title" : myGeometry.tekst,
-                        "rotation" : myGeometry.hoek,
-                        "scale": myGeometry.schaal + 2
-                    };
-                    features.push(myFeature);
-                });
-                _obj.layerTekstobject.addFeatures(features);
-                _obj.activateSelect(_obj.layerTekstobject);
-            }
             if(!noZoom){
                 if(dbkjs.options.zoomToPandgeometrie) {
                     dbkjs.modules.feature.zoomToPandgeometrie();
@@ -358,8 +246,15 @@ dbkjs.protocol.jsonDBK = {
             if(dbkjs.viewmode === 'fullscreen') {
                 //dbkjs.util.getModalPopup('infopanel').show();
             } else {
-                $('#infopanel').show();
+                dbkjs.gui.infoPanelShow();
             }
+
+            _obj.addMouseoverHandler("#bwvlist", _obj.layerBrandweervoorziening);
+            _obj.addMouseoutHandler("#bwvlist", _obj.layerBrandweervoorziening);
+            _obj.addMouseoverHandler("#gvslist", _obj.layerGevaarlijkestof);
+            _obj.addMouseoutHandler("#gvslist", _obj.layerGevaarlijkestof);
+            _obj.addRowClickHandler("#floorslist", "verdiepingen");
+
             _obj.processing = false;
         } else {
             dbkjs.options.feature = null;
@@ -377,9 +272,12 @@ dbkjs.protocol.jsonDBK = {
     constructAlgemeen: function(DBKObject, dbktype) {
         var _obj = dbkjs.protocol.jsonDBK;
         /** Algemene dbk info **/
-        dbkjs.util.changeDialogTitle('<i class="fa fa-building"></i> ' + DBKObject.formeleNaam);
         var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+
                 i18n.t('dbk.unknown')+ '</span>' : DBKObject.controleDatum;
+        if (dbkjs.showStatus) {
+            var status = dbkjs.util.isJsonNull(DBKObject.status) ? '<span class="label label-warning">'+
+                      i18n.t('dbk.unknown')+ '</span>' : DBKObject.status;
+        };
         var bhvaanwezig = '<span class="label label-warning">'+
                 i18n.t('dbk.noEmergencyResponse') +'</span>';
         if(!dbkjs.util.isJsonNull(DBKObject.BHVaanwezig)) {
@@ -432,6 +330,9 @@ dbkjs.protocol.jsonDBK = {
         if(dbktype === "object"){
             algemeen_table.append(_obj.constructRow(informelenaam, i18n.t('dbk.alternativeName')));
             algemeen_table.append(_obj.constructRow(controledatum, i18n.t('dbk.dateChecked')));
+            if (dbkjs.showStatus) {
+                algemeen_table.append(_obj.constructRow(status, i18n.t('dbk.status')));
+            };
             algemeen_table.append(_obj.constructRow(bhvaanwezig, i18n.t('dbk.emergencyResponse')));
             algemeen_table.append(_obj.constructRow(inzetprocedure, i18n.t('dbk.procedure')));
             algemeen_table.append(_obj.constructRow(gebouwconstructie, 'Gebouwconstructie'));
@@ -512,19 +413,20 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.html();
             return true;
     },
-    constructBrandweervoorziening: function(brandweervoorziening){
+    constructBrandweervoorziening: function(feature){
         var _obj = dbkjs.protocol.jsonDBK;
-        if(brandweervoorziening){
-            var id = 'collapse_brandweervoorziening_' + dbkjs.options.feature.identificatie;
+        if(feature.brandweervoorziening){
+            var id = 'collapse_brandweervoorziening_' + feature.identificatie;
             var bv_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var bv_table_div = $('<div class="table-responsive"></div>');
-            var bv_table = $('<table class="table table-hover"></table>');
+            var bv_table = $('<table id="bwvlist" class="table table-hover"></table>');
             bv_table.append('<tr><th>' +
                     i18n.t('prevention.type') + '</th><th>' +
                     i18n.t('prevention.name') + '</th><th>' +
                     i18n.t('prevention.comment') + '</th></tr>');
+
             var features = [];
-            $.each(brandweervoorziening, function(idx, myGeometry){
+            $.each(feature.brandweervoorziening, function(idx, myGeometry){
                 var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
                 myFeature.attributes = {
                     "type" : myGeometry.typeVoorziening,
@@ -536,7 +438,8 @@ dbkjs.protocol.jsonDBK = {
                     "radius": myGeometry.radius,
                     "fid": "brandweervoorziening_ft_" + idx
                 };
-                var myrow = $('<tr>' +
+
+                var myrow = $('<tr id="' +idx +'">' +
                         '<td><img class="thumb" src="' + dbkjs.basePath + "images/" + myFeature.attributes.namespace + '/' +
                             myFeature.attributes.type + '.png" alt="'+
                             myFeature.attributes.type +'" title="'+
@@ -544,12 +447,7 @@ dbkjs.protocol.jsonDBK = {
                         '<td>' + myFeature.attributes.name + '</td>' +
                         '<td>' + myFeature.attributes.information + '</td>'
                         + '</tr>');
-                myrow.mouseover(function(){
-                    dbkjs.selectControl.select(myFeature);
-                });
-                myrow.mouseout(function(){
-                    dbkjs.selectControl.unselect(myFeature);
-                });
+                //@@ Toekennen van callback verplaatst naar info().
                 bv_table.append(myrow);
                 features.push(myFeature);
 
@@ -560,15 +458,16 @@ dbkjs.protocol.jsonDBK = {
             bv_div.append(bv_table_div);
             _obj.panel_group.append(bv_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.prevention')+ '</a></li>');
+
         }
     },
-    constructGevaarlijkestof: function(gevaarlijkestof){
+    constructGevaarlijkestof: function(feature){
         var _obj = dbkjs.protocol.jsonDBK;
-        if(gevaarlijkestof){
-            var id = 'collapse_gevaarlijkestof_' + dbkjs.options.feature.identificatie;
+        if(feature.gevaarlijkestof){
+            var id = 'collapse_gevaarlijkestof_' + feature.identificatie;
             var bv_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var bv_table_div = $('<div class="table-responsive"></div>');
-            var bv_table = $('<table class="table table-hover"></table>');
+            var bv_table = $('<table id="gvslist" class="table table-hover"></table>');
             bv_table.append('<tr><th>' +
                 i18n.t('chemicals.type') + '</th><th>' +
                 i18n.t('chemicals.indication') + '</th><th>' +
@@ -576,7 +475,7 @@ dbkjs.protocol.jsonDBK = {
                 i18n.t('chemicals.quantity') + '</th><th>' +
                 i18n.t('chemicals.information') + '</th></tr>');
             var features = [];
-             $.each(gevaarlijkestof, function(idx, myGeometry){
+             $.each(feature.gevaarlijkestof, function(idx, myGeometry){
                 var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
                 myFeature.attributes = {
                     "type" : myGeometry.symboolCode,
@@ -594,7 +493,7 @@ dbkjs.protocol.jsonDBK = {
                             '</div><div class="unnummer">' +
                             myFeature.attributes.unnumber + '</div>';
                 }
-                var myrow = $('<tr>' +
+                var myrow = $('<tr id="' +idx +'">' +
                         '<td><img class="thumb" src="' + dbkjs.basePath + 'images/' + myFeature.attributes.namespace + '/' +
                             myFeature.attributes.type + '.png" alt="'+
                             myFeature.attributes.type +'" title="'+
@@ -605,12 +504,6 @@ dbkjs.protocol.jsonDBK = {
 
                         '<td>' + myFeature.attributes.information + '</td>' +
                         '</tr>');
-                myrow.mouseover(function(){
-                    dbkjs.selectControl.select(myFeature);
-                });
-                myrow.mouseout(function(){
-                    dbkjs.selectControl.unselect(myFeature);
-                });
                 bv_table.append(myrow);
                 features.push(myFeature);
             });
@@ -622,34 +515,28 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.chemicals')+ '</a></li>');
         }
     },
-    constructFloors: function(verdiepingen) {
+    constructFloors: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
-        if (verdiepingen && verdiepingen.length > 1) {
-            var id = 'collapse_floors_' + dbkjs.options.feature.identificatie;
+        if (feature.verdiepingen && feature.verdiepingen.length > 1) {
+            var id = 'collapse_floors_' + feature.identificatie;
             var active_tab = _obj.active_tab === 'verdiepingen' ?  'active' : '';
             var verdiepingen_div = $('<div class="tab-pane ' + active_tab + '" id="' + id + '"></div>');
             var verdiepingen_table_div = $('<div class="table-responsive"></div>');
-            var verdiepingen_table = $('<table class="table table-hover"></table>');
+            var verdiepingen_table = $('<table id ="floorslist" class="table table-hover"></table>');
             verdiepingen_table.append('<tr><th>' +
                     i18n.t('dbk.floor') + '</th></tr>');
-            $.each(verdiepingen, function(verdiepingen_index, waarde) {
+            $.each(feature.verdiepingen, function(verdiepingen_index, waarde) {
                 var myrow;
                 var sterretje = '';
                 if (waarde.type === 'hoofdobject'){
-                 sterretje = ' (' + i18n.t('dbk.mainobject') + ')';
+                    sterretje = ' (' + i18n.t('dbk.mainobject') + ')';
                 }
-                if(waarde.identificatie !== dbkjs.options.feature.identificatie){
+                if(waarde.identificatie !== feature.identificatie){
 
                         //Show the hyperlink!
-                        myrow = $('<tr>' +
+                        myrow = $('<tr id="' + waarde.identificatie + '">' +
                             '<td>' + waarde.bouwlaag + sterretje +'</td>' +
                             '</tr>');
-                        myrow.click(function(){
-                            _obj.getObject(waarde.identificatie, 'verdiepingen', true);
-                            if(dbkjs.viewmode === 'fullscreen') {
-                                dbkjs.util.getModalPopup('dbkinfopanel').hide();
-                            }
-                        });
                 } else {
                     //No hyperlink, current object
                     myrow = $('<tr>' +
@@ -669,10 +556,10 @@ dbkjs.protocol.jsonDBK = {
             }
         }
     },
-    constructContact: function(contact) {
+    constructContact: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
-        var id = 'collapse_contact_' + dbkjs.options.feature.identificatie;
-        if (contact) {
+        var id = 'collapse_contact_' + feature.identificatie;
+        if (feature.contact) {
             var active_tab = _obj.active_tab === 'gevaarlijkestof' ?  'active' : '';
             var contact_div = $('<div class="tab-pane" ' + active_tab + ' id="' + id + '"></div>');
             var contact_table_div = $('<div class="table-responsive"></div>');
@@ -681,7 +568,7 @@ dbkjs.protocol.jsonDBK = {
                     i18n.t('contact.role') + '</th><th>' +
                     i18n.t('contact.name') + '</th><th>' +
                     i18n.t('contact.telephone') + '</th></tr>');
-            $.each(contact, function(contact_index, waarde) {
+            $.each(feature.contact, function(contact_index, waarde) {
                 contact_table.append(
                         '<tr>' +
                         '<td>' + waarde.functie + '</td>' +
@@ -696,10 +583,10 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.contact')+ '</a></li>');
         }
     },
-    constructOmsdetail: function(omsdetail) {
+    constructOmsdetail: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
-        var id = 'collapse_omsdetail_' + dbkjs.options.feature.identificatie;
-        if (omsdetail) {
+        var id = 'collapse_omsdetail_' + feature.identificatie;
+        if (feature.omsdetails) {
             var active_tab = _obj.active_tab === 'gevaarlijkestof' ?  'active' : '';
             var omsdetail_div = $('<div class="tab-pane" ' + active_tab + ' id="' + id + '"></div>');
             var omsdetail_table_div = $('<div class="table-responsive"></div>');
@@ -738,10 +625,10 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.omsdetail')+ '</a></li>');
         }
     },
-    constructBijzonderheid: function(bijzonderheid) {
+    constructBijzonderheid: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
-        var id = 'collapse_bijzonderheid_' + dbkjs.options.feature.identificatie;
-        if (bijzonderheid) {
+        var id = 'collapse_bijzonderheid_' + feature.identificatie;
+        if (feature.bijzonderheid) {
             var bijzonderheid_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var bijzonderheid_table_div = $('<div class="table-responsive"></div>');
             var bijzonderheid_table = $('<table class="table table-hover"></table>');
@@ -752,7 +639,7 @@ dbkjs.protocol.jsonDBK = {
                 Preventie: {titel: 'Preventie', waarde: ''},
                 Repressie: {titel: 'Repressie', waarde: ''}
             };
-            $.each(bijzonderheid, function(bijzonderheid_index, waarde) {
+            $.each(feature.bijzonderheid, function(bijzonderheid_index, waarde) {
                 if (!dbkjs.util.isJsonNull(waarde.soort)) {
                     var bijz = {soort: waarde.soort, tekst: waarde.tekst};
                     set[waarde.soort].waarde += bijz.tekst + '<br>';
@@ -774,17 +661,17 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.particularities')+ '</a></li>');
         }
     },
-    constructMedia: function(foto) {
+    constructMedia: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
-        var id = 'collapse_foto_' + dbkjs.options.feature.identificatie;
-        var car_id = 'carousel_foto_' + dbkjs.options.feature.identificatie;
-        if (foto) {
-            dbkjs.options.feature.images = [];
+        var id = 'collapse_foto_' + feature.identificatie;
+        var car_id = 'carousel_foto_' + feature.identificatie;
+        if (feature.foto) {
+            feature.images = [];
             var foto_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var image_carousel = $('<div id="' + car_id + '" class="carousel slide" data-interval="false"></div>');
             var image_carousel_inner = $('<div class="carousel-inner"></div>');
             var image_carousel_nav = $('<ol class="carousel-indicators"></ol>');
-            $.each(foto, function(foto_index, waarde) {
+            $.each(feature.foto, function(foto_index, waarde) {
                 var active = '';
                 if (foto_index === 0) {
                     active = 'active';
@@ -792,16 +679,19 @@ dbkjs.protocol.jsonDBK = {
                     active = '';
                 }
                 var timestamp = new Date().getTime();
-                var realpath = dbkjs.basePath + 'media/' + waarde.URL;
+                var realpath = dbkjs.mediaPath + waarde.URL;
+                //@@var realpath = dbkjs.basePath + 'media/' + waarde.URL;
                 if (waarde.filetype === "document" || waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
                     image_carousel_inner.append('<div class="item ' + active +
-                            '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath +
+                            '"><img src="' + dbkjs.basePath + 'images/missing.gif""><div class="carousel-caption"><a href="' + realpath +
+                            //@@'"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath +
                             '" target="_blank"><h1><i class="fa fa-download fa-3"></h1></i></a><h3>' +
                             waarde.naam +
                             '</h3><a href="' + realpath + '" target="_blank"><h2>' + i18n.t('app.download')  + '</h2></a></div></div>');
                 } else if(waarde.filetype === "weblink") {
                     image_carousel_inner.append('<div class="item ' + active +
-                            '"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL +
+                            '"><img src="' + dbkjs.basePath + 'images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL +
+                            //@@'"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL +
                             '" target="_blank"><h1><i class="fa fa-external-link fa-3"></i></h1><h2>' +
                             i18n.t('app.hyperlink')  + '</h2></a></div></div>'
                         );
@@ -809,16 +699,16 @@ dbkjs.protocol.jsonDBK = {
                     image_carousel_inner.append('<div class="item ' + active + '"><img src="' + realpath +
                             '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' +
                             waarde.naam + '</h3></div></div>');
-                    dbkjs.options.feature.images.push(realpath);
+                    feature.images.push(realpath);
                 }
-                if (foto.length > 1) {
+                if (feature.foto.length > 1) {
                     image_carousel_nav.append('<li data-target="#' + car_id + '" data-slide-to="' +
                             foto_index + '" class="' + active + '"></li>');
                 }
             });
             image_carousel.append(image_carousel_nav);
             image_carousel.append(image_carousel_inner);
-            if (foto.length > 1) {
+            if (feature.foto.length > 1) {
                 image_carousel.append('<a class="left carousel-control" href="#' + car_id + '" data-slide="prev">' +
                         '<span class="fa fa-arrow-left"></span></a>');
                 image_carousel.append('<a class="right carousel-control" href="#' + car_id + '" data-slide="next">' +
@@ -829,10 +719,10 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.media')+ '</a></li>');
         }
     },
-    constructVerblijf: function(verblijf) {
+    constructVerblijf: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
-        var id = 'collapse_verblijf_' + dbkjs.options.feature.identificatie;
-        if (verblijf) {
+        var id = 'collapse_verblijf_' + feature.identificatie;
+        if (feature.verblijf) {
             var verblijf_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var verblijf_table_div = $('<div class="table-responsive"></div>');
             var verblijf_table = $('<table class="table table-hover"></table>');
@@ -842,7 +732,7 @@ dbkjs.protocol.jsonDBK = {
                     i18n.t('tarry.notSelfReliant')+ '</th><th>' +
                     i18n.t('tarry.group')+ '</th><th>' +
                     i18n.t('tarry.days')+ '</th></tr>');
-            $.each(verblijf, function(verblijf_index, waarde) {
+            $.each(feature.verblijf, function(verblijf_index, waarde) {
                 var dagen = '';
                 dagen += !waarde.maandag ? '<span class="label label-default">' + moment.weekdaysMin(1)+ '</span>' : '<span class="label label-success">' + moment.weekdaysMin(1)+ '</span>';
                 dagen += !waarde.dinsdag ? '<span class="label label-default">' + moment.weekdaysMin(2)+ '</span>' : '<span class="label label-success">' + moment.weekdaysMin(2)+ '</span>';
@@ -866,6 +756,147 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.tarry')+ '</a></li>');
         }
     },
+    constructPandGeometrie: function(feature) {
+        var _obj = dbkjs.protocol.jsonDBK;
+        if (feature.pandgeometrie){
+            var features = [];
+            $.each(feature.pandgeometrie, function(idx, myGeometry){
+                var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                myFeature.attributes = { "id" : myGeometry.bagId,"status":myGeometry.bagStatus};
+                features.push(myFeature);
+            });
+            _obj.layerPandgeometrie.addFeatures(features);
+            _obj.activateSelect(_obj.layerPandgeometrie);
+        }
+    },
+    constructGeometrie: function(feature) {
+        var _obj = dbkjs.protocol.jsonDBK;
+        if (feature.geometry){
+            //gebied!
+            var features = [];
+            var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(dbkjs.options.feature.geometry, "Geometry"));
+            myFeature.attributes = { "id" : feature.identificatie, "type":"gebied"};
+            features.push(myFeature);
+            _obj.layerPandgeometrie.addFeatures(features);
+            _obj.activateSelect(_obj.layerPandgeometrie);
+        }
+    },
+    constructHulplijn: function(feature) {
+        var _obj = dbkjs.protocol.jsonDBK;
+        if (feature.hulplijn){
+            var features = [];
+            var features1 = [];
+            var features2 = [];
+            $.each(feature.hulplijn, function(idx, myGeometry){
+                var myBearing = 0;
+                var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
+                var myFeature = new OpenLayers.Feature.Vector(myline);
+                if (myGeometry.typeHulplijn === "Arrow"){
+                    var myVertices = myline.getVertices();
+                    var myEndpoint = myVertices[myVertices.length -1];
+                    //revert bearing. Don't knwo why, but it works ;-)
+                    myBearing = -(dbkjs.util.bearing(myVertices[myVertices.length -2], myVertices[myVertices.length -1]));
+                    myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Collection([myline,myEndpoint]));
+                }
+                var aanvinfo =  dbkjs.util.isJsonNull(myGeometry.aanvullendeInformatie) ? '': myGeometry.aanvullendeInformatie;
+                myFeature.attributes = { "type": myGeometry.typeHulplijn, "rotation": myBearing, "information": aanvinfo};
+                features.push(myFeature);
+                if(myGeometry.typeHulplijn === "Cable" ){
+                    features1.push(myFeature.clone());
+                }
+                if(myGeometry.typeHulplijn === "Conduit" ){
+                    features1.push(myFeature.clone());
+                }
+                if(myGeometry.typeHulplijn === "Fence" ){
+                    features1.push(myFeature.clone());
+                }
+                if(myGeometry.typeHulplijn === "Fence_O" ){
+                    features1.push(myFeature.clone());
+                }
+                if(myGeometry.typeHulplijn === "Gate" ){
+                    features1.push(myFeature.clone());
+                    features2.push(myFeature.clone());
+                }
+                if(myGeometry.typeHulplijn === "Bbarrier" ){
+                    features1.push(myFeature.clone());
+                    features2.push(myFeature.clone());
+                }
+
+            });
+            _obj.layerHulplijn.addFeatures(features);
+            _obj.layerHulplijn1.addFeatures(features1);
+            _obj.layerHulplijn2.addFeatures(features2);
+            _obj.activateSelect(_obj.layerHulplijn);
+        }
+    },
+    constructToegangterrein: function(feature) {
+        var _obj = dbkjs.protocol.jsonDBK;
+        if(feature.toegangterrein){
+            var features = [];
+            $.each(feature.toegangterrein, function(idx, myGeometry){
+                var myBearing = 0;
+                var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
+                var myFeature = new OpenLayers.Feature.Vector(myline);
+                var myVertices = myline.getVertices();
+                var myEndpoint = myVertices[myVertices.length -1];
+                    //revert bearing. Don't knwo why, but it works ;-)
+                myBearing = -(dbkjs.util.bearing(myVertices[myVertices.length -2], myVertices[myVertices.length -1]));
+                myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Collection([myline,myEndpoint]));
+                myFeature.attributes = { "primary": myGeometry.primair, "rotation": myBearing,
+                "title": myGeometry.naamRoute, "information": myGeometry.aanvullendeInformatie };
+                features.push(myFeature);
+            });
+            _obj.layerToegangterrein.addFeatures(features);
+            _obj.activateSelect(_obj.layerToegangterrein);
+        }
+    },
+    constructBrandcompartiment: function(feature) {
+        var _obj = dbkjs.protocol.jsonDBK;
+        if(feature.brandcompartiment){
+            var features = [];
+            $.each(feature.brandcompartiment, function(idx, myGeometry){
+                var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
+                if(!dbkjs.util.isJsonNull(myGeometry.Label)){
+                    //create a feature for every center of every segment of the line, place the label there
+                    var labelfeatures = [];
+                    labelfeatures.push(myline);
+                    //$.each(myline.components,function(cidx, component){
+                    //    var labelFeature = myline.getCentroid();
+                    //    labelfeatures.push(labelFeature);
+                    //});
+                    //labelfeatures.push(myFeature);
+                    var outFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Collection(labelfeatures));
+                    outFeature.attributes = { "type" : myGeometry.typeScheiding, "label": myGeometry.Label};
+                    features.push(outFeature);
+                   } else {
+                    var myFeature = new OpenLayers.Feature.Vector(myline);
+                    myFeature.attributes = { "type" : myGeometry.typeScheiding};
+                    features.push(myFeature);
+                }
+
+            });
+            _obj.layerBrandcompartiment.addFeatures(features);
+            _obj.activateSelect(_obj.layerBrandcompartiment);
+        }
+    },
+    constructTekstobject: function(feature) {
+        var _obj = dbkjs.protocol.jsonDBK;
+        if(feature.tekstobject){
+            var features = [];
+            $.each(feature.tekstobject, function(idx, myGeometry){
+                var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                //@todo: De omschrijving moet er nog bij, ook in de database!
+                myFeature.attributes = {
+                    "title" : myGeometry.tekst,
+                    "rotation" : myGeometry.hoek,
+                    "scale": myGeometry.schaal + 2
+                };
+                features.push(myFeature);
+            });
+            _obj.layerTekstobject.addFeatures(features);
+            _obj.activateSelect(_obj.layerTekstobject);
+        }
+    },
     getObject: function(feature, activetab, noZoom) {
         var _obj = dbkjs.protocol.jsonDBK;
         if(activetab){
@@ -886,7 +917,7 @@ dbkjs.protocol.jsonDBK = {
             //the function is not recieving a feature, but a string
             fid = feature;
         }
-        $.getJSON('api/object/' + fid + '.json', params).done(function(data) {
+        $.getJSON(dbkjs.dataPath + 'object/' + fid + '.json', params).done(function(data) {
                 dbkjs.protocol.jsonDBK.info(data, noZoom);
             }).fail(function( jqxhr, textStatus, error ) {
                 dbkjs.options.feature = null;
@@ -913,12 +944,47 @@ dbkjs.protocol.jsonDBK = {
             //the function is not recieving a feature, but a string
             fid = feature;
         }
-        $.getJSON('api/gebied/' + fid + '.json', params).done(function(data) {
+        $.getJSON(dbkjs.dataPath + 'gebied/' + fid + '.json', params).done(function(data) {
             dbkjs.protocol.jsonDBK.info(data);
         }).fail(function( jqxhr, textStatus, error ) {
             dbkjs.options.feature = null;
             dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
         });
+    },
+    addMouseoverHandler: function(tableid, vLayer) {
+        $(tableid).on("mouseover", "tr", function() {
+            //event.preventDefault();
+            var idx = $ (this).attr("id");
+            var feature = vLayer.features[idx];
+            if (feature) {
+                dbkjs.selectControl.select(feature);
+            }
+            return false;
+        });
+    },
+    addMouseoutHandler: function(tableid, vLayer) {
+            $(tableid).on("mouseout", "tr", function() {
+                //event.preventDefault();
+                var idx = $ (this).attr("id");
+                var feature = vLayer.features[idx];
+                if (feature) {
+                    dbkjs.selectControl.unselect(feature);
+                }
+                return false;
+            });
+    },
+    addRowClickHandler: function(tableid, detailtype) {
+            $(tableid).on("click", "tr", function() {
+                var _obj = dbkjs.protocol.jsonDBK;
+                var identificatie = $ (this).attr("id");
+                if (identificatie) {
+                    _obj.getObject(identificatie, detailtype);
+                }
+                if(dbkjs.viewmode === 'fullscreen') {
+                    dbkjs.util.getModalPopup('dbkinfopanel').hide();
+                }
+                return false;
+            });
+
     }
 };
-
