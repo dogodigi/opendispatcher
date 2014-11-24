@@ -653,6 +653,7 @@ dbkjs.util = {
                     if(dbkjs.argparser){
                         dbkjs.argparser.loadLayers();
                     }
+                    $('#cover').hide();
                     alert.hide();
                 } else {
                     alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass('alert-info');
