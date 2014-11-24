@@ -92,7 +92,9 @@ dbkjs.config.styles = {
         labelSelect: true,
         labelAlign: "${mylabelalign}",
         labelXOffset: "${mylabelxoffset}",
-        labelYOffset: "${mylabelyoffset}"
+        labelYOffset: "${mylabelyoffset}",
+        labelOutlineWidth: 5,
+        labelOutlineColor: '#000000'
     }, {
         context: {
             mydisplay: function(feature) {
@@ -185,12 +187,18 @@ dbkjs.config.styles = {
             },
             myicon: function(feature) {
                 if (feature.cluster) {
-                    return dbkjs.basePath + "images/jcartier_city_3.png";
+                    return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + "images/jcartier_city_3.png" : imagesBase64["images/jcartier_city_3.png"];
                 } else {
                     if (feature.attributes.typeFeature === 'Object') {
-                        return dbkjs.basePath + "images/jcartier_building_1.png";
+                        var img;
+                        if(feature.attributes.verdiepingen || feature.attributes.verdiepingen !== 0) {
+                            img = "images/jcartier_building_1.png";
+                        } else {
+                            img = "images/jcartier_building_2.png";
+                        }
+                        return typeof imagesBase64 === 'undefined'  ? dbkjs.basePath + img : imagesBase64[img];
                     } else {
-                        return dbkjs.basePath + "images/jcartier_event_1.png";
+                        return typeof imagesBase64 === 'undefined'  ? dbkjs.basePath + "images/jcartier_event_1.png" : imagesBase64["images/jcartier_event_1.png"];
                     }
                 }
             },
@@ -601,7 +609,8 @@ dbkjs.config.styles = {
         }, {
             context: {
                 myicon: function(feature) {
-                    return dbkjs.basePath + "images/" + feature.attributes.namespace + "/" + feature.attributes.type + ".png";
+                    var img = "images/" + feature.attributes.namespace + "/" + feature.attributes.type + ".png";
+                    return typeof imagesBase64 === 'undefined'  ? dbkjs.basePath + img : imagesBase64[img];
                 },
                 myrotation: function(feature) {
                     if(feature.attributes.rotation){
@@ -695,7 +704,8 @@ dbkjs.config.styles = {
                     return dbkjs.scaleStyleValue(12);
                 },
                 myicon: function(feature) {
-                    return dbkjs.basePath + "images/" + feature.attributes.namespace + "/" + feature.attributes.type + ".png";
+                    var img = "images/" + feature.attributes.namespace + "/" + feature.attributes.type + ".png";
+                    return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + img : imagesBase64[img];
                 },
                 mylabel: function(feature) {
                     if(dbkjs.options.alwaysShowInformationLabels) {
@@ -774,7 +784,7 @@ dbkjs.config.styles = {
                     return dbkjs.scaleStyleValue(12, feature.scale);
                 },
                 myRotation: function(feature){
-                    if (parseFloat(feature.attributes.rotation) !== 0.0){
+                    if(parseFloat(feature.attributes.rotation) !== 0.0){
                         var ori = parseFloat(feature.attributes.rotation);
                         return -ori;
                     } else {
