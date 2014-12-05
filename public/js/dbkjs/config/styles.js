@@ -35,7 +35,7 @@ dbkjs.redrawScaledLayers = function() {
     dbkjs.protocol.jsonDBK.layerBrandweervoorziening.redraw();
     dbkjs.protocol.jsonDBK.layerGevaarlijkestof.redraw();
     dbkjs.protocol.jsonDBK.layerTekstobject.redraw();
-}
+};
 
 // Return a styling value with user size adjustment and scaled according to map
 // map scale (if style scaling is enabled). If featureAttributeValue is not
@@ -75,7 +75,7 @@ dbkjs.config.styleUtils = {
         }
         return s;
     }
-}
+};
 
 dbkjs.config.styles = {
     dbkfeature: new OpenLayers.StyleMap({
