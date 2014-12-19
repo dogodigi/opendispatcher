@@ -1,20 +1,20 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  * 
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher
  *  
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
 var dbkjs = dbkjs || {};
@@ -33,11 +33,11 @@ dbkjs.options = {
             numDigits: 0
         }
     },
-    VERSION: "2.7",
+    VERSION: "2.9.0",
     RELEASEDATE: "01-09-2014",
-    APPLICATION: "safetymapsDBK",
+    APPLICATION: "opendispatcher",
     REMARKS: "",
-    INFO: "",
+    INFO: "First responder HTML5 nodejs client application",
     zoom: 13,
 
     // If false labels are shown on select and temporary render intents

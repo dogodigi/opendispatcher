@@ -1,6 +1,6 @@
 {
-  "name": "safetymapsdbk",
-  "description": "safetymaps dbk - applicatie voor de digitale bereikbaarheidskaart",
+  "name": "opendispatcher",
+  "description": "opendispatcher - First responder HTML5 nodejs client application",
   "version": "2.9.0",
   "license": "GPL-3.0+",
   "author": {
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/opengeogroep/safetymapsDBK.git"
+    "url": "http://github.com/dogodigi/opendispatcher.git"
   },
   "dependencies": {
     "express": "3.5.0",

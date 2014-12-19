@@ -1,6 +1,6 @@
 {
     "app": {
-        "title": "Safetymaps DBK",
+        "title": "opendispatcher",
         "queryAddress": "adres",
         "queryNumber": "omsnummer",
         "queryDBK": "dbk",
@@ -177,7 +177,7 @@
         "annotation": "Terugmelding",
         "annotationtitle": "Er is een terugmelding gedaan",
         "kindregards": "Met vriendelijke groet",
-        "team": "de safetymapsDBK applicatie"
+        "team": "opendispatcher team"
     },
     "eughs": {
         "intro": "Het Globally Harmonised System van de Verenigde Naties (VN-GHS) is in 2002 door de VN vastgesteld",
