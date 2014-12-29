@@ -28,7 +28,7 @@ dbkjs.protocol.jsonDBK = {
     panel_group: null,
     panel_tabs: null,
     panel_algemeen: null,
-    active_tab:'algemeen',
+    active_tab: 'algemeen',
     layersVisible: false,
     init: function() {
         var _obj = dbkjs.protocol.jsonDBK;
@@ -142,6 +142,8 @@ dbkjs.protocol.jsonDBK = {
         dbkjs.gui.detailsPanelShow();
     },
     process: function(feature) {
+        var _obj = dbkjs.protocol.jsonDBK;
+        _obj.active_tab = 'algemeen';
         dbkjs.gui.infoPanelUpdateFooterHtml('');
         if (feature && feature.attributes && feature.attributes.typeFeature) {
             if(feature.data && feature.data.hasOwnProperty('formeleNaam') && feature.data.hasOwnProperty('informeleNaam')) {
@@ -273,7 +275,7 @@ dbkjs.protocol.jsonDBK = {
         var _obj = dbkjs.protocol.jsonDBK;
         /** Algemene dbk info **/
         var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+
-                i18n.t('dbk.unknown')+ '</span>' : DBKObject.controleDatum;
+                i18n.t('dbk.unknown')+ '</span>' : moment(DBKObject.controleDatum).format('YYYY-MM-DD');
         if (dbkjs.showStatus) {
             var status = dbkjs.util.isJsonNull(DBKObject.status) ? '<span class="label label-warning">'+
                       i18n.t('dbk.unknown')+ '</span>' : DBKObject.status;
