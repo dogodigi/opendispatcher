@@ -57,7 +57,10 @@ dbkjs.layout = {
             dbkjs.options.styleSizeAdjust = e.value;
             dbkjs.redrawScaledLayers();
         });
-
+        $("#slider_styleSizeAdjust").on('slideStop', function(e) {
+            dbkjs.options.styleSizeAdjust = e.value;
+            dbkjs.redrawScaledLayers();
+        });
         $("#checkbox_scaleStyle").prop("checked", dbkjs.options.styleScaleAdjust);
         $("#checkbox_scaleStyle").on('change', function(e) {
             dbkjs.options.styleScaleAdjust = e.target.checked;
