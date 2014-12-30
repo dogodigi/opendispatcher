@@ -34,17 +34,12 @@ exports["Rest interfaces"] = {
             test.equal(response.statusCode, 200, '/api/features.json is not available');
             test.equal(!result.features, false, 'Features should be returned');
             testFeature = result.features[0];
+            test.equal(typeof(testFeature), "object","Test Feature should be an object");
+            test.equal(testFeature.type, "Feature","Test Feature should have \"type\" set to \"feature\"");
+            test.equal(typeof(testFeature.geometry), "object","Test Feature needs to have geometry");
+            test.equal(typeof(testFeature.properties), "object","Test Feature needs to have properties");
             test.done();
         });
-    },
-    "Test a feature": function (test) {
-        //We use the feature created from features.json
-        console.log(testFeature);
-        test.equal(typeof(testFeature), "object","Test Feature should be an object");
-        test.equal(testFeature.type, "Feature","Test Feature should have \"type\" set to \"feature\"");
-        test.equal(typeof(testFeature.geometry), "object","Test Feature needs to have geometry");
-        test.equal(typeof(testFeature.properties), "object","Test Feature needs to have properties");
-        test.done();
     },
     finalize: function (test) {
         test.ok(true, 'Database connection pool could not be closed');
