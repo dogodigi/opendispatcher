@@ -1,1 +1,0 @@
-psql -d circle_test -p 5432 -f database/createdb.sql
