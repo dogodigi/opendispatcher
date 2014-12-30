@@ -32,7 +32,14 @@ global.conf = require('nconf');
 // First consider commandline arguments and environment variables, respectively.
 global.conf.argv().env();
 // Then load configuration from a designated file.
-global.conf.file({file: 'config.json'});
+//check to see if config file exists, if not, default to config.default.json
+if (!fs.existsSync('config.json')) {
+    console.log('Warning, no config.json present. Falling back to config.default.json');
+    //check to see if config file exists, if not, default to config.default.json
+    global.conf.file({file: 'config.default.json'});
+} else {
+    global.conf.file({file: 'config.json'});
+}
 // Provide default values for settings not provided above.
 global.conf.defaults({
     'http': {
