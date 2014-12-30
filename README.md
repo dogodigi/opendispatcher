@@ -1,3 +1,7 @@
+# CircleCi Build status
+
+[![Circle CI](https://circleci.com/gh/dogodigi/opendispatcher.svg?style=svg)](https://circleci.com/gh/dogodigi/opendispatcher)
+
 # opendispatcher
 
 Helping first responders during incidents.
