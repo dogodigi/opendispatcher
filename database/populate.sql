@@ -114,3 +114,8 @@ insert into dbk.type_aanwezigheidsgroep (gid,naam) values (2,'Bewoners');
 insert into dbk.type_aanwezigheidsgroep (gid,naam) values (3,'Bezoekers');
 insert into dbk.type_aanwezigheidsgroep (gid,naam) values (4,'Personeel');
 
+insert into wfs."DBK" 
+("DBK_ID","Section_ID","Formele_Naam","Informele_Naam","Gebruikstype","Bouwlaag_Max","Bouwlaag_Min","Datum_Actualisatie","Gebruiker","HasPolygon","Deleted","Licence_ID")
+values
+(1,0,'Formal name','Informal name','woonfunctie','4','1','20140227130318768','Demo User',1,false,1);
+
