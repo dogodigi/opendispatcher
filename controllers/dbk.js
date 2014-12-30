@@ -36,7 +36,6 @@ exports.getOrganisation = function(req, res) {
         global.pool.query(query_str, [srid],
             function(err, result){
                 if(err) {
-                    console.log(err);
                     res.json(err);
                 } else {
                     res.json(result.rows[0]);
@@ -120,6 +119,7 @@ exports.getFeatures = function(req, res) {
         global.pool.query(query_str, [srid],
             function(err, result){
                 if(err) {
+                    console.log(err);                    
                     res.json(err);
                 } else {
                     var resultset = {"type": "FeatureCollection", "features": []};
