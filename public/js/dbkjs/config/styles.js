@@ -94,11 +94,7 @@ dbkjs.config.styles = {
             },
             mygraphicheight: function(feature) {
                 if (feature.cluster) {
-                    if (feature.cluster.length < 10) {
-                        return feature.cluster.length + 64;
-                    } else {
-                        return 56;
-                    }
+                    return 65;
                 } else {
                     if (feature.attributes.typeFeature === 'Object') {
                         return 38;
@@ -110,14 +106,10 @@ dbkjs.config.styles = {
             },
             mygraphicwidth: function(feature) {
                 if (feature.cluster) {
-                    //if (feature.cluster.length < 10) {
-                    //    return feature.cluster.length + 84;
-                    //} else {
-                        return 51;
-                    //}
-                    } else {
+                        return 85;
+                } else {
                     if (feature.attributes.typeFeature === 'Object') {
-                        return 21;
+                        return 24;
                     } else {
                         return 85;
                     }

@@ -275,7 +275,7 @@ dbkjs.protocol.jsonDBK = {
         var _obj = dbkjs.protocol.jsonDBK;
         /** Algemene dbk info **/
         var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+
-                i18n.t('dbk.unknown')+ '</span>' : moment(DBKObject.controleDatum).format('YYYY-MM-DD');
+                i18n.t('dbk.unknown')+ '</span>' : moment(DBKObject.controleDatum).format('YYYY-MM-DD hh:mm');
         if (dbkjs.showStatus) {
             var status = dbkjs.util.isJsonNull(DBKObject.status) ? '<span class="label label-warning">'+
                       i18n.t('dbk.unknown')+ '</span>' : DBKObject.status;
