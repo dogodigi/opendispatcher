@@ -11,7 +11,7 @@
   "private": true,
   "scripts": {
     "start": "node index.js",
-    "test": "nodeunit test --reporter junit --output junit.xml"
+    "test": "nodeunit test --reporter junit --output $CIRCLE_TEST_REPORTS/test.xml"
   },
   "repository": {
     "type": "git",
