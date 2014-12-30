@@ -52,7 +52,7 @@
         "mini": "map.mini",
         "settings": "map.settings",
         "overlays": "map.overlays",
-        "baseLayers": "map.baseLayers",
+        "baselayers": "map.baselayers",
         "measureDistance": "map.measureDistance",
         "measureArea": "map.measureArea",
         "info": "map.info",

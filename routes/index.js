@@ -49,8 +49,8 @@ function nen1414(req, res) {
 function index(req, res) {
     var activelang;
     if (req.i18n.language() !== 'nl' && req.i18n.language() !== 'dev' && req.i18n.language() !== 'en') {
-        req.i18n.setLng('nl');
-        activelang = 'nl';
+        req.i18n.setLng('en');
+        activelang = 'en';
     } else {
         activelang = req.i18n.language();
     }

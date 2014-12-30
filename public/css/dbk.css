@@ -380,7 +380,7 @@ input[type="checkbox"] {
 }
 @media screen and (max-width: 600px) {
   #logo {
-    background: url('../images/brandweer-nederland_alpha_shaded-s.png') no-repeat center center scroll;
+    background: url('../images/opendispatcher.png') no-repeat center center scroll;
     height: 60px;
     width: 60px;
     margin: 1em;
@@ -401,7 +401,7 @@ input[type="checkbox"] {
 }
 @media screen and (min-width: 601px) {
   #logo {
-    background: url('../images/brandweer-nederland_alpha_shaded.png') no-repeat center center scroll;
+    background: url('../images/opendispatcher.png') no-repeat center center scroll;
     height: 90px;
     width: 90px;
     margin: 0;

@@ -10,7 +10,8 @@
   },
   "private": true,
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "nodeunit test"
   },
   "repository": {
     "type": "git",
