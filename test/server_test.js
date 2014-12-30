@@ -34,10 +34,14 @@ exports["Rest interfaces"] = {
             test.equal(!result.features, false, 'Features should be returned');
             console.log(result);
             var testFeature = result.features[0];
-            test.equal(typeof(testFeature), "object","Test Feature should be an object");
-            test.equal(testFeature.type, "Feature","Test Feature should have \"type\" set to \"feature\"");
-            test.equal(typeof(testFeature.geometry), "object","Test Feature needs to have geometry");
-            test.equal(typeof(testFeature.properties), "object","Test Feature needs to have properties");
+            if(testFeature){
+                test.equal(typeof(testFeature), "object","Test Feature should be an object");
+                test.equal(testFeature.type, "Feature","Test Feature should have \"type\" set to \"feature\"");
+                test.equal(typeof(testFeature.geometry), "object","Test Feature needs to have geometry");
+                test.equal(typeof(testFeature.properties), "object","Test Feature needs to have properties");
+            } else {
+                test.equal(typeof(testFeature), "object","Test Feature should be an object");
+            }
             test.done();
         });
     },
