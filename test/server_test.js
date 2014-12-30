@@ -1,11 +1,11 @@
 var request = require('nodeunit-express');
-// require the express application, notice how we exported the express app using `module.exports` above
 var server = require('../server');
 
 var express = request(server.app);
 var testFeature;
 exports["Rest interfaces"] = {
     setUp: function (callback) {
+        //insert some stuff in the database?
         callback();
     },
     tearDown: function (callback) {
@@ -22,7 +22,7 @@ exports["Rest interfaces"] = {
         express.get('/api/organisation.json').expect(function (response) {
             // response is the response from hitting '/'
             var result = JSON.parse(response.body);
-            test.equal(response.statusCode, 200);
+            test.equal(response.statusCode, 200, '/api/organisation is not available');
             test.equal(!result.organisation, false, 'Organisation should be returned');
             test.done();
         });
@@ -31,8 +31,7 @@ exports["Rest interfaces"] = {
         express.get('/api/features.json').expect(function (response) {
             // response is the response from hitting '/'
             var result = JSON.parse(response.body);
-
-            test.equal(response.statusCode, 200);
+            test.equal(response.statusCode, 200, '/api/features.json is not available');
             test.equal(!result.features, false, 'Features should be returned');
             testFeature = result.features[0];
             test.done();
@@ -48,12 +47,10 @@ exports["Rest interfaces"] = {
         test.done();
     },
     finalize: function (test) {
-        
         test.ok(true, 'Database connection pool could not be closed');
         test.done();
         //don't forget to close the database!
         cleanup();
-
     }
 };
 function cleanup() {
