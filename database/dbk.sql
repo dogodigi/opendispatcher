@@ -517,7 +517,7 @@ SELECT t.identificatie,
             d.verwerkt,
 	    d.status,
             ( SELECT array_to_json(array_agg(row_to_json(a.*))) AS array_to_json
-                   FROM ( SELECT "AantalPersonen".type_occupation,
+                   FROM ( SELECT op.type_occupation,
                             op.aantal,
                             op."aantalNietZelfredzaam",
                             op."tijdvakBegintijd",
