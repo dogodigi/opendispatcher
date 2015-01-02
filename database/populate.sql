@@ -121,10 +121,10 @@ values
 (2,0,'Stadium','Old stadium','Sports','4','1','20140227130318768','Demo User',1,false,1);
 
 insert into wfs."DBK2" 
-("DBK_ID","Datum_Begin","Datum_Eind","Status","Prioriteit","BHVaanwezig","Bouwlaag","Licence_ID","inzetprocedure","Gebruikstype_Specifiek")
+("DBK_ID","Datum_Begin","Datum_Eind","Status","Prioriteit","BHVaanwezig","Bouwlaag","Licence_ID","inzetprocedure","Gebruikstype_Specifiek","Viewer")
 values
-(1,'20130101000000000','','Gereed','Prio 3','Nee','BG',1,'Offensive inside','Recreational'),
-(1,'20130101000000000','','Gereed','Prio 1','Nee','0',1,'','');
+(1,'20130101000000000','','Gereed','Prio 3','Nee','BG',1,'Offensive inside','Recreational',true),
+(1,'20130101000000000','','Gereed','Prio 1','Nee','0',1,'','',true);
 
 -- wfs."Adres" skipped
 
