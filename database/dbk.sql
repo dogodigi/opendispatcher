@@ -84,7 +84,7 @@ CREATE INDEX ON dbk.type_aanwezigheidsgroep (gid ASC NULLS LAST);
 create view dbk."DBKFeature" as (
     select
         d.gid,
-        d."DBK_ID" as identificatie,
+        d.siteid as identificatie,
         CASE WHEN d2."BHVaanwezig" is null then false else 
         case when lower(d2."BHVaanwezig") in ('ja','yes') then true else
         false end end as "BHVaanwezig",
@@ -105,13 +105,13 @@ create view dbk."DBKFeature" as (
 	d2."Viewer" as viewer,
 	CASE WHEN d2."DatumTijd_Viewer_Begin" = '' THEN null ELSE to_timestamp(d2."DatumTijd_Viewer_Begin",'YYYYMMDDHH24MISSMS')::timestamp without time zone END as "datumtijdviewerbegin",
 	CASE WHEN d2."DatumTijd_Viewer_Eind" = '' THEN null ELSE to_timestamp(d2."DatumTijd_Viewer_Eind",'YYYYMMDDHH24MISSMS')::timestamp without time zone END as "datumtijdviewereind"
-    from wfs."DBK" d LEFT JOIN  wfs."DBK2" d2 on d."DBK_ID" = d2."DBK_ID" 
-    LEFT JOIN ( SELECT wfs."Polygon"."DBK_ID" AS dbkfeature_id, st_setsrid(st_centroid(st_collect(st_transform(wfs."Polygon".the_geom,28992))),28992) AS geometrie
+    from wfs."DBK" d LEFT JOIN  wfs."DBK2" d2 on d.siteid = d2.siteid 
+    LEFT JOIN ( SELECT wfs."Polygon".siteid AS siteid, st_setsrid(st_centroid(st_collect(st_transform(wfs."Polygon".the_geom,28992))),28992) AS geometrie
            FROM wfs."Polygon"
-          GROUP BY wfs."Polygon"."DBK_ID") b ON d."DBK_ID" = b.dbkfeature_id
-    LEFT JOIN ( SELECT wfs."Gebied"."DBK_ID" AS dbkfeature_id, st_setsrid(st_centroid(st_collect(st_transform(wfs."Gebied".the_geom,28992))),28992) AS geometrie
+          GROUP BY wfs."Polygon".siteid) b ON d.siteid = b.siteid
+    LEFT JOIN ( SELECT wfs."Gebied".siteid AS siteid, st_setsrid(st_centroid(st_collect(st_transform(wfs."Gebied".the_geom,28992))),28992) AS geometrie
            FROM wfs."Gebied"
-          GROUP BY wfs."Gebied"."DBK_ID") g ON d."DBK_ID" = g.dbkfeature_id
+          GROUP BY wfs."Gebied".siteid) g ON d.siteid = g.siteid
           where (d."Deleted" = false or d."Deleted" is null)
 );
 grant select on table  dbk."DBKFeature" to public;
@@ -119,14 +119,14 @@ grant select on table  dbk."DBKFeature" to public;
 create view dbk."DBKObject" as (
 select
     f.gid,
-    f."DBK_ID" as dbkfeature_id,
+    f.siteid as siteid,
     CASE WHEN f."Bouwlaag_Max"~E'^\\d+$' THEN f."Bouwlaag_Max"::integer ELSE NULL END as "hoogsteBouwlaag",
     CASE WHEN f."Bouwlaag_Min"~E'^\\d+$' THEN f."Bouwlaag_Min"::integer ELSE NULL END as "laagsteBouwlaag",
     CASE WHEN f."Nummer" = '' THEN NULL ELSE f."Nummer" END as "OMSnummer",
     CASE WHEN o."Gebouwconstructie" = '' THEN NULL ELSE o."Gebouwconstructie" END as gebouwconstructie,
     f."Adres_ID" as adres_id,
     CASE WHEN f."Gebruikstype" = '' THEN NULL ELSE f."Gebruikstype" END as gebruikstype
-from wfs."DBK" f LEFT JOIN (select * from wfs."Object") o on f."DBK_ID" = o."DBK_ID"
+from wfs."DBK" f LEFT JOIN (select * from wfs."Object") o on f.siteid = o.siteid
 where (f."Deleted" = false or f."Deleted" is null)
 );
 grant select on table dbk."DBKObject" to public;
@@ -134,7 +134,7 @@ grant select on table dbk."DBKObject" to public;
 create view dbk."Pandgeometrie" as (
     select
         gid,
-        "DBK_ID" as dbkfeature_id,
+        siteid as siteid,
         the_geom as geometrie,
         "BAG_Pand_ID"::character varying as "bagId",
         null::character varying as "bagStatus"
@@ -144,7 +144,7 @@ grant select on table dbk."Pandgeometrie" to public;
 create view dbk."Brandweervoorziening" as (
      select 
         p.gid,
-        p."DBK_ID" as dbkfeature_id,
+        p.siteid as siteid,
         p.the_geom as locatie,
         "Omschrijving"::text as "aanvullendeInformatie",
         tbv.brandweervoorziening_symbool as "typeVoorziening",
@@ -159,7 +159,7 @@ grant select on table dbk."Brandweervoorziening" to public;
 create view dbk."GevaarlijkeStof" as (
     select 
         gid,
-        "DBK_ID" as dbkfeature_id,
+        siteid as siteid,
         the_geom as locatie,
         "NaamStof"::character varying(50) as "naamStof",
         "GEVIcode" as gevaarsindicatienummer,
@@ -174,7 +174,7 @@ grant select on table dbk."GevaarlijkeStof" to public;
 create view dbk."ToegangTerrein" as (
     select
         wfs."ToegangTerrein".gid,
-        "DBK_ID" as dbkfeature_id,
+        siteid as siteid,
         the_geom as geometrie,
         case when "Primair" = 1 then TRUE ELSE FALSE END as primair,
         CASE WHEN "NaamRoute" = '' THEN tt.naam
@@ -187,7 +187,7 @@ grant select on table dbk."ToegangTerrein" to public;
 create view dbk."Brandcompartiment" as (
 select 
         gid,
-        "DBK_ID" as dbkfeature_id,
+        siteid as siteid,
         the_geom as geometrie,
         CASE 
           WHEN lower("Soort") = '30 minuten' THEN (select naam from dbk.type_brandcompartiment where gid = 3)
@@ -203,7 +203,7 @@ grant select on table dbk."Brandcompartiment" to public;
 create view dbk."TekstObject" as (
     select
         gid,
-        "DBK_ID" as dbkfeature_id,
+        siteid as siteid,
         "Tekst"::character varying as tekst,
         the_geom as absolutepositie,
         "Rotatie"::double precision as hoek,
@@ -214,7 +214,7 @@ grant select on table dbk."TekstObject" to public;
 create view dbk."Hulplijn" as (
     select
         gid,
-        "DBK_ID" as dbkfeature_id,
+        siteid as siteid,
         "Type"::character varying as "typeHulplijn",
         CASE WHEN "Omschrijving" = '' THEN null ELSE "Omschrijving" END as "aanvullendeInformatie",
         the_geom as geometrie
@@ -225,7 +225,7 @@ grant select on table dbk."Hulplijn" to public;
 create view dbk."DBKGebied" as (
     select
         gid,
-        "DBK_ID" as dbkfeature_id, 
+        siteid as siteid, 
         the_geom as geometrie from wfs."Gebied"
 );
 grant select on table dbk."DBKGebied" to public;
@@ -233,7 +233,7 @@ grant select on table dbk."DBKGebied" to public;
 create view dbk."AfwijkendeBinnendekking" as (
     select
         gid,
-        "DBK_ID" as dbkfeature_id,
+        siteid as siteid,
         the_geom as locatie,
         "AlternatiefComm"::character varying as "alternatieveCommInfrastructuur",
         "Dekking"::boolean as dekking,
@@ -241,18 +241,21 @@ create view dbk."AfwijkendeBinnendekking" as (
     from wfs."AfwijkendeBinnendekking"
 );
 grant select on table dbk."AfwijkendeBinnendekking" to public;
--- Gerelateerde tabellen
--- Afdrukbereik tabel, nog niet aangemaakt.
-CREATE OR REPLACE VIEW dbk."AantalPersonen" AS 
- SELECT a.gid, a."DBK_ID" AS dbkfeature_id, 
+
+/**
+ * Occupation, people present in a building on a site
+ */
+
+CREATE OR REPLACE VIEW dbk.occupation AS 
+ SELECT a.gid, a.siteid AS siteid, 
         CASE
-            WHEN lower(a."TypeGroep"::text) = 'bewoners'::text THEN ( SELECT type_aanwezigheidsgroep.naam
+            WHEN lower(a.type_occupation::text) = 'inhabitants'::text THEN ( SELECT type_aanwezigheidsgroep.naam
                FROM dbk.type_aanwezigheidsgroep
               WHERE type_aanwezigheidsgroep.gid = 2)
-            WHEN lower(a."TypeGroep"::text) = 'personeel'::text THEN ( SELECT type_aanwezigheidsgroep.naam
+            WHEN lower(a.type_occupation::text) = 'staff'::text THEN ( SELECT type_aanwezigheidsgroep.naam
                FROM dbk.type_aanwezigheidsgroep
               WHERE type_aanwezigheidsgroep.gid = 4)
-            WHEN lower(a."TypeGroep"::text) = 'bezoekers'::text THEN ( SELECT type_aanwezigheidsgroep.naam
+            WHEN lower(a.occupationtype::text) = 'visitors'::text THEN ( SELECT type_aanwezigheidsgroep.naam
                FROM dbk.type_aanwezigheidsgroep
               WHERE type_aanwezigheidsgroep.gid = 3)
             ELSE ( SELECT type_aanwezigheidsgroep.naam
@@ -267,8 +270,8 @@ CREATE OR REPLACE VIEW dbk."AantalPersonen" AS
         zaterdag,
         zondag,
         to_timestamp(a."Begintijd"::text, 'HH24MISSMS'::text)::time without time zone AS "tijdvakBegintijd", to_timestamp(a."Eindtijd"::text, 'HH24MISSMS'::text)::time without time zone AS "tijdvakEindtijd"
-   FROM wfs."AantalPersonen" a;
-grant select on table dbk."AantalPersonen" to public;
+   FROM wfs.occupation a;
+grant select on table dbk.occupation to public;
 
 create view dbk."Adres" as (
    SELECT a.gid,
@@ -296,7 +299,7 @@ grant select on table dbk."Adres" to public;
 CREATE OR REPLACE VIEW dbk."Foto" AS (
     SELECT 
 	bv.gid, 
-	bv."DBK_ID" AS dbkfeature_id, 
+	bv.siteid AS siteid, 
 	CASE WHEN bv."Omschrijving" = '' THEN bv."Picturename" ELSE bv."Omschrijving"::character varying END AS naam, 
 	bv."Picturename"::character varying AS "URL",
 	substr(bv."Picturename"::character varying, (length(bv."Picturename"::character varying) - 4), 1) as pos,
@@ -309,11 +312,11 @@ CREATE OR REPLACE VIEW dbk."Foto" AS (
   UNION
    SELECT 
 	f.gid, 
-	f."DBK_ID" AS dbkfeature_id, 
+	f.siteid AS siteid, 
 	f."Documentnaam"::character varying AS naam, 
-	CASE WHEN position(f."DBK_ID"::character varying in f."Documentnaam") = 1 THEN f."Documentnaam" ELSE 
+	CASE WHEN position(f.siteid::character varying in f."Documentnaam") = 1 THEN f."Documentnaam" ELSE 
 	  CASE WHEN lower(f."Bestandstype") = 'weblink' THEN f."Documentnaam" ELSE 
-	(f."DBK_ID"::character varying || '-' || f."Documentnaam") END END AS "URL",
+	(f.siteid::character varying || '-' || f."Documentnaam") END END AS "URL",
 	'' as pos,
 	lower(f."Bestandstype") as filetype,
 	--lower(substr(f."Documentnaam"::character varying, (length(f."Documentnaam"::character varying) - 2), 3)) as filetype,
@@ -326,7 +329,7 @@ GRANT SELECT ON TABLE dbk."Foto" TO public;
 create view dbk."Contact" as (
     select 
         gid,
-        "DBK_ID" as dbkfeature_id,
+        siteid as siteid,
         CASE WHEN "Functie" = '' THEN 'Contact' ELSE "Functie" END as functie,
         "Naam" as naam,
         "Telefoonnummer" as telefoonnummer
@@ -337,7 +340,7 @@ GRANT SELECT ON TABLE dbk."Contact" TO public;
 create view dbk."Bijzonderheid" as
 select * from (select
     gid,
-	"DBK_ID" as dbkfeature_id, 
+	siteid as siteid, 
 	"Bijzonderheden" as tekst,
 	'Algemeen'::character varying as soort,
 	1 as seq
@@ -345,7 +348,7 @@ from wfs."DBK" where "Bijzonderheden" <> '' AND not "Bijzonderheden" is null
 UNION 
 select 
     gid,
-	"DBK_ID" as dbkfeature_id, 
+	siteid as siteid, 
 	"Bijzonderheden2" as tekst,
 	'Algemeen' as soort,
 	 2 as seq
@@ -353,7 +356,7 @@ from wfs."DBK" where "Bijzonderheden2" <> '' AND not "Bijzonderheden2" is null
 UNION
 select 
     gid,
-	"DBK_ID" as dbkfeature_id, 
+	siteid as siteid, 
 	"Prev_Bijz_1" as tekst,
 	'Preventie' as soort,
 	 1 as seq
@@ -361,7 +364,7 @@ from wfs."DBK" where "Prev_Bijz_1" <> '' AND not "Prev_Bijz_1" is null
 UNION
 select
     gid,
-	"DBK_ID" as dbkfeature_id, 
+	siteid as siteid, 
 	"Prev_Bijz_2" as tekst,
 	'Preventie' as soort,
 	 2 as seq
@@ -369,7 +372,7 @@ from wfs."DBK" where "Prev_Bijz_2" <> '' AND not "Prev_Bijz_2" is null
 UNION
 select
     gid,
-	"DBK_ID" as dbkfeature_id, 
+	siteid as siteid, 
 	"Prep_Bijz_1" as tekst,
 	'Preparatie' as soort,
 	 1 as seq
@@ -377,7 +380,7 @@ from wfs."DBK" where "Prep_Bijz_1" <> '' AND not "Prep_Bijz_1" is null
 UNION
 select 
     gid,
-	"DBK_ID" as dbkfeature_id, 
+	siteid as siteid, 
 	"Prep_Bijz_2" as tekst,
 	'Preparatie' as soort,
 	 2 as seq
@@ -385,7 +388,7 @@ from wfs."DBK" where "Prep_Bijz_2" <> '' AND not "Prep_Bijz_2" is null
 UNION
 select 
     gid,
-	"DBK_ID" as dbkfeature_id, 
+	siteid as siteid, 
 	"Repr_Bijz_1" as tekst,
 	'Repressie' as soort,
 	 1 as seq
@@ -393,17 +396,17 @@ from wfs."DBK" where "Repr_Bijz_1" <> '' AND not "Repr_Bijz_1" is null
 UNION
 select 
     gid,
-	"DBK_ID" as dbkfeature_id, 
+	siteid as siteid, 
 	"Repr_Bijz_2" as tekst,
 	'Repressie' as soort,
 	 2 as seq
-from wfs."DBK" where "Repr_Bijz_2" <> '' AND not "Repr_Bijz_2" is null) a order by a.dbkfeature_id, soort, seq;
+from wfs."DBK" where "Repr_Bijz_2" <> '' AND not "Repr_Bijz_2" is null) a order by a.siteid, soort, seq;
 GRANT SELECT ON TABLE dbk."Bijzonderheid" TO public;
 
 CREATE OR REPLACE VIEW dbk."DBKGebied_Feature" AS 
  SELECT df.gid, df.identificatie, df."BHVaanwezig", df."controleDatum", df."formeleNaam", df."informeleNaam", df.inzetprocedure, dg.geometrie, df.verwerkt, df.hoofdobject, df.risicoklasse
    FROM dbk."DBKFeature" df
-   JOIN dbk."DBKGebied" dg ON df.identificatie = dg.dbkfeature_id where df."typeFeature" = 'Gebied'
+   JOIN dbk."DBKGebied" dg ON df.identificatie = dg.siteid where df."typeFeature" = 'Gebied'
    ;
 
 GRANT SELECT ON TABLE dbk."DBKGebied_Feature" TO public;
@@ -412,7 +415,7 @@ CREATE OR REPLACE VIEW dbk."DBKObject_Feature" AS
  SELECT df.gid, df.identificatie, df."BHVaanwezig", df."controleDatum", df."formeleNaam", df."informeleNaam", df.inzetprocedure, dob."laagsteBouwlaag", dob."hoogsteBouwlaag", dob."OMSnummer", 
  dob.gebouwconstructie, dob.adres_id, dob.gebruikstype, df.verwerkt, df.hoofdobject, df.bouwlaag, df.risicoklasse,df.status
    FROM dbk."DBKFeature" df
-   JOIN dbk."DBKObject" dob ON df.identificatie = dob.dbkfeature_id  where df."typeFeature" = 'Object';
+   JOIN dbk."DBKObject" dob ON df.identificatie = dob.siteid  where df."typeFeature" = 'Object';
 
 GRANT SELECT ON TABLE dbk."DBKObject_Feature" TO public;
 
@@ -425,68 +428,68 @@ SELECT t.identificatie,
     (
       select array_to_json(array_agg(row_to_json(a)))
       from (
-        select "typeAanwezigheidsgroep","aantal","aantalNietZelfredzaam","tijdvakBegintijd","tijdvakEindtijd", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag" from dbk."AantalPersonen" where dbkfeature_id = d.identificatie
+        select "typeAanwezigheidsgroep","aantal","aantalNietZelfredzaam","tijdvakBegintijd","tijdvakEindtijd", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag" from dbk."AantalPersonen" where siteid = d.identificatie
       ) a 
     ) as verblijf,
     (
       select array_to_json(array_agg(row_to_json(a)))
       from (
-        select "seq","soort","tekst" from dbk."Bijzonderheid" where dbkfeature_id = d.identificatie order by soort asc, "seq" asc
+        select "seq","soort","tekst" from dbk."Bijzonderheid" where siteid = d.identificatie order by soort asc, "seq" asc
       ) a 
     ) as bijzonderheid,
     (
       select array_to_json(array_agg(row_to_json(b)))
       from (
-        select "typeScheiding", "Label", "aanvullendeInformatie", st_asgeojson(geometrie,15,2)::json as geometry from dbk."Brandcompartiment" where dbkfeature_id = d.identificatie
+        select "typeScheiding", "Label", "aanvullendeInformatie", st_asgeojson(geometrie,15,2)::json as geometry from dbk."Brandcompartiment" where siteid = d.identificatie
       ) b
     ) as brandcompartiment,
     (
       select array_to_json(array_agg(row_to_json(b)))
       from (
-        select "typeVoorziening", "naamVoorziening", lower("namespace") as namespace, "aanvullendeInformatie", hoek, radius, st_asgeojson(st_transform(locatie,$2),15,2)::json as geometry from dbk."Brandweervoorziening" where dbkfeature_id = d.identificatie
+        select "typeVoorziening", "naamVoorziening", lower("namespace") as namespace, "aanvullendeInformatie", hoek, radius, st_asgeojson(st_transform(locatie,$2),15,2)::json as geometry from dbk."Brandweervoorziening" where siteid = d.identificatie
       ) b
     ) as brandweervoorziening,
     (
       select array_to_json(array_agg(row_to_json(b)))
       from (
-        select "functie", "naam", "telefoonnummer"from dbk."Contact" where dbkfeature_id = d.identificatie order by "naam" asc
+        select "functie", "naam", "telefoonnummer"from dbk."Contact" where siteid = d.identificatie order by "naam" asc
       ) b
     ) as contact,
     (
       select array_to_json(array_agg(row_to_json(b)))
       from (
-        select "naam", "URL", "filetype" from dbk."Foto" where dbkfeature_id = d.identificatie order by bron, pos, "URL"
+        select "naam", "URL", "filetype" from dbk."Foto" where siteid = d.identificatie order by bron, pos, "URL"
       ) b
     ) as foto,
     (
       select array_to_json(array_agg(row_to_json(b)))
       from (
         select "naamStof", "gevaarsindicatienummer", "UNnummer", "hoeveelheid",
-        "symboolCode", lower("namespace") as namespace, "aanvullendeInformatie", st_asgeojson(st_transform(locatie, $2),15,2)::json as geometry from dbk."GevaarlijkeStof" where dbkfeature_id = d.identificatie
+        "symboolCode", lower("namespace") as namespace, "aanvullendeInformatie", st_asgeojson(st_transform(locatie, $2),15,2)::json as geometry from dbk."GevaarlijkeStof" where siteid = d.identificatie
       ) b
     ) as gevaarlijkestof,
     (
       select array_to_json(array_agg(row_to_json(b)))
       from (
-        select "typeHulplijn", "aanvullendeInformatie", st_asgeojson(st_transform(geometrie,$2),15,2)::json as geometry from dbk."Hulplijn" where dbkfeature_id = d.identificatie
+        select "typeHulplijn", "aanvullendeInformatie", st_asgeojson(st_transform(geometrie,$2),15,2)::json as geometry from dbk."Hulplijn" where siteid = d.identificatie
       ) b
     ) as hulplijn,
     (
       select array_to_json(array_agg(row_to_json(b)))
       from (
-        select "bagId", "bagStatus", st_asgeojson(st_transform(geometrie,$2),15,2)::json as geometry from dbk."Pandgeometrie" where dbkfeature_id = d.identificatie
+        select "bagId", "bagStatus", st_asgeojson(st_transform(geometrie,$2),15,2)::json as geometry from dbk."Pandgeometrie" where siteid = d.identificatie
       ) b
     ) as pandgeometrie,
     (
       select array_to_json(array_agg(row_to_json(b)))
       from (
-        select "tekst", "hoek", "schaal", st_asgeojson(st_transform(absolutepositie,$2),15,2)::json as geometry from dbk."TekstObject" where dbkfeature_id = d.identificatie
+        select "tekst", "hoek", "schaal", st_asgeojson(st_transform(absolutepositie,$2),15,2)::json as geometry from dbk."TekstObject" where siteid = d.identificatie
       ) b
     ) as tekstobject,
     (
       select array_to_json(array_agg(row_to_json(b)))
       from (
-        select "primair", "naamRoute", "aanvullendeInformatie", st_asgeojson(st_transform(geometrie,$2),15,2)::json as geometry from dbk."ToegangTerrein" where dbkfeature_id = d.identificatie
+        select "primair", "naamRoute", "aanvullendeInformatie", st_asgeojson(st_transform(geometrie,$2),15,2)::json as geometry from dbk."ToegangTerrein" where siteid = d.identificatie
       ) b
     ) as toegangterrein
     from dbk."DBKGebied_Feature" d WHERE d.identificatie = $1) t;
@@ -515,19 +518,19 @@ SELECT t.identificatie,
 	    d.status,
             ( SELECT array_to_json(array_agg(row_to_json(a.*))) AS array_to_json
                    FROM ( SELECT "AantalPersonen"."typeAanwezigheidsgroep",
-                            "AantalPersonen".aantal,
-                            "AantalPersonen"."aantalNietZelfredzaam",
-                            "AantalPersonen"."tijdvakBegintijd",
-                            "AantalPersonen"."tijdvakEindtijd",
-                            "AantalPersonen".maandag,
-                            "AantalPersonen".dinsdag,
-                            "AantalPersonen".woensdag,
-                            "AantalPersonen".donderdag,
-                            "AantalPersonen".vrijdag,
-                            "AantalPersonen".zaterdag,
-                            "AantalPersonen".zondag
-                           FROM dbk."AantalPersonen"
-                          WHERE "AantalPersonen".dbkfeature_id = d.identificatie) a) AS verblijf,
+                            op.aantal,
+                            op."aantalNietZelfredzaam",
+                            op."tijdvakBegintijd",
+                            op."tijdvakEindtijd",
+                            op.maandag,
+                            op.dinsdag,
+                            op.woensdag,
+                            op.donderdag,
+                            op.vrijdag,
+                            op.zaterdag,
+                            op.zondag
+                           FROM dbk.occupation op
+                          WHERE op.siteid = d.identificatie) a) AS verblijf,
             ( SELECT array_to_json(array_agg(row_to_json(a.*))) AS array_to_json
                    FROM ( SELECT "Adres"."bagId",
                             "Adres"."openbareRuimteNaam",
@@ -547,19 +550,19 @@ SELECT t.identificatie,
                             "AfwijkendeBinnendekking"."aanvullendeInformatie",
                             st_asgeojson(st_transform("AfwijkendeBinnendekking".locatie,$2), 15, 2)::json AS geometry
                            FROM dbk."AfwijkendeBinnendekking"
-                          WHERE "AfwijkendeBinnendekking".dbkfeature_id = d.identificatie) b) AS afwijkendebinnendekking,
+                          WHERE "AfwijkendeBinnendekking".siteid = d.identificatie) b) AS afwijkendebinnendekking,
             ( SELECT array_to_json(array_agg(row_to_json(a.*))) AS array_to_json
                    FROM ( SELECT "Bijzonderheid".seq,
                             "Bijzonderheid".soort,
                             "Bijzonderheid".tekst
                            FROM dbk."Bijzonderheid"
-                          WHERE "Bijzonderheid".dbkfeature_id = d.identificatie
+                          WHERE "Bijzonderheid".siteid = d.identificatie
                           ORDER BY "Bijzonderheid".soort, "Bijzonderheid".seq) a) AS bijzonderheid,
             ( SELECT array_to_json(array_agg(row_to_json(b.*))) AS array_to_json
                    FROM ( SELECT "Brandcompartiment"."typeScheiding","Label", "aanvullendeInformatie", 
                             st_asgeojson(st_transform("Brandcompartiment".geometrie,$2), 15, 2)::json AS geometry
                            FROM dbk."Brandcompartiment"
-                          WHERE "Brandcompartiment".dbkfeature_id = d.identificatie) b) AS brandcompartiment,
+                          WHERE "Brandcompartiment".siteid = d.identificatie) b) AS brandcompartiment,
             ( SELECT array_to_json(array_agg(row_to_json(b.*))) AS array_to_json
                    FROM ( SELECT "Brandweervoorziening"."typeVoorziening",
                             "Brandweervoorziening"."naamVoorziening",
@@ -570,7 +573,7 @@ SELECT t.identificatie,
                             radius,
                             st_asgeojson(st_transform("Brandweervoorziening".locatie,$2), 15, 2)::json AS geometry
                            FROM dbk."Brandweervoorziening"
-                          WHERE "Brandweervoorziening".dbkfeature_id = d.identificatie) b) AS brandweervoorziening,
+                          WHERE "Brandweervoorziening".siteid = d.identificatie) b) AS brandweervoorziening,
 	      ( SELECT array_to_json(array_agg(row_to_json(b.*))) AS array_to_json
                    FROM ( SELECT identificatie,
                             bouwlaag,
@@ -588,14 +591,14 @@ SELECT t.identificatie,
                             "Contact".naam,
                             "Contact".telefoonnummer
                            FROM dbk."Contact"
-                          WHERE "Contact".dbkfeature_id = d.identificatie
+                          WHERE "Contact".siteid = d.identificatie
                           ORDER BY "Contact".naam) b) AS contact,
             ( SELECT array_to_json(array_agg(row_to_json(b.*))) AS array_to_json
                    FROM ( SELECT "Foto".naam,
                             "Foto"."URL",
                             "Foto".filetype
                            FROM dbk."Foto"
-                          WHERE "Foto".dbkfeature_id = d.identificatie
+                          WHERE "Foto".siteid = d.identificatie
                           ORDER BY "Foto".bron, "Foto".pos, "Foto"."URL") b) AS foto,
             ( SELECT array_to_json(array_agg(row_to_json(b.*))) AS array_to_json
                    FROM ( SELECT "GevaarlijkeStof"."naamStof",
@@ -607,7 +610,7 @@ SELECT t.identificatie,
                             "GevaarlijkeStof"."aanvullendeInformatie",
                             st_asgeojson(st_transform("GevaarlijkeStof".locatie,$2), 15, 2)::json AS geometry
                            FROM dbk."GevaarlijkeStof"
-                          WHERE "GevaarlijkeStof".dbkfeature_id = d.identificatie) b) AS gevaarlijkestof,
+                          WHERE "GevaarlijkeStof".siteid = d.identificatie) b) AS gevaarlijkestof,
                    --OMS integratie siemens met voorwaarde om te kijken of siemens schema en tabel wel bestaan.
                    ( SELECT array_to_json(array_agg(row_to_json(b.*))) AS array_to_json
                    FROM ( SELECT *
@@ -618,27 +621,27 @@ SELECT t.identificatie,
                    FROM ( SELECT "Hulplijn"."typeHulplijn", "aanvullendeInformatie",
                             st_asgeojson(st_transform("Hulplijn".geometrie, $2), 15, 2)::json AS geometry
                            FROM dbk."Hulplijn"
-                          WHERE "Hulplijn".dbkfeature_id = d.identificatie) b) AS hulplijn,
+                          WHERE "Hulplijn".siteid = d.identificatie) b) AS hulplijn,
             ( SELECT array_to_json(array_agg(row_to_json(b.*))) AS array_to_json
                    FROM ( SELECT "Pandgeometrie"."bagId",
                             "Pandgeometrie"."bagStatus",
                             st_asgeojson(st_transform("Pandgeometrie".geometrie,$2), 15, 2)::json AS geometry
                            FROM dbk."Pandgeometrie"
-                          WHERE "Pandgeometrie".dbkfeature_id = d.identificatie) b) AS pandgeometrie,
+                          WHERE "Pandgeometrie".siteid = d.identificatie) b) AS pandgeometrie,
             ( SELECT array_to_json(array_agg(row_to_json(b.*))) AS array_to_json
                    FROM ( SELECT "TekstObject".tekst,
                             "TekstObject".hoek,
                             "TekstObject".schaal,
                             st_asgeojson(st_transform("TekstObject".absolutepositie, $2), 15, 2)::json AS geometry
                            FROM dbk."TekstObject"
-                          WHERE "TekstObject".dbkfeature_id = d.identificatie) b) AS tekstobject,
+                          WHERE "TekstObject".siteid = d.identificatie) b) AS tekstobject,
             ( SELECT array_to_json(array_agg(row_to_json(b.*))) AS array_to_json
                    FROM ( SELECT "ToegangTerrein".primair,
                             "ToegangTerrein"."naamRoute",
                             "ToegangTerrein"."aanvullendeInformatie",
                             st_asgeojson(st_transform("ToegangTerrein".geometrie,$2), 15, 2)::json AS geometry
                            FROM dbk."ToegangTerrein"
-                          WHERE "ToegangTerrein".dbkfeature_id = d.identificatie) b) AS toegangterrein
+                          WHERE "ToegangTerrein".siteid = d.identificatie) b) AS toegangterrein
            FROM dbk."DBKObject_Feature" d WHERE d.identificatie = $1) t;
 '
 LANGUAGE SQL;
@@ -651,7 +654,7 @@ SELECT t.identificatie,
 	gid, identificatie, "BHVaanwezig", "controleDatum", "formeleNaam", 
         "informeleNaam", "OMSNummer", inzetprocedure, "typeFeature", 
         (select initcap(df."gebruikstype") from dbk."DBKObject_Feature" df where d.identificatie = df.identificatie) as functie,
-	(select count(*) from dbk."GevaarlijkeStof" gs where d.identificatie = gs.dbkfeature_id) as gevaarlijkestoffen,
+	(select count(*) from dbk."GevaarlijkeStof" gs where d.identificatie = gs.siteid) as gevaarlijkestoffen,
         st_asgeojson(st_transform(geometrie,$1),15,2)::json as geometry, verwerkt, hoofdobject, bouwlaag, risicoklasse,
         (select count(*) from dbk."DBKFeature" d2 where d2.hoofdobject = d.identificatie) as verdiepingen
    FROM dbk."DBKFeature" d where d.hoofdobject is null AND (not d.geometrie is null and not st_isempty(d.geometrie) and not d."typeFeature" is null) AND (viewer = true) AND ((now() > datumtijdviewerbegin and now() <= datumtijdviewereind) OR 
@@ -685,7 +688,7 @@ SELECT t.identificatie,
                             "Adres".huisnummertoevoeging,
                             "Adres".postcode
                            FROM dbk."Adres"
-                          WHERE "Adres"."bagId" = (select dob.adres_id from dbk."DBKObject" dob where dob.dbkfeature_id = d.identificatie)) a) AS adres        
+                          WHERE "Adres"."bagId" = (select dob.adres_id from dbk."DBKObject" dob where dob.siteid = d.identificatie)) a) AS adres        
    FROM dbk."DBKFeature" d where d.hoofdobject is null AND (not d.geometrie is null and not st_isempty(d.geometrie) and not d."typeFeature" is null) AND (viewer = true) AND ((now() > datumtijdviewerbegin and now() <= datumtijdviewereind) OR 
 (datumtijdviewerbegin is null and datumtijdviewereind is null) OR
 (now() > datumtijdviewerbegin and datumtijdviewereind is null) OR

@@ -124,7 +124,7 @@ exports.getFeatures = function(req, res) {
                     var resultset = {"type": "FeatureCollection", "features": []};
                     
                     for (index = 0; index < result.rows.length; ++index) {
-                        var item = {type: 'Feature', id: 'DBKFeature.gid--' + result.rows[index].feature.gid};
+                        var item = {type: 'Feature', id: 'DBKFeature.gid-' + result.rows[index].feature.gid};
                         item.geometry = result.rows[index].feature.geometry;
                         item.properties = result.rows[index].feature;
                         delete item.properties.geometry;

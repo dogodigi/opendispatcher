@@ -1,23 +1,5 @@
 drop schema if exists wfs cascade;
 create schema wfs;
-CREATE TABLE wfs."AantalPersonen"
-(
-  gid serial PRIMARY KEY,
-  "DBK_ID" integer,
-  "TypeGroep" character varying,
-  "Aantal" character varying,
-  "AantalNZR" character varying,
-  "Begintijd" character varying,
-  "Eindtijd" character varying,
-  "Licence_ID" integer,
-  maandag boolean,
-  dinsdag boolean,
-  woensdag boolean,
-  donderdag boolean,
-  vrijdag boolean,
-  zaterdag boolean,
-  zondag boolean
-);
 
 CREATE TABLE wfs."Adres"
 (
@@ -42,7 +24,7 @@ CREATE TABLE wfs."Adres"
 CREATE TABLE wfs."AfwijkendeBinnendekking"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Section_ID" integer,
   "AlternatiefComm" character varying,
   "Dekking" boolean,
@@ -58,7 +40,7 @@ CREATE TABLE wfs."AfwijkendeBinnendekking"
 CREATE TABLE wfs."Brandcompartiment"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Soort" character varying,
   "Omschrijving" character varying,
   "VisibleToAll" boolean,
@@ -85,7 +67,7 @@ CREATE TABLE wfs."type_brandcompartiment"
 CREATE TABLE wfs."Contact"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Functie" character varying,
   "Naam" character varying,
   "Telefoonnummer" character varying,
@@ -95,7 +77,7 @@ CREATE TABLE wfs."Contact"
 CREATE TABLE wfs."Hulplijn"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Type" character varying,
   "VisibleToAll" boolean,
   "Licence_ID" integer,
@@ -114,7 +96,7 @@ CREATE TABLE wfs."Hulplijn"
 CREATE TABLE wfs."DBK"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Section_ID" integer,
   "Nummer" character varying,
   "Formele_Naam" character varying,
@@ -150,7 +132,7 @@ CREATE TABLE wfs."DBK"
 CREATE TABLE wfs."DBK2"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Datum_Begin" character varying,
   "Datum_Eind" character varying,
   "Status" character varying,
@@ -175,7 +157,7 @@ CREATE TABLE wfs."DBK2"
 CREATE TABLE wfs."Gebied"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Section_ID" integer,
   "Licence_ID" integer,
   "Uniek_ID" integer,
@@ -188,7 +170,7 @@ CREATE TABLE wfs."Gebied"
 CREATE TABLE wfs."Object"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Section_ID" integer,
   "Nummer" character varying,
   "Adres_ID" integer,
@@ -202,7 +184,7 @@ CREATE TABLE wfs."Object"
 CREATE TABLE wfs."Polygon"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Section_ID" integer,
   "Datum" character varying,
   "Licence_ID" integer,
@@ -217,7 +199,7 @@ CREATE TABLE wfs."Polygon"
 CREATE TABLE wfs."GevaarlijkeStof"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Omschrijving" character varying,
   "Symbol" character varying,
   "GEVIcode" integer,
@@ -238,7 +220,7 @@ CREATE TABLE wfs."GevaarlijkeStof"
 CREATE TABLE wfs."TekstObject"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Tekst" character varying,
   "LabelSize" integer,
   "Font" character varying,
@@ -258,7 +240,7 @@ CREATE TABLE wfs."TekstObject"
 CREATE TABLE wfs."Light"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "NaamBeheerder" character varying,
   "Email" character varying,
   "Telfoonnummer" character varying,
@@ -274,7 +256,7 @@ CREATE TABLE wfs."Light"
 CREATE TABLE wfs."LightLog"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Omschrijving" character varying,
   "DatumTijd" character varying,
   "Licence_ID" integer
@@ -283,7 +265,7 @@ CREATE TABLE wfs."LightLog"
 CREATE TABLE wfs."Locatie"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Map_Type" character varying,
   "Zoom" double precision,
   "Xcenter" double precision,
@@ -298,7 +280,7 @@ CREATE TABLE wfs."Locatie"
 CREATE TABLE wfs."Foto"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Documentnaam" character varying,
   "X" double precision,
   "Y" double precision,
@@ -327,7 +309,7 @@ CREATE TABLE wfs.type_brandweervoorziening
 CREATE TABLE wfs."Brandweervoorziening"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Symbol_Type_ID" integer,
   "Rotatie" integer,
   "X" double precision,
@@ -356,7 +338,7 @@ CREATE TABLE wfs.sync
 CREATE TABLE wfs."ToegangTerrein"
 (
   gid serial PRIMARY KEY,
-  "DBK_ID" integer,
+  siteid integer,
   "Primair" integer,
   "Licence_ID" integer,
   the_geom geometry,

@@ -109,27 +109,27 @@ insert into dbk.type_brandcompartiment (gid,naam,brandcompartiment_symbool,names
 insert into dbk.type_brandcompartiment (gid,naam,brandcompartiment_symbool,namespace) values (4,'Rookwerende scheiding','Tbk5.004','NEN1414');
 insert into dbk.type_brandcompartiment (gid,naam,brandcompartiment_symbool,namespace) values (5,'> 60 minuten brandwerende scheiding','Tbk5.005','NEN1414');
 
-insert into dbk.type_aanwezigheidsgroep (gid,naam) values (1,'Niet gespecificeerd');
-insert into dbk.type_aanwezigheidsgroep (gid,naam) values (2,'Bewoners');
-insert into dbk.type_aanwezigheidsgroep (gid,naam) values (3,'Bezoekers');
-insert into dbk.type_aanwezigheidsgroep (gid,naam) values (4,'Personeel');
+insert into dbk.type_aanwezigheidsgroep (gid,naam) values (1,'Unspecified');
+insert into dbk.type_aanwezigheidsgroep (gid,naam) values (2,'Inhabitants');
+insert into dbk.type_aanwezigheidsgroep (gid,naam) values (3,'Visitors');
+insert into dbk.type_aanwezigheidsgroep (gid,naam) values (4,'Staff');
 
 insert into wfs."DBK" 
-("DBK_ID","Section_ID","Formele_Naam","Informele_Naam","Gebruikstype","Bouwlaag_Max","Bouwlaag_Min","Datum_Actualisatie","Gebruiker","HasPolygon","Deleted","Licence_ID")
+(siteid,"Section_ID","Formele_Naam","Informele_Naam","Gebruikstype","Bouwlaag_Max","Bouwlaag_Min","Datum_Actualisatie","Gebruiker","HasPolygon","Deleted","Licence_ID")
 values
 (1,0,'Formal name','Informal name','Recreation','4','1','20140227130318768','Demo User',1,false,1),
 (2,0,'Stadium','Old stadium','Sports','4','1','20140227130318768','Demo User',1,false,1);
 
 insert into wfs."DBK2" 
-("DBK_ID","Datum_Begin","Datum_Eind","Status","Prioriteit","BHVaanwezig","Bouwlaag","Licence_ID","inzetprocedure","Gebruikstype_Specifiek","Viewer")
+(siteid,"Datum_Begin","Datum_Eind","Status","Prioriteit","BHVaanwezig","Bouwlaag","Licence_ID","inzetprocedure","Gebruikstype_Specifiek","Viewer")
 values
 (1,'20130101000000000','','Gereed','Prio 3','Nee','BG',1,'Offensive inside','Recreational',true),
 (2,'20130101000000000','','Gereed','Prio 1','Nee','0',1,'','',true);
 
 -- wfs."Adres" skipped
 
-insert into wfs."AantalPersonen"
-("DBK_ID","TypeGroep","Aantal","AantalNZR","Begintijd","Eindtijd","Licence_ID",maandag,dinsdag,woensdag,donderdag,vrijdag,zaterdag,zondag) 
+insert into wfs.occupation
+(siteid,type_occupation,"Aantal","AantalNZR","Begintijd","Eindtijd","Licence_ID",maandag,dinsdag,woensdag,donderdag,vrijdag,zaterdag,zondag) 
 values
 (1,'Inhabitants','10','5','000000000','000000000',1,true,true,true,true,true,true,true),
 (1,'Staff','12','0','000000000','090000000',1,true,true,true,true,true,true,true),
@@ -137,42 +137,42 @@ values
 (1,'Visitors','500','2','120000000','130000000',1,false,false,false,true,true,true,true);
 
 insert into wfs."Brandcompartiment"
-("DBK_ID","Soort","Omschrijving","VisibleToAll","Licence_ID","Label",the_geom,"Uniek_ID")
+(siteid,"Soort","Omschrijving","VisibleToAll","Licence_ID","Label",the_geom,"Uniek_ID")
 values
 (1,'60 minuten','',false,1,'',st_multi(st_geomfromtext('LINESTRING(-68.93934896694183578 12.10550580140640875, -68.93916452357281344 12.10572410995509429, -68.93934896694183578 12.1058759766663453)',4326)),0),
 (1,'30 minuten','',false,1,'',st_multi(st_geomfromtext('LINESTRING(-68.93873739156033764 12.1057051266101201, -68.93898008020377688 12.10542037627357992)',4326)),0),
 (1,'Rookwerend','',false,1,'',st_multi(st_geomfromtext('LINESTRING(-68.93921447479492315 12.10566583496521353, -68.9389475815368229 12.10545385415680819)',4326)),0);
 
 insert into wfs."Brandweervoorziening"
-("DBK_ID","Symbol_Type_ID","Rotatie","X","Y","Omschrijving","Picturename","VisibleToAll","Licence_ID",the_geom,"Uniek_ID")
+(siteid,"Symbol_Type_ID","Rotatie","X","Y","Omschrijving","Picturename","VisibleToAll","Licence_ID",the_geom,"Uniek_ID")
 values
 (1,1011,60,0,0,'First vehicle',NULL,false,1,st_geomfromtext('POINT(-68.93880119852251198 12.10586952096222291)',4326),0),
 (1,1012,45,0,0,'Other vehicle',NULL,false,1,st_geomfromtext('POINT(-68.93895192131208205 12.10528003639316452)',4326),0);
 
 insert into wfs."Contact"
-("DBK_ID","Functie","Naam","Telefoonnummer","Licence_ID")
+(siteid,"Functie","Naam","Telefoonnummer","Licence_ID")
 values
 (1,'Manager','Carl Zeiss','555-1234',1),
 (1,'Janitor','Milo van der Linden','555-1235',1);
 
 insert into wfs."Foto"
-("DBK_ID","Documentnaam","X","Y","VisibleToAll","Licence_ID","Bestandstype",the_geom,"Uniek_ID")
+(siteid,"Documentnaam","X","Y","VisibleToAll","Licence_ID","Bestandstype",the_geom,"Uniek_ID")
 values
 (1,'image1.png',0,0,false,1,'Afbeelding',st_geomfromtext('POINT(-68.93951693588898877 12.10575071315334661)',4326),0),
 (1,'image2.png',0,0,false,1,'Afbeelding',st_geomfromtext('POINT(-68.93941566431041679 12.10587036171409281)',4326),0);
 
 insert into wfs."Gebied"
-("DBK_ID","Section_ID","Licence_ID",the_geom,"Uniek_ID")
+(siteid,"Section_ID","Licence_ID",the_geom,"Uniek_ID")
 values
 (2,0,1,st_multi(st_geomfromtext('POLYGON((-68.94098537377824698 12.10726625762936948,-68.93922437355089983 12.10700770800043635,-68.93919061635804724 12.10688668468388407,-68.93922437355089983 12.10671615173566629,-68.93904433518900987 12.10662263362105762,-68.93984325541994451 12.10569845284564217,-68.94096286898299297 12.10586348536147483,-68.94110352395324526 12.10680966981752604,-68.94098537377824698 12.10726625762936948))',4326)),0);
 
 insert into wfs."GevaarlijkeStof"
-("DBK_ID","Omschrijving","Symbol","GEVIcode","UNnr","X","Y","VisibleToAll","Licence_ID",the_geom,"Hoeveelheid","NaamStof","Uniek_ID")
+(siteid,"Omschrijving","Symbol","GEVIcode","UNnr","X","Y","VisibleToAll","Licence_ID",the_geom,"Hoeveelheid","NaamStof","Uniek_ID")
 values
 (1,'Oxygen','EU-GHS07',25,1072,0,0,false,1,st_geomfromtext('POINT(-68.93919624255686074 12.10550041369206653)',4326),'200 l','',0);
 
 insert into wfs."Hulplijn"
-("DBK_ID","Type","VisibleToAll","Licence_ID","Omschrijving",the_geom,"Uniek_ID")
+(siteid,"Type","VisibleToAll","Licence_ID","Omschrijving",the_geom,"Uniek_ID")
 values
 (1,'Fence',false,1,'',st_multi(st_geomfromtext('LINESTRING(-68.93964071226280055 12.10594600158116663, -68.93947192629852339 12.10581397561743344)',4326)),0),
 (1,'Arrow',false,1,'',st_multi(st_geomfromtext('LINESTRING(-68.93881928723662611 12.10731576710423418, -68.93866737986877524 12.10720024498193936, -68.93866737986877524 12.10709022386665445, -68.93862237027830986 12.10702421117572491, -68.9389486898092656 12.10662813468754351, -68.93911184957472926 12.10635308122520115, -68.93921874735210054 12.10624305976095805, -68.93882491343543961 12.10589099077086672)',4326)),0),
@@ -183,7 +183,7 @@ values
 -- wfs."Locatie" skipped
 -- wfs."Object" skipped
 insert into wfs."Polygon"
-("DBK_ID","Section_ID","Datum","Licence_ID",the_geom,"BAG_Pand_ID","Uniek_ID")
+(siteid,"Section_ID","Datum","Licence_ID",the_geom,"BAG_Pand_ID","Uniek_ID")
 values
 (1,0,'',1,st_multi(st_geomfromtext('POLYGON((-68.93920491176834275 12.10612489544584847,-68.93970761414360027 12.10554580199589836,-68.93968161229659586 12.10552037835225114,-68.93888855596324561 12.10537348614160891,-68.93889144505735089 12.10536501158851941,-68.93884088591042314 12.10535512460959318,-68.93884088591042314 12.10536924886510235,-68.93858664562867489 12.10531275183859634,-68.93854330921702456 12.10531275183859634,-68.93843496818787742 12.10536924886510235,-68.93841763362321728 12.10538196069440708,-68.93840607724676772 12.10540173464992009,-68.93840463269971508 12.10542009617873127,-68.93840463269971508 12.10543704528111952,-68.93841618907616464 12.10545116953229261,-68.93920491176834275 12.10612489544584847))',4326)),'',0);
 
