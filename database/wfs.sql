@@ -4,7 +4,7 @@ CREATE TABLE wfs.occupation
 (
   gid serial PRIMARY KEY,
   siteid integer,
-  occupationtype character varying,
+  type_occupation character varying,
   "Aantal" character varying,
   "AantalNZR" character varying,
   "Begintijd" character varying,

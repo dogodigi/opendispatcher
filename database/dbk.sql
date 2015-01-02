@@ -255,13 +255,13 @@ CREATE OR REPLACE VIEW dbk.occupation AS
             WHEN lower(a.type_occupation::text) = 'staff'::text THEN ( SELECT type_aanwezigheidsgroep.naam
                FROM dbk.type_aanwezigheidsgroep
               WHERE type_aanwezigheidsgroep.gid = 4)
-            WHEN lower(a.occupationtype::text) = 'visitors'::text THEN ( SELECT type_aanwezigheidsgroep.naam
+            WHEN lower(a.type_occupation::text) = 'visitors'::text THEN ( SELECT type_aanwezigheidsgroep.naam
                FROM dbk.type_aanwezigheidsgroep
               WHERE type_aanwezigheidsgroep.gid = 3)
             ELSE ( SELECT type_aanwezigheidsgroep.naam
                FROM dbk.type_aanwezigheidsgroep
               WHERE type_aanwezigheidsgroep.gid = 1)
-        END AS "typeAanwezigheidsgroep", a."Aantal" AS aantal, a."AantalNZR" AS "aantalNietZelfredzaam", 
+        END AS type_occupation, a."Aantal" AS aantal, a."AantalNZR" AS "aantalNietZelfredzaam", 
         maandag,
         dinsdag,
         woensdag,
@@ -428,7 +428,7 @@ SELECT t.identificatie,
     (
       select array_to_json(array_agg(row_to_json(a)))
       from (
-        select "typeAanwezigheidsgroep","aantal","aantalNietZelfredzaam","tijdvakBegintijd","tijdvakEindtijd", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag" from dbk."AantalPersonen" where siteid = d.identificatie
+        select type_occupation,"aantal","aantalNietZelfredzaam","tijdvakBegintijd","tijdvakEindtijd", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag" from dbk."AantalPersonen" where siteid = d.identificatie
       ) a 
     ) as verblijf,
     (
@@ -517,7 +517,7 @@ SELECT t.identificatie,
             d.verwerkt,
 	    d.status,
             ( SELECT array_to_json(array_agg(row_to_json(a.*))) AS array_to_json
-                   FROM ( SELECT "AantalPersonen"."typeAanwezigheidsgroep",
+                   FROM ( SELECT "AantalPersonen".type_occupation,
                             op.aantal,
                             op."aantalNietZelfredzaam",
                             op."tijdvakBegintijd",
