@@ -1,5 +1,23 @@
 drop schema if exists wfs cascade;
 create schema wfs;
+CREATE TABLE wfs.occupation
+(
+  gid serial PRIMARY KEY,
+  siteid integer,
+  occupationtype character varying,
+  "Aantal" character varying,
+  "AantalNZR" character varying,
+  "Begintijd" character varying,
+  "Eindtijd" character varying,
+  "Licence_ID" integer,
+  maandag boolean,
+  dinsdag boolean,
+  woensdag boolean,
+  donderdag boolean,
+  vrijdag boolean,
+  zaterdag boolean,
+  zondag boolean
+);
 
 CREATE TABLE wfs."Adres"
 (
