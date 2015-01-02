@@ -139,9 +139,9 @@ values
 insert into wfs."Brandcompartiment"
 ("DBK_ID","Soort","Omschrijving","VisibleToAll","Licence_ID","Label",the_geom,"Uniek_ID")
 values
-(1,'60 minuten','',false,1,'',st_geomfromtext('LINESTRING(-68.93934896694183578 12.10550580140640875, -68.93916452357281344 12.10572410995509429, -68.93934896694183578 12.1058759766663453)',4326),0),
-(1,'30 minuten','',false,1,'',st_geomfromtext('LINESTRING(-68.93873739156033764 12.1057051266101201, -68.93898008020377688 12.10542037627357992)',4326),0),
-(1,'Rookwerend','',false,1,'',st_geomfromtext('LINESTRING(-68.93921447479492315 12.10566583496521353, -68.9389475815368229 12.10545385415680819)',4326),0);
+(1,'60 minuten','',false,1,'',st_multi(st_geomfromtext('LINESTRING(-68.93934896694183578 12.10550580140640875, -68.93916452357281344 12.10572410995509429, -68.93934896694183578 12.1058759766663453)',4326)),0),
+(1,'30 minuten','',false,1,'',st_multi(st_geomfromtext('LINESTRING(-68.93873739156033764 12.1057051266101201, -68.93898008020377688 12.10542037627357992)',4326)),0),
+(1,'Rookwerend','',false,1,'',st_multi(st_geomfromtext('LINESTRING(-68.93921447479492315 12.10566583496521353, -68.9389475815368229 12.10545385415680819)',4326)),0);
 
 insert into wfs."Brandweervoorziening"
 ("DBK_ID","Symbol_Type_ID","Rotatie","X","Y","Omschrijving","Picturename","VisibleToAll","Licence_ID",the_geom,"Uniek_ID")
