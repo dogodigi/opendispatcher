@@ -124,7 +124,7 @@ insert into wfs."DBK2"
 ("DBK_ID","Datum_Begin","Datum_Eind","Status","Prioriteit","BHVaanwezig","Bouwlaag","Licence_ID","inzetprocedure","Gebruikstype_Specifiek","Viewer")
 values
 (1,'20130101000000000','','Gereed','Prio 3','Nee','BG',1,'Offensive inside','Recreational',true),
-(1,'20130101000000000','','Gereed','Prio 1','Nee','0',1,'','',true);
+(2,'20130101000000000','','Gereed','Prio 1','Nee','0',1,'','',true);
 
 -- wfs."Adres" skipped
 
