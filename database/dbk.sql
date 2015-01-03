@@ -261,15 +261,15 @@ CREATE OR REPLACE VIEW dbk.occupation AS
             ELSE ( SELECT type_aanwezigheidsgroep.naam
                FROM dbk.type_aanwezigheidsgroep
               WHERE type_aanwezigheidsgroep.gid = 1)
-        END AS type_occupation, a."Aantal" AS aantal, a."AantalNZR" AS "aantalNietZelfredzaam", 
-        maandag,
-        dinsdag,
-        woensdag,
-        donderdag,
-        vrijdag,
-        zaterdag,
-        zondag,
-        to_timestamp(a."Begintijd"::text, 'HH24MISSMS'::text)::time without time zone AS "tijdvakBegintijd", to_timestamp(a."Eindtijd"::text, 'HH24MISSMS'::text)::time without time zone AS "tijdvakEindtijd"
+        END AS type_occupation, a.selfreliant AS selfreliant, a.reliant AS reliant, 
+        monday,
+        tuesday,
+        wednesday,
+        thursday,
+        friday,
+        saturday,
+        sunday,
+        to_timestamp(a.starttime::text, 'HH24MISSMS'::text)::time without time zone AS starttime, to_timestamp(a.endtime::text, 'HH24MISSMS'::text)::time without time zone AS endtime
    FROM wfs.occupation a;
 grant select on table dbk.occupation to public;
 
@@ -428,7 +428,7 @@ SELECT t.identificatie,
     (
       select array_to_json(array_agg(row_to_json(a)))
       from (
-        select type_occupation,"aantal","aantalNietZelfredzaam","tijdvakBegintijd","tijdvakEindtijd", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag" from dbk.occupation where siteid = d.identificatie
+        select type_occupation,"aantal","aantalNietZelfredzaam","tijdvakBegintijd","tijdvakEindtijd", monday, tuesday, wednesday, thursday, friday, saturday, sunday from dbk.occupation where siteid = d.identificatie
       ) a 
     ) as verblijf,
     (
@@ -522,13 +522,13 @@ SELECT t.identificatie,
                             op."aantalNietZelfredzaam",
                             op."tijdvakBegintijd",
                             op."tijdvakEindtijd",
-                            op.maandag,
-                            op.dinsdag,
-                            op.woensdag,
-                            op.donderdag,
-                            op.vrijdag,
-                            op.zaterdag,
-                            op.zondag
+                            op.monday,
+                            op.tuesday,
+                            op.wednesday,
+                            op.thursday,
+                            op.friday,
+                            op.saturday,
+                            op.sunday
                            FROM dbk.occupation op
                           WHERE op.siteid = d.identificatie) a) AS verblijf,
             ( SELECT array_to_json(array_agg(row_to_json(a.*))) AS array_to_json

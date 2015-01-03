@@ -5,18 +5,18 @@ CREATE TABLE wfs.occupation
   gid serial PRIMARY KEY,
   siteid integer,
   type_occupation character varying,
-  "Aantal" character varying,
-  "AantalNZR" character varying,
-  "Begintijd" character varying,
-  "Eindtijd" character varying,
-  "Licence_ID" integer,
-  maandag boolean,
-  dinsdag boolean,
-  woensdag boolean,
-  donderdag boolean,
-  vrijdag boolean,
-  zaterdag boolean,
-  zondag boolean
+  selfreliant character varying,
+  reliant character varying,
+  starttime character varying,
+  endtime character varying,
+  userid integer,
+  monday boolean,
+  tuesday boolean,
+  wednesday boolean,
+  thursday boolean,
+  friday boolean,
+  saturday boolean,
+  sunday boolean
 );
 
 CREATE TABLE wfs."Adres"
@@ -30,7 +30,7 @@ CREATE TABLE wfs."Adres"
   "Postcode" character varying,
   "Plaats" character varying,
   "Gemeente" character varying,
-  "Licence_ID" integer,
+  userid integer,
   the_geom geometry,
   "Adresseerbaarobject_ID" character varying,
   "TypeAdresseerbaarobject" character varying,
@@ -49,7 +49,7 @@ CREATE TABLE wfs."AfwijkendeBinnendekking"
   "Aanvullendeinformatie" character varying,
   the_geom geometry,
   "Uniek_ID" integer,
-  "Licence_ID" integer,
+  userid integer,
   CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
   CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'POINT'::text OR the_geom IS NULL),
   CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4326)
@@ -62,7 +62,7 @@ CREATE TABLE wfs."Brandcompartiment"
   "Soort" character varying,
   "Omschrijving" character varying,
   "VisibleToAll" boolean,
-  "Licence_ID" integer,
+  userid integer,
   "Label" character varying,
   the_geom geometry,
   "Uniek_ID" integer,
@@ -89,7 +89,7 @@ CREATE TABLE wfs."Contact"
   "Functie" character varying,
   "Naam" character varying,
   "Telefoonnummer" character varying,
-  "Licence_ID" integer
+  userid integer
 );
 
 CREATE TABLE wfs."Hulplijn"
@@ -98,7 +98,7 @@ CREATE TABLE wfs."Hulplijn"
   siteid integer,
   "Type" character varying,
   "VisibleToAll" boolean,
-  "Licence_ID" integer,
+  userid integer,
   "Omschrijving" character varying,
   the_geom geometry,
   "Uniek_ID" integer,
@@ -139,7 +139,7 @@ CREATE TABLE wfs."DBK"
   "Gebruiker" character varying,
   "HasPolygon" integer,
   "Deleted" boolean,
-  "Licence_ID" integer,
+  userid integer,
   the_geom geometry,
   verwerkt boolean DEFAULT false,
   CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
@@ -157,7 +157,7 @@ CREATE TABLE wfs."DBK2"
   "Prioriteit" character varying,
   "BHVaanwezig" character varying,
   "Bouwlaag" character varying,
-  "Licence_ID" integer,
+  userid integer,
   inzetprocedure character varying,
   "Datum_Aanmaak" character varying,
   "Gebruiker_Aanmaak" character varying,
@@ -177,7 +177,7 @@ CREATE TABLE wfs."Gebied"
   gid serial PRIMARY KEY,
   siteid integer,
   "Section_ID" integer,
-  "Licence_ID" integer,
+  userid integer,
   "Uniek_ID" integer,
   the_geom geometry,
   CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
@@ -196,7 +196,7 @@ CREATE TABLE wfs."Object"
   "Gebouwconstructie" character varying,
   "Bouwlaag_Max" character varying,
   "Bouwlaag_Min" character varying,
-  "Licence_ID" integer
+  userid integer
 );
 
 CREATE TABLE wfs."Polygon"
@@ -205,7 +205,7 @@ CREATE TABLE wfs."Polygon"
   siteid integer,
   "Section_ID" integer,
   "Datum" character varying,
-  "Licence_ID" integer,
+  userid integer,
   the_geom geometry,
   "BAG_Pand_ID" character varying,
   "Uniek_ID" integer,
@@ -225,7 +225,7 @@ CREATE TABLE wfs."GevaarlijkeStof"
   "X" double precision,
   "Y" double precision,
   "VisibleToAll" boolean,
-  "Licence_ID" integer,
+  userid integer,
   the_geom geometry,
   "Hoeveelheid" character varying,
   "NaamStof" character varying,
@@ -246,7 +246,7 @@ CREATE TABLE wfs."TekstObject"
   "XBegin" double precision,
   "YBegin" double precision,
   "VisibleToAll" boolean,
-  "Licence_ID" integer,
+  userid integer,
   the_geom geometry,
   "Rotatie" double precision,
   "Uniek_ID" integer,
@@ -268,7 +268,7 @@ CREATE TABLE wfs."Light"
   "Goedgekeurd" boolean,
   "Afgehandeld" boolean,
   "Web" boolean,
-  "Licence_ID" integer
+  userid integer
 );
 
 CREATE TABLE wfs."LightLog"
@@ -277,7 +277,7 @@ CREATE TABLE wfs."LightLog"
   siteid integer,
   "Omschrijving" character varying,
   "DatumTijd" character varying,
-  "Licence_ID" integer
+  userid integer
 );
 
 CREATE TABLE wfs."Locatie"
@@ -288,7 +288,7 @@ CREATE TABLE wfs."Locatie"
   "Zoom" double precision,
   "Xcenter" double precision,
   "Ycenter" double precision,
-  "Licence_ID" integer,
+  userid integer,
   the_geom geometry,
   CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
   CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'POINT'::text OR the_geom IS NULL),
@@ -303,7 +303,7 @@ CREATE TABLE wfs."Foto"
   "X" double precision,
   "Y" double precision,
   "VisibleToAll" boolean,
-  "Licence_ID" integer,
+  userid integer,
   "Bestandstype" character varying,
   the_geom geometry,
   "Uniek_ID" integer,
@@ -335,7 +335,7 @@ CREATE TABLE wfs."Brandweervoorziening"
   "Omschrijving" character varying,
   "Picturename" character varying,
   "VisibleToAll" boolean,
-  "Licence_ID" integer,
+  userid integer,
   the_geom geometry,
   "Uniek_ID" integer,
   CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
@@ -347,7 +347,7 @@ CREATE TABLE wfs.sync
 (
   gid serial PRIMARY KEY,
   "Busy" boolean,
-  "Licence_ID" integer,
+  userid integer,
   the_geom geometry,
   CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
   CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4326)
@@ -358,7 +358,7 @@ CREATE TABLE wfs."ToegangTerrein"
   gid serial PRIMARY KEY,
   siteid integer,
   "Primair" integer,
-  "Licence_ID" integer,
+  userid integer,
   the_geom geometry,
   "Omschrijving" character varying,
   "NaamRoute" character varying,
