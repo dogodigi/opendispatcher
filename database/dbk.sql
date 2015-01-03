@@ -428,7 +428,7 @@ SELECT t.identificatie,
     (
       select array_to_json(array_agg(row_to_json(a)))
       from (
-        select type_occupation,"aantal","aantalNietZelfredzaam","tijdvakBegintijd","tijdvakEindtijd", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag" from dbk."AantalPersonen" where siteid = d.identificatie
+        select type_occupation,"aantal","aantalNietZelfredzaam","tijdvakBegintijd","tijdvakEindtijd", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag" from dbk.occupation where siteid = d.identificatie
       ) a 
     ) as verblijf,
     (
