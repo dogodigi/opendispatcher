@@ -428,7 +428,7 @@ SELECT t.identificatie,
     (
       select array_to_json(array_agg(row_to_json(a)))
       from (
-        select type_occupation,"aantal","aantalNietZelfredzaam","tijdvakBegintijd","tijdvakEindtijd", monday, tuesday, wednesday, thursday, friday, saturday, sunday from dbk.occupation where siteid = d.identificatie
+        select type_occupation,selfreliant,reliant,starttime,endtime, monday, tuesday, wednesday, thursday, friday, saturday, sunday from dbk.occupation where siteid = d.identificatie
       ) a 
     ) as verblijf,
     (
@@ -518,10 +518,10 @@ SELECT t.identificatie,
 	    d.status,
             ( SELECT array_to_json(array_agg(row_to_json(a.*))) AS array_to_json
                    FROM ( SELECT op.type_occupation,
-                            op.aantal,
-                            op."aantalNietZelfredzaam",
-                            op."tijdvakBegintijd",
-                            op."tijdvakEindtijd",
+                            op.selfreliant,
+                            op.reliant,
+                            op.starttime,
+                            op.endtime,
                             op.monday,
                             op.tuesday,
                             op.wednesday,
