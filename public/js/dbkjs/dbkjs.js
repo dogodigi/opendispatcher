@@ -31,6 +31,7 @@ dbkjs.mediaPath = dbkjs.mediaPath || null;
 dbkjs.basePath = dbkjs.basePath || null;
 
 dbkjs.viewmode = 'default';
+//dbkjs.viewmode = 'fullscreen';
 
 dbkjs.init = function () {
 

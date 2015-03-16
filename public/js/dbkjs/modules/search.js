@@ -388,5 +388,9 @@ dbkjs.modules.search = {
             mdiv.removeClass('active');
             return false;
         });
+
+        // default handler
+        dbkjs.modules.feature.search_dbk();
+
     }
 };
