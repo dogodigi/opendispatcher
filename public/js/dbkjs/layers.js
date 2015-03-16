@@ -16,6 +16,9 @@ dbkjs.layers = {
             dbkjs.map.addLayer(bl);
             _li.click(function() {
                 dbkjs.toggleBaseLayer(bl_index);
+                if(dbkjs.viewmode === 'fullscreen') {
+                    dbkjs.util.getModalPopup('baselayerpanel').hide();
+                }
             });
         });
         return baselayer_ul;
