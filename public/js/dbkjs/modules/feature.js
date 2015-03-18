@@ -188,13 +188,11 @@ dbkjs.modules.feature = {
         if(_obj.caches.hasOwnProperty('dbk')) {
             return _obj.caches.dbk;
         }
-        $.each(_obj.features, function(key, value) {
-            dbk_naam_array.push({
-                value: value.attributes.formeleNaam + ' ' + value.attributes.informeleNaam,
-                geometry: value.geometry,
-                id: value.attributes.identificatie,
-                attributes: value.attributes
-            });
+        $.each(_obj.features, function(key, feature) {
+            // Extend feature object with value and id for searching
+            feature.value = feature.attributes.formeleNaam + ' ' + feature.attributes.informeleNaam;
+            feature.id = feature.attributes.identificatie;
+            dbk_naam_array.push(feature);
         });
         _obj.caches.dbk = dbk_naam_array;
         return _obj.caches.dbk;
