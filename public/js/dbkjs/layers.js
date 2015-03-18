@@ -5,7 +5,7 @@ dbkjs.layers = {
     createBaseLayers: function() {
         var baselayer_ul = $('<ul id="baselayerpanel_ul" class="nav nav-pills nav-stacked">');
         $.each(dbkjs.options.baselayers, function(bl_index, bl) {
-            var _li = $('<li class="bl"><a href="#">' + bl.name + '</a></li>');
+            var _li = $('<li class="bl" id="bl' + bl_index + '"><a href="#">' + bl.name + '</a></li>');
             baselayer_ul.append(_li);
             bl.events.register("loadstart", bl, function() {
                 dbkjs.util.loadingStart(bl);
@@ -14,7 +14,7 @@ dbkjs.layers = {
                 dbkjs.util.loadingEnd(bl);
             });
             dbkjs.map.addLayer(bl);
-            _li.click(function() {
+            _li.on('click',function() {
                 dbkjs.toggleBaseLayer(bl_index);
                 if(dbkjs.viewmode === 'fullscreen') {
                     dbkjs.util.getModalPopup('baselayerpanel').hide();
