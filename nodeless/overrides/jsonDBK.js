@@ -14,6 +14,7 @@ dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess) {
             if (!dbkjs.protocol.jsonDBK.processing) {
                 if(dbkjs.viewmode === 'fullscreen') {
                     dbkjs.util.getModalPopup('infopanel').hide();
+                    dbkjs.util.getModalPopup('dbkinfopanel').hide();
                 } else {
                     $('#infopanel').hide();
                 }
@@ -28,11 +29,12 @@ dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess) {
         } else {
             //Check if processing is finished
             if (!dbkjs.protocol.jsonDBK.processing) {
-                $('#infopanel_b').html(dbkjs.options.feature.div);
-                $('#infopanel_f').html('');
+
                 if(dbkjs.viewmode === 'fullscreen') {
-                    // dbkjs.util.getModalPopup('infopanel').show();
+                    $('#dbkinfopanel_b').html(dbkjs.options.feature.div);
                 } else {
+                    $('#infopanel_b').html(dbkjs.options.feature.div);
+                    $('#infopanel_f').html('');
                     $('#infopanel').show();
                 }
             }
