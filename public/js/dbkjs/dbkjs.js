@@ -379,7 +379,9 @@ dbkjs.documentReady = function() {
                 $('#minimappanel').toggle();
             }
         });
-        $('#zoom_extent').click(function () {
+        // Added touchstart event to trigger click on. There was some weird behaviour combined with FastClick,
+        // this seems to fix the issue
+        $('#zoom_extent').on('click touchstart', function() {
             if (dbkjs.options.organisation.modules.regio) {
                 dbkjs.modules.regio.zoomExtent();
             } else {
