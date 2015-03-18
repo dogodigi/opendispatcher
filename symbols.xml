@@ -1,0 +1,515 @@
+<?xml-stylesheet type='text/xsl' href='symbols.xsl'?>
+<data>
+<symbols>
+    <symbol>
+        <gid>1001</gid>
+        <type>Tb1.001</type>
+        <naam>Brandweeringang</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1002</gid>
+        <type>Tb1.002</type>
+        <naam>Overige ingangen</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1003</gid>
+        <type>Tb1.003</type>
+        <naam>Sleutelkluis</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1050</gid>
+        <type>Tb1.004</type>
+        <naam>Brandweerpaneel</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1004</gid>
+        <type>Tb1.004a</type>
+        <naam>Brandmeldcentrale</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1005</gid>
+        <type>Tb1.005</type>
+        <naam>Nevenbrandweerpaneel</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1007</gid>
+        <type>Tb1.007</type>
+        <naam>Droge blusleiding</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1051</gid>
+        <type>Tb.1007a</type>
+        <naam>Afname Droge Buisleiding</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1011</gid>
+        <type>Tb1.008</type>
+        <naam>Opstelplaats eerste blusvoertuig</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1012</gid>
+        <type>Tb1.009</type>
+        <naam>Opstelplaats overige blusvoertuigen</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1019</gid>
+        <type>Tb2.001</type>
+        <naam>Noodschakelaar neon</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1038</gid>
+        <type>Tb2.002</type>
+        <naam>Noodschakelaar CV</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1008</gid>
+        <type>Tb2.003</type>
+        <naam>Schakelaar elektriciteit</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1021</gid>
+        <type>Tb2.004</type>
+        <naam>Schakelaar luchtbehandeling</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1020</gid>
+        <type>Tb2.005</type>
+        <naam>Schakelaar rook-/warmteafvoer</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1009</gid>
+        <type>Tb2.021</type>
+        <naam>Afsluiter gas</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1014</gid>
+        <type>Tb2.022</type>
+        <naam>Afsluiter water</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1022</gid>
+        <type>Tb2.023</type>
+        <naam>Afsluiter sprinkler</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1023</gid>
+        <type>Tb2.041</type>
+        <naam>Activering blussysteem</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1024</gid>
+        <type>Tb2.042</type>
+        <naam>Schakelkast elektriciteit</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1048</gid>
+        <type>Tb2.043</type>
+        <naam>Noodstop</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1033</gid>
+        <type>Tb4.001</type>
+        <naam>Hydrant</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1034</gid>
+        <type>Tb4.002</type>
+        <naam>Ondergrondse brandkraan</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1032</gid>
+        <type>Tb4.003</type>
+        <naam>Geboorde put</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1026</gid>
+        <type>Tb4.021</type>
+        <naam>Blussysteem AFFF</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1027</gid>
+        <type>Tb4.022</type>
+        <naam>Blussysteem schuim</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1028</gid>
+        <type>Tb4.023</type>
+        <naam>Blussysteem water</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1029</gid>
+        <type>Tb4.024</type>
+        <naam>Blussysteem kooldioxide</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1030</gid>
+        <type>Tb4.025</type>
+        <naam>Blussysteem Hi Fog</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1013</gid>
+        <type>Tbk5.001</type>
+        <naam>Brandweerlift</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>9001</gid>
+        <type>Tbk5.002</type>
+        <naam>Brandwerende scheiding van 60 minuten</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>9002</gid>
+        <type>Tbk5.003</type>
+        <naam>Brandwerende scheiding van 30 minuten</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>9003</gid>
+        <type>Tbk5.004</type>
+        <naam>Rookwerende scheiding</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1025</gid>
+        <type>Tbk7.004</type>
+        <naam>Lift</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>objectinformatie</categorie>
+    </symbol>
+    <symbol>
+        <gid>1006</gid>
+        <type>Tn06</type>
+        <naam>Verzamelplaats</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>preventief</categorie>
+        <omschrijving>Bij meer dan een verzamelplaats voorzien van nummer</omschrijving>
+    </symbol>
+    <symbol>
+        <gid>1044</gid>
+        <type>Tw01</type>
+        <naam>Algemeen gevaar</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1010</gid>
+        <type>C2000</type>
+        <naam>C2000</naam>
+        <namespace>Other</namespace>
+        <categorie>preparatief</categorie>
+        <omschrijving>(Geen officieel NEN1414 object)</omschrijving>
+    </symbol>
+    <symbol>
+        <gid>1016</gid>
+        <type>CAI</type>
+        <naam>Aansluiting CAI</naam>
+        <namespace>Other</namespace>
+        <omschrijving>(Geen officieel NEN1414 object)</omschrijving>
+    </symbol>
+    <symbol>
+        <gid>1045</gid>
+        <type>Falck11</type>
+        <naam>Schacht of kanaal</naam>
+        <namespace>Other</namespace>
+        <categorie>objectinformatie</categorie>
+    </symbol>
+    <symbol>
+        <gid>1046</gid>
+        <type>Falck12</type>
+        <naam>Rook Warmte Afvoerluiken</naam>
+        <namespace>Other</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1047</gid>
+        <type>Falck13</type>
+        <naam>Flitslicht</naam>
+        <namespace>Other</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1052</gid>
+        <type>Falck14</type>
+        <naam>Brandweervoorziening</naam>
+        <namespace>Other</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1049</gid>
+        <type>Falck15</type>
+        <naam>PGS 15 Kluis</naam>
+        <namespace>Other</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1053</gid>
+        <type>Falck16</type>
+        <naam>Trap standaard</naam>
+        <namespace>Other</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1054</gid>
+        <type>Falck17</type>
+        <naam>Trap wokkel</naam>
+        <namespace>Other</namespace>
+        <categorie>preventief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1055</gid>
+        <type>Falck18</type>
+        <naam>Open water deze zijde</naam>
+        <namespace>Other</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1056</gid>
+        <type>Falck19</type>
+        <naam>Bluswaterriool</naam>
+        <namespace>Other</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1057</gid>
+        <type>Falck20</type>
+        <naam>Open water bereikbaar</naam>
+        <namespace>Other</namespace>
+        <categorie>preparatief</categorie>
+    </symbol>
+    <symbol>
+        <gid>1015</gid>
+        <type>Openwater</type>
+        <naam>Open water</naam>
+        <namespace>Other</namespace>
+        <categorie>preparatief</categorie>
+        <omschrijving>(Geen officieel NEN1414 object)</omschrijving>
+    </symbol>
+    <symbol>
+        <gid>1018</gid>
+        <type>Sewer</type>
+        <naam>Toegang riool</naam>
+        <namespace>Other</namespace>
+        <omschrijving>(Geen officieel NEN1414 object)</omschrijving>
+    </symbol>
+    <symbol>
+        <gid>1017</gid>
+        <type>Signal</type>
+        <naam>Signaal</naam>
+        <namespace>Other</namespace>
+        <omschrijving>(Geen officieel NEN1414 object)</omschrijving>
+    </symbol>
+    <symbol>
+        <gid>1031</gid>
+        <type>Trap2</type>
+        <naam>Trap</naam>
+        <namespace>Other</namespace>
+        <categorie>preventief</categorie>
+        <omschrijving>(Geen officieel NEN1414 object)</omschrijving>
+    </symbol>
+</symbols>
+<stoffen>
+    <stof>
+        <gid>2001</gid>
+        <type>EU-GHS01</type>
+        <naam>Explosief</naam>
+        <namespace>EU-GHS</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>2002</gid>
+        <type>EU-GHS02</type>
+        <naam>Ontvlambaar</naam>
+        <namespace>EU-GHS</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>2003</gid>
+        <type>EU-GHS03</type>
+        <naam>Brand bevorderend (oxiderend)</naam>
+        <namespace>EU-GHS</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>2004</gid>
+        <type>EU-GHS04</type>
+        <naam>Houder onder druk</naam>
+        <namespace>EU-GHS</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>2005</gid>
+        <type>EU-GHS05</type>
+        <naam>Corrosief (bijtend)</naam>
+        <namespace>EU-GHS</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>2006</gid>
+        <type>EU-GHS06</type>
+        <naam>Toxisch (giftig)</naam>
+        <namespace>EU-GHS</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>2007</gid>
+        <type>EU-GHS07</type>
+        <naam>Schadelijk</naam>
+        <namespace>EU-GHS</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>2008</gid>
+        <type>EU-GHS08</type>
+        <naam>Schadelijk voor de gezondheid op lange termijn</naam>
+        <namespace>EU-GHS</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>2009</gid>
+        <type>EU-GHS09</type>
+        <naam>Milieugevaarlijk</naam>
+        <namespace>EU-GHS</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>3001</gid>
+        <type>Tw02</type>
+        <naam>Electrische Spanning</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>3002</gid>
+        <type>Tw09</type>
+        <naam>Radioactief Materiaal</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>3003</gid>
+        <type>Tw10</type>
+        <naam>Laserstralen</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>3004</gid>
+        <type>Tw11</type>
+        <naam>Niet-ioniserende Straling</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>3005</gid>
+        <type>Tw12</type>
+        <naam>Magnetisch Veld</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>3006</gid>
+        <type>Tw14</type>
+        <naam>Vallen door Hoogteverschil</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>3007</gid>
+        <type>Tw15</type>
+        <naam>Biologische Agentia</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>3008</gid>
+        <type>Tw16</type>
+        <naam>Lage temperatuur of bevriezing</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>3009</gid>
+        <type>Tw19</type>
+        <naam>Explosieve atmosfeer</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>1</gid>
+        <type>Tw2.002</type>
+        <naam>NFPA-gevarendiamant</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+    <stof>
+        <gid>3010</gid>
+        <type>Tw28</type>
+        <naam>Accus en klein chemisch materiaal</naam>
+        <namespace>NEN1414</namespace>
+        <categorie>repressief</categorie>
+    </stof>
+</stoffen>
+</data>
