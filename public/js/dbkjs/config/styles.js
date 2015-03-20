@@ -64,13 +64,13 @@ dbkjs.config.styleUtils = {
                 s += a.indication + "/" + a.unnumber;
             }
             if(a.quantity && a.quantity !== 0) {
-                if(!s.endsWith("(")) {
+                if(!dbkjs.util.endsWith(s, "(")) {
                     s += ", ";
                 }
                 s += a.quantity;
             }
             if(a.name) {
-                if(!s.endsWith("(")) {
+                if(!dbkjs.util.endsWith(s, "(")) {
                     s += ", ";
                 }
                 s += a.name;
