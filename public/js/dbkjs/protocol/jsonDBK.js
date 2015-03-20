@@ -239,10 +239,8 @@ dbkjs.protocol.jsonDBK = {
             _obj.constructTekstobject(dbkjs.options.feature);
 
 
-            if(!noZoom){
-                if(dbkjs.options.zoomToPandgeometrie) {
-                    dbkjs.modules.feature.zoomToPandgeometrie();
-                }
+            if(!noZoom && dbkjs.options.zoomToPandgeometrie) {
+                dbkjs.modules.feature.zoomToPandgeometrie();
             }
 
             if(dbkjs.viewmode === 'fullscreen') {
@@ -534,11 +532,16 @@ dbkjs.protocol.jsonDBK = {
                     sterretje = ' (' + i18n.t('dbk.mainobject') + ')';
                 }
                 if(waarde.identificatie !== feature.identificatie){
-
-                        //Show the hyperlink!
-                        myrow = $('<tr id="' + waarde.identificatie + '">' +
-                            '<td>' + waarde.bouwlaag + sterretje +'</td>' +
-                            '</tr>');
+                    //Show the hyperlink!
+                    myrow = $('<tr id="' + waarde.identificatie + '">' +
+                        '<td>' + waarde.bouwlaag + sterretje +'</td>' +
+                        '</tr>');
+                    myrow.click(function(){
+                        _obj.getObject(waarde.identificatie, 'verdiepingen', true);
+                        if(dbkjs.viewmode === 'fullscreen') {
+                            dbkjs.util.getModalPopup('dbkinfopanel').hide();
+                        }
+                    });
                 } else {
                     //No hyperlink, current object
                     myrow = $('<tr>' +
