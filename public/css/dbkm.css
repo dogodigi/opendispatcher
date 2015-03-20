@@ -236,7 +236,7 @@ h4, h5, h6 {
     margin-top: 0 !important;
 }
 .tab-content{
-    height: 380px;
+    height: 440px;
     overflow: auto;
 }
 .accordion-heading a.accordion-toggle { display: inline-block; }
@@ -591,4 +591,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 .unread {
     color: #AA0009 !important;
+}
+.table, .nav {
+    font-size: 18px;
 }
