@@ -21,14 +21,12 @@ html, body {
     font-size: 2.5em !important;
     line-height: 50px;
 }
-.main-button-group .btn.dbk-title {
-    margin-top: 8px;
-    margin-left: 8px;
-    float: left;
-    visibility: hidden;
+.btn.dbk-title {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;    visibility: hidden;
     font-size: 16px !important;
     line-height: 50px;
-    max-width: 450px;
     text-overflow: ellipsis;
     overflow: hidden;
 }

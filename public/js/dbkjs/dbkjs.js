@@ -301,6 +301,39 @@ dbkjs.setPaths = function() {
 
 };
 
+dbkjs.bind_dbkjs_init_complete = function() {
+
+    $(dbkjs).bind('dbkjs_init_complete', function() {
+
+         if(dbkjs.viewmode !== 'fullscreen') {
+            $('#zoom_prev').click(function() {
+                dbkjs.naviHis.previousTrigger();
+            });
+            $('#zoom_next').click(function () {
+                dbkjs.naviHis.nextTrigger();
+            });
+        } else {
+            FastClick.attach(document.body);
+        }
+        (function () {
+            function calcMaxWidth() {
+                // Calculate the max width for dbk title so other buttons are never pushed down when name is too long
+                var childWidth = 0;
+                $('.main-button-group .btn-group').each(function () {
+                    childWidth += $(this).outerWidth();
+                });
+                var maxWidth = $('.main-button-group').outerWidth() - childWidth;
+                $('.dbk-title').css('max-width', (maxWidth - 25) + 'px');
+            }
+            // Listen for orientation changes
+            window.addEventListener("orientationchange", function () {
+                calcMaxWidth();
+            }, false);
+            calcMaxWidth();
+        }());
+    });
+};
+    
 // dbkjs.js: $(document).ready
 dbkjs.documentReady = function() {
     // Make sure i18n is initialized
@@ -404,35 +437,7 @@ dbkjs.documentReady = function() {
             }
         });
 
-        $(dbkjs).bind('dbkjs_init_complete', function() {
-
-             if(dbkjs.viewmode !== 'fullscreen') {
-                $('#zoom_prev').click(function() {
-                    dbkjs.naviHis.previousTrigger();
-                });
-                $('#zoom_next').click(function () {
-                    dbkjs.naviHis.nextTrigger();
-                });
-            } else {
-                FastClick.attach(document.body);
-            }
-            (function () {
-                function calcMaxWidth() {
-                    // Calculate the max width for dbk title so other buttons are never pushed down when name is too long
-                    var childWidth = 0;
-                    $('.main-button-group .btn-group').each(function () {
-                        childWidth += $(this).outerWidth();
-                    });
-                    var maxWidth = $('.main-button-group').outerWidth() - childWidth;
-                    $('.dbk-title').css('max-width', (maxWidth - 25) + 'px');
-                }
-                // Listen for orientation changes
-                window.addEventListener("orientationchange", function () {
-                    calcMaxWidth();
-                }, false);
-                calcMaxWidth();
-            }());
-        });
+        dbkjs.bind_dbkjs_init_complete();
     });
 };
 
