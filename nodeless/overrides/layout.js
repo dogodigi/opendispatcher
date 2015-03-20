@@ -7,7 +7,7 @@ dbkjs.layout.settingsDialog = function(parent) {
             '<p><hr/><div class="row"><div class="col-xs-12">' +
             '<p style="padding-bottom: 15px">' + i18n.t('app.styleSizeAdjust') + '</p>' +
             '<input id="slider_styleSizeAdjust" style="width: 210px" data-slider-id="styleSizeAdjustSlider" type="text" data-slider-min="-10" ' +
-            'data-slider-max="10" data-slider-step="1" data-slider-value="0" value="0"/>' +
+            'data-slider-max="4" data-slider-step="1" data-slider-value="0" value="0"/>' +
             '</div></div></p><hr>'
             );
 
