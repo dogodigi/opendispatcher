@@ -56,7 +56,6 @@ dbkjs.scaleStyleValue = function(value, featureAttributeValue, attributeScaleFac
 dbkjs.config.styleUtils = {
     gevaarlijkestofLabel: function(f) {
         var a = f.attributes;
-        console.log(a);
         var s = (a.information !== "0" && a.information !== "" ? a.information + "\n": "" );
         if(a.indication || a.quantity || a.name) {
             s += "(";
@@ -79,7 +78,7 @@ dbkjs.config.styleUtils = {
         }
         return s;
     }
-}
+};
 
 dbkjs.config.styles = {
     dbkfeature: new OpenLayers.StyleMap({
