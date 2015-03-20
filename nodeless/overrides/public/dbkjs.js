@@ -14,13 +14,15 @@ dbkjs.bind_dbkjs_init_complete = function() {
                 var maxWidth = $('body').outerWidth();
                 $('.dbk-title').css('max-width', (maxWidth - 70) + 'px');
             }
-            // Listen for orientation changes
-            window.addEventListener("orientationchange", function() {
-                calcMaxWidth();
-            }, false);
-            window.addEventListener("resize", function() {
-                throttleCalc();
-            }, false);
+            if(window.addEventListener) {
+                // Listen for orientation changes
+                window.addEventListener("orientationchange", function() {
+                    calcMaxWidth();
+                }, false);
+                window.addEventListener("resize", function() {
+                    throttleCalc();
+                }, false);
+            }
             calcMaxWidth();
         }());
     });
