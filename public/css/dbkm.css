@@ -592,3 +592,6 @@ input[type="radio"], input[type="checkbox"] {
 .modal-popup .input-group-addon, .modal-popup .input-group-btn {
     width: 1% !important;
 }
+.unread {
+    color: red !important;
+}
