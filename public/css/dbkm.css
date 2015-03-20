@@ -41,7 +41,6 @@ html, body {
 }
 .toggleObject {
     background-color: #4cae4c !important;
-    line-height: 25px !important; /* double text line */
 }
 .togglePreventive {
     background-color: #ffff4f !important;
