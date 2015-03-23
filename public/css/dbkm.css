@@ -595,6 +595,9 @@ input[type="radio"], input[type="checkbox"] {
 .table, .nav {
     font-size: 18px;
 }
+#vectorclickpanel {
+    z-index: 1002;
+}
 #vectorclickpanel img {
     height: 45px;
     width: auto !important;
@@ -610,6 +613,6 @@ input[type="radio"], input[type="checkbox"] {
 }
 #supportpanel {
     margin-bottom: 0;
-    max-height: 50%;
+    max-height: 40%;
     overflow: auto;
 }
