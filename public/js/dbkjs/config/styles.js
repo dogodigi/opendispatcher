@@ -53,33 +53,6 @@ dbkjs.scaleStyleValue = function(value, featureAttributeValue, attributeScaleFac
     
 };
 
-dbkjs.config.styleUtils = {
-    gevaarlijkestofLabel: function(f) {
-        var a = f.attributes;
-        var s = (a.information !== "0" && a.information !== "" ? a.information + "\n": "" );
-        if(a.indication || a.quantity || a.name) {
-            s += "(";
-            if(a.indication && a.indication !== 0) {
-                s += a.indication + "/" + a.unnumber;
-            }
-            if(a.quantity && a.quantity !== 0) {
-                if(!dbkjs.util.endsWith(s, "(")) {
-                    s += ", ";
-                }
-                s += a.quantity;
-            }
-            if(a.name) {
-                if(!dbkjs.util.endsWith(s, "(")) {
-                    s += ", ";
-                }
-                s += a.name;
-            }
-            s += ")";
-        }
-        return s;
-    }
-};
-
 dbkjs.config.styles = {
     dbkfeature: new OpenLayers.StyleMap({
        "default" : new OpenLayers.Style({
@@ -594,13 +567,7 @@ dbkjs.config.styles = {
             pointRadius: "${myradius}",
             externalGraphic: "${myicon}",
             rotation: "${myrotation}",
-            display: "${mydisplay}",
-            label: "${mylabel}",
-            labelAlign: "ct",
-            fontSize: "${myfontsize}",
-            labelOutlineColor: "#ffffff",
-            labelOutlineWidth: 1,
-            labelYOffset: "${mylabelyoffset}"            
+            display: "${mydisplay}"
         }, {
             context: {
                 myicon: function(feature) {
@@ -626,59 +593,22 @@ dbkjs.config.styles = {
                         // any string except "none" works here
                         return "true";
                     }
-                },
-                mylabel: function(feature) {
-                    if(dbkjs.options.alwaysShowInformationLabels) {
-                        return feature.attributes.information ? feature.attributes.information : "";
-                    } else {
-                        return "";
-                    }
-                },
-                myfontsize: function(feature) {
-                    return dbkjs.scaleStyleValue(12, feature.radius);
-                },
-                mylabelyoffset: function(feature) {
-                    return dbkjs.scaleStyleValue(6, feature.radius, 0.5);
                 }
             }
         }), 'select': new OpenLayers.Style({
-            pointRadius: "${myradius}",
-            fontSize: "${myfontsize}",
-            label: "${mylabel}",
-            labelYOffset: "${mylabelyoffset}"
+            pointRadius: "${myradius}"
         }, {
             context: {
                 myradius: function(feature) {
                     return dbkjs.scaleStyleValue(20, feature.radius, 1.66);
-                },
-                myfontsize: function(feature) {
-                    return dbkjs.scaleStyleValue(20, feature.radius, 1.66);
-                },
-                mylabelyoffset: function(feature) {
-                    return dbkjs.scaleStyleValue(10, feature.radius, 0.5);
-                },
-                mylabel: function(feature) {
-                    return feature.attributes.information ? feature.attributes.information : "";
                 }
             }
         }), 'temporary': new OpenLayers.Style({
-            pointRadius: "${myradius}",
-            fontSize: "${myfontsize}",
-            label: "${mylabel}",
-            labelYOffset: "${mylabelyoffset}"
+            pointRadius: "${myradius}"
          }, {
             context: {
                 myradius: function(feature){
                     return dbkjs.scaleStyleValue(24, feature.radius, 2);
-                },
-                myfontsize: function(feature) {
-                    return dbkjs.scaleStyleValue(24, feature.radius, 2);
-                },
-                mylabelyoffset: function(feature) {
-                    return dbkjs.scaleStyleValue(12, feature.radius, 0.5);
-                },
-                mylabel: function(feature) {
-                    return feature.attributes.information ? feature.attributes.information : "";
                 }
             }
         })
@@ -686,13 +616,7 @@ dbkjs.config.styles = {
     gevaarlijkestof: new OpenLayers.StyleMap({
         "default": new OpenLayers.Style({
             pointRadius: "${myradius}",
-            externalGraphic: "${myicon}",
-            label: "${mylabel}",
-            labelAlign: "ct",
-            fontSize: "${myfontsize}",
-            labelOutlineColor: "#ffffff",
-            labelOutlineWidth: 1,
-            labelYOffset: "${mylabelyoffset}"
+            externalGraphic: "${myicon}"
         }, {
             context: {
                 myradius: function(feature){
@@ -702,58 +626,21 @@ dbkjs.config.styles = {
                     var img = "images/" + feature.attributes.namespace + "/" + feature.attributes.type + ".png";
                     return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + img : imagesBase64[img];
                     }
-                },
-                mylabel: function(feature) {
-                    if(dbkjs.options.alwaysShowInformationLabels) {
-                        return dbkjs.config.styleUtil.gevaarlijkestofLabel(feature);
-                    } else {
-                        return "";
-                    }
-                },
-                myfontsize: function(feature) {
-                    return dbkjs.scaleStyleValue(12, feature.radius);
-                },
-                mylabelyoffset: function(feature) {
-                    return dbkjs.scaleStyleValue(12, feature.radius, 0.5);
                 }
         }), 'select': new OpenLayers.Style({
-            pointRadius: "${myradius}",
-            label: "${mylabel}",
-            fontSize: "${myfontsize}",
-            labelYOffset: "${mylabelyoffset}"
+            pointRadius: "${myradius}"
         }, {
             context: {
                 myradius: function(feature) {
                     return dbkjs.scaleStyleValue(20);
-                },
-                mylabel: function(feature) {
-                    return dbkjs.config.styleUtils.gevaarlijkestofLabel(feature);
-                },
-                myfontsize: function(feature) {
-                    return dbkjs.scaleStyleValue(20);
-                },
-                mylabelyoffset: function(feature) {
-                    return dbkjs.scaleStyleValue(10);
                 }
             }
         }), 'temporary': new OpenLayers.Style({
-            pointRadius: "${myradius}",
-            label: "${mylabel}",
-            fontSize: "${myfontsize}",
-            labelYOffset: "${mylabelyoffset}"
+            pointRadius: "${myradius}"
         }, {
             context: {
                 myradius: function(feature) {
                     return dbkjs.scaleStyleValue(25);
-                },
-                mylabel: function(feature) {
-                   return dbkjs.config.styleUtils.gevaarlijkestofLabel(feature);
-               },
-                myfontsize: function(feature) {
-                    return dbkjs.scaleStyleValue(25);
-                },
-                mylabelyoffset: function(feature) {
-                    return dbkjs.scaleStyleValue(12.5);
                 }
             }
         })
