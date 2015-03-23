@@ -146,14 +146,26 @@ dbkjs.protocol.jsonDBK = {
         _obj.active_tab = 'algemeen';
         dbkjs.gui.infoPanelUpdateFooterHtml('');
         if (feature && feature.attributes && feature.attributes.typeFeature) {
-            if(feature.data && feature.data.hasOwnProperty('formeleNaam') && feature.data.hasOwnProperty('informeleNaam')) {
-                $('.dbk-title')
-                    .text(feature.data.formeleNaam + ' ' + feature.data.informeleNaam)
-                    .css('visibility', 'visible')
-                    .on('click', function() {
-                        dbkjs.modules.feature.zoomToFeature(feature);
-                    });
-            }
+           var title = "";
+            if(feature.attributes.formeleNaam) {
+                title = feature.attributes.formeleNaam;
+            };
+            if(feature.attributes.informeleNaam) {
+                if(title === "") {
+                    title = feature.attributes.informeleNaam;
+                } else {
+                    title = title + " (" + feature.attributes.informeleNaam + ")";
+                }
+            };
+            if(title === "") {
+                title = "DBK #" + feature.attributes.identificatie;
+            };
+            $('.dbk-title')
+                .text(title)
+                .css('visibility', 'visible')
+                .on('click', function() {
+                    dbkjs.modules.feature.zoomToFeature(feature);
+                });
             if (!dbkjs.options.feature || feature.id !== dbkjs.options.feature.id) {
                 if (!dbkjs.protocol.jsonDBK.processing) {
                     if(dbkjs.viewmode === 'fullscreen') {
