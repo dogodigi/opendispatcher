@@ -69,7 +69,7 @@ exports.mailAnnotation = function(req, res) {
 
     var link = req.body.permalink;
     if(search && replacement) {
-        var link = link.replace(search, replacement);
+        var link = link.replace(new RegExp(search), replacement);
     };
 
     var htmltemplate = 'Er is een melding gedaan over een fout in de kaart:<br/><br/>' +
