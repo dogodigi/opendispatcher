@@ -27,4 +27,9 @@ dbkjs.bind_dbkjs_init_complete = function() {
         }());
     });
 };
-    
+
+dbkjs.createFullScreenDialogs = function() {
+    if (dbkjs.viewmode !== 'fullscreen') {
+        $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;'));
+    }
+};
