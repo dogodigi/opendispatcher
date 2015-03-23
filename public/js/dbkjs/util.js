@@ -200,6 +200,65 @@ dbkjs.Permalink =
     CLASS_NAME: "dbkjs.Permalink"
 });
 
+// Override Cluster strategy to only create clusters for features within map
+// bounds, and thus also recluster on panning
+// http://acuriousanimal.com/blog/2012/10/09/improved-performance-on-the-animatedcluster-for-openlayers/
+// http://acuriousanimal.com/blog/2013/02/08/animatedcluster-pan-related-bug-fixed/
+OpenLayers.Strategy.Cluster.prototype.cluster = function(event) {
+
+    if((!event || event.zoomChanged || (event.type === "moveend" && !event.zoomChanged)) && this.features) {
+        this.resolution = this.layer.map.getResolution();
+        var clusters = [];
+        var feature, clustered, cluster;
+        var screenBounds = this.layer.map.getExtent();
+        for(var i=0; i<this.features.length; ++i) {
+            feature = this.features[i];
+            if(feature.geometry) {
+                if(!screenBounds.intersectsBounds(feature.geometry.getBounds())) {
+                    continue;
+                }
+                clustered = false;
+                for(var j=clusters.length-1; j>=0; --j) {
+                    cluster = clusters[j];
+                    if(this.shouldCluster(cluster, feature)) {
+                        this.addToCluster(cluster, feature);
+                        clustered = true;
+                        break;
+                    }
+                }
+                if(!clustered) {
+                    clusters.push(this.createCluster(this.features[i]));
+                }
+            }
+        }
+        this.clustering = true;
+        this.layer.removeAllFeatures();
+        this.clustering = false;
+        if(clusters.length > 0) {
+            if(this.threshold > 1) {
+                var clone = clusters.slice();
+                clusters = [];
+                var candidate;
+                for(var i=0, len=clone.length; i<len; ++i) {
+                    candidate = clone[i];
+                    if(candidate.attributes.count < this.threshold) {
+                        Array.prototype.push.apply(clusters, candidate.cluster);
+                    } else {
+                        clusters.push(candidate);
+                    }
+                }
+            }
+            this.clustering = true;
+            // A legitimate feature addition could occur during this
+            // addFeatures call.  For clustering to behave well, features
+            // should be removed from a layer before requesting a new batch.
+            this.layer.addFeatures(clusters);
+            this.clustering = false;
+        }
+        this.clusters = clusters;
+    }
+};
+
 //Override drawText function on openlayers SVG.js
 OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location) {
     var drawOutline = (!!style.labelOutlineWidth);
