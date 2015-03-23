@@ -608,3 +608,8 @@ input[type="radio"], input[type="checkbox"] {
 #vectorclickpanel .panel-footer {
     padding: 0;
 }
+#supportpanel {
+    margin-bottom: 0;
+    max-height: 50%;
+    overflow: auto;
+}
