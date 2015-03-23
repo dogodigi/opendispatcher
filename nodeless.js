@@ -167,6 +167,7 @@ dbk.getOrganisation(
 );
 
 var totalVerdiepingen = 0;
+var totalGebieden = 0;
 
 var skipObjects = false;
 
@@ -209,13 +210,25 @@ if(!skipObjects) {
 				objectsToBeWritten--;
 				return;
                             };                            
-                            var filename = outDir + '/api/object/' + json.DBKObject.identificatie + '.json';
+                            var filename = outDir + '/api/object/'
+                                    + (json.hasOwnProperty("DBKObject") ? json.DBKObject.identificatie : json.DBKGebied.identificatie)
+                                    + '.json';
+                            
                             fs.writeFile(filename, JSON.stringify(json), function(err) {
                                 objectsToBeWritten--;
                                 if(err) throw err;
                             });
                         };
-                        dbk.getObject(req(identificatie), { json:
+
+                        var getFunction;
+                        if(feature.properties.typeFeature === "Object") {
+                            getFunction = dbk.getObject;
+                        } else {
+                            totalGebieden++;
+                            getFunction = dbk.getGebied;
+                        };
+                        
+                        getFunction(req(identificatie), { json:
                             function(json) {
 
                                 if(!json) {
