@@ -210,29 +210,38 @@ dbkjs.modules.search = {
                 's_oms': { 'icon': 'fa fa-bell', 'text': i18n.t("search.oms"), 'placeholder': i18n.t("search.omsplaceholder"), 'search': 'oms' }
             };
 
+        var timer;
+
         searchField.on('keyup', function(e) {
+            if(timer) {
+                clearTimeout(timer);
+            }
+
             var searchText = searchField.val();
-            if(searchText.length === 0) {
+            if(searchText.length <= 3) {
                 $('.search_result').html('');
                 return;
-            }
-            if(currentSearch === 'dbk') {
-                _obj.searchDbkOms(dbkjs.modules.feature.getDbkSearchValues(), searchText);
-            }
-            if(currentSearch === 'oms') {
-                _obj.searchDbkOms(dbkjs.modules.feature.getOmsSearchValues(), searchText);
-            }
-            if(currentSearch === 'coordinates') {
-                var loc = _obj.handleCoordinatesSearch();
-                if(loc && e.keyCode === 13) {
-                    dbkjs.modules.updateFilter(0);
-                    _obj.zoomAndPulse(loc);
-                }
-            }
-            if(currentSearch === 'address') {
-                _obj.handleAddressSearch(searchText);
-            }
-        });
+            };
+
+            timer = setTimeout(function() {
+                if(currentSearch === 'dbk') {
+                    _obj.searchDbkOms(dbkjs.modules.feature.getDbkSearchValues(), searchText);
+                };
+                if(currentSearch === 'oms') {
+                    _obj.searchDbkOms(dbkjs.modules.feature.getOmsSearchValues(), searchText);
+                };
+                if(currentSearch === 'coordinates') {
+                    var loc = _obj.handleCoordinatesSearch();
+                    if(loc && e.keyCode === 13) {
+                        dbkjs.modules.updateFilter(0);
+                        _obj.zoomAndPulse(loc);
+                    }
+                };
+                if(currentSearch === 'address') {
+                    _obj.handleAddressSearch(searchText);
+                };
+            }, 500);
+         });
         $('#search_dropdown a').click(function(e) {
             var searchType = $(this).attr('id'),
                 dropdownText = $('.dropdown-text'),
