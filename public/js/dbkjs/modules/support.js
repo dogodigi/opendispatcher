@@ -93,7 +93,7 @@ dbkjs.modules.support = {
                 });
                 layerarray.sort();
                 var p = $('<form id="support-form" role="form"></form>');
-                p.append('<p class="bg-info">Versleep eventueel het rode symbooltje op de kaart om <br>aan te geven waar de fout is geconstateerd<br> of waar de melding over gaat.</p>');
+                p.append('<p class="bg-info">Versleep eventueel het tekstballonnetje op de kaart om <br>aan te geven waar de fout is geconstateerd<br> of waar de melding over gaat.</p>');                
                 var laag_input = $('<div class="form-group"><label for="subject">Onderwerp</label></div>');
                 var select = $('<select name="subject" class="form-control" MULTIPLE></select>');
                 select.append('<option selected>Algemene melding</option>');
