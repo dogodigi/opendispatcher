@@ -595,3 +595,16 @@ input[type="radio"], input[type="checkbox"] {
 .table, .nav {
     font-size: 18px;
 }
+#vectorclickpanel img {
+    height: 45px;
+    width: auto !important;
+}
+#vectorclickpanel .gevicode, #vectorclickpanel .unnummer {
+    font-size: 14px;
+}
+#vectorclickpanel .panel-body {
+    padding: 0 20px;
+}
+#vectorclickpanel .panel-footer {
+    padding: 0;
+}

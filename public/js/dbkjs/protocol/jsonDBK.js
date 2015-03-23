@@ -127,15 +127,15 @@ dbkjs.protocol.jsonDBK = {
     getfeatureinfo: function(e){
         dbkjs.gui.detailsPanelUpdateTitle(e.feature.layer.name);
         html = '<div style:"width: 100%" class="table-responsive">';
-            html += '<table class="table table-hover">';
-            for (var j in e.feature.attributes) {
-                //if ($.inArray(j, ['Omschrijving', 'GEVIcode', 'UNnr', 'Hoeveelheid', 'NaamStof']) > -1) {
-                    if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
-                        html += '<tr><td><span>' + j + "</span>: </td><td>" + e.feature.attributes[j] + "</td></tr>";
-                    }
-                //}
-            }
-            html += '</table>';
+        html += '<table class="table table-hover">';
+        for (var j in e.feature.attributes) {
+            //if ($.inArray(j, ['Omschrijving', 'GEVIcode', 'UNnr', 'Hoeveelheid', 'NaamStof']) > -1) {
+                if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
+                    html += '<tr><td><span>' + j + "</span>: </td><td>" + e.feature.attributes[j] + "</td></tr>";
+                }
+            //}
+        }
+        html += '</table>';
         html += '</div>';
         //dbkjs.util.appendTab(dbkjs.wms_panel.attr("id"),'Brandcompartiment',html, true, 'br_comp_tab');
         dbkjs.gui.detailsPanelUpdateHtml(html);
