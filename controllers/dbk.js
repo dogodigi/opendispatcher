@@ -64,6 +64,14 @@ exports.mailAnnotation = function(req, res) {
     var nodemailer = require("nodemailer");
     var smtp = nodemailer.createTransport({host: global.conf.get('support:smtp'), ignoreTLS: true});
 
+    var search = global.conf.get('support:linkreplace:search');
+    var replacement = global.conf.get('support:linkreplace:replacement');
+
+    var link = req.body.permalink;
+    if(search && replacement) {
+        var link = link.replace(search, replacement);
+    };
+
     var htmltemplate = 'Er is een melding gedaan over een fout in de kaart:<br/><br/>' +
         '<table>' +
                 '<tr><th>Adres:</th><td>' + req.body.address + '</td></tr>' +
@@ -75,7 +83,7 @@ exports.mailAnnotation = function(req, res) {
                 '<tr><th>Telefoon:</th><td>' + req.body.phone + '</td></tr>' +
                 '<tr><td colspan="2"><hr /><td></tr>' +
                 '<tr><td colspan="2">Klik op de link om de melding te openen:</td></tr>' +
-                '<tr><td colspan="2"><a href="' + req.body.permalink + '">'  + req.body.permalink + '</td></tr><br/><br/>' +
+                '<tr><td colspan="2"><a href="' + link + '">'  + link + '</td></tr><br/><br/>' +
         '<br/><br/>';
     smtp.sendMail({
         from: global.conf.get('support:from'),
