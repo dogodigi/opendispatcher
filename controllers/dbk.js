@@ -59,6 +59,40 @@ exports.postAnnotation = function(req, res) {
     
 };
 
+exports.mailAnnotation = function(req, res) {
+
+    var nodemailer = require("nodemailer");
+    var smtp = nodemailer.createTransport({host: global.conf.get('support:smtp'), ignoreTLS: true});
+
+    var htmltemplate = 'Er is een melding gedaan over een fout in de kaart:<br/><br/>' +
+        '<table>' +
+                '<tr><th>Adres:</th><td>' + req.body.address + '</td></tr>' +
+                '<tr><th>Onderwerp:</th><td>' + req.body.subject + '</td></tr>' +
+                '<tr><th>Melding:</th><td><pre>' + req.body.remarks + '</pre></td></tr>' +
+                '<tr><td colspan="2"><hr /><td></tr>' +
+                '<tr><th>Melder:</th><td>' + req.body.name + '</td></tr>' +
+                '<tr><th>Email:</th><td>' + req.body.email + '</td></tr>' +
+                '<tr><th>Telefoon:</th><td>' + req.body.phone + '</td></tr>' +
+                '<tr><td colspan="2"><hr /><td></tr>' +
+                '<tr><td colspan="2">Klik op de link om de melding te openen:</td></tr>' +
+                '<tr><td colspan="2"><a href="' + req.body.permalink + '">'  + req.body.permalink + '</td></tr><br/><br/>' +
+        '<br/><br/>';
+    smtp.sendMail({
+        from: global.conf.get('support:from'),
+        to: global.conf.get('support:sendto') + ',' + req.body.email,
+        subject: 'Melding fout in de kaart',
+        html: htmltemplate
+    }, function(error, response) {
+        smtp.close();
+        if (error) {
+            console.log("Mail error", error);
+            res.json(err);
+        } else {
+            res.json({"result":"ok"});
+        }
+    });
+};
+
 exports.getObject = function(req, res) {
     //where identificatie = 1369659645
     if (req.query) {
