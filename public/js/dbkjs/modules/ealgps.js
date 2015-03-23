@@ -126,7 +126,7 @@ dbkjs.modules.ealgps = {
     },
     click: function(e) {
         var me = this;
-        if(me.gps && me.gps.Gps.Validity === "1" && me.gps.Gps.Latitude && me.gps.Gps.Longitude) {
+        if(me.gps && me.gps.Gps.Validity === "0" && me.gps.Gps.Latitude && me.gps.Gps.Longitude) {
             dbkjs.map.setCenter(me.reprojectToOpenLayersLonLat(), dbkjs.options.zoom);
         }
     }
