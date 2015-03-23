@@ -40,9 +40,6 @@ dbkjs.options = {
     INFO: "",
     zoom: 13,
 
-    // If false labels are shown on select and temporary render intents
-    alwaysShowInformationLabels: false,
-
     // Set to true to enable style scaling according to map scale
     styleScaleAdjust: true,
     // Scale at which scaled values are returned as original
