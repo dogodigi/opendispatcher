@@ -65,7 +65,7 @@ dbkjs.modules.ealgps = {
                     me.gps = jqXHR.responseJSON.EAL2OGG;
                     if(me.gps.Sequence !== oldSequence) {
                         if(me.debug) console.log("New GPS data sequence = " + me.gps.Sequence);
-                        if(me.gps.Gps.Validity !== "1") {
+                        if(me.gps.Gps.Validity !== "0") {
                             if(me.debug) console.log("No valid GPS fix");
                             if(me.gpsMarker) {
                                 me.markers.removeMarker(me.gpsMarker);
