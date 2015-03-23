@@ -204,6 +204,11 @@ if(!skipObjects) {
                         }
 
                         var writeDbkJson = function(json) {
+			    if(!json) {
+				console.log("Geen JSON voor id  " + id);
+				objectsToBeWritten--;
+				return;
+                            };                            
                             var filename = outDir + '/api/object/' + json.DBKObject.identificatie + '.json';
                             fs.writeFile(filename, JSON.stringify(json), function(err) {
                                 objectsToBeWritten--;
@@ -212,6 +217,12 @@ if(!skipObjects) {
                         };
                         dbk.getObject(req(identificatie), { json:
                             function(json) {
+
+                                if(!json) {
+                                    console.log("Geen JSON voor id  " + id);
+				    objectsToBeWritten--;
+                                    return;
+                                };
 
                                 // XXX can't detect error...
                                 writeDbkJson(json);
