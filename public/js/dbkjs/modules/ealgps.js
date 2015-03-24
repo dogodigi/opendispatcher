@@ -59,7 +59,11 @@ dbkjs.modules.ealgps = {
             cache: false,
             ifModified: true,
             complete: function(jqXHR, textStatus) {
+                var monitor = dbkjs.modules.connectionmonitor;
                 if(textStatus === "success") {
+                    if(monitor) {
+                        monitor.onConnectionOK();
+                    }
                     var oldSequence = me.gps ? me.gps.Sequence : null;
                     var oldLatLon = me.gps && me.gps.Gps ? me.gps.Gps.Latitude + "," + me.gps.Gps.Longitude : null;
                     me.gps = jqXHR.responseJSON.EAL2OGG;
@@ -83,9 +87,16 @@ dbkjs.modules.ealgps = {
                             }
                         }
                     }
-                } else if(textStatus !== "notmodified") {
+                } else if (textStatus === "notmodified") {
+                    if(monitor) {
+                        monitor.onConnectionOK();
+                    }
+                } else {
                     if(me.debug) console.log("Fout bij het ophalen van EAL GPS info: " + jqXHR.statusText);
                     me.gps = null;
+                    if(monitor) {
+                        monitor.onConnectionError();
+                    }
                 }
 
                 window.setTimeout(function() {
