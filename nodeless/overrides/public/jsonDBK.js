@@ -272,11 +272,11 @@ dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess) {
             };
             dbkjs.protocol.jsonDBK.processing = true;
             dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>', i18n.t('dialogs.running'), 'alert-info');
-                if(feature.attributes.typeFeature === 'Object'){
-                    dbkjs.protocol.jsonDBK.getObject(feature, null, false, mySuccess);
-                } else if (feature.attributes.typeFeature === 'Gebied') {
-                    dbkjs.protocol.jsonDBK.getGebied(feature, null, mySuccess);
-                }
+            if(feature.attributes.typeFeature === 'Object'){
+                dbkjs.protocol.jsonDBK.getObject(feature, 'algemeen', false, mySuccess);
+            } else if (feature.attributes.typeFeature === 'Gebied') {
+                dbkjs.protocol.jsonDBK.getGebied(feature, 'algemeen', mySuccess);
+            }
         }
     } else {
         //Check if processing is finished
