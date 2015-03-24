@@ -94,7 +94,7 @@ dbkjs.config.styles = {
             },
             mygraphicheight: function(feature) {
                 if (feature.cluster) {
-                    return 65;
+                    return 56;
                 } else {
                     if (feature.attributes.typeFeature === 'Object') {
                         return 38;
@@ -106,10 +106,10 @@ dbkjs.config.styles = {
             },
             mygraphicwidth: function(feature) {
                 if (feature.cluster) {
-                        return 85;
+                    return 51;
                 } else {
                     if (feature.attributes.typeFeature === 'Object') {
-                        return 24;
+                        return 21;
                     } else {
                         return 85;
                     }
@@ -155,14 +155,14 @@ dbkjs.config.styles = {
             },
             myicon: function(feature) {
                 if (feature.cluster) {
-                    return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + "images/jcartier_city_3.png" : imagesBase64["images/jcartier_city_3.png"];
+                    return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + "images/cluster.png" : imagesBase64["images/cluster.png"];
                 } else {
                     if (feature.attributes.typeFeature === 'Object') {
                         var img;
                         if(feature.attributes.verdiepingen || feature.attributes.verdiepingen !== 0) {
-                            img = "images/jcartier_building_1.png";
-                        } else {
-                            img = "images/jcartier_building_2.png";
+                            img = "images/meerdereverdiepingen.png";
+                        }  else {
+                            img = "images/enkeleverdieping.png";
                         }
                         return typeof imagesBase64 === 'undefined'  ? dbkjs.basePath + img : imagesBase64[img];
                     } else {

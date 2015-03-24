@@ -101,8 +101,8 @@ dbkjs.modules.feature = {
             },
             strategies: [
                 new OpenLayers.Strategy.Cluster({
-                    distance: 100,
-                    threshold: 2
+                    distance: 80,
+                    threshold: 3
                 })
             ],
             styleMap: dbkjs.config.styles.dbkfeature
