@@ -309,14 +309,17 @@ dbkjs.modules.feature = {
                 }
             } else {
                 _obj.currentCluster = [];
-                dbkjs.protocol.jsonDBK.process(e.feature);
-                _obj.zoomToFeature(e.feature);
-                if(dbkjs.viewmode === 'fullscreen') {
-                    dbkjs.util.getModalPopup('infopanel').hide();
-                } else {
-                    dbkjs.gui.infoPanelHide();
-                }
+                _obj.showFeatureInfo(e.feature);
             }
+        }
+    },
+    showFeatureInfo: function(feature) {
+        dbkjs.protocol.jsonDBK.process(feature);
+        _obj.zoomToFeature(feature);
+        if(dbkjs.viewmode === 'fullscreen') {
+            dbkjs.util.getModalPopup('infopanel').hide();
+        } else {
+            dbkjs.gui.infoPanelHide();
         }
     },
     handleFeatureTitleClick: function(e) {

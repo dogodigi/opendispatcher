@@ -1,4 +1,24 @@
 
+dbkjs.modules.feature.featureInfohtml = function(feature) {
+    var _obj = dbkjs.modules.feature;
+    var ret_title = $('<li></li>');
+    ret_title.append('<a href="#">' + feature.attributes.formeleNaam + '</a>');
+    $(ret_title).click(function() {
+        dbkjs.protocol.jsonDBK.process(feature, function() {
+            _obj.zoomToFeature(feature);
+        });
+        return false;
+    });
+    return ret_title;
+};
+
+dbkjs.modules.feature.handleDbkOmsSearch = function(object) {
+    var _obj = dbkjs.modules.feature;
+    dbkjs.protocol.jsonDBK.process(object, function() {
+        _obj.zoomToFeature(object);
+    });
+};
+
 dbkjs.modules.feature.search_dbk = function() {
     var _obj = dbkjs.modules.feature,
         dbk_naam_array = _obj.getDbkSearchValues();
@@ -29,3 +49,13 @@ dbkjs.modules.feature.search_oms = function() {
     });
 };
 
+dbkjs.modules.feature.showFeatureInfo = function(feature) {
+    dbkjs.protocol.jsonDBK.process(feature, function() {
+        _obj.zoomToFeature(feature);
+    });
+    if(dbkjs.viewmode === 'fullscreen') {
+        dbkjs.util.getModalPopup('infopanel').hide();
+    } else {
+        dbkjs.gui.infoPanelHide();
+    }
+};

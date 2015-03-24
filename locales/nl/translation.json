@@ -71,7 +71,7 @@
       "busyloading": "Bezig met laden van",
       "invalidImage": "geen geldige afbeelding",
       "layerNotFound": "Laag niet gevonden (of meer dan 1)",
-      "infoNotFound": "Geen informatie gevonden",
+      "infoNotFound": "Kon geen informatie ophalen",
       "running": "Objectinformatie wordt opgehaald..."
     },
     "care": {
