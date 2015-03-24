@@ -2,6 +2,7 @@
 /node_modules
 /public/css/dbk.min.css
 /public/js/dbk.min.js
+/public/js/dbkjs/images_base64.js
 config.json
 .c9revisions/
 .idea/
