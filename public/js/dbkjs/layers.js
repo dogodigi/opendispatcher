@@ -21,6 +21,7 @@ dbkjs.layers = {
                 }
             });
         });
+        $('#baselayerpanel_b').append(baselayer_ul);
         return baselayer_ul;
     }
 };

@@ -35,8 +35,7 @@ dbkjs.mapcontrols = {
         );
     },
     //dbkjs.js: init
-    registerMapEvents: function(baselayer_ul) {
-        $('#baselayerpanel_b').append(baselayer_ul);
+    registerMapEvents: function() {
         dbkjs.map.events.register("moveend", dbkjs.map, function() {
             //check if the naviHis has any content
             if (dbkjs.naviHis.nextStack.length > 0) {

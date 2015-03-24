@@ -50,8 +50,10 @@ dbkjs.init = function () {
 
     dbkjs.mapcontrols.createMapControls();
 
-    dbkjs.mapcontrols.registerMapEvents(dbkjs.layers.createBaseLayers());
+    dbkjs.layers.createBaseLayers();
 
+    dbkjs.mapcontrols.registerMapEvents();
+    
     dbkjs.showStatus = false;
 
 };
