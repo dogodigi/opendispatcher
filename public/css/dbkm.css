@@ -21,6 +21,13 @@ html, body {
     font-size: 2.5em !important;
     line-height: 50px;
 }
+@media (max-width: 999px) {
+    .main-button-group .btn {
+        margin-top: 4px;
+        margin-bottom: 0px;
+        padding: 4px 8px;
+    }
+}
 .btn.dbk-title {
     position: absolute;
     bottom: 10px;
@@ -195,7 +202,7 @@ a {
 @media (max-width: 999px) {
     #foutknop {
         left: 8px;
-        bottom: 0;
+        bottom: 75px;
         position: absolute;
     }
     #btn_care {
