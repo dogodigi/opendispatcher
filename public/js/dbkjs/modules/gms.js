@@ -79,7 +79,11 @@ dbkjs.modules.gms = {
             cache: false,
             ifModified: true,
             complete: function(jqXHR, textStatus) {
+                var monitor = dbkjs.modules.connectionmonitor;
                 if(textStatus === "success") {
+                    if(monitor) {
+                        monitor.onConnectionOK();
+                    };
                     var oldSequence = me.gms ? me.gms.Sequence : null;
                     var oldNummer = me.gms ? me.gms.Gms.Nummer : null;
                     me.gms = jqXHR.responseJSON.EAL2OGG;
@@ -99,9 +103,16 @@ dbkjs.modules.gms = {
                         }
                     }
                     me.displayGms();
-                } else if(textStatus !== "notmodified") {
+                } else if(textStatus === "notmodified") {
+                  if(monitor) {
+                      monitor.onConnectionOK();
+                  }
+                } else {
                     me.error = "Fout bij het ophalen van de informatie: " + jqXHR.statusText;
                     me.gms = null;
+                    if(monitor) {
+                        monitor.onConnectionError();
+                    }
                 }
                 me.updateGmsTitle();
 
