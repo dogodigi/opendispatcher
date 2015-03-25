@@ -188,6 +188,8 @@ dbkjs.modules.gms = {
                     text = "Geen actieve melding (updaten...)";
                 }
             }
+            // On error, keep previous info
+            return;
         }
         if(melding) {
             if(this.viewed) {
