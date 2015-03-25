@@ -235,7 +235,7 @@ dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess) {
     if (!(feature && feature.attributes && feature.attributes.typeFeature)) {
 
         $('#dbkinfopanel_b').html('Geen DBK geselecteerd.');
-        $('.dbk-title').css('visibility', 'hidden');
+        //$('.dbk-title').css('visibility', 'hidden');
 
         //clear all layers first!
         $.each(_obj.layers, function(idx, lyr){
@@ -252,6 +252,7 @@ dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess) {
 
     var mySuccess = function() {
         $('#infopanel_f').html('');
+        /*
         var title = "";
         if(feature.attributes.formeleNaam) {
             title = feature.attributes.formeleNaam;
@@ -272,7 +273,7 @@ dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess) {
             .on('click', function() {
                 dbkjs.modules.feature.zoomToFeature(feature);
             });
-
+        */
         if(onSuccess) {
             onSuccess();
         }

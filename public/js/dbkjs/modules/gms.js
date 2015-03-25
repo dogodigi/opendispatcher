@@ -30,8 +30,24 @@ dbkjs.modules.gms = {
     markers: null,
     gmsMarker: null,
     zoomedPos: null,
+    encode: function(s) {
+        if(s) {
+            return dbkjs.util.htmlEncode(s);
+        }
+        return null;
+    },
+    encodeIfNotEmpty: function(s) {
+        var s = this.encode(s);
+        return s === null ? "" : s;
+    },
     register: function(options) {
         var _obj = dbkjs.modules.gms;
+        
+        $('.dbk-title')
+            .on('click', function() {
+                _obj.balkrechtsonderClick();
+            });
+            
         _obj.createPopup();
         $('<a></a>')
             .attr({
@@ -195,6 +211,54 @@ dbkjs.modules.gms = {
             $("#btn_opengms").removeClass("unread");
         }
         $("#gmsUpdate").text(text);
+
+        this.updateBalkrechtsonder();
+    },
+    updateBalkrechtsonder: function() {
+        var me = this;
+        var en = function(s) {
+            return me.encodeIfNotEmpty(s);
+        };
+
+        var melding = this.gms && this.gms.Gms && this.gms.Gms.Nummer;
+        if(melding) {
+            var title = "";
+            var g = this.gms.Gms;
+            var a = g.IncidentAdres;
+            if(a && a.Adres) {
+                title = en(a.Adres.Straat) + " " + en(a.Adres.Huisnummer) + en(a.Adres.HuisnummerToevg) + ", " +
+                        en(a.Adres.Postcode) + " " + en(a.Adres.Plaats);
+            } else if(a && a.Positie) {
+                title = a.Positie.X + ", " + a.Positie.Y;
+            } else {
+                title = "Melding " + en(g.Nummer) + ", geen locatie";
+            }
+            if(a.Aanduiding) {
+                title += " (" + en(a.Aanduiding) + ")";
+            } else if(me.selectedDbkFeature && me.selectedDbkFeature.attributes.informeleNaam) {
+                title += " (" + en(me.selectedDbkFeature.attributes.informeleNaam) + ")";
+            }
+
+            $('.dbk-title')
+                .text(title)
+                .css('visibility', 'visible');
+        } else {
+            $('.dbk-title').css('visibility', 'hidden');
+        }
+    },
+    balkrechtsonderClick: function() {
+        if(this.selectedDbkFeature) {
+            if(dbkjs.options.feature.identificatie !== this.selectedDbkFeature.attributes.identificatie) {
+                console.log("reselecting dbk");
+                dbkjs.modules.feature.handleDbkOmsSearch(this.selectedDbkFeature);
+            } else {
+                console.log("same dbk selected, calling zoomToFeature");
+                dbkjs.modules.feature.zoomToFeature(this.selectedDbkFeature);
+            }
+        } else {
+            console.log("no dbk, zooming to gms coords");
+            this.zoom();
+        }
     },
     displayGms: function() {
         if(this.gms === null || !this.gms.Gms) {
@@ -212,16 +276,13 @@ dbkjs.modules.gms = {
             }
         }
 
-        function e(s) {
-            if(s) {
-                return dbkjs.util.htmlEncode(s);
-            }
-            return null;
-        }
-        function en(s) {
-            var s = e(s);
-            return s === null ? "" : s;
-        }
+        var me = this;
+        var e = function(s) {
+            return me.encode(s);
+        };
+        var en = function(s) {
+            return me.encodeIfNotEmpty(s);
+        };
 
         row(e(g.Nummer), "Nummer");
         var m = moment(g.Tijd);
@@ -248,8 +309,6 @@ dbkjs.modules.gms = {
         }
 
         $("#gms").replaceWith(table_div);
-
-
     },
     selectDbk: function() {
         if(this.gms && this.gms.Gms && this.gms.Gms.IncidentAdres && this.gms.Gms.IncidentAdres.Adres) {
