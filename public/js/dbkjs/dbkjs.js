@@ -37,6 +37,12 @@ dbkjs.init = function () {
 
     dbkjs.setPaths();
 
+    if(dbkjs.viewmode === "fullscreen" && "ontouchstart" in window) {
+        // Later wordt TouchNavigation toegevoegd, verwijder standaard
+        // navigation control (anders gekke zoom / pan effecten op touchscreen)
+        dbkjs.options.map.options.controls = [];
+    };
+
     if (!dbkjs.map) {
       dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
     };
