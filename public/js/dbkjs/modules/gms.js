@@ -226,7 +226,7 @@ dbkjs.modules.gms = {
             var g = this.gms.Gms;
             var a = g.IncidentAdres;
             if(a && a.Adres) {
-                title = en(a.Adres.Straat) + " " + en(a.Adres.Huisnummer) + en(a.Adres.HuisnummerToevg) + ", " +
+                title = (en(a.Adres.Straat) + " " + en(a.Adres.Huisnummer) + en(a.Adres.HuisnummerToevg)).trim() + ", " +
                         en(a.Adres.Postcode) + " " + en(a.Adres.Plaats);
             } else if(a && a.Positie) {
                 title = a.Positie.X + ", " + a.Positie.Y;
@@ -292,7 +292,7 @@ dbkjs.modules.gms = {
         row(e(g.Karakterestiek), "Karakteristiek"); // sic
         var a = g.IncidentAdres;
         if(a && a.Adres) {
-            var s = en(a.Adres.Straat) + " " + en(a.Adres.Huisnummer) + en(a.Adres.HuisnummerToevg) + ", " +
+            var s = (en(a.Adres.Straat) + " " + en(a.Adres.Huisnummer) + en(a.Adres.HuisnummerToevg)).trim() + ", " +
                     en(a.Adres.Postcode) + " " + en(a.Adres.Plaats);
             row(s, "Adres");
         }
