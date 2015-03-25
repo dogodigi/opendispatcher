@@ -249,14 +249,11 @@ dbkjs.modules.gms = {
     balkrechtsonderClick: function() {
         if(this.selectedDbkFeature) {
             if(dbkjs.options.feature.identificatie !== this.selectedDbkFeature.attributes.identificatie) {
-                console.log("reselecting dbk");
                 dbkjs.modules.feature.handleDbkOmsSearch(this.selectedDbkFeature);
             } else {
-                console.log("same dbk selected, calling zoomToFeature");
                 dbkjs.modules.feature.zoomToFeature(this.selectedDbkFeature);
             }
         } else {
-            console.log("no dbk, zooming to gms coords");
             this.zoom();
         }
     },
