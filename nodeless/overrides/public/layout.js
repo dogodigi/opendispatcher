@@ -26,6 +26,11 @@ dbkjs.layout.settingsDialog = function(parent) {
         dbkjs.redrawScaledLayers();
     });
 
+    $(parent).append(
+            '<p><strong>' + dbkjs.options.APPLICATION + '</strong> ' + dbkjs.options.VERSION + ' (' + dbkjs.options.RELEASEDATE + ')' + '</p>' +
+            '<p>' + dbkjs.options.REMARKS + '</p>'
+            );
+
     $('#input_contrast').val(parseFloat(dbkjs.map.baseLayer.opacity).toFixed(1));
     $('#input_contrast').keypress(function(event) {
         if (event.keyCode === 13) {
