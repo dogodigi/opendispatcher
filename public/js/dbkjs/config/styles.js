@@ -34,6 +34,11 @@ dbkjs.getStyleScaleFactor = function() {
 };
 
 dbkjs.redrawScaledLayers = function() {
+    dbkjs.protocol.jsonDBK.layerBrandcompartiment.redraw();
+    dbkjs.protocol.jsonDBK.layerHulplijn2.redraw();
+    dbkjs.protocol.jsonDBK.layerHulplijn1.redraw();
+    dbkjs.protocol.jsonDBK.layerHulplijn.redraw();
+    dbkjs.protocol.jsonDBK.layerToegangterrein.redraw();
     dbkjs.protocol.jsonDBK.layerBrandweervoorziening.redraw();
     dbkjs.protocol.jsonDBK.layerGevaarlijkestof.redraw();
     dbkjs.protocol.jsonDBK.layerTekstobject.redraw();
@@ -274,29 +279,29 @@ dbkjs.config.styles = {
                 switch(feature.attributes.type) {
                     case "60 minuten brandwerende scheiding":
                     case "> 60 minuten brandwerende scheiding":
-                        return 4;
+                        return dbkjs.scaleStyleValue(4);
                         break;
                     default:
-                        return 2;
+                        return dbkjs.scaleStyleValue(2);
                 }
 
             },
             mystrokedashstyle: function(feature) {
                 switch(feature.attributes.type) {
                     case "30 minuten brandwerende scheiding":
-                        return "8 4";
+                        return dbkjs.scaleStyleValue(8) + " " + dbkjs.scaleStyleValue(4);
                         break;
                     case "60 minuten brandwerende scheiding":
-                        return "4 4";
+                        return dbkjs.scaleStyleValue(4) + " " + dbkjs.scaleStyleValue(4);
                         break;
                     case "> 60 minuten brandwerende scheiding":
                         return "solid";
                         break;
                     case "Rookwerende scheiding":
-                        return "8 4 2 4";
+                        return dbkjs.scaleStyleValue(8) + " " + dbkjs.scaleStyleValue(4) + dbkjs.scaleStyleValue(2) + " " + dbkjs.scaleStyleValue(4);
                         break;
                     default:
-                        return "10 10";
+                        return dbkjs.scaleStyleValue(10) + " " + dbkjs.scaleStyleValue(10);
                 }
             },
             mylabel: function(feature) {
@@ -307,7 +312,9 @@ dbkjs.config.styles = {
                 }
             }
         }
-    })
+    }),
+    "temporary": new OpenLayers.Style({strokeColor: "#009FC3"}),
+    "select": new OpenLayers.Style({strokeColor: "#8F00C3"})
     }),
     hulplijn: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
@@ -345,34 +352,33 @@ dbkjs.config.styles = {
                     case "Gate":
                     case "Fence":
                     case "Fence_O":
-                        return 8;
+                        return dbkjs.scaleStyleValue(8);
                         break;
                      case "HEAT":
-                        return 3;
+                        return dbkjs.scaleStyleValue(3);
                         break;
                     case "Broken":
-                        return 1;
+                        return dbkjs.scaleStyleValue(1);
                         break;
                     case "Arrow":
                     default:
-                        return 2;
-                }
+                        return dbkjs.scaleStyleValue(2);
+               }
             },
             mydash: function(feature) {
                 switch(feature.attributes.type) {
                     case "Cable":
                     case "Bbarrier":
-                        return "10 10";
+                        return dbkjs.scaleStyleValue(10) + " " + dbkjs.scaleStyleValue(10);
                         break;
                     case "Conduit":
                     case "Gate":
                     case "Fence":
                     case "Fence_O":
-                        return "1 20";
+                        return dbkjs.scaleStyleValue(1) + " " + dbkjs.scaleStyleValue(20);
                         break;
-
                     case "Broken":
-                        return "3 2";
+                        return dbkjs.scaleStyleValue(3) + " " + dbkjs.scaleStyleValue(2);
                         break;
                     default:
                         return "solid";
@@ -420,7 +426,9 @@ dbkjs.config.styles = {
 
             }
         }
-    })
+    }),
+    "temporary": new OpenLayers.Style({strokeColor: "#009FC3"}),
+    "select": new OpenLayers.Style({strokeColor: "#8F00C3"})
     }),
     hulplijn1: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
@@ -433,16 +441,16 @@ dbkjs.config.styles = {
                 switch(feature.attributes.type) {
                     case "Cable":
                     case "Bbarrier":
-                        return 4;
+                        return dbkjs.scaleStyleValue(4);
                         break;
                     case "Conduit":
                     case "Gate":
                     case "Fence":
                     case "Fence_O":
-                        return 2;
+                        return dbkjs.scaleStyleValue(2);
                         break;
                     default:
-                        return 2;
+                        return dbkjs.scaleStyleValue(2);
                 }
             },
             mydash: function(feature) {
@@ -470,7 +478,9 @@ dbkjs.config.styles = {
                 }
             }
         }
-    })
+    }),
+    "temporary": new OpenLayers.Style({strokeColor: "#009FC3"}),
+    "select": new OpenLayers.Style({strokeColor: "#8F00C3"})
     }),
     hulplijn2: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
@@ -482,10 +492,10 @@ dbkjs.config.styles = {
             mywidth: function(feature){
                 switch(feature.attributes.type) {
                      case "Gate":
-                        return 5;
+                        return dbkjs.scaleStyleValue(5);
                         break;
                     default:
-                        return 2;
+                        return dbkjs.scaleStyleValue(2);
                 }
             },
             mydash: function(feature) {
@@ -507,14 +517,16 @@ dbkjs.config.styles = {
                 }
             }
         }
-    })
+    }),
+    "temporary": new OpenLayers.Style({strokeColor: "#009FC3"}),
+    "select": new OpenLayers.Style({strokeColor: "#8F00C3"})
     }),
     toegangterrein: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
             fillColor: "${mycolor}",
             fillOpacity: 0.9,
-            strokeWidth: 1,
+            strokeWidth: "${mywidth}",
             pointRadius: 5,
             rotation: "${myrotation}",
             graphicName: "${mygraphic}"
@@ -539,6 +551,9 @@ dbkjs.config.styles = {
             },
             mygraphic: function(feature) {
                 return "triangle";
+            },
+            mywidth: function(feature) {
+                return dbkjs.scaleStyleValue(1);
             }
         }
     }),
