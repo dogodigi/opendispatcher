@@ -29,6 +29,7 @@ dbkjs.modules.gms = {
     viewed: false,
     markers: null,
     gmsMarker: null,
+    zoomedPos: null,
     register: function(options) {
         var _obj = dbkjs.modules.gms;
         _obj.createPopup();
@@ -94,18 +95,24 @@ dbkjs.modules.gms = {
                         var newNummer = me.gms && me.gms.Gms && me.gms.Gms.Nummer ? me.gms.Gms.Nummer : null;
                         if(oldNummer === null || oldNummer !== newNummer) {
                             me.viewed = false;
-
-                            // Verwijder marker zodat DBK wordt geselecteerd
-                            // en naar positie wordt gezoomed
-                            if(me.gmsMarker) {
-                                me.markers.removeMarker(me.gmsMarker);
-                                me.gmsMarker = null;
-                            }
                         } else {
                             // Update voor zelfde melding
                             // Geen rood icoon tonen
                             //me.viewed = false;
                         };
+                        var newPos = null;
+                        if(me.gms.Gms && me.gms.Gms.IncidentAdres && me.gms.Gms.IncidentAdres.Positie) {
+                            newPos = me.gms.Gms.IncidentAdres.Positie.X + "," + me.gms.Gms.IncidentAdres.Positie.Y;
+                        };
+                        if(me.zoomedPos === null || me.zoomedPos !== newPos) {
+                            //  Verwijder marker zodat DBK wordt geselecteerd
+                            // en naar positie wordt gezoomed
+                            if(me.gmsMarker) {
+                                me.markers.removeMarker(me.gmsMarker);
+                                me.gmsMarker = null;
+                            }
+                        };
+                        me.zoomedPos = newPos;
                         me.displayGms();
                     } else if(textStatus === "notmodified") {
                         if(monitor) {
@@ -123,7 +130,7 @@ dbkjs.modules.gms = {
                     if(console && console.log) {
                         console.log("JS exception bij verwerken GMS info", e);
                     }
-                }
+                };
 
                 window.setTimeout(function() {
                     me.loadGms();
