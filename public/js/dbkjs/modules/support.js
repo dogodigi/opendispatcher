@@ -96,13 +96,20 @@ dbkjs.modules.support = {
                 p.append('<p class="bg-info">Versleep eventueel het tekstballonnetje op de kaart om <br>aan te geven waar de fout is geconstateerd<br> of waar de melding over gaat.</p>');                
                 var laag_input = $('<div class="form-group"><label for="subject">Onderwerp</label></div>');
                 var select = $('<select name="subject" class="form-control" MULTIPLE></select>');
-                select.append('<option selected>Algemene melding</option>');
-                var ignoreLayers = ["GMS Marker", "GPS Marker", "search"];
-                $.each(layerarray, function(l_index, name) {
-                    if($.inArray(name, ignoreLayers) === -1) {
-                        select.append('<option>' + name + '</option>');
+                if(dbkjs.options.organisation.support.subjects) {
+                    var subjects = dbkjs.options.organisation.support.subjects.split(",");
+                    for(var i = 0; i < subjects.length; i++) {
+                        select.append('<option>' + subjects[i] + '</option>');
                     }
-                });
+                } else {
+                    select.append('<option selected>Algemene melding</option>');
+                    var ignoreLayers = ["GMS Marker", "GPS Marker", "search"];
+                    $.each(layerarray, function(l_index, name) {
+                        if($.inArray(name, ignoreLayers) === -1) {
+                            select.append('<option>' + name + '</option>');
+                        }
+                    });
+                }
                 laag_input.append(select);
                 p.append(laag_input);
                 var adres_input = $('<div class="form-group"><label for="address">Adres</label><input id="address" name="address" type="text" class="form-control" placeholder="Adres"></div>');
