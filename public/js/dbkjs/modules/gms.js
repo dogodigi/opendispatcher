@@ -79,42 +79,48 @@ dbkjs.modules.gms = {
             cache: false,
             ifModified: true,
             complete: function(jqXHR, textStatus) {
-                var monitor = dbkjs.modules.connectionmonitor;
-                if(textStatus === "success") {
-                    if(monitor) {
-                        monitor.onConnectionOK();
+                try {
+                    var monitor = dbkjs.modules.connectionmonitor;
+                    if(textStatus === "success") {
+                        if(monitor) {
+                            monitor.onConnectionOK();
+                        };
+                        var oldSequence = me.gms ? me.gms.Sequence : null;
+                        var oldNummer = me.gms && me.gms.Gms && me.gms.Gms.Nummer ? me.gms.Gms.Nummer : null;                    
+                        me.gms = jqXHR.responseJSON.EAL2OGG;
+                        if(me.gms.Sequence !== oldSequence) {
+                            var lastModified = moment(jqXHR.getResponseHeader("Last-Modified"));
+                            me.updated = lastModified.isValid() ? lastModified : moment();
+
+                            // Alleen unread bij nieuw meldingsnummer
+                            if(oldNummer === null || me.gms.Gms.Nummer !== oldNummer) {
+                                me.viewed = false;
+                            };
+
+                            // Eventueel gewijzigde X en Y doorvoeren
+                            if(me.gmsMarker) {
+                                me.markers.removeMarker(me.gmsMarker);
+                                me.gmsMarker = null;
+                            }
+                        };
+                        me.displayGms();
+                    } else if(textStatus === "notmodified") {
+                      if(monitor) {
+                          monitor.onConnectionOK();
+                      }
+                    } else {
+                        me.error = "Fout bij het ophalen van de informatie: " + jqXHR.statusText;
+                        me.gms = null;
+                        if(monitor) {
+                            monitor.onConnectionError();
+                        }
                     };
-                    var oldSequence = me.gms ? me.gms.Sequence : null;
-                    var oldNummer = me.gms ? me.gms.Gms.Nummer : null;
-                    me.gms = jqXHR.responseJSON.EAL2OGG;
-                    if(me.gms.Sequence !== oldSequence) {
-                        var lastModified = moment(jqXHR.getResponseHeader("Last-Modified"));
-                        me.updated = lastModified.isValid() ? lastModified : moment();
-
-                        // Alleen unread bij nieuw meldingsnummer
-                        if(oldNummer === null || me.gms.Gms.Nummer !== oldNummer) {
-                            me.viewed = false;
-                        }
-
-                        // Eventueel gewijzigde X en Y doorvoeren
-                        if(me.gmsMarker) {
-                            me.markers.removeMarker(me.gmsMarker);
-                            me.gmsMarker = null;
-                        }
-                    }
-                    me.displayGms();
-                } else if(textStatus === "notmodified") {
-                  if(monitor) {
-                      monitor.onConnectionOK();
-                  }
-                } else {
-                    me.error = "Fout bij het ophalen van de informatie: " + jqXHR.statusText;
-                    me.gms = null;
-                    if(monitor) {
-                        monitor.onConnectionError();
+                    me.updateGmsTitle();
+                } catch(e) {
+                    if(console && console.log) {
+                        console.log("JS exception bij verwerken GMS info", e);
                     }
                 }
-                me.updateGmsTitle();
 
                 window.setTimeout(function() {
                     me.loadGms();
