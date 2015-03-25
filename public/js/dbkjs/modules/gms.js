@@ -122,6 +122,19 @@ dbkjs.modules.gms = {
             }
         });
     },
+    reprojectToOpenLayersLonLat: function() {
+        var me = this;
+        var lon = me.gms.Gms.IncidentAdres.Positie.X, lat = me.gms.Gms.IncidentAdres.Positie.Y;
+
+        lon = lon / 100000;
+        lat = lat / 100000;
+
+        var p = new Proj4js.Point(lon, lat);
+        var t = Proj4js.transform(new Proj4js.Proj("WGS84"), new Proj4js.Proj("EPSG:28992"), p);
+        lon = t.x;
+        lat = t.y;
+        return new OpenLayers.LonLat(lon, lat);
+    },
     updateGmsTitle: function() {
         var text;
         var melding = this.gms && this.gms.Gms && this.gms.Gms.Nummer;
@@ -150,11 +163,11 @@ dbkjs.modules.gms = {
                 $("#btn_opengms").addClass("unread");
             }
             if(this.gmsMarker === null && this.gms.Gms.IncidentAdres && this.gms.Gms.IncidentAdres.Positie) {
-                var p = this.gms.Gms.IncidentAdres.Positie;
+                var p = this.reprojectToOpenLayersLonLat();
                 var size = new OpenLayers.Size(21,25);
                 var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
                 this.gmsMarker = new OpenLayers.Marker(
-                        new OpenLayers.LonLat(p.X, p.Y),
+                        p,
                         new OpenLayers.Icon("images/marker-red.png", size, offset));
                 this.markers.addMarker(this.gmsMarker);
 
@@ -208,7 +221,8 @@ dbkjs.modules.gms = {
         }
         row(e(a.Aanduiding), "Aanduiding");
         if(a.Positie) {
-            c = e(a.Positie.X + ", " + a.Positie.Y);
+            var reprojected = this.reprojectToOpenLayersLonLat();
+            c = e(reprojected.lon.toFixed() + ", " + reprojected.lat.toFixed());
             table.append('<tr><td>Coördinaten</a></td>' +
                     '<td><a href="#" onclick="dbkjs.modules.gms.zoom(); dbkjs.modules.gms.gmsPopup.hide();">' + c + '</a></td></tr>');
         } else {
@@ -257,9 +271,8 @@ dbkjs.modules.gms = {
     },
     zoom: function() {
         if(this.gms && this.gms.Gms && this.gms.Gms.IncidentAdres && this.gms.Gms.IncidentAdres.Positie) {
-            var x = Number(this.gms.Gms.IncidentAdres.Positie.X);
-            var y = Number(this.gms.Gms.IncidentAdres.Positie.Y);
-            dbkjs.map.setCenter(new OpenLayers.LonLat(x, y), dbkjs.options.zoom);
+            var reprojected = this.reprojectToOpenLayersLonLat();
+            dbkjs.map.setCenter(reprojected, dbkjs.options.zoom);
         }
     }
 };
