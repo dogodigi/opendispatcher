@@ -231,6 +231,14 @@ dbkjs.protocol.jsonDBK.getObject = function(feature, activetab, noZoom, onSucces
 
 dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess) {
     if (!(feature && feature.attributes && feature.attributes.typeFeature)) {
+
+        $('#dbkinfopanel_b').html('Geen DBK geselecteerd.');
+        $('.dbk-title').css('visibility', 'hidden');
+
+        if(onSuccess) {
+            onSuccess();
+        };
+
         return;
     };
 

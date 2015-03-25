@@ -59,3 +59,21 @@ dbkjs.modules.feature.showFeatureInfo = function(feature) {
         dbkjs.gui.infoPanelHide();
     }
 };
+
+dbkjs.modules.feature.zoomToFeature = function(feature) {
+    dbkjs.options.dbk = feature === null ? null : feature.attributes.identificatie;
+    dbkjs.modules.updateFilter(dbkjs.options.dbk);
+    if(dbkjs.options.dbk) {
+        if(!dbkjs.options.zoomToPandgeometrie) {
+            if (dbkjs.map.zoom < dbkjs.options.zoom) {
+                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), dbkjs.options.zoom);
+            } else {
+                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+            }
+        } else {
+            this.zoomToPandgeometrie();
+        }
+    };
+    // getActive() changed, hide it
+    this.layer.redraw();
+};
