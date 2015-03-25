@@ -94,7 +94,7 @@ exports.mailAnnotation = function(req, res) {
         smtp.close();
         if (error) {
             console.log("Mail error", error);
-            res.json(err);
+            res.json({"result": "error"});
         } else {
             res.json({"result":"ok"});
         }
