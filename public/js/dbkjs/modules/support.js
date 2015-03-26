@@ -44,11 +44,12 @@ dbkjs.modules.support = {
         if (dbkjs.options.organisation.support) {
             $('body').append('<div id="foutknop" class="btn-group">' +
                     '<a class="btn btn-default navbar-btn">' +
-                    '<span><i class="fa fa-envelope-o"></i> ' + dbkjs.options.organisation.support.button +'</span>' +
+                    '<span><i class="icon-envelope-alt"></i> ' + dbkjs.options.organisation.support.button +'</span>' +
                     '</a>' +
                     '</div>');
-            var supportpanel = dbkjs.util.createDialog('supportpanel', '<i class="fa fa-envelope-o"></i> ' + dbkjs.options.organisation.support.button, 'bottom:0;left:0;');
-            $('body').append(supportpanel);
+                    //'<span><i class="fa fa-envelope-o"></i> ' + dbkjs.options.organisation.support.button +'</span>' +
+            //var supportpanel = dbkjs.util.createDialog('supportpanel', '<i class="fa fa-envelope-o"></i> ' + dbkjs.options.organisation.support.button, 'bottom:0;left:0;');
+            var supportpanel = dbkjs.util.createDialog('supportpanel', '<i class="icon-envelope-alt"></i> ' + dbkjs.options.organisation.support.button, 'bottom:0;left:0;');           $('body').append(supportpanel);
             if(dbkjs.viewmode !== 'fullscreen') {
                 $('.dialog').drags({handle: '.panel-heading'});
                 $('.btn-group').drags({handle: '.drag-handle'});
