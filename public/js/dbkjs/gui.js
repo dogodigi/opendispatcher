@@ -12,10 +12,13 @@ dbkjs.gui = {
     createRefreshButton: function(obj) {
         $('#btngrp_navigation').append(
             '<a id="btn_refresh" class="btn btn-default navbar-btn" href="#" title="'+
-            i18n.t('app.refresh') + '"><i class="fa fa-refresh"></i></a>'
+            //i18n.t('app.refresh') + '"><i class="fa fa-refresh"></i></a>'
+            i18n.t('app.refresh') + '"><i class="icon-refresh"></i></a>'
         );
         $('#btn_refresh').click(function() {
-            $('#btn_refresh > i').addClass('fa-spin');
+            if (dbkjs.viewmode !== 'fullscreen') {
+               $('#btn_refresh > i').addClass('fa-spin');
+            };
             obj.get();
         });
     },

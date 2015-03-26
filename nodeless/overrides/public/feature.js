@@ -49,17 +49,6 @@ dbkjs.modules.feature.search_oms = function() {
     });
 };
 
-dbkjs.modules.feature.showFeatureInfo = function(feature) {
-    dbkjs.protocol.jsonDBK.process(feature, function() {
-        _obj.zoomToFeature(feature);
-    });
-    if(dbkjs.viewmode === 'fullscreen') {
-        dbkjs.util.getModalPopup('infopanel').hide();
-    } else {
-        dbkjs.gui.infoPanelHide();
-    }
-};
-
 dbkjs.modules.feature.zoomToFeature = function(feature) {
     dbkjs.options.dbk = feature === null ? null : feature.attributes.identificatie;
     dbkjs.modules.updateFilter(dbkjs.options.dbk);

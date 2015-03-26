@@ -160,7 +160,7 @@ dbkjs.modules.feature = {
                 }
             }
             $('#btn_refresh > i').removeClass('fa-spin');
-                _obj.search_dbk();
+            _obj.search_dbk();
         }).fail(function( jqxhr, textStatus, error ) {
             $('#btn_refresh > i').removeClass('fa-spin');
             dbkjs.options.feature = null;
