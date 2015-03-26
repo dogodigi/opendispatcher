@@ -588,7 +588,11 @@ dbkjs.util = {
         if (msg) {
             msg.html('<a href="' + e.src + '">' + e.src + '</a><br>' + i18n.t('dialogs.invalidImage'));
         }
-        e.src = dbkjs.basePath + "images/missing.gif";
+        if (dbkjs.viewmode === 'fullscreen') {
+            e.src = "images/missing.gif";
+        } else {
+            e.src = dbkjs.basePath + "images/missing.gif";
+        }
         e.onerror = "";
         return true;
     },
@@ -679,14 +683,16 @@ dbkjs.util = {
         if (!alert[0]) {
             var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
             alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-            alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
+            //alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
+            alert.append('<i class="icon-spinner icon-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
             $('body').append(alert);
             alert.show();
         } else {
             alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass('alert-info');
             alert.html('');
             alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-            alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
+            //alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
+            alert.append('<i class="icon-spinner icon-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
             alert.show();
         }
 
@@ -708,8 +714,8 @@ dbkjs.util = {
                 } else {
                     var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
                     alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-                    alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
-                    $('body').append(alert);
+                    //alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
+                    alert.append('<i class="icon-spinner icon-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');                    $('body').append(alert);
                     alert.show();
                 }
             } else {
@@ -723,8 +729,8 @@ dbkjs.util = {
                     alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass('alert-info');
                     alert.html('');
                     alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-                    alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
-                    alert.show();
+                    //alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
+                    alert.append('<i class="icon-spinner icon-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');                    alert.show();
                 }
             }
         } else {
@@ -880,10 +886,14 @@ dbkjs.util = {
         var modal_content = $('<div class="modal-content"></div>');
         var modal_header = $('<div id="' + id + '_h" class="modal-header"><h4 class="modal-title">' + title + '</h4></div>');
         var modal_body = $('<div id="' + id + '_b" class="modal-body"></div>');
-        var modal_footer = $('<div id="' + id + '_f" class="modal-footer"></div>');
+        if (dbkjs.viewmode !== 'fullscreen') {
+          var modal_footer = $('<div id="' + id + '_f" class="modal-footer"></div>');
+        };
         modal_content.append(modal_header);
         modal_content.append(modal_body);
-        modal_content.append(modal_footer);
+        if (dbkjs.viewmode !== 'fullscreen') {
+            modal_content.append(modal_footer);
+        };
         modal_wrapper.append(modal_dialog.append(modal_content));
         modal_wrapper.modal('hide');
         return modal_wrapper;
@@ -988,8 +998,9 @@ dbkjs.util = {
                 'class': 'modal-popup-close',
                 'href': '#'
             })
-            .html('<i class="fa fa-arrow-left"></i> Terug')
-            .on('click', function(e) {
+            //.html('<i class="fa fa-arrow-left"></i> Terug')
+            .html('<i class="icon-angle-left"></i> Terug')
+              .on('click', function(e) {
                 e.preventDefault();
                 hidingFunction();
             })
