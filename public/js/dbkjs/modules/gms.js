@@ -56,7 +56,8 @@ dbkjs.modules.gms = {
                 'href': '#',
                 'title': i18n.t('map.gms.button')
             })
-            .append('<i class="fa fa-align-justify"></i>')
+            //.append('<i class="fa fa-align-justify"></i>')
+            .append('<i class="icon-align-justify"></i>')
             .click(function(e) {
                 e.preventDefault();
                 _obj.gmsPopup.show();
@@ -337,6 +338,8 @@ dbkjs.modules.gms = {
                     return false;
                 }
             });
+
+            this.selectedDbkFeature = dbk;
 
             if(dbk) {
                 dbkjs.modules.feature.handleDbkOmsSearch(dbk);
