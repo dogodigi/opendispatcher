@@ -1,8 +1,8 @@
 /**
  *  Copyright (c) 2014 B3Partners B.V. (info@b3partners.nl)
- * 
+ *
  *  This file is part of safetymapDBK
- *  
+ *
  *  safetymapDBK is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -204,12 +204,12 @@ if(!skipObjects) {
                             };
                         }
 
-                        var writeDbkJson = function(json) {
-			    if(!json) {
-				console.log("Geen JSON voor id  " + id);
-				objectsToBeWritten--;
-				return;
-                            };                            
+                        var writeDbkJson = function(json, id) {
+                            if(!json) {
+                                console.log("Geen JSON voor id  " + id);
+                                objectsToBeWritten--;
+                                return;
+                            };
                             var filename;
                             if(json.DBKObject) {
                                 filename = outDir + '/api/object/' + json.DBKObject.identificatie + '.json';
@@ -228,13 +228,13 @@ if(!skipObjects) {
                         } else {
                             getFunction = dbk.getGebied;
                         };
-                        
+
                         getFunction(req(identificatie), { json:
                             function(json) {
-
+                                
                                 if(!json) {
                                     console.log("Geen JSON voor id  " + id);
-				    objectsToBeWritten--;
+                                    objectsToBeWritten--;
                                     return;
                                 };
 
@@ -242,7 +242,7 @@ if(!skipObjects) {
                                 writeDbkJson(json);
 
                                 // export verdiepingen
-                                if(json.DBKObject.verdiepingen) {
+                                if(json.hasOwnProperty("DBKObject") && json.DBKObject.verdiepingen) {
                                     for(var i in json.DBKObject.verdiepingen) {
                                         var verdieping = json.DBKObject.verdiepingen[i];
                                         if(verdieping.identificatie !== json.DBKObject.identificatie) {
@@ -287,6 +287,9 @@ function copyDeploy() {
 }
 function check() {
     if (organisationsDone && featuresDone && (objectsToBeWritten !== null && objectsToBeWritten === 0)) {
+        if(totalVerdiepingen !== 0) {
+            console.log("Verdiepingen: " + totalVerdiepingen);
+        }
         copyDeploy();
         console.log("Done");
         process.exit(0);
