@@ -469,7 +469,3 @@ dbkjs.documentReady = function() {
         dbkjs.bind_dbkjs_init_complete();
     });
 };
-
-$(document).ready(function() {
-    dbkjs.documentReady();
-});
