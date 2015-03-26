@@ -273,10 +273,15 @@ dbkjs.finishMap = function () {
                         dbkjs.options.organisation.area.zoom
                         );
             } else if (dbkjs.options.organisation.area.geometry.type === "Polygon") {
-                //get the projection for the Polygon
-                var crs = dbkjs.options.organisation.area.geometry.crs.properties.name || "EPSG:4326";
-                var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
-                dbkjs.map.zoomToExtent(areaGeometry.getBounds().transform(crs, dbkjs.map.getProjectionObject()));
+                if (dbkjs.viewmode === 'fullscreen') {
+                    var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
+                    dbkjs.map.zoomToExtent(areaGeometry.getBounds());
+                } else {
+                    //get the projection for the Polygon
+                    var crs = dbkjs.options.organisation.area.geometry.crs.properties.name || "EPSG:4326";
+                    var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
+                    dbkjs.map.zoomToExtent(areaGeometry.getBounds().transform(crs, dbkjs.map.getProjectionObject()));
+                }
             }
         } else {
             dbkjs.map.zoomToMaxExtent();
@@ -284,7 +289,9 @@ dbkjs.finishMap = function () {
     }
     dbkjs.permalink = new dbkjs.Permalink('permalink');
     dbkjs.map.addControl(dbkjs.permalink);
-    dbkjs.util.configureLayers();
+    if (dbkjs.viewmode !== 'fullscreen') {
+        dbkjs.util.configureLayers();
+    }
     //get dbk!
 };
 
@@ -307,6 +314,7 @@ dbkjs.setPaths = function() {
     if (!dbkjs.mediaPath) {
         dbkjs.mediaPath = dbkjs.basePath + 'media/';
     }
+
 
 };
 
@@ -379,7 +387,8 @@ dbkjs.documentReady = function() {
         );
         OpenLayers.Lang.setCode(dbkjsLang);
         if (dbkjs.viewmode !== 'fullscreen') {
-            $('body').append(dbkjs.util.createDialog('infopanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
+            //$('body').append(dbkjs.util.createDialog('infopanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
+            $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
         } else {
             // Create the infopanel
             dbkjs.util.createModalPopup({name: 'infopanel'}).getView().append($('<div></div>').attr({'id': 'infopanel_b'}));
@@ -415,7 +424,7 @@ dbkjs.documentReady = function() {
         dbkjs.init();
 
         $('#infopanel_b').html(dbkjs.options.info);
-        $('#tb03, #c_minimap').click(function () {
+        $('#tb03, #c_minimap').click(function() {
             if (this.id === "tb03") {
                 if (dbkjs.viewmode !== 'fullscreen') {
                     $('#infopanel').toggle();
@@ -444,9 +453,15 @@ dbkjs.documentReady = function() {
                             dbkjs.options.organisation.area.zoom
                             );
                 } else if (dbkjs.options.organisation.area.geometry.type === "Polygon") {
-                    var crs = dbkjs.options.organisation.area.geometry.crs.properties.name || "EPSG:4326";
-                    var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
-                    dbkjs.map.zoomToExtent(areaGeometry.getBounds().transform(crs, dbkjs.map.getProjectionObject()));
+                    if (dbkjs.viewmode === 'fullscreen') {
+                        var areaGeometry = new OpenLayers.Format.GeoJSON().read(
+                                dbkjs.options.organisation.area.geometry, "Geometry");
+                        dbkjs.map.zoomToExtent(areaGeometry.getBounds());
+                    } else {
+                        var crs = dbkjs.options.organisation.area.geometry.crs.properties.name || "EPSG:4326";
+                        var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
+                        dbkjs.map.zoomToExtent(areaGeometry.getBounds().transform(crs, dbkjs.map.getProjectionObject()));
+                    }
                 }
             }
         });

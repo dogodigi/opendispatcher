@@ -28,8 +28,41 @@ dbkjs.bind_dbkjs_init_complete = function() {
     });
 };
 
+dbkjs.challengeAuth = function() {
+    var params = {srid: dbkjs.options.projection.srid};
+    $.getJSON('api/organisation.json', params).done(function(data) {
+        if (data.organisation) {
+            dbkjs.options.organisation = data.organisation;
+            if (dbkjs.options.organisation.title) {
+                document.title = dbkjs.options.organisation.title;
+            }
+            dbkjs.successAuth();
+        }
+    });
+};
+
 dbkjs.createFullScreenDialogs = function() {
     if (dbkjs.viewmode !== 'fullscreen') {
         $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;margin-bottom:0px;position:fixed'));
     }
+};
+
+dbkjs.setPaths = function() {
+    
+    dbkjs.basePath = window.location.protocol + '//' + window.location.hostname;
+    var pathname = window.location.pathname;
+    // ensure basePath always ends with '/', remove 'index.html' if exists
+    if(pathname.charAt(pathname.length - 1) !== '/') {
+        pathname = pathname.substring(0, pathname.lastIndexOf('/')+1);
+    }
+    // ensure single '/' between hostname and path
+    dbkjs.basePath = dbkjs.basePath + (pathname.charAt(0) === "/" ? pathname : "/" + pathname);
+
+//    if (!dbkjs.dataPath) {
+//        dbkjs.dataPath = 'api/';
+//    }
+//
+//    if (!dbkjs.mediaPath) {
+//        dbkjs.mediaPath = dbkjs.basePath + 'media/';
+//    }
 };
