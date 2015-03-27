@@ -41,12 +41,6 @@ dbkjs.challengeAuth = function() {
     });
 };
 
-dbkjs.createFullScreenDialogs = function(t) {
-    // Dit zou weg kunnen.
-    if (dbkjs.viewmode !== 'fullscreen') {
-    }
-};
-
 dbkjs.setPaths = function() {
     
     dbkjs.basePath = window.location.protocol + '//' + window.location.hostname;
