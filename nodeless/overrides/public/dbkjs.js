@@ -58,11 +58,17 @@ dbkjs.setPaths = function() {
     // ensure single '/' between hostname and path
     dbkjs.basePath = dbkjs.basePath + (pathname.charAt(0) === "/" ? pathname : "/" + pathname);
 
-//    if (!dbkjs.dataPath) {
-//        dbkjs.dataPath = 'api/';
-//    }
-//
-//    if (!dbkjs.mediaPath) {
-//        dbkjs.mediaPath = dbkjs.basePath + 'media/';
-//    }
+    // Wordt gebruikt in:
+    // - feature.js - get()
+    // - jsonDBK.js - getGebied()
+    // - jsonDBK.js - getObject()
+    if (!dbkjs.dataPath) {
+        dbkjs.dataPath = 'api/';
+    }
+
+    // Wordt gebruikt in:
+    // - jsonDBK.js - constructMedia()
+    if (!dbkjs.mediaPath) {
+        dbkjs.mediaPath = dbkjs.basePath + 'media/';
+    }
 };

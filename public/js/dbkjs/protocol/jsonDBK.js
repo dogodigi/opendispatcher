@@ -236,8 +236,8 @@ dbkjs.protocol.jsonDBK = {
                 if(dbkjs.viewmode === 'fullscreen') {
                     $('#dbkinfopanel_b').html(div);
                 } else {
-                dbkjs.gui.infoPanelUpdateHtml('');
-                dbkjs.gui.infoPanelAddItems(div);
+                    dbkjs.gui.infoPanelUpdateHtml('');
+                    dbkjs.gui.infoPanelAddItems(div);
                 }
                 $('#systeem_meldingen').hide();
             }
@@ -261,11 +261,13 @@ dbkjs.protocol.jsonDBK = {
                 dbkjs.gui.infoPanelShow();
             }
 
-            _obj.addMouseoverHandler("#bwvlist", _obj.layerBrandweervoorziening);
-            _obj.addMouseoutHandler("#bwvlist", _obj.layerBrandweervoorziening);
-            _obj.addMouseoverHandler("#gvslist", _obj.layerGevaarlijkestof);
-            _obj.addMouseoutHandler("#gvslist", _obj.layerGevaarlijkestof);
-            _obj.addRowClickHandler("#floorslist", "verdiepingen");
+            if(dbkjs.viewmode !== 'fullscreen') {
+                _obj.addMouseoverHandler("#bwvlist", _obj.layerBrandweervoorziening);
+                _obj.addMouseoutHandler("#bwvlist", _obj.layerBrandweervoorziening);
+                _obj.addMouseoverHandler("#gvslist", _obj.layerGevaarlijkestof);
+                _obj.addMouseoutHandler("#gvslist", _obj.layerGevaarlijkestof);
+                _obj.addRowClickHandler("#floorslist", "verdiepingen");
+            }
 
             _obj.processing = false;
         } else {
@@ -283,9 +285,18 @@ dbkjs.protocol.jsonDBK = {
     },
     constructAlgemeen: function(DBKObject, dbktype) {
         var _obj = dbkjs.protocol.jsonDBK;
+
         /** Algemene dbk info **/
-        var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+
-                i18n.t('dbk.unknown')+ '</span>' : moment(DBKObject.controleDatum).format('YYYY-MM-DD hh:mm');
+        
+        if (dbkjs.viewmode === 'fullscreen') {
+            dbkjs.util.changeDialogTitle('<i class="icon-building"></i> ' + DBKObject.formeleNaam);
+            var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+
+                    i18n.t('dbk.unknown')+ '</span>' : DBKObject.controleDatum;
+        } else {
+            var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+
+                    i18n.t('dbk.unknown')+ '</span>' : moment(DBKObject.controleDatum).format('YYYY-MM-DD hh:mm');
+        }
+        
         if (dbkjs.showStatus) {
             var status = dbkjs.util.isJsonNull(DBKObject.status) ? '<span class="label label-warning">'+
                       i18n.t('dbk.unknown')+ '</span>' : DBKObject.status;
@@ -380,18 +391,30 @@ dbkjs.protocol.jsonDBK = {
                     if (!dbkjs.util.isJsonNull(waarde.bagId)){
                         var bag_div = $('<td></td>');
                         var bag_p = $('<p></p>');
-                        var bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + dbkjs.util.pad(waarde.bagId,16) + '</button>');
+                        
+                        if (dbkjs.viewmode === 'fullscreen') {
+                            var bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + waarde.bagId + '</button>');
+                        } else {
+                            var bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + dbkjs.util.pad(waarde.bagId,16) + '</button>');
+                        }
+ 
                         bag_p.append(bag_button);
                         bag_button.click(function() {
                             if($.inArray('bag', dbkjs.options.organisation.modules) > -1) {
                                 dbkjs.modules.bag.getVBO(waarde.bagId, function(result) {
                                     if (result.length === 0) {
+                                        var waardeBagId;
+                                        if (dbkjs.viewmode === 'fullscreen') {
+                                            waardeBagId = waarde.bagId;
+                                        } else {
+                                            waardeBagId = dbkjs.util.pad(waarde.bagId,16);
+                                        };    
                                         $('#collapse_algemeen_' + _obj.feature.id).append(
                                             '<div class="alert alert-warning alert-dismissable">' +
                                             '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
                                             '<strong>' + i18n.t('app.fail') +
                                             '</strong>' +
-                                             dbkjs.util.pad(waarde.bagId,16) + ' ' + i18n.t('dialogs.infoNotFound') +
+                                            waardeBagId + ' ' + i18n.t('dialogs.infoNotFound') +
                                             '</div>'
                                         );
                                     } else {
@@ -545,9 +568,15 @@ dbkjs.protocol.jsonDBK = {
                 }
                 if(waarde.identificatie !== feature.identificatie){
                     //Show the hyperlink!
-                    myrow = $('<tr id="' + waarde.identificatie + '">' +
-                        '<td>' + waarde.bouwlaag + sterretje +'</td>' +
-                        '</tr>');
+                    if (dbkjs.viewmode === 'fullscreen') {
+                        myrow = $('<tr>' +
+                            '<td>' + waarde.bouwlaag + sterretje +'</td>' +
+                            '</tr>');
+                    } else {
+                        myrow = $('<tr id="' + waarde.identificatie + '">' +
+                            '<td>' + waarde.bouwlaag + sterretje +'</td>' +
+                            '</tr>');
+                    };
                     myrow.click(function(){
                         _obj.getObject(waarde.identificatie, 'verdiepingen', true);
                         if(dbkjs.viewmode === 'fullscreen') {
@@ -699,17 +728,29 @@ dbkjs.protocol.jsonDBK = {
                 var realpath = dbkjs.mediaPath + waarde.URL;
                 //@@var realpath = dbkjs.basePath + 'media/' + waarde.URL;
                 if (waarde.filetype === "document" || waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
+                    //image_carousel_inner.append('<div class="item ' + active +
+                    //        '"><img src="' + dbkjs.basePath + 'images/missing.gif""><div class="carousel-caption"><a href="' + realpath +
+                    //        //@@'"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath +
+                    //        '" target="_blank"><h1><i class="fa fa-download fa-3"></h1></i></a><h3>' +
+                    //        waarde.naam +
+                    //        '</h3><a href="' + realpath + '" target="_blank"><h2>' + i18n.t('app.download')  + '</h2></a></div></div>');
                     image_carousel_inner.append('<div class="item ' + active +
                             '"><img src="' + dbkjs.basePath + 'images/missing.gif""><div class="carousel-caption"><a href="' + realpath +
                             //@@'"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath +
-                            '" target="_blank"><h1><i class="fa fa-download fa-3"></h1></i></a><h3>' +
+                            '" target="_blank"><h1><i class="icon-download icon-large"></h1></i></a><h3>' +
                             waarde.naam +
                             '</h3><a href="' + realpath + '" target="_blank"><h2>' + i18n.t('app.download')  + '</h2></a></div></div>');
                 } else if(waarde.filetype === "weblink") {
+                    //image_carousel_inner.append('<div class="item ' + active +
+                    //        '"><img src="' + dbkjs.basePath + 'images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL +
+                    //        //@@'"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL +
+                    //        '" target="_blank"><h1><i class="fa fa-external-link fa-3"></i></h1><h2>' +
+                    //        i18n.t('app.hyperlink')  + '</h2></a></div></div>'
+                    //    );
                     image_carousel_inner.append('<div class="item ' + active +
                             '"><img src="' + dbkjs.basePath + 'images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL +
                             //@@'"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL +
-                            '" target="_blank"><h1><i class="fa fa-external-link fa-3"></i></h1><h2>' +
+                            '" target="_blank"><h1><i class="icon-external-link icon-large"></i></h1><h2>' +
                             i18n.t('app.hyperlink')  + '</h2></a></div></div>'
                         );
                 } else if(waarde.filetype === 'afbeelding') {

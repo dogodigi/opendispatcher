@@ -127,6 +127,9 @@ dbkjs.protocol.jsonDBK.constructGevaarlijkestofRow = function(gevaarlijkestof) {
         '</tr>');
 };
 
+dbkjs.protocol.jsonDBK.constructOmsdetail = function(feature) {
+};
+
 dbkjs.protocol.jsonDBK.getfeatureinfo = function(e){
     $('#vectorclickpanel_h').html('<span class="h4"><i class="icon-info-sign">&nbsp;' + e.feature.layer.name + '</span>');
     if(e.feature.layer.name === 'Gevaarlijke stoffen' || e.feature.layer.name === 'Brandweervoorziening') {
