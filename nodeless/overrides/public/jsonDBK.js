@@ -184,7 +184,7 @@ dbkjs.protocol.jsonDBK.getGebied = function(feature, activetab, onSuccess) {
         //the function is not recieving a feature, but a string
         fid = feature;
     };
-    $.getJSON('api/gebied/' + fid + '.json', params).done(function(data) {
+    $.getJSON(dbkjs.dataPath + 'gebied/' + fid + '.json', params).done(function(data) {
         //clear all layers first!
         $.each(_obj.layers, function(idx, lyr){
            lyr.destroyFeatures();
@@ -216,7 +216,7 @@ dbkjs.protocol.jsonDBK.getObject = function(feature, activetab, noZoom, onSucces
         //the function is not recieving a feature, but a string
         fid = feature;
     };
-    $.getJSON('api/object/' + fid + '.json', params).done(function(data) {
+    $.getJSON(dbkjs.dataPath + 'object/' + fid + '.json', params).done(function(data) {
         //clear all layers first!
         $.each(_obj.layers, function(idx, lyr){
            lyr.destroyFeatures();

@@ -30,7 +30,7 @@ dbkjs.bind_dbkjs_init_complete = function() {
 
 dbkjs.challengeAuth = function() {
     var params = {srid: dbkjs.options.projection.srid};
-    $.getJSON('api/organisation.json', params).done(function(data) {
+    $.getJSON(dbkjs.dataPath + 'organisation.json', params).done(function(data) {
         if (data.organisation) {
             dbkjs.options.organisation = data.organisation;
             if (dbkjs.options.organisation.title) {
@@ -59,6 +59,7 @@ dbkjs.setPaths = function() {
     dbkjs.basePath = dbkjs.basePath + (pathname.charAt(0) === "/" ? pathname : "/" + pathname);
 
     // Wordt gebruikt in:
+    // - dbkjs.challengeAuth()
     // - feature.js - get()
     // - jsonDBK.js - getGebied()
     // - jsonDBK.js - getObject()
