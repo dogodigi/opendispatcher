@@ -351,20 +351,6 @@ dbkjs.bind_dbkjs_init_complete = function() {
     });
 };
 
-dbkjs.createFullScreenDialogs = function() {
-    if (dbkjs.viewmode !== 'fullscreen') {
-        $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
-        $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;'));
-        $('body').append(dbkjs.util.createModal('printpanel', '<i class="fa fa-print"></i> ' + t("app.print"), ''));
-        dbkjs.wms_panel = dbkjs.util.createTabbable();
-        $('#wmsclickpanel_b').append(dbkjs.wms_panel);
-        $('body').append(dbkjs.util.createDialog('minimappanel', '<i class="fa fa-picture-o"></i> ' + i18n.t("dialogs.refmap"), 'bottom:0;'));
-        $('.dialog').drags({handle: '.panel-heading'});
-        $('.btn-group').drags({handle: '.drag-handle'});
-        dbkjs.util.setModalTitle('overlaypanel', i18n.t('map.overlays'));
-        dbkjs.util.setModalTitle('baselayerpanel', i18n.t('map.baselayers'));
-    }
-};
     
 // dbkjs.js: $(document).ready
 dbkjs.documentReady = function() {
@@ -388,6 +374,7 @@ dbkjs.documentReady = function() {
         OpenLayers.Lang.setCode(dbkjsLang);
         if (dbkjs.viewmode !== 'fullscreen') {
             $('body').append(dbkjs.util.createDialog('infopanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
+            $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;margin-bottom:0px;position:fixed'));
         } else {
             // Create the infopanel
             dbkjs.util.createModalPopup({name: 'infopanel'}).getView().append($('<div></div>').attr({'id': 'infopanel_b'}));
@@ -416,9 +403,17 @@ dbkjs.documentReady = function() {
                 dbkjs.util.getModalPopup(panelId).show();
             });
 
+            $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
+            $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;'));
+            $('body').append(dbkjs.util.createModal('printpanel', '<i class="fa fa-print"></i> ' + t("app.print"), ''));
+            dbkjs.wms_panel = dbkjs.util.createTabbable();
+            $('#wmsclickpanel_b').append(dbkjs.wms_panel);
+            $('body').append(dbkjs.util.createDialog('minimappanel', '<i class="fa fa-picture-o"></i> ' + i18n.t("dialogs.refmap"), 'bottom:0;'));
+            $('.dialog').drags({handle: '.panel-heading'});
+            $('.btn-group').drags({handle: '.drag-handle'});
+            dbkjs.util.setModalTitle('overlaypanel', i18n.t('map.overlays'));
+            dbkjs.util.setModalTitle('baselayerpanel', i18n.t('map.baselayers'));
         }
-        
-        dbkjs.createFullScreenDialogs();
         
         dbkjs.init();
 

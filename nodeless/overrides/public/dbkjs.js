@@ -41,9 +41,9 @@ dbkjs.challengeAuth = function() {
     });
 };
 
-dbkjs.createFullScreenDialogs = function() {
+dbkjs.createFullScreenDialogs = function(t) {
+    // Dit zou weg kunnen.
     if (dbkjs.viewmode !== 'fullscreen') {
-        $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;margin-bottom:0px;position:fixed'));
     }
 };
 
