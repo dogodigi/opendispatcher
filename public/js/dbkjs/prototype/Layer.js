@@ -110,10 +110,8 @@ dbkjs.Layer = dbkjs.Class({
             var dv_panel_heading = $('<div class="panel-heading"></div>');
             var dv_panel_title = $('<h4 class="panel-title"></div>');
             // dv_panel_title.append('<input type="checkbox" name="box_' + this.id + '"/>&nbsp;');
-            //dv_panel_title.append(name + '&nbsp;<a class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
-            //        this.id + '" data-parent="' + parent + '" ><i class="fa fa-info-circle"></i></a>');
             dv_panel_title.append(name + '&nbsp;<a class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
-                    this.id + '" data-parent="' + parent + '" ><i class="icon-info-sign"></i></a>');
+                    this.id + '" data-parent="' + parent + '" ><i class="fa fa-info-circle"></i></a>');
             dv_panel_heading.append(dv_panel_title);
             this.div.append(dv_panel_heading);
             var dv_panel_content = $('<div id="collapse_' + this.id + '" class="panel-collapse collapse"></div>');

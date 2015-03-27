@@ -131,7 +131,7 @@ dbkjs.protocol.jsonDBK.constructOmsdetail = function(feature) {
 };
 
 dbkjs.protocol.jsonDBK.getfeatureinfo = function(e){
-    $('#vectorclickpanel_h').html('<span class="h4"><i class="icon-info-sign">&nbsp;' + e.feature.layer.name + '</span>');
+    $('#vectorclickpanel_h').html('<span class="h4"><i class="fa fa-info-circle">&nbsp;' + e.feature.layer.name + '</span>');
     if(e.feature.layer.name === 'Gevaarlijke stoffen' || e.feature.layer.name === 'Brandweervoorziening') {
         var html = $('<div class="table-responsive"></div>'),
             table = '';
@@ -291,7 +291,7 @@ dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess) {
                 $('#infopanel').hide();
             };
             dbkjs.protocol.jsonDBK.processing = true;
-            dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>', i18n.t('dialogs.running'), 'alert-info');
+            dbkjs.util.alert('<i class="fa fa-spinner fa-spin"></i>', i18n.t('dialogs.running'), 'alert-info');
             if(feature.attributes.typeFeature === 'Object'){
                 dbkjs.protocol.jsonDBK.getObject(feature, 'algemeen', false, mySuccess);
             } else if (feature.attributes.typeFeature === 'Gebied') {

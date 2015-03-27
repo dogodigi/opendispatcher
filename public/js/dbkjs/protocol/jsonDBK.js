@@ -728,29 +728,17 @@ dbkjs.protocol.jsonDBK = {
                 var realpath = dbkjs.mediaPath + waarde.URL;
                 //@@var realpath = dbkjs.basePath + 'media/' + waarde.URL;
                 if (waarde.filetype === "document" || waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
-                    //image_carousel_inner.append('<div class="item ' + active +
-                    //        '"><img src="' + dbkjs.basePath + 'images/missing.gif""><div class="carousel-caption"><a href="' + realpath +
-                    //        //@@'"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath +
-                    //        '" target="_blank"><h1><i class="fa fa-download fa-3"></h1></i></a><h3>' +
-                    //        waarde.naam +
-                    //        '</h3><a href="' + realpath + '" target="_blank"><h2>' + i18n.t('app.download')  + '</h2></a></div></div>');
                     image_carousel_inner.append('<div class="item ' + active +
                             '"><img src="' + dbkjs.basePath + 'images/missing.gif""><div class="carousel-caption"><a href="' + realpath +
                             //@@'"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + realpath +
-                            '" target="_blank"><h1><i class="icon-download icon-large"></h1></i></a><h3>' +
+                            '" target="_blank"><h1><i class="fa fa-download fa-3"></h1></i></a><h3>' +
                             waarde.naam +
                             '</h3><a href="' + realpath + '" target="_blank"><h2>' + i18n.t('app.download')  + '</h2></a></div></div>');
                 } else if(waarde.filetype === "weblink") {
-                    //image_carousel_inner.append('<div class="item ' + active +
-                    //        '"><img src="' + dbkjs.basePath + 'images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL +
-                    //        //@@'"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL +
-                    //        '" target="_blank"><h1><i class="fa fa-external-link fa-3"></i></h1><h2>' +
-                    //        i18n.t('app.hyperlink')  + '</h2></a></div></div>'
-                    //    );
                     image_carousel_inner.append('<div class="item ' + active +
                             '"><img src="' + dbkjs.basePath + 'images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL +
                             //@@'"><img src="images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL +
-                            '" target="_blank"><h1><i class="icon-external-link icon-large"></i></h1><h2>' +
+                            '" target="_blank"><h1><i class="fa fa-external-link fa-3"></i></h1><h2>' +
                             i18n.t('app.hyperlink')  + '</h2></a></div></div>'
                         );
                 } else if(waarde.filetype === 'afbeelding') {

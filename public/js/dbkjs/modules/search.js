@@ -57,24 +57,19 @@ dbkjs.modules.search = {
     inlineLayout: function() {
         var search_div = $('#btn-grp-search');
         var search_group = $('<div></div>').addClass('input-group navbar-btn');
-        //var search_pre = $('<span id="search-add-on" class="input-group-addon"><i class="fa fa-building"></i></span>');
-        var search_pre = $('<span id="search-add-on" class="input-group-addon"><i class="icon-building"></i></span>');
+        var search_pre = $('<span id="search-add-on" class="input-group-addon"><i class="fa fa-building"></i></span>');
         var search_input = $('<input id="search_input" name="search_input" type="text" class="form-control" placeholder="' + i18n.t("search.dbkplaceholder") + '">');
         var search_btn_grp = $(
             '<div class="input-group-btn">' +
                 '<button type="button" class="btn btn-default dropdown-toggle needsclick" data-toggle="dropdown">' + i18n.t("search.search") + ' <span class="caret"></span></button>' +
                 '<ul class="dropdown-menu pull-right" id="search_dropdown">' +
-                '<li><a href="#" id="s_dbk"><i class="icon-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
-                '<li><a href="#" id="s_oms"><i class="icon-bell"></i> ' + i18n.t("search.oms") + '</a></li>' +
-                '<li><a href="#" id="s_adres"><i class="icon-home"></i> ' + i18n.t("search.address") + '</a></li>' +
-                '<li><a href="#" id="s_coord"><i class="icon-pushpin"></i> ' + i18n.t("search.coordinates") + '</a></li>' +
+                '<li><a href="#" id="s_dbk"><i class="fa fa-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
+                '<li><a href="#" id="s_oms"><i class="fa fa-bell"></i> ' + i18n.t("search.oms") + '</a></li>' +
+                '<li><a href="#" id="s_adres"><i class="fa fa-home"></i> ' + i18n.t("search.address") + '</a></li>' +
+                '<li><a href="#" id="s_coord"><i class="fa fa-thumb-tack"></i> ' + i18n.t("search.coordinates") + '</a></li>' +
                 '</ul>' +
                 '</div>'
         );
-        //        '<li><a href="#" id="s_dbk"><i class="fa fa-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
-        //        '<li><a href="#" id="s_oms"><i class="fa fa-bell"></i> ' + i18n.t("search.oms") + '</a></li>' +
-        //        '<li><a href="#" id="s_adres"><i class="fa fa-home"></i> ' + i18n.t("search.address") + '</a></li>' +
-        //        '<li><a href="#" id="s_coord"><i class="fa fa-thumb-tack"></i> ' + i18n.t("search.coordinates") + '</a></li>' +
         search_group.append(search_pre);
         search_group.append(search_input);
         search_group.append(search_btn_grp);
@@ -91,8 +86,7 @@ dbkjs.modules.search = {
                 'href': '#',
                 'title': i18n.t('map.search.search')
             })
-            //.append('<i class="fa fa-search"></i>')
-            .append('<i class="icon-search"></i>')
+            .append('<i class="fa fa-search"></i>')
             .click(function(e) {
                 e.preventDefault();
                 _obj.showSearchPopup();
@@ -121,22 +115,15 @@ dbkjs.modules.search = {
         var search_input = $('<input id="search_input" name="search_input" type="text" class="form-control" placeholder="' + i18n.t("search.dbkplaceholder") + '">');
         var search_btn_grp = $(
             '<span class="btn-group input-group-btn">' +
-                '<a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-building"></i> <span class="dropdown-text">' + i18n.t("search.dbk") + '</span> <span class="caret"></span></a>' +
+                '<a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-building"></i> <span class="dropdown-text">' + i18n.t("search.dbk") + '</span> <span class="caret"></span></a>' +
                 '<ul class="dropdown-menu pull-right" id="search_dropdown" role="menu">' +
-                    '<li><a href="#" id="s_dbk"><i class="icon-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
-                    '<li><a href="#" id="s_oms"><i class="icon-bell"></i> ' + i18n.t("search.oms") + '</a></li>' +
-                    '<li><a href="#" id="s_adres"><i class="icon-home"></i> ' + i18n.t("search.address") + '</a></li>' +
-//                    '<li><a href="#" id="s_coord"><i class="icon-pushpin"></i> ' + i18n.t("search.coordinates") + '</a></li>' +
+                    '<li><a href="#" id="s_dbk"><i class="fa fa-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
+                    '<li><a href="#" id="s_oms"><i class="fa fa-bell"></i> ' + i18n.t("search.oms") + '</a></li>' +
+                    '<li><a href="#" id="s_adres"><i class="fa fa-home"></i> ' + i18n.t("search.address") + '</a></li>' +
+                    '<li><a href="#" id="s_coord"><i class="fa fa-thumb-tack"></i> ' + i18n.t("search.coordinates") + '</a></li>' +
                 '</ul>' +
             '</span>'
         );
-        //        '<a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-building"></i> <span class="dropdown-text">' + i18n.t("search.dbk") + '</span> <span class="caret"></span></a>' +
-        //        '<ul class="dropdown-menu pull-right" id="search_dropdown" role="menu">' +
-        //            '<li><a href="#" id="s_dbk"><i class="fa fa-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
-        //            '<li><a href="#" id="s_oms"><i class="fa fa-bell"></i> ' + i18n.t("search.oms") + '</a></li>' +
-        //            '<li><a href="#" id="s_adres"><i class="fafa-home"></i> ' + i18n.t("search.address") + '</a></li>' +
-        //            '<li><a href="#" id="s_coord"><i class="fa fa-thumb-tack"></i> ' + i18n.t("search.coordinates") + '</a></li>' +
-
         search_group.append(search_input);
         search_group.append(search_btn_grp);
         return $('<div class="row"></div>').append($('<div class="col-lg-12"></div>').append(search_group));
@@ -216,17 +203,11 @@ dbkjs.modules.search = {
         var _obj = dbkjs.modules.search,
             searchField = $('#search_input'),
             currentSearch = 'dbk',
-            //dropdownConfig = {
-            //    's_adres': { 'icon': 'fa fa-home', 'text': i18n.t("search.address"), 'placeholder': i18n.t("search.addressplaceholder"), 'search': 'address' },
-            //    's_coord': { 'icon': 'fa fa-thumb-tack', 'text': i18n.t("search.coordinates"), 'placeholder': i18n.t("search.coordplaceholder"), 'search': 'coordinates' },
-            //    's_dbk': { 'icon': 'fa fa-building', 'text': i18n.t("search.dbk"), 'placeholder': i18n.t("search.dbkplaceholder"), 'search': 'dbk' },
-            //    's_oms': { 'icon': 'fa fa-bell', 'text': i18n.t("search.oms"), 'placeholder': i18n.t("search.omsplaceholder"), 'search': 'oms' }
-            //};
             dropdownConfig = {
-                's_adres': { 'icon': 'icon-home', 'text': i18n.t("search.address"), 'placeholder': i18n.t("search.addressplaceholder"), 'search': 'address' },
-                's_coord': { 'icon': 'icon-pushpin', 'text': i18n.t("search.coordinates"), 'placeholder': i18n.t("search.coordplaceholder"), 'search': 'coordinates' },
-                's_dbk': { 'icon': 'icon-building', 'text': i18n.t("search.dbk"), 'placeholder': i18n.t("search.dbkplaceholder"), 'search': 'dbk' },
-                's_oms': { 'icon': 'icon-bell', 'text': i18n.t("search.oms"), 'placeholder': i18n.t("search.omsplaceholder"), 'search': 'oms' }
+                's_adres': { 'icon': 'fa fa-home', 'text': i18n.t("search.address"), 'placeholder': i18n.t("search.addressplaceholder"), 'search': 'address' },
+                's_coord': { 'icon': 'fa fa-thumb-tack', 'text': i18n.t("search.coordinates"), 'placeholder': i18n.t("search.coordplaceholder"), 'search': 'coordinates' },
+                's_dbk': { 'icon': 'fa fa-building', 'text': i18n.t("search.dbk"), 'placeholder': i18n.t("search.dbkplaceholder"), 'search': 'dbk' },
+                's_oms': { 'icon': 'fa fa-bell', 'text': i18n.t("search.oms"), 'placeholder': i18n.t("search.omsplaceholder"), 'search': 'oms' }
             };
 
         var timer;
@@ -387,15 +368,13 @@ dbkjs.modules.search = {
             var minp = mdiv.parent().find('input');
             var searchtype = $(this).text().trim();
             if (searchtype === i18n.t("search.address")) {
-                //mbtn.html('<i class="fa fa-home"></i>');
-                mbtn.html('<i class="icon-home"></i>');
+                mbtn.html('<i class="fa fa-home"></i>');
                 minp.attr("placeholder", i18n.t("search.addressplaceholder"));
                 if (dbkjs.modules.search) {
                     dbkjs.modules.search.activate();
                 }
             } else if (searchtype === i18n.t("search.coordinates")) {
-                //mbtn.html('<i class="fa fa-thumb-tack"></i>');
-                mbtn.html('<i class="icon-pushpin"></i>');
+                mbtn.html('<i class="fa fa-thumb-tack"></i>');
                 minp.attr("placeholder", i18n.t("search.coordplaceholder"));
                 $('#search_input').change(function() {
                     var loc = _obj.handleCoordinatesSearch();
@@ -406,13 +385,11 @@ dbkjs.modules.search = {
                     return false;
                 });
             } else if (searchtype === i18n.t("search.dbk")) {
-                //mbtn.html('<i class="fa fa-building"></i>');
-                mbtn.html('<i class="icon-building"></i>');
+                mbtn.html('<i class="fa fa-building"></i>');
                 minp.attr("placeholder", i18n.t("search.dbkplaceholder"));
                 dbkjs.modules.feature.search_dbk();
             } else if (searchtype === i18n.t("search.oms")) {
-                //mbtn.html('<i class="fa fa-bell"></i>');
-                mbtn.html('<i class="icon-bell"></i>');
+                mbtn.html('<i class="fa fa-bell"></i>');
                 minp.attr("placeholder", i18n.t("search.omsplaceholder"));
                 dbkjs.modules.feature.search_oms();
             }

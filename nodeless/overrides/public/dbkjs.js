@@ -43,7 +43,7 @@ dbkjs.challengeAuth = function() {
 
 dbkjs.createFullScreenDialogs = function() {
     if (dbkjs.viewmode !== 'fullscreen') {
-        $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;margin-bottom:0px;position:fixed'));
+        $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;margin-bottom:0px;position:fixed'));
     }
 };
 

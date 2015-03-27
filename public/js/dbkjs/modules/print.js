@@ -32,9 +32,8 @@ dbkjs.modules.print = {
         $('#btngrp_3').append(
             '<a id="btn_print" class="btn btn-default navbar-btn" href="#" title="' + 
             i18n.t('app.print') + 
-            '"><i class="icon-print"></i></a>'
+            '"><i class="fa fa-print"></i></a>'
         );
-        //    '"><i class="fa fa-print"></i></a>'
 
         $('#btn_print').click(function() {
             //$('#printpanel').modal();
