@@ -84,7 +84,7 @@ dbkjs.modules.search = {
                 'id': 'btn_opensearch',
                 'class': 'btn btn-default navbar-btn',
                 'href': '#',
-                'title': i18n.t('map.search.search')
+                'title': i18n.t('search.search')
             })
             .append('<i class="fa fa-search"></i>')
             .click(function(e) {

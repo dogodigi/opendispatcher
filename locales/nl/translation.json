@@ -173,6 +173,9 @@
         "coordinates": "Coordinaten",
         "coordplaceholder": "Lon,lat of X,Y punt voor decimaal"
     },
+    "gms":{
+        "gms": "Melding"
+    },
     "email": {
         "annotation": "Terugmelding",
         "annotationtitle": "Er is een terugmelding gedaan",

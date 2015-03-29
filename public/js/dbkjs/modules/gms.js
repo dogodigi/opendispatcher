@@ -54,7 +54,7 @@ dbkjs.modules.gms = {
                 'id': 'btn_opengms',
                 'class': 'btn btn-default navbar-btn',
                 'href': '#',
-                'title': i18n.t('map.gms.button')
+                'title': i18n.t('gms.gms')
             })
             .append('<i class="fa fa-align-justify"></i>')
             .click(function(e) {
