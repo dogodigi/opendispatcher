@@ -67,6 +67,10 @@ fsutil.copyRecursiveSync(symbolPath, outDir + '/symbols', copyOptions);
 console.log("Copy public...");
 fsutil.copyRecursiveSync('./public', outDir, copyOptions);
 
+console.log("Copy overrides...");
+fs.mkdirSync(outDir + '/js/overrides');
+fsutil.copyRecursiveSync('./nodeless/overrides/public', outDir + '/js/overrides', copyOptions);
+
 // TODO: do what compressjs.sh does (in JS code?)
 fs.unlink(outDir + '/compressjs.sh');
 
@@ -84,6 +88,12 @@ fsutil.copyRecursiveSync('./nodeless/html', outDir , copyOptions);
 console.log("Create api/organisation.json...");
 fs.mkdirSync(outDir + '/api');
 var dbk = require('./controllers/dbk.js');
+// Get controller overrides and apply.
+var dbkOverride = require('./nodeless/overrides/controllers/dbk.js');
+for (var prop in dbkOverride) {
+  dbk[prop]=dbkOverride[prop];
+}
+
 var anyDB = require('any-db');
 global.pool = anyDB.createPool(dbURL, {min: 2, max: 20});
 
