@@ -48,6 +48,7 @@ dbkjs.modules.support = {
                     '</a>' +
                     '</div>');
             var supportpanel = dbkjs.util.createDialog('supportpanel', '<i class="fa fa-envelope-o"></i> ' + dbkjs.options.organisation.support.button, 'bottom:0;left:0;');
+            $('body').append(supportpanel);
             if(dbkjs.viewmode !== 'fullscreen') {
                 $('.dialog').drags({handle: '.panel-heading'});
                 $('.btn-group').drags({handle: '.drag-handle'});
