@@ -289,7 +289,7 @@ dbkjs.protocol.jsonDBK = {
         /** Algemene dbk info **/
         
         if (dbkjs.viewmode === 'fullscreen') {
-            dbkjs.util.changeDialogTitle('<i class="icon-building"></i> ' + DBKObject.formeleNaam);
+            dbkjs.util.changeDialogTitle('<i class="fa fa-building"></i> ' + DBKObject.formeleNaam);
             var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+
                     i18n.t('dbk.unknown')+ '</span>' : DBKObject.controleDatum;
         } else {

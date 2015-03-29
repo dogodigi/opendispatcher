@@ -1,13 +1,13 @@
 
-dbkjs.protocol.jsonDBK.constructBrandweervoorziening = function(brandweervoorziening){
+dbkjs.protocol.jsonDBK.constructBrandweervoorziening = function(feature){
     var _obj = dbkjs.protocol.jsonDBK;
-    if(brandweervoorziening){
-        var id = 'collapse_brandweervoorziening_' + dbkjs.options.feature.identificatie;
+    if(feature.brandweervoorziening){
+        var id = 'collapse_brandweervoorziening_' + feature.identificatie;
         var bv_div = $('<div class="tab-pane" id="' + id + '"></div>');
         var bv_table_div = $('<div class="table-responsive"></div>');
         var bv_table = _obj.constructBrandweervoorzieningHeader();
         var features = [];
-        $.each(brandweervoorziening, function(idx, myGeometry){
+        $.each(feature.brandweervoorziening, function(idx, myGeometry){
             var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
             myFeature.attributes = {
                 "type" : myGeometry.typeVoorziening,
@@ -60,15 +60,15 @@ dbkjs.protocol.jsonDBK.constructBrandweervoorzieningRow = function(brandweervoor
             '</tr>');
 };
     
-dbkjs.protocol.jsonDBK.constructGevaarlijkestof = function(gevaarlijkestof){
+dbkjs.protocol.jsonDBK.constructGevaarlijkestof = function(feature){
     var _obj = dbkjs.protocol.jsonDBK;
-    if(gevaarlijkestof){
-        var id = 'collapse_gevaarlijkestof_' + dbkjs.options.feature.identificatie;
+    if(feature.gevaarlijkestof){
+        var id = 'collapse_gevaarlijkestof_' + feature.identificatie;
         var bv_div = $('<div class="tab-pane" id="' + id + '"></div>');
         var bv_table_div = $('<div class="table-responsive"></div>');
         var bv_table = _obj.constructGevaarlijkestofHeader();
         var features = [];
-         $.each(gevaarlijkestof, function(idx, myGeometry){
+         $.each(feature.gevaarlijkestof, function(idx, myGeometry){
             var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
             myFeature.attributes = {
                 "type" : myGeometry.symboolCode,

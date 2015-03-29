@@ -27,6 +27,8 @@ Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.387
 
 var dbkjsLang = 'nl';
 
+dbkjs.viewmode = 'fullscreen';
+
 dbkjs.options = {
     projection: {
         code: "EPSG:28992",
