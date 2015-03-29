@@ -176,6 +176,12 @@
     "gms":{
         "gms": "Melding"
     },
+    "toggle":{
+        "toggleObject": "Toon/verberg Algemeen",
+        "togglePreventive": "Toon/verberg Preventie",
+        "togglePreparative": "Toon/verberg Preparatie",
+        "toggleDanger": "Toon/verberg Repressie"
+    },
     "email": {
         "annotation": "Terugmelding",
         "annotationtitle": "Er is een terugmelding gedaan",

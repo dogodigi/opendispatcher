@@ -73,7 +73,7 @@ dbkjs.modules.layertoggle = {
                     'id': 'btn_' + toggleKey,
                     'class': 'btn btn-default navbar-btn active layer-toggle-btn ' + toggleKey,
                     'href': '#',
-                    'title': i18n.t('map.toggle.' + toggleKey)
+                    'title': i18n.t('toggle.' + toggleKey)
                 })
                 .append(toggleOptions.label)
                 .click(function(e) {
