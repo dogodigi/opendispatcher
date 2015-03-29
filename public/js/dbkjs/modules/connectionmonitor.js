@@ -33,7 +33,7 @@ dbkjs.modules.connectionmonitor = {
 
         $(".main-button-group").append($("<div class=\"btn-group pull-left connection-btn-group\">" +
             "<a id=\"connection\" href=\"#\" title=\"Verbindingsstatus\" class=\"btn navbar-btn btn-default\">" +
-            "<i id=\"connectionicon\" class=\"icon-signal\" style=\"color: green\"></i></a>"));
+            "<i id=\"connectionicon\" class=\"fa fa-signal\" style=\"color: green\"></i></a>"));
 
         var me = this;
         $("#connection").click(function() {
@@ -53,7 +53,7 @@ dbkjs.modules.connectionmonitor = {
     onConnectionError: function() {
         this.connected = false;
 
-        $("#connectionicon").attr("class", "icon-exclamation-sign");
+        $("#connectionicon").attr("class", "fa fa-exclamation");
         $("#connectionicon").attr("style", "color: red");
     },
     onConnectionOK: function() {
@@ -65,11 +65,11 @@ dbkjs.modules.connectionmonitor = {
 
         var me = this;
         if(me.okTimer === null) {
-            $("#connectionicon").attr("class", "icon-signal");
+            $("#connectionicon").attr("class", "fa fa-signal");
             $("#connectionicon").attr("style", "color: gray");
             me.okTimer = setTimeout(function() {
                 $("#connectionicon").attr("style", "color: green");
-                $("#connectionicon").attr("class", "icon-signal");
+                $("#connectionicon").attr("class", "fa fa-signal");
                 clearTimeout(me.okTimer);
                 me.okTimer = null;
             }, 8000);

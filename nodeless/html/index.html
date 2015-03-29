@@ -22,28 +22,28 @@
   <body>
     <div class="main-button-group">
         <div id="btngrp_navigation" class="btn-group pull-right">
-            <a href="#" class="btn navbar-btn btn-default drag-handle"><i class="icon-ellipsis-vertical"></i></a>
-            <a id="zoom_prev" href="#" title="Vorige" class="btn navbar-btn btn-default disabled"><i class="icon-reply"></i></a>
-            <a id="zoom_next" href="#" title="Volgende" class="btn navbar-btn btn-default disabled"><i class="icon-share-alt"></i></a>
-            <a id="zoom_in" href="#" title="zoom in" class="btn navbar-btn btn-default"><i class="icon-zoom-in"></i></a>
-            <a id="zoom_out" href="#" title="Zoom uit" class="btn navbar-btn btn-default"><i class="icon-zoom-out"></i></a>
-            <a id="zoom_extent" href="#" title="Zoom naar regio" class="btn navbar-btn btn-default needsclick"><i class="icon-fullscreen"></i></a>
-            <a id="permalink" title="Snelkoppeling" class="btn navbar-btn btn-default"><i class="icon-link"></i></a>
+            <a href="#" class="btn navbar-btn btn-default drag-handle"><i class="fa fa-ellipsis-v"></i></a>
+            <a id="zoom_prev" href="#" title="Vorige" class="btn navbar-btn btn-default disabled"><i class="fa fa-reply"></i></a>
+            <a id="zoom_next" href="#" title="Volgende" class="btn navbar-btn btn-default disabled"><i class="fa fa-share-alt"></i></a>
+            <a id="zoom_in" href="#" title="zoom in" class="btn navbar-btn btn-default"><i class="fa fa-search-plus"></i></a>
+            <a id="zoom_out" href="#" title="Zoom uit" class="btn navbar-btn btn-default"><i class="fa fa-search-minus"></i></a>
+            <a id="zoom_extent" href="#" title="Zoom naar regio" class="btn navbar-btn btn-default needsclick"><i class="fa fa-arrows-alt"></i></a>
+            <a id="permalink" title="Snelkoppeling" class="btn navbar-btn btn-default"><i class="fa fa-link"></i></a>
         </div>
         <div id="btngrp_3" class="btn-group pull-right">
-            <a href="#" class="btn navbar-btn btn-default drag-handle"><i class="icon-ellipsis-vertical"></i></a>
-            <a id="c_minimap" href="#" title="Overzichtskaart" class="btn navbar-btn btn-default"><i class="icon-picture"></i></a>
-            <a id="c_settings" href="#settingspanel" data-toggle="modal" title="Instellingen" class="btn navbar-btn btn-default"><i class="icon-cogs"></i></a>
-            <a id="tb01" href="#overlaypanel" data-toggle="modal" title="Lagen" class="btn navbar-btn btn-default"><i class="icon-map-marker"></i></a>
-            <a id="tb02" href="#baselayerpanel" data-toggle="modal" title="Basiskaarten" class="btn navbar-btn btn-default"><i class="icon-globe"></i></a>
+            <a href="#" class="btn navbar-btn btn-default drag-handle"><i class="fa fa-ellipsis-v"></i></a>
+            <a id="c_minimap" href="#" title="Overzichtskaart" class="btn navbar-btn btn-default"><i class="fa fa-image"></i></a>
+            <a id="c_settings" href="#settingspanel" data-toggle="modal" title="Instellingen" class="btn navbar-btn btn-default"><i class="fa fa-cogs"></i></a>
+            <a id="tb01" href="#overlaypanel" data-toggle="modal" title="Lagen" class="btn navbar-btn btn-default"><i class="fa fa-map-marker"></i></a>
+            <a id="tb02" href="#baselayerpanel" data-toggle="modal" title="Basiskaarten" class="btn navbar-btn btn-default"><i class="fa fa-globe"></i></a>
         </div>
         <div class="btn-group pull-right layertoggle-btn-group">
-            <a id="tb03" href="#" title="Informatie DBK" class="btn navbar-btn btn-default"><i class="icon-info-sign"></i></a>
+            <a id="tb03" href="#" title="Informatie DBK" class="btn navbar-btn btn-default"><i class="fa fa-info-circle"></i></a>
         </div>
         <div id="btn-grp-search" style="display:none;" class="btn-group pull-right"></div>
     </div>
     <div id="mapc1map1">
-      <div id="noordpijl" title="Noordpijl" style="cursor:pointer;"><i style="font-size:40px;" class="icon-long-arrow-up"><span style="font-size:20px">N</span></i></div>
+      <div id="noordpijl" title="Noordpijl" style="cursor:pointer;"><i style="font-size:40px;" class="fa fa-long-arrow-up"><span style="font-size:20px">N</span></i></div>
     </div>
     <a class="btn btn-default dbk-title"></a>
     <div id="logo"></div>
@@ -114,7 +114,14 @@
     <script src="js/dbkjs/gui.js" type="text/javascript"></script>
     <script src="js/dbkjs/layers.js" type="text/javascript"></script>
     <script src="js/dbkjs/mapcontrols.js" type="text/javascript"></script>
-    <script src="js/dbkjs/dbkjs.js" type="text/javascript"></script>
+    <script src="js/dbkjs/dbkjs.js" type="text/javascript"></script>  
+    <script src="js/overrides/dbkjs.js" type="text/javascript"></script>
+    <script src="js/overrides/feature.js" type="text/javascript"></script>
+    <script src="js/overrides/gui.js" type="text/javascript"></script>
+    <script src="js/overrides/jsonDBK.js" type="text/javascript"></script>
+    <script src="js/overrides/layout.js" type="text/javascript"></script>
+    <script src="js/overrides/mapcontrols.js" type="text/javascript"></script>
+    <script src="js/overrides/search.js" type="text/javascript"></script>
     <script src="js/dbkjs/docready.js" type="text/javascript"></script>
     <script src="js/libs/moment/lang/nl.js" type="text/javascript"></script>
     <script src="js/dbkjs/config/options_mobile.js" type="text/javascript"></script>
