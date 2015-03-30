@@ -1,8 +1,8 @@
 /**
  *  Copyright (c) 2014 B3Partners B.V. (info@b3partners.nl)
- * 
+ *
  *  This file is part of safetymapDBK
- *  
+ *
  *  safetymapDBK is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -47,25 +47,29 @@ exports.copyRecursiveSync = function(from, to, options) {
 	if(typeof options.onRecurseDirectory === 'undefined') {
 		options.onRecurseDirectory = function() {};
 	}
-	
+
 	if(!fs.existsSync(to)) {
 		fs.mkdirSync(to);
 	}
     try {
-	var files = fs.readdirSync(from);
-    } catch (err) {
-        console.log('Cannot copy from ' + from + ' to '+ to);
-    } finally {
+        var files = fs.readdirSync(from);
+
         for(var f in files) {
             var fn = files[f];
-            var stats = fs.statSync(from + '/' + fn);
-            if(stats.isFile()) {
-                options.onFileCopy(from + '/' + fn, to + '/' + fn);
-                fs.writeFileSync(to + '/' + fn, fs.readFileSync(from + '/' + fn));
-            } else if(stats.isDirectory()) {
-                options.onRecurseDirectory(from + '/' + fn);
-                this.copyRecursiveSync(from + '/' + fn, to + '/' + fn, options);
+            try {
+                var stats = fs.statSync(from + '/' + fn);
+                if(stats.isFile()) {
+                    options.onFileCopy(from + '/' + fn, to + '/' + fn);
+                    fs.writeFileSync(to + '/' + fn, fs.readFileSync(from + '/' + fn));
+                } else if(stats.isDirectory()) {
+                    options.onRecurseDirectory(from + '/' + fn);
+                    this.copyRecursiveSync(from + '/' + fn, to + '/' + fn, options);
+                }
+            } catch(err) {
+                console.error('Cannot copy file or recurse into dir: ' + fn);
             }
         }
+    } catch (err) {
+        console.error('Cannot read files from ' + from);
     }
 };

@@ -200,6 +200,65 @@ dbkjs.Permalink =
     CLASS_NAME: "dbkjs.Permalink"
 });
 
+// Override Cluster strategy to only create clusters for features within map
+// bounds, and thus also recluster on panning
+// http://acuriousanimal.com/blog/2012/10/09/improved-performance-on-the-animatedcluster-for-openlayers/
+// http://acuriousanimal.com/blog/2013/02/08/animatedcluster-pan-related-bug-fixed/
+OpenLayers.Strategy.Cluster.prototype.cluster = function(event) {
+
+    if((!event || event.zoomChanged || (event.type === "moveend" && !event.zoomChanged)) && this.features) {
+        this.resolution = this.layer.map.getResolution();
+        var clusters = [];
+        var feature, clustered, cluster;
+        var screenBounds = this.layer.map.getExtent();
+        for(var i=0; i<this.features.length; ++i) {
+            feature = this.features[i];
+            if(feature.geometry) {
+                if(!screenBounds.intersectsBounds(feature.geometry.getBounds())) {
+                    continue;
+                }
+                clustered = false;
+                for(var j=clusters.length-1; j>=0; --j) {
+                    cluster = clusters[j];
+                    if(this.shouldCluster(cluster, feature)) {
+                        this.addToCluster(cluster, feature);
+                        clustered = true;
+                        break;
+                    }
+                }
+                if(!clustered) {
+                    clusters.push(this.createCluster(this.features[i]));
+                }
+            }
+        }
+        this.clustering = true;
+        this.layer.removeAllFeatures();
+        this.clustering = false;
+        if(clusters.length > 0) {
+            if(this.threshold > 1) {
+                var clone = clusters.slice();
+                clusters = [];
+                var candidate;
+                for(var i=0, len=clone.length; i<len; ++i) {
+                    candidate = clone[i];
+                    if(candidate.attributes.count < this.threshold) {
+                        Array.prototype.push.apply(clusters, candidate.cluster);
+                    } else {
+                        clusters.push(candidate);
+                    }
+                }
+            }
+            this.clustering = true;
+            // A legitimate feature addition could occur during this
+            // addFeatures call.  For clustering to behave well, features
+            // should be removed from a layer before requesting a new batch.
+            this.layer.addFeatures(clusters);
+            this.clustering = false;
+        }
+        this.clusters = clusters;
+    }
+};
+
 //Override drawText function on openlayers SVG.js
 OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location) {
     var drawOutline = (!!style.labelOutlineWidth);
@@ -360,6 +419,8 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
 //    return res;
 //}
 
+var alertTimer;
+
 dbkjs.util = {
     layersLoading: [],
     modalPopupStore: {},
@@ -388,6 +449,9 @@ dbkjs.util = {
 
     },
     onClick: function(e) {
+        if(dbkjs.viewmode === "fullscreen") {
+            return;
+        };
         $('#wmsclickpanel').hide();
         //controleer of de layer onderdeel is van een module en een getfeatureinfo heeft
         $.each(dbkjs.map.layers, function(lay_index, lay) {
@@ -524,7 +588,11 @@ dbkjs.util = {
         if (msg) {
             msg.html('<a href="' + e.src + '">' + e.src + '</a><br>' + i18n.t('dialogs.invalidImage'));
         }
-        e.src = dbkjs.basePath + "images/missing.gif";
+        if (dbkjs.viewmode === 'fullscreen') {
+            e.src = "images/missing.gif";
+        } else {
+            e.src = dbkjs.basePath + "images/missing.gif";
+        }
         e.onerror = "";
         return true;
     },
@@ -672,6 +740,8 @@ dbkjs.util = {
         }
     },
     alert: function(title, tekst, type) {
+        clearTimeout(alertTimer);
+
         if (!type) {
             type = 'alert-info';
         }
@@ -690,6 +760,9 @@ dbkjs.util = {
             alert.append(' ' + content);
             alert.show();
         }
+        alertTimer = setTimeout(function() {
+            $('#systeem_meldingen').hide();
+        }, 5000);
     },
     htmlEncode: function(value) {
         if (value) {
@@ -811,10 +884,14 @@ dbkjs.util = {
         var modal_content = $('<div class="modal-content"></div>');
         var modal_header = $('<div id="' + id + '_h" class="modal-header"><h4 class="modal-title">' + title + '</h4></div>');
         var modal_body = $('<div id="' + id + '_b" class="modal-body"></div>');
-        var modal_footer = $('<div id="' + id + '_f" class="modal-footer"></div>');
+        if (dbkjs.viewmode !== 'fullscreen') {
+          var modal_footer = $('<div id="' + id + '_f" class="modal-footer"></div>');
+        };
         modal_content.append(modal_header);
         modal_content.append(modal_body);
-        modal_content.append(modal_footer);
+        if (dbkjs.viewmode !== 'fullscreen') {
+            modal_content.append(modal_footer);
+        };
         modal_wrapper.append(modal_dialog.append(modal_content));
         modal_wrapper.modal('hide');
         return modal_wrapper;

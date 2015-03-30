@@ -165,6 +165,9 @@
         "coordinates": "search.coordinates",
         "coordplaceholder": "search.coordplaceholder"
     },
+    "gms":{
+        "gms": "gms.gms"
+    },
     "email": {
         "annotation": "email.annotation",
         "annotationtitle": "email.annotationtitle",

@@ -15,7 +15,9 @@ dbkjs.gui = {
             i18n.t('app.refresh') + '"><i class="fa fa-refresh"></i></a>'
         );
         $('#btn_refresh').click(function() {
-            $('#btn_refresh > i').addClass('fa-spin');
+            if (dbkjs.viewmode !== 'fullscreen') {
+               $('#btn_refresh > i').addClass('fa-spin');
+            };
             obj.get();
         });
     },

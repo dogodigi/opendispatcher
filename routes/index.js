@@ -155,7 +155,7 @@ function setup(app) {
 }
 
 exports.setup = setup;
-exports.indexy = index;
+exports.index = index;
 exports.checkToken = checkToken;
 exports.eughs = eughs;
 exports.nen1414 = nen1414;

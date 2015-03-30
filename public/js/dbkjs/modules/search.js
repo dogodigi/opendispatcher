@@ -84,7 +84,7 @@ dbkjs.modules.search = {
                 'id': 'btn_opensearch',
                 'class': 'btn btn-default navbar-btn',
                 'href': '#',
-                'title': i18n.t('map.search.search')
+                'title': i18n.t('search.search')
             })
             .append('<i class="fa fa-search"></i>')
             .click(function(e) {
@@ -119,7 +119,7 @@ dbkjs.modules.search = {
                 '<ul class="dropdown-menu pull-right" id="search_dropdown" role="menu">' +
                     '<li><a href="#" id="s_dbk"><i class="fa fa-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
                     '<li><a href="#" id="s_oms"><i class="fa fa-bell"></i> ' + i18n.t("search.oms") + '</a></li>' +
-                    '<li><a href="#" id="s_adres"><i class="fafa-home"></i> ' + i18n.t("search.address") + '</a></li>' +
+                    '<li><a href="#" id="s_adres"><i class="fa fa-home"></i> ' + i18n.t("search.address") + '</a></li>' +
                     '<li><a href="#" id="s_coord"><i class="fa fa-thumb-tack"></i> ' + i18n.t("search.coordinates") + '</a></li>' +
                 '</ul>' +
             '</span>'
@@ -210,29 +210,38 @@ dbkjs.modules.search = {
                 's_oms': { 'icon': 'fa fa-bell', 'text': i18n.t("search.oms"), 'placeholder': i18n.t("search.omsplaceholder"), 'search': 'oms' }
             };
 
+        var timer;
+
         searchField.on('keyup', function(e) {
+            if(timer) {
+                clearTimeout(timer);
+            }
+
             var searchText = searchField.val();
-            if(searchText.length === 0) {
+            if(searchText.length <= 3) {
                 $('.search_result').html('');
                 return;
-            }
-            if(currentSearch === 'dbk') {
-                _obj.searchDbkOms(dbkjs.modules.feature.getDbkSearchValues(), searchText);
-            }
-            if(currentSearch === 'oms') {
-                _obj.searchDbkOms(dbkjs.modules.feature.getOmsSearchValues(), searchText);
-            }
-            if(currentSearch === 'coordinates') {
-                var loc = _obj.handleCoordinatesSearch();
-                if(loc && e.keyCode === 13) {
-                    dbkjs.modules.updateFilter(0);
-                    _obj.zoomAndPulse(loc);
-                }
-            }
-            if(currentSearch === 'address') {
-                _obj.handleAddressSearch(searchText);
-            }
-        });
+            };
+
+            timer = setTimeout(function() {
+                if(currentSearch === 'dbk') {
+                    _obj.searchDbkOms(dbkjs.modules.feature.getDbkSearchValues(), searchText);
+                };
+                if(currentSearch === 'oms') {
+                    _obj.searchDbkOms(dbkjs.modules.feature.getOmsSearchValues(), searchText);
+                };
+                if(currentSearch === 'coordinates') {
+                    var loc = _obj.handleCoordinatesSearch();
+                    if(loc && e.keyCode === 13) {
+                        dbkjs.modules.updateFilter(0);
+                        _obj.zoomAndPulse(loc);
+                    }
+                };
+                if(currentSearch === 'address') {
+                    _obj.handleAddressSearch(searchText);
+                };
+            }, 500);
+         });
         $('#search_dropdown a').click(function(e) {
             var searchType = $(this).attr('id'),
                 dropdownText = $('.dropdown-text'),
@@ -388,5 +397,11 @@ dbkjs.modules.search = {
             mdiv.removeClass('active');
             return false;
         });
+
+        if (this.viewmode !== 'fullscreen') {
+            // default handler
+            dbkjs.modules.feature.search_dbk();
+        }
+
     }
 };

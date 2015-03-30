@@ -21,14 +21,20 @@ html, body {
     font-size: 2.5em !important;
     line-height: 50px;
 }
-.main-button-group .btn.dbk-title {
-    margin-top: 8px;
-    margin-left: 8px;
-    float: left;
+@media (max-width: 999px) {
+    .main-button-group .btn {
+        margin-top: 4px;
+        margin-bottom: 0px;
+        padding: 4px 8px;
+    }
+}
+.btn.dbk-title {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
     visibility: hidden;
     font-size: 16px !important;
     line-height: 50px;
-    max-width: 450px;
     text-overflow: ellipsis;
     overflow: hidden;
 }
@@ -41,7 +47,6 @@ html, body {
 }
 .toggleObject {
     background-color: #4cae4c !important;
-    line-height: 25px !important; /* double text line */
 }
 .togglePreventive {
     background-color: #ffff4f !important;
@@ -198,7 +203,7 @@ a {
 @media (max-width: 999px) {
     #foutknop {
         left: 8px;
-        bottom: 0;
+        bottom: 75px;
         position: absolute;
     }
     #btn_care {
@@ -239,7 +244,7 @@ h4, h5, h6 {
     margin-top: 0 !important;
 }
 .tab-content{
-    height: 380px;
+    height: 440px;
     overflow: auto;
 }
 .accordion-heading a.accordion-toggle { display: inline-block; }
@@ -591,4 +596,34 @@ input[type="radio"], input[type="checkbox"] {
 }
 .modal-popup .input-group-addon, .modal-popup .input-group-btn {
     width: 1% !important;
+}
+
+.unread {
+    color: #AA0009 !important;
+}
+
+.table, .nav {
+    font-size: 18px;
+}
+
+#vectorclickpanel {
+    z-index: 1002;
+}
+#vectorclickpanel img {
+    height: 45px;
+    width: auto !important;
+}
+#vectorclickpanel .gevicode, #vectorclickpanel .unnummer {
+    font-size: 14px;
+}
+#vectorclickpanel .panel-body {
+    padding: 0 20px;
+}
+#vectorclickpanel .panel-footer {
+    padding: 0;
+}
+#supportpanel {
+    margin-bottom: 0;
+    max-height: 40%;
+    overflow: auto;
 }

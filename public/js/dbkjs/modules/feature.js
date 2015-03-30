@@ -101,8 +101,8 @@ dbkjs.modules.feature = {
             },
             strategies: [
                 new OpenLayers.Strategy.Cluster({
-                    distance: 100,
-                    threshold: 2
+                    distance: 80,
+                    threshold: 3
                 })
             ],
             styleMap: dbkjs.config.styles.dbkfeature
@@ -160,7 +160,7 @@ dbkjs.modules.feature = {
                 }
             }
             $('#btn_refresh > i').removeClass('fa-spin');
-                _obj.search_dbk();
+            _obj.search_dbk();
         }).fail(function( jqxhr, textStatus, error ) {
             $('#btn_refresh > i').removeClass('fa-spin');
             dbkjs.options.feature = null;
@@ -309,14 +309,18 @@ dbkjs.modules.feature = {
                 }
             } else {
                 _obj.currentCluster = [];
-                dbkjs.protocol.jsonDBK.process(e.feature);
-                _obj.zoomToFeature(e.feature);
-                if(dbkjs.viewmode === 'fullscreen') {
-                    dbkjs.util.getModalPopup('infopanel').hide();
-                } else {
-                    dbkjs.gui.infoPanelHide();
-                }
+                _obj.showFeatureInfo(e.feature);
             }
+        }
+    },
+    showFeatureInfo: function(feature) {
+        var _obj = dbkjs.modules.feature;
+        dbkjs.protocol.jsonDBK.process(feature);
+        _obj.zoomToFeature(feature);
+        if(dbkjs.viewmode === 'fullscreen') {
+            dbkjs.util.getModalPopup('infopanel').hide();
+        } else {
+            dbkjs.gui.infoPanelHide();
         }
     },
     handleFeatureTitleClick: function(e) {

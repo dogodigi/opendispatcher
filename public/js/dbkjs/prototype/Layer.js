@@ -25,7 +25,7 @@ dbkjs.Layer = dbkjs.Class({
     layer: null,
     div: null,
     legend: null,
-    initialize: function (name, url, params, options, parent, index, metadata, layertype) {
+    initialize: function(name, url, params, options, parent, index, metadata, layertype) {
         var ly;
         var defaultparams = {
             format: 'image/png',
@@ -123,6 +123,11 @@ dbkjs.Layer = dbkjs.Class({
                     this.layer.metadata.pl = metadata.pl;
                 }
             }
+
+            if (dbkjs.viewmode === 'fullscreen') {
+                dv_panel_content.append('<img src="' + (metadata.legend ? metadata.legend : legend) + '"/>');
+            }
+            
             this.div.append(dv_panel_content);
             $(parent).append(this.div);
             $(parent).sortable({handle: '.panel'});
@@ -135,8 +140,8 @@ dbkjs.Layer = dbkjs.Class({
                 }
                 var that = this;
                 dv_panel_heading.click(function (e) {
-                    if (e.target.className.indexOf('fa-info-circle') !== -1 || e.target.className.indexOf('accordion-toggle') !== -1) {
-                        //click on the info sign
+                    //if (e.target.className.indexOf('fa-info-circle') !== -1 || e.target.className.indexOf('accordion-toggle') !== -1) {
+                    if (e.target.className.indexOf('icon-info-sign') !== -1 || e.target.className.indexOf('accordion-toggle') !== -1) {                        //click on the info sign
                         //check to see if the legend is there already
                         if ($('#legend_' + that.id).length === 0) {
                             dv_panel_content.append('<img id="legend_' + that.id + '" src="' + (metadata.legend ? metadata.legend : legend) + '"/>');
@@ -170,7 +175,7 @@ dbkjs.Layer = dbkjs.Class({
             dbkjs.map.raiseLayer(this.layer, -1000);
             var _li = $('<li class="bl"><a href="#">' + name + '</a></li>');
             $('#baselayerpanel_ul').append(_li);
-            _li.click(function () {
+            _li.click(function() {
                 dbkjs.toggleBaseLayer($(this).index());
                 if (dbkjs.viewmode === 'fullscreen') {
                     dbkjs.util.getModalPopup('baselayerpanel').hide();
@@ -178,7 +183,7 @@ dbkjs.Layer = dbkjs.Class({
             });
         }
     },
-    getfeatureinfo: function (e) {
+    getfeatureinfo: function(e) {
         _obj = this;
         if (!this.layer.options.hidefeatureinfo) {
             if (this.layer.visibility) {
@@ -213,7 +218,7 @@ dbkjs.Layer = dbkjs.Class({
             }
         }
     },
-    panel: function (response) {
+    panel: function(response) {
         _obj = this;
         //verwerk de featureinformatie
         g = new OpenLayers.Format.GML.v3();

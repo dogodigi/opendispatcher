@@ -25,6 +25,10 @@ OpenLayers.Lang["nl"] = OpenLayers.Util.applyDefaults({'Scale = 1 : ${scaleDenom
 OpenLayers.Lang.setCode("nl");
 Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <>";
 
+var dbkjsLang = 'nl';
+
+dbkjs.viewmode = 'fullscreen';
+
 dbkjs.options = {
     projection: {
         code: "EPSG:28992",
@@ -39,9 +43,6 @@ dbkjs.options = {
     REMARKS: "",
     INFO: "",
     zoom: 13,
-
-    // If false labels are shown on select and temporary render intents
-    alwaysShowInformationLabels: false,
 
     // Set to true to enable style scaling according to map scale
     styleScaleAdjust: true,

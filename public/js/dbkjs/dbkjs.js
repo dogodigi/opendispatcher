@@ -31,10 +31,17 @@ dbkjs.mediaPath = dbkjs.mediaPath || null;
 dbkjs.basePath = dbkjs.basePath || null;
 
 dbkjs.viewmode = 'default';
+//dbkjs.viewmode = 'fullscreen';
 
 dbkjs.init = function () {
 
     dbkjs.setPaths();
+
+    if(dbkjs.viewmode === "fullscreen" && "ontouchstart" in window) {
+        // Later wordt TouchNavigation toegevoegd, verwijder standaard
+        // navigation control (anders gekke zoom / pan effecten op touchscreen)
+        dbkjs.options.map.options.controls = [];
+    };
 
     if (!dbkjs.map) {
       dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
@@ -49,8 +56,10 @@ dbkjs.init = function () {
 
     dbkjs.mapcontrols.createMapControls();
 
-    dbkjs.mapcontrols.registerMapEvents(dbkjs.layers.createBaseLayers());
+    dbkjs.layers.createBaseLayers();
 
+    dbkjs.mapcontrols.registerMapEvents();
+    
     dbkjs.showStatus = false;
 
 };
@@ -153,72 +162,80 @@ dbkjs.successAuth = function () {
 
 //@TODO: Deze goed controleren, er was een haakjes conflict na de resolve
 dbkjs.loadOrganisationCapabilities = function() {
-    if(dbkjs.options.organisation.wms){
+    if (dbkjs.options.organisation.wms){
         dbkjs.loadingcapabilities = 0;
-            $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v){
-                var index = wms_v.index || 0;
-                if(wms_v.getcapabilities === true){
-                    dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
-                    var options = {
-                        url: wms_v.url,
-                        title: wms_v.name,
-                        proxy: wms_v.proxy,
-                        index: index,
-                        parent: wms_v.parent
-                    };
-                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
-                        options.pl = wms_v.pl;
-                    }
-                    var myCapabilities = new dbkjs.Capabilities(options);
-                } else if (!wms_v.baselayer) {
-                    var params = wms_v.params || {};
-                    var options = wms_v.options || {};
-                    var parent = wms_v.parent || null;
-                    var metadata = {};
-                    if (!dbkjs.util.isJsonNull(wms_v.abstract)){
-                        metadata.abstract = wms_v.abstract;
-                    }
-                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
-                        metadata.pl = wms_v.pl;
-                    }
-                    var myLayer = new dbkjs.Layer(
-                        wms_v.name,
-                        wms_v.url,
-                        params,
-                        options,
-                        parent,
-                        index,
-                        metadata
-                    );
-                } else {
-                    var params = wms_v.params || {};
-                    var options = wms_v.options || {};
-                    options = OpenLayers.Util.extend({isBaseLayer: true}, options);
-                    var parent = wms_v.parent || null;
-                    var metadata = {};
-                    if (!dbkjs.util.isJsonNull(wms_v.abstract)){
-                        metadata.abstract = wms_v.abstract;
-                    }
-                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
-                        metadata.pl = wms_v.pl;
-                    }
-                    var myLayer = new dbkjs.Layer(
-                        wms_v.name,
-                        wms_v.url,
-                        params,
-                        options,
-                        parent,
-                        index,
-                        metadata
-                    );
+        $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v){
+            var index = wms_v.index || 0;
+            if(wms_v.getcapabilities === true){
+                dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
+                var options = {
+                    url: wms_v.url,
+                    title: wms_v.name,
+                    proxy: wms_v.proxy,
+                    index: index,
+                    parent: wms_v.parent
+                };
+                if (!dbkjs.util.isJsonNull(wms_v.pl)){
+                    options.pl = wms_v.pl;
                 }
-
-            });
-            if(dbkjs.loadingcapabilities === 0){
-                dbkjs.finishMap();
+                var myCapabilities = new dbkjs.Capabilities(options);
+            } else if (!wms_v.baselayer) {
+                var params = wms_v.params || {};
+                var options = wms_v.options || {};
+                var parent = wms_v.parent || null;
+                var metadata = {};
+                if (!dbkjs.util.isJsonNull(wms_v.abstract)){
+                    metadata.abstract = wms_v.abstract;
+                }
+                if (!dbkjs.util.isJsonNull(wms_v.pl)){
+                    metadata.pl = wms_v.pl;
+                }
+                if (!dbkjs.util.isJsonNull(wms_v.legend)){
+                    metadata.legend = wms_v.legend;
+                }
+                var layertype = wms_v.layertype || null;
+                var myLayer = new dbkjs.Layer(
+                    wms_v.name,
+                    wms_v.url,
+                    params,
+                    options,
+                    parent,
+                    index,
+                    metadata,
+                    layertype
+                );
+            } else {
+                var params = wms_v.params || {};
+                var options = wms_v.options || {};
+                options = OpenLayers.Util.extend({isBaseLayer: true}, options);
+                var parent = wms_v.parent || null;
+                var metadata = {};
+                if (!dbkjs.util.isJsonNull(wms_v.abstract)){
+                    metadata.abstract = wms_v.abstract;
+                }
+                if (!dbkjs.util.isJsonNull(wms_v.pl)){
+                    metadata.pl = wms_v.pl;
+                }
+                var layertype = wms_v.layertype || null;
+                var myLayer = new dbkjs.Layer(
+                    wms_v.name,
+                    wms_v.url,
+                    params,
+                    options,
+                    parent,
+                    index,
+                    metadata,
+                    layertype
+                );
             }
 
-         }
+        });
+        if(dbkjs.loadingcapabilities === 0){
+            dbkjs.finishMap();
+        }
+    } else {
+        dbkjs.finishMap();
+    };
 };
 
 dbkjs.finishMap = function () {
@@ -256,10 +273,15 @@ dbkjs.finishMap = function () {
                         dbkjs.options.organisation.area.zoom
                         );
             } else if (dbkjs.options.organisation.area.geometry.type === "Polygon") {
-                //get the projection for the Polygon
-                var crs = dbkjs.options.organisation.area.geometry.crs.properties.name || "EPSG:4326";
-                var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
-                dbkjs.map.zoomToExtent(areaGeometry.getBounds().transform(crs, dbkjs.map.getProjectionObject()));
+                if (dbkjs.viewmode === 'fullscreen') {
+                    var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
+                    dbkjs.map.zoomToExtent(areaGeometry.getBounds());
+                } else {
+                    //get the projection for the Polygon
+                    var crs = dbkjs.options.organisation.area.geometry.crs.properties.name || "EPSG:4326";
+                    var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
+                    dbkjs.map.zoomToExtent(areaGeometry.getBounds().transform(crs, dbkjs.map.getProjectionObject()));
+                }
             }
         } else {
             dbkjs.map.zoomToMaxExtent();
@@ -267,7 +289,9 @@ dbkjs.finishMap = function () {
     }
     dbkjs.permalink = new dbkjs.Permalink('permalink');
     dbkjs.map.addControl(dbkjs.permalink);
-    dbkjs.util.configureLayers();
+    if (dbkjs.viewmode !== 'fullscreen') {
+        dbkjs.util.configureLayers();
+    }
     //get dbk!
 };
 
@@ -291,8 +315,43 @@ dbkjs.setPaths = function() {
         dbkjs.mediaPath = dbkjs.basePath + 'media/';
     }
 
+
 };
 
+dbkjs.bind_dbkjs_init_complete = function() {
+
+    $(dbkjs).bind('dbkjs_init_complete', function() {
+
+         if(dbkjs.viewmode !== 'fullscreen') {
+            $('#zoom_prev').click(function() {
+                dbkjs.naviHis.previousTrigger();
+            });
+            $('#zoom_next').click(function () {
+                dbkjs.naviHis.nextTrigger();
+            });
+        } else {
+            FastClick.attach(document.body);
+        }
+        (function () {
+            function calcMaxWidth() {
+                // Calculate the max width for dbk title so other buttons are never pushed down when name is too long
+                var childWidth = 0;
+                $('.main-button-group .btn-group').each(function () {
+                    childWidth += $(this).outerWidth();
+                });
+                var maxWidth = $('.main-button-group').outerWidth() - childWidth;
+                $('.dbk-title').css('max-width', (maxWidth - 25) + 'px');
+            }
+            // Listen for orientation changes
+            window.addEventListener("orientationchange", function () {
+                calcMaxWidth();
+            }, false);
+            calcMaxWidth();
+        }());
+    });
+};
+
+    
 // dbkjs.js: $(document).ready
 dbkjs.documentReady = function() {
     // Make sure i18n is initialized
@@ -315,6 +374,7 @@ dbkjs.documentReady = function() {
         OpenLayers.Lang.setCode(dbkjsLang);
         if (dbkjs.viewmode !== 'fullscreen') {
             $('body').append(dbkjs.util.createDialog('infopanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
+            $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;margin-bottom:0px;position:fixed'));
         } else {
             // Create the infopanel
             dbkjs.util.createModalPopup({name: 'infopanel'}).getView().append($('<div></div>').attr({'id': 'infopanel_b'}));
@@ -343,8 +403,6 @@ dbkjs.documentReady = function() {
                 dbkjs.util.getModalPopup(panelId).show();
             });
 
-        }
-        if (dbkjs.viewmode !== 'fullscreen') {
             $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
             $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;'));
             $('body').append(dbkjs.util.createModal('printpanel', '<i class="fa fa-print"></i> ' + t("app.print"), ''));
@@ -355,12 +413,12 @@ dbkjs.documentReady = function() {
             $('.btn-group').drags({handle: '.drag-handle'});
             dbkjs.util.setModalTitle('overlaypanel', i18n.t('map.overlays'));
             dbkjs.util.setModalTitle('baselayerpanel', i18n.t('map.baselayers'));
-
         }
+        
         dbkjs.init();
 
         $('#infopanel_b').html(dbkjs.options.info);
-        $('#tb03, #c_minimap').click(function () {
+        $('#tb03, #c_minimap').click(function() {
             if (this.id === "tb03") {
                 if (dbkjs.viewmode !== 'fullscreen') {
                     $('#infopanel').toggle();
@@ -371,7 +429,9 @@ dbkjs.documentReady = function() {
                 $('#minimappanel').toggle();
             }
         });
-        $('#zoom_extent').click(function () {
+        // Added touchstart event to trigger click on. There was some weird behaviour combined with FastClick,
+        // this seems to fix the issue
+        $('#zoom_extent').on('click touchstart', function() {
             if (dbkjs.options.organisation.modules.regio) {
                 dbkjs.modules.regio.zoomExtent();
             } else {
@@ -387,45 +447,19 @@ dbkjs.documentReady = function() {
                             dbkjs.options.organisation.area.zoom
                             );
                 } else if (dbkjs.options.organisation.area.geometry.type === "Polygon") {
-                    var crs = dbkjs.options.organisation.area.geometry.crs.properties.name || "EPSG:4326";
-                    var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
-                    dbkjs.map.zoomToExtent(areaGeometry.getBounds().transform(crs, dbkjs.map.getProjectionObject()));
+                    if (dbkjs.viewmode === 'fullscreen') {
+                        var areaGeometry = new OpenLayers.Format.GeoJSON().read(
+                                dbkjs.options.organisation.area.geometry, "Geometry");
+                        dbkjs.map.zoomToExtent(areaGeometry.getBounds());
+                    } else {
+                        var crs = dbkjs.options.organisation.area.geometry.crs.properties.name || "EPSG:4326";
+                        var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
+                        dbkjs.map.zoomToExtent(areaGeometry.getBounds().transform(crs, dbkjs.map.getProjectionObject()));
+                    }
                 }
             }
         });
 
-        $(dbkjs).bind('dbkjs_init_complete', function() {
-
-             if(dbkjs.viewmode !== 'fullscreen') {
-                $('#zoom_prev').click(function() {
-                    dbkjs.naviHis.previousTrigger();
-                });
-                $('#zoom_next').click(function () {
-                    dbkjs.naviHis.nextTrigger();
-                });
-            } else {
-                FastClick.attach(document.body);
-            }
-            (function () {
-                function calcMaxWidth() {
-                    // Calculate the max width for dbk title so other buttons are never pushed down when name is too long
-                    var childWidth = 0;
-                    $('.main-button-group .btn-group').each(function () {
-                        childWidth += $(this).outerWidth();
-                    });
-                    var maxWidth = $('.main-button-group').outerWidth() - childWidth;
-                    $('.dbk-title').css('max-width', (maxWidth - 25) + 'px');
-                }
-                // Listen for orientation changes
-                window.addEventListener("orientationchange", function () {
-                    calcMaxWidth();
-                }, false);
-                calcMaxWidth();
-            }());
-        });
+        dbkjs.bind_dbkjs_init_complete();
     });
 };
-
-$(document).ready(function() {
-    dbkjs.documentReady();
-});

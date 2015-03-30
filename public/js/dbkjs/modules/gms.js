@@ -29,15 +29,32 @@ dbkjs.modules.gms = {
     viewed: false,
     markers: null,
     gmsMarker: null,
+    zoomedPos: null,
+    encode: function(s) {
+        if(s) {
+            return dbkjs.util.htmlEncode(s);
+        }
+        return null;
+    },
+    encodeIfNotEmpty: function(s) {
+        var s = this.encode(s);
+        return s === null ? "" : s;
+    },
     register: function(options) {
         var _obj = dbkjs.modules.gms;
+        
+        $('.dbk-title')
+            .on('click', function() {
+                _obj.balkrechtsonderClick();
+            });
+            
         _obj.createPopup();
         $('<a></a>')
             .attr({
                 'id': 'btn_opengms',
                 'class': 'btn btn-default navbar-btn',
                 'href': '#',
-                'title': i18n.t('map.gms.button')
+                'title': i18n.t('gms.gms')
             })
             .append('<i class="fa fa-align-justify"></i>')
             .click(function(e) {
@@ -79,37 +96,77 @@ dbkjs.modules.gms = {
             cache: false,
             ifModified: true,
             complete: function(jqXHR, textStatus) {
-                if(textStatus === "success") {
-                    var oldSequence = me.gms ? me.gms.Sequence : null;
-                    var oldNummer = me.gms ? me.gms.Gms.Nummer : null;
-                    me.gms = jqXHR.responseJSON.EAL2OGG;
-                    if(me.gms.Sequence !== oldSequence) {
+                try {
+                    var monitor = dbkjs.modules.connectionmonitor;
+                    if(textStatus === "success") {
+                        if(monitor) {
+                            monitor.onConnectionOK();
+                        };
+
                         var lastModified = moment(jqXHR.getResponseHeader("Last-Modified"));
                         me.updated = lastModified.isValid() ? lastModified : moment();
 
-                        // Alleen unread bij nieuw meldingsnummer
-                        if(oldNummer === null || me.gms.Gms.Nummer !== oldNummer) {
+                        var oldNummer = me.gms && me.gms.Gms && me.gms.Gms.Nummer ? me.gms.Gms.Nummer : null;
+                        me.gms = jqXHR.responseJSON.EAL2OGG;
+                        var newNummer = me.gms && me.gms.Gms && me.gms.Gms.Nummer ? me.gms.Gms.Nummer : null;
+                        if(oldNummer === null || oldNummer !== newNummer) {
                             me.viewed = false;
+                            me.zoomedPos = null;
+                        } else {
+                            // Update voor zelfde melding
+                            // Geen rood icoon tonen
+                            //me.viewed = false;
+                        };
+                        var newPos = null;
+                        if(me.gms.Gms && me.gms.Gms.IncidentAdres && me.gms.Gms.IncidentAdres.Positie) {
+                            newPos = me.gms.Gms.IncidentAdres.Positie.X + "," + me.gms.Gms.IncidentAdres.Positie.Y;
+                        };
+                        if(me.zoomedPos === null || me.zoomedPos !== newPos) {
+                            //  Verwijder marker zodat DBK wordt geselecteerd
+                            // en naar positie wordt gezoomed
+                            if(me.gmsMarker) {
+                                me.markers.removeMarker(me.gmsMarker);
+                                me.gmsMarker = null;
+                            }
+                        };
+                        me.zoomedPos = newPos;
+                        me.displayGms();
+                    } else if(textStatus === "notmodified") {
+                        if(monitor) {
+                            monitor.onConnectionOK();
                         }
-
-                        // Eventueel gewijzigde X en Y doorvoeren
-                        if(me.gmsMarker) {
-                            me.markers.removeMarker(me.gmsMarker);
-                            me.gmsMarker = null;
+                    } else {
+                        me.error = "Fout bij het ophalen van de informatie: " + jqXHR.statusText;
+                        me.gms = null;
+                        if(monitor) {
+                            monitor.onConnectionError();
                         }
+                    };
+                    me.updateGmsTitle();
+                } catch(e) {
+                    if(console && console.log) {
+                        console.log("JS exception bij verwerken GMS info", e);
                     }
-                    me.displayGms();
-                } else if(textStatus !== "notmodified") {
-                    me.error = "Fout bij het ophalen van de informatie: " + jqXHR.statusText;
-                    me.gms = null;
-                }
-                me.updateGmsTitle();
+                };
 
                 window.setTimeout(function() {
                     me.loadGms();
-                }, 5000);
+                }, 4000);
             }
         });
+    },
+    reprojectToOpenLayersLonLat: function() {
+        var me = this;
+        var lon = me.gms.Gms.IncidentAdres.Positie.X, lat = me.gms.Gms.IncidentAdres.Positie.Y;
+
+        lon = lon / 100000;
+        lat = lat / 100000;
+
+        var p = new Proj4js.Point(lon, lat);
+        var t = Proj4js.transform(new Proj4js.Proj("WGS84"), new Proj4js.Proj("EPSG:28992"), p);
+        lon = t.x;
+        lat = t.y;
+        return new OpenLayers.LonLat(lon, lat);
     },
     updateGmsTitle: function() {
         var text;
@@ -131,6 +188,8 @@ dbkjs.modules.gms = {
                     text = "Geen actieve melding (updaten...)";
                 }
             }
+            // On error, keep previous info
+            return;
         }
         if(melding) {
             if(this.viewed) {
@@ -139,11 +198,11 @@ dbkjs.modules.gms = {
                 $("#btn_opengms").addClass("unread");
             }
             if(this.gmsMarker === null && this.gms.Gms.IncidentAdres && this.gms.Gms.IncidentAdres.Positie) {
-                var p = this.gms.Gms.IncidentAdres.Positie;
+                var p = this.reprojectToOpenLayersLonLat();
                 var size = new OpenLayers.Size(21,25);
                 var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
                 this.gmsMarker = new OpenLayers.Marker(
-                        new OpenLayers.LonLat(p.X, p.Y),
+                        p,
                         new OpenLayers.Icon("images/marker-red.png", size, offset));
                 this.markers.addMarker(this.gmsMarker);
 
@@ -155,6 +214,51 @@ dbkjs.modules.gms = {
             $("#btn_opengms").removeClass("unread");
         }
         $("#gmsUpdate").text(text);
+
+        this.updateBalkrechtsonder();
+    },
+    updateBalkrechtsonder: function() {
+        var me = this;
+        var en = function(s) {
+            return me.encodeIfNotEmpty(s);
+        };
+
+        var melding = this.gms && this.gms.Gms && this.gms.Gms.Nummer;
+        if(melding) {
+            var title = "";
+            var g = this.gms.Gms;
+            var a = g.IncidentAdres;
+            if(a && a.Adres) {
+                title = (en(a.Adres.Straat) + " " + en(a.Adres.Huisnummer) + en(a.Adres.HuisnummerToevg)).trim() + ", " +
+                        en(a.Adres.Postcode) + " " + en(a.Adres.Plaats);
+            } else if(a && a.Positie) {
+                title = a.Positie.X + ", " + a.Positie.Y;
+            } else {
+                title = "Melding " + en(g.Nummer) + ", geen locatie";
+            }
+            if(a.Aanduiding) {
+                title += " (" + en(a.Aanduiding) + ")";
+            } else if(me.selectedDbkFeature && me.selectedDbkFeature.attributes.informeleNaam) {
+                title += " (" + en(me.selectedDbkFeature.attributes.informeleNaam) + ")";
+            }
+
+            $('.dbk-title')
+                .text(title)
+                .css('visibility', 'visible');
+        } else {
+            $('.dbk-title').css('visibility', 'hidden');
+        }
+    },
+    balkrechtsonderClick: function() {
+        if(this.selectedDbkFeature) {
+            if(dbkjs.options.feature.identificatie !== this.selectedDbkFeature.attributes.identificatie) {
+                dbkjs.modules.feature.handleDbkOmsSearch(this.selectedDbkFeature);
+            } else {
+                dbkjs.modules.feature.zoomToFeature(this.selectedDbkFeature);
+            }
+        } else {
+            this.zoom();
+        }
     },
     displayGms: function() {
         if(this.gms === null || !this.gms.Gms) {
@@ -172,16 +276,13 @@ dbkjs.modules.gms = {
             }
         }
 
-        function e(s) {
-            if(s) {
-                return dbkjs.util.htmlEncode(s);
-            }
-            return null;
-        }
-        function en(s) {
-            var s = e(s);
-            return s === null ? "" : s;
-        }
+        var me = this;
+        var e = function(s) {
+            return me.encode(s);
+        };
+        var en = function(s) {
+            return me.encodeIfNotEmpty(s);
+        };
 
         row(e(g.Nummer), "Nummer");
         var m = moment(g.Tijd);
@@ -191,13 +292,14 @@ dbkjs.modules.gms = {
         row(e(g.Karakterestiek), "Karakteristiek"); // sic
         var a = g.IncidentAdres;
         if(a && a.Adres) {
-            var s = en(a.Adres.Straat) + " " + en(a.Adres.Huisnummer) + en(a.Adres.HuisnummerToevg) + ", " +
+            var s = (en(a.Adres.Straat) + " " + en(a.Adres.Huisnummer) + en(a.Adres.HuisnummerToevg)).trim() + ", " +
                     en(a.Adres.Postcode) + " " + en(a.Adres.Plaats);
             row(s, "Adres");
         }
         row(e(a.Aanduiding), "Aanduiding");
         if(a.Positie) {
-            c = e(a.Positie.X + ", " + a.Positie.Y);
+            var reprojected = this.reprojectToOpenLayersLonLat();
+            c = e(reprojected.lon.toFixed() + ", " + reprojected.lat.toFixed());
             table.append('<tr><td>Coördinaten</a></td>' +
                     '<td><a href="#" onclick="dbkjs.modules.gms.zoom(); dbkjs.modules.gms.gmsPopup.hide();">' + c + '</a></td></tr>');
         } else {
@@ -207,8 +309,6 @@ dbkjs.modules.gms = {
         }
 
         $("#gms").replaceWith(table_div);
-
-
     },
     selectDbk: function() {
         if(this.gms && this.gms.Gms && this.gms.Gms.IncidentAdres && this.gms.Gms.IncidentAdres.Adres) {
@@ -238,17 +338,20 @@ dbkjs.modules.gms = {
                 }
             });
 
+            this.selectedDbkFeature = dbk;
+
             if(dbk) {
                 dbkjs.modules.feature.handleDbkOmsSearch(dbk);
+            } else {
+                dbkjs.modules.feature.handleDbkOmsSearch(null);
             }
         }
 
     },
     zoom: function() {
         if(this.gms && this.gms.Gms && this.gms.Gms.IncidentAdres && this.gms.Gms.IncidentAdres.Positie) {
-            var x = Number(this.gms.Gms.IncidentAdres.Positie.X);
-            var y = Number(this.gms.Gms.IncidentAdres.Positie.Y);
-            dbkjs.map.setCenter(new OpenLayers.LonLat(x, y), dbkjs.options.zoom);
+            var reprojected = this.reprojectToOpenLayersLonLat();            
+            dbkjs.map.setCenter(reprojected, dbkjs.options.zoom);
         }
     }
 };

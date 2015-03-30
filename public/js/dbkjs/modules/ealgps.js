@@ -39,7 +39,7 @@ dbkjs.modules.ealgps = {
                 'title': 'GPS',
                 'style': 'color: gray'
             })
-            .append('<i class="icon-location-arrow"></i>')
+            .append('<i class="fa fa-location-arrow"></i>')
             .click(function(e) {
                 e.preventDefault();
                 _obj.click(e);
@@ -59,13 +59,17 @@ dbkjs.modules.ealgps = {
             cache: false,
             ifModified: true,
             complete: function(jqXHR, textStatus) {
+                var monitor = dbkjs.modules.connectionmonitor;
                 if(textStatus === "success") {
+                    if(monitor) {
+                        monitor.onConnectionOK();
+                    }
                     var oldSequence = me.gps ? me.gps.Sequence : null;
                     var oldLatLon = me.gps && me.gps.Gps ? me.gps.Gps.Latitude + "," + me.gps.Gps.Longitude : null;
                     me.gps = jqXHR.responseJSON.EAL2OGG;
                     if(me.gps.Sequence !== oldSequence) {
                         if(me.debug) console.log("New GPS data sequence = " + me.gps.Sequence);
-                        if(me.gps.Gps.Validity !== "1") {
+                        if(me.gps.Gps.Validity !== "0") {
                             if(me.debug) console.log("No valid GPS fix");
                             if(me.gpsMarker) {
                                 me.markers.removeMarker(me.gpsMarker);
@@ -83,9 +87,16 @@ dbkjs.modules.ealgps = {
                             }
                         }
                     }
-                } else if(textStatus !== "notmodified") {
+                } else if (textStatus === "notmodified") {
+                    if(monitor) {
+                        monitor.onConnectionOK();
+                    }
+                } else {
                     if(me.debug) console.log("Fout bij het ophalen van EAL GPS info: " + jqXHR.statusText);
                     me.gps = null;
+                    if(monitor) {
+                        monitor.onConnectionError();
+                    }
                 }
 
                 window.setTimeout(function() {
@@ -126,7 +137,7 @@ dbkjs.modules.ealgps = {
     },
     click: function(e) {
         var me = this;
-        if(me.gps && me.gps.Gps.Validity === "1" && me.gps.Gps.Latitude && me.gps.Gps.Longitude) {
+        if(me.gps && me.gps.Gps.Validity === "0" && me.gps.Gps.Latitude && me.gps.Gps.Longitude) {
             dbkjs.map.setCenter(me.reprojectToOpenLayersLonLat(), dbkjs.options.zoom);
         }
     }

@@ -2,6 +2,7 @@
 /node_modules
 /public/css/dbk.min.css
 /public/js/dbk.min.js
+/public/js/dbkjs/images_base64.js
 config.json
 .c9revisions/
 .idea/
@@ -23,9 +24,13 @@ pids
 logs
 results
 
+nodeless_deploy
 nodeless_output
+api_bak
 
 npm-debug.log
 node_modules
-/app_aris.js
-/public/api/
+
+app_vru.js
+/dbk-component
+/public/api
