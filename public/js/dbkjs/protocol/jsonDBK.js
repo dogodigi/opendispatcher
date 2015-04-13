@@ -350,6 +350,12 @@ dbkjs.protocol.jsonDBK = {
         var algemeen_table_div = $('<div class="table-responsive"></div>');
         var algemeen_table = $('<table class="table table-hover"></table>');
         if(dbktype === "object"){
+            if(dbkjs.viewmode === 'fullscreen') {
+                // In fullscreen mode is er geen window title met formele naam,
+                // toon deze als eerste regel
+                var formelenaam = dbkjs.util.isJsonNull(DBKObject.formeleNaam) ? '' : DBKObject.formeleNaam;
+                algemeen_table.append(_obj.constructRow(formelenaam, i18n.t('dbk.formalName')));
+            }
             algemeen_table.append(_obj.constructRow(informelenaam, i18n.t('dbk.alternativeName')));
             algemeen_table.append(_obj.constructRow(controledatum, i18n.t('dbk.dateChecked')));
             if (dbkjs.showStatus) {

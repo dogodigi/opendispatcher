@@ -98,6 +98,7 @@
         "all": "Alles"
     },
     "dbk": {
+        "formalName": "Naam",
         "alternativeName": "Informele naam",
         "dateChecked": "Controledatum",
         "status": "Status",

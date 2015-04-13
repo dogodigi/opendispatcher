@@ -98,6 +98,7 @@
         "all": "care.all"
     },
     "dbk": {
+        "formalName": "dbk.formalName",
         "alternativeName": "dbk.alternativeName",
         "dateChecked": "dbk.dateChecked",
         "emergencyResponse": "dbk.emergencyResponse",
