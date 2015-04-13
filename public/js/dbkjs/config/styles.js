@@ -55,7 +55,7 @@ dbkjs.scaleStyleValue = function(value, featureAttributeValue, attributeScaleFac
     }
     value = value + (dbkjs.options.styleSizeAdjust ? dbkjs.options.styleSizeAdjust : 0);
     return value * dbkjs.getStyleScaleFactor();
-    
+
 };
 
 dbkjs.config.styles = {
@@ -85,10 +85,29 @@ dbkjs.config.styles = {
                 } else {
                     if(dbkjs.options.alwaysShowDbkFeature) {
                         // Always show feature except the active feature
-                        var activeFeature = dbkjs.modules.feature.getActive();
-                        if(activeFeature && feature.id === activeFeature.id) {
+
+                        if(dbkjs.options.dbk && feature.attributes.identificatie === dbkjs.options.dbk) {
                             return "none";
                         } else {
+                            // Controleer of actieve DBK  meerdere verdiepingen heeft
+                            // en feature om display van te bepalen niet het hoofdobject
+                            // is van de actieve DBK. Zo ja, dan niet tonen
+
+                            if(dbkjs.options.feature && dbkjs.options.feature.verdiepingen.length > 1) {
+                                // Het ID van de dbk waarvan we de display property
+                                // bepalen
+                                var verdiepingCheckDbkId = feature.attributes.identificatie;
+
+                                // Loop over alle verdiepingen van actieve feature en check
+                                // of verdieping id overeenkomt met dbkId
+                                for(var i = 0; i < dbkjs.options.feature.verdiepingen.length; i++) {
+                                    var verdieping = dbkjs.options.feature.verdiepingen[i];
+                                    if(verdieping.identificatie === verdiepingCheckDbkId) {
+                                        return "none";
+                                    }
+                                }
+                            }
+
                             return "true";
                         }
                     } else {
