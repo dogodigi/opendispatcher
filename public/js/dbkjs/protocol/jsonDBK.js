@@ -287,7 +287,7 @@ dbkjs.protocol.jsonDBK = {
         var _obj = dbkjs.protocol.jsonDBK;
 
         /** Algemene dbk info **/
-        
+
         if (dbkjs.viewmode === 'fullscreen') {
             dbkjs.util.changeDialogTitle('<i class="fa fa-building"></i> ' + DBKObject.formeleNaam);
             var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+
@@ -296,7 +296,7 @@ dbkjs.protocol.jsonDBK = {
             var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+
                     i18n.t('dbk.unknown')+ '</span>' : moment(DBKObject.controleDatum).format('YYYY-MM-DD hh:mm');
         }
-        
+
         if (dbkjs.showStatus) {
             var status = dbkjs.util.isJsonNull(DBKObject.status) ? '<span class="label label-warning">'+
                       i18n.t('dbk.unknown')+ '</span>' : DBKObject.status;
@@ -391,13 +391,13 @@ dbkjs.protocol.jsonDBK = {
                     if (!dbkjs.util.isJsonNull(waarde.bagId)){
                         var bag_div = $('<td></td>');
                         var bag_p = $('<p></p>');
-                        
+
                         if (dbkjs.viewmode === 'fullscreen') {
                             var bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + waarde.bagId + '</button>');
                         } else {
                             var bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + dbkjs.util.pad(waarde.bagId,16) + '</button>');
                         }
- 
+
                         bag_p.append(bag_button);
                         bag_button.click(function() {
                             if($.inArray('bag', dbkjs.options.organisation.modules) > -1) {
@@ -408,7 +408,7 @@ dbkjs.protocol.jsonDBK = {
                                             waardeBagId = waarde.bagId;
                                         } else {
                                             waardeBagId = dbkjs.util.pad(waarde.bagId,16);
-                                        };    
+                                        };
                                         $('#collapse_algemeen_' + _obj.feature.id).append(
                                             '<div class="alert alert-warning alert-dismissable">' +
                                             '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
@@ -568,15 +568,9 @@ dbkjs.protocol.jsonDBK = {
                 }
                 if(waarde.identificatie !== feature.identificatie){
                     //Show the hyperlink!
-                    if (dbkjs.viewmode === 'fullscreen') {
-                        myrow = $('<tr>' +
-                            '<td>' + waarde.bouwlaag + sterretje +'</td>' +
-                            '</tr>');
-                    } else {
-                        myrow = $('<tr id="' + waarde.identificatie + '">' +
-                            '<td>' + waarde.bouwlaag + sterretje +'</td>' +
-                            '</tr>');
-                    };
+                    myrow = $('<tr id="' + waarde.identificatie + '">' +
+                        '<td><a href="#">' + waarde.bouwlaag + sterretje +'</a></td>' +
+                        '</tr>');
                     myrow.click(function(){
                         _obj.getObject(waarde.identificatie, 'verdiepingen', true);
                         if(dbkjs.viewmode === 'fullscreen') {
