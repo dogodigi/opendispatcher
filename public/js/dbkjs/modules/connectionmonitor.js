@@ -28,6 +28,11 @@ dbkjs.modules.connectionmonitor = {
     okTimer: null,
     connectionCheckTimer: null,
     register: function(options) {
+
+        if(dbkjs.viewmode !== "fullscreen") {
+            return;
+        }
+
         this.debug = !!dbkjs.options.connectionmonitorDebug;
 
         this.connected = true;
