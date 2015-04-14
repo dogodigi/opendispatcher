@@ -60,6 +60,9 @@ dbkjs.modules.ealgps = {
             ifModified: true,
             complete: function(jqXHR, textStatus) {
                 var monitor = dbkjs.modules.connectionmonitor;
+                if(monitor) {
+                    monitor.cancelConnectivityCheck();
+                }
                 if(textStatus === "success") {
                     if(monitor) {
                         monitor.onConnectionOK();

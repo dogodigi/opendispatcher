@@ -42,12 +42,12 @@ dbkjs.modules.gms = {
     },
     register: function(options) {
         var _obj = dbkjs.modules.gms;
-        
+
         $('.dbk-title')
             .on('click', function() {
                 _obj.balkrechtsonderClick();
             });
-            
+
         _obj.createPopup();
         $('<a></a>')
             .attr({
@@ -98,6 +98,9 @@ dbkjs.modules.gms = {
             complete: function(jqXHR, textStatus) {
                 try {
                     var monitor = dbkjs.modules.connectionmonitor;
+                    if(monitor) {
+                        monitor.cancelConnectivityCheck();
+                    }
                     if(textStatus === "success") {
                         if(monitor) {
                             monitor.onConnectionOK();
@@ -350,7 +353,7 @@ dbkjs.modules.gms = {
     },
     zoom: function() {
         if(this.gms && this.gms.Gms && this.gms.Gms.IncidentAdres && this.gms.Gms.IncidentAdres.Positie) {
-            var reprojected = this.reprojectToOpenLayersLonLat();            
+            var reprojected = this.reprojectToOpenLayersLonLat();
             dbkjs.map.setCenter(reprojected, dbkjs.options.zoom);
         }
     }

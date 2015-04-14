@@ -26,6 +26,7 @@ dbkjs.modules.connectionmonitor = {
     connected: null,
     debug: null,
     okTimer: null,
+    connectionCheckTimer: null,
     register: function(options) {
         this.debug = !!dbkjs.options.connectionmonitorDebug;
 
@@ -49,12 +50,21 @@ dbkjs.modules.connectionmonitor = {
         OpenLayers.Util.onImageLoadError = function() {
             dbkjs.modules.connectionmonitor.onConnectionError();
         };
+
+        me.connectionCheckTimer = setTimeout(function() {
+            me.checkConnectivity();
+        }, 5000);
     },
     onConnectionError: function() {
         this.connected = false;
 
         $("#connectionicon").attr("class", "fa fa-exclamation");
         $("#connectionicon").attr("style", "color: red");
+
+        if(this.okTimer !== null) {
+            clearTimeout(this.okTimer);
+            this.okTimer = null;
+        }
     },
     onConnectionOK: function() {
         if(this.connected) {
@@ -74,6 +84,34 @@ dbkjs.modules.connectionmonitor = {
                 me.okTimer = null;
             }, 8000);
         }
+    },
+    // Call when other module (gms or ealgps) does regular Ajax requests and
+    // calls onConnectionError() or onConnectionOK() so this module does not
+    // have to do it
+    cancelConnectivityCheck: function() {
+        if(this.connectionCheckTimer !== null) {
+            clearTimeout(this.connectionCheckTimer);
+            this.connectionCheckTimer = null;
+        }
+    },
+    checkConnectivity: function() {
+        var me = this;
+        $.ajax("api/organisation.json", {
+            dataType: "json",
+            cache: false,
+            ifModified: true,
+            complete: function(jqXHR, textStatus) {
+                if(textStatus === "success" || textStatus === "notmodified") {
+                    me.onConnectionOK();
+                } else {
+                    me.onConnectionError();
+                }
+
+                me.connectionCheckTimer = setTimeout(function() {
+                    me.checkConnectivity();
+                }, 5000);
+            }
+        });
     }
 };
 
