@@ -169,7 +169,11 @@ dbkjs.modules.feature = {
     },
     featureInfohtml: function(feature) {
         var ret_title = $('<li></li>');
-        ret_title.append('<a id="' + feature.attributes.identificatie + '" href="#">' + feature.attributes.formeleNaam + '</a>');
+        var link = '<a id="' + feature.attributes.identificatie + '" href="#">' + feature.attributes.formeleNaam;
+        if(!dbkjs.util.isJsonNull(feature.attributes.informeleNaam)) {
+                link += ' (' + feature.attributes.informeleNaam + ')';
+        }
+        ret_title.append(link + '</a>');
         return ret_title;
     },
     search_dbk: function() {
@@ -190,7 +194,7 @@ dbkjs.modules.feature = {
         }
         $.each(_obj.features, function(key, value) {
             dbk_naam_array.push({
-                value: value.attributes.formeleNaam + ' ' + value.attributes.informeleNaam,
+                value: value.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(value.attributes.informeleNaam) ? '' : ' (' + value.attributes.informeleNaam + ')'),
                 geometry: value.geometry,
                 id: value.attributes.identificatie,
                 attributes: value.attributes

@@ -2,7 +2,11 @@
 dbkjs.modules.feature.featureInfohtml = function(feature) {
     var _obj = dbkjs.modules.feature;
     var ret_title = $('<li></li>');
-    ret_title.append('<a href="#">' + feature.attributes.formeleNaam + '</a>');
+    var link = '<a href="#">' + feature.attributes.formeleNaam;
+    if(!dbkjs.util.isJsonNull(feature.attributes.informeleNaam)) {
+            link += ' (' + feature.attributes.informeleNaam + ')';
+    }
+    ret_title.append(link + '</a>');
     $(ret_title).click(function() {
         dbkjs.protocol.jsonDBK.process(feature, function() {
             _obj.zoomToFeature(feature);
