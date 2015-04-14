@@ -93,7 +93,8 @@ dbkjs.config.styles = {
                             // en feature om display van te bepalen niet het hoofdobject
                             // is van de actieve DBK. Zo ja, dan niet tonen
 
-                            if(dbkjs.options.feature && dbkjs.options.feature.verdiepingen.length > 1) {
+                                                        // Gebied heeft geen verdiepingen
+                            if(dbkjs.options.feature && dbkjs.options.feature.verdiepingen && dbkjs.options.feature.verdiepingen.length > 1) {
                                 // Het ID van de dbk waarvan we de display property
                                 // bepalen
                                 var verdiepingCheckDbkId = feature.attributes.identificatie;
