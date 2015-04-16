@@ -303,7 +303,6 @@ input[type="radio"], input[type="checkbox"] {
     margin-bottom: 0 !important;
 }
 .layActive {
-    background-color: #AA0009 !important;
     opacity: 1 !important;
     filter: alpha(opacity=100) !important; /* For IE8 and earlier */
     color: #ffffff;

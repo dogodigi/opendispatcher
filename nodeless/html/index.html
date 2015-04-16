@@ -72,9 +72,16 @@
           <div class="modal-header"></div>
           <div class="modal-body">
             <div class="tabbable">
-              <div id="overlaypanel_div">
-                <div id="overlay_tab1">
-                  <div id="overlaypanel_b1"></div>
+              <ul id="overlaypanel_ul" class="nav nav-tabs">
+                <!--li class="active"><a data-toggle="tab" href="#overlay_tab1">Bereikbaarheidskaart</a></li-->
+                <li class="active"><a data-toggle="tab" href="#overlay_tab2">Systeem</a></li>
+              </ul>
+              <div id="overlaypanel_div" class="tab-content">
+                <!--div id="overlay_tab1" class="tab-pane active">
+                  <div id="overlaypanel_b1" class="panel-group"></div>
+                </div-->
+                <div id="overlay_tab2" class="tab-pane active">
+                  <div id="overlaypanel_b2" class="panel-group"></div>
                 </div>
               </div>
             </div>
