@@ -25,12 +25,7 @@ dbkjs.modules.livep2000 = {
     id: "dbk.module.livep2000",
     popup: null,
     dataXml: null,
-    gms: null,
     updated: null,
-    viewed: false,
-    markers: null,
-    gmsMarker: null,
-    zoomedPos: null,
     encode: function(s) {
         if(s) {
             return dbkjs.util.htmlEncode(s);
@@ -58,9 +53,6 @@ dbkjs.modules.livep2000 = {
                 me.popup.show();
             })
             .appendTo('#btngrp_3');
-
-        this.markers = new OpenLayers.Layer.Markers("P2000 Marker");
-        dbkjs.map.addLayer(this.markers);
 
         this.loadP2000();
     },
@@ -149,6 +141,5 @@ dbkjs.modules.livep2000 = {
 
             div.appendTo("#p2000");
         });
-
     }
 };
