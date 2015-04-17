@@ -88,11 +88,6 @@ fsutil.copyRecursiveSync('./nodeless/html', outDir , copyOptions);
 console.log("Create api/organisation.json...");
 fs.mkdirSync(outDir + '/api');
 var dbk = require('./controllers/dbk.js');
-// Get controller overrides and apply.
-var dbkOverride = require('./nodeless/overrides/controllers/dbk.js');
-for (var prop in dbkOverride) {
-  dbk[prop]=dbkOverride[prop];
-}
 
 var anyDB = require('any-db');
 global.pool = anyDB.createPool(dbURL, {min: 2, max: 20});
@@ -241,7 +236,7 @@ if(!skipObjects) {
 
                         getFunction(req(identificatie), { json:
                             function(json) {
-                                
+
                                 if(!json) {
                                     console.log("Geen JSON voor id  " + id);
                                     objectsToBeWritten--;
