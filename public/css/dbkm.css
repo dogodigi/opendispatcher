@@ -323,18 +323,16 @@ input[type="radio"], input[type="checkbox"] {
     filter: alpha(opacity=40);
 }
 #footer {
-    /*background: none repeat scroll 0 0 rgba(53, 126, 189, 0.3);*/
-    background: none repeat scroll 0 0 #ffffff;
     border-radius: 5px 0 0 0;
     bottom: 0;
-    color: #000000;
+    right: 0;
     position: absolute;
     text-align: right;
-    width: 100%;
     padding-right: 1em;
 }
 #footer span {
-    padding-left: 20px;
+    font-size: 18px !important;
+    font-weight: bold !important;
 }
 /*.olControlAttribution {
     right:0;
@@ -478,7 +476,7 @@ input[type="radio"], input[type="checkbox"] {
     .btn#zoom_in, .btn#zoom_out {
         display: none;
     }
-    #c_minimap, #zoom_prev, #zoom_next, #permalink, #btn_refresh,  #btn_measure_distance, #btn_measure_area, #footer, .drag-handle.btn {
+    #c_minimap, #zoom_prev, #zoom_next, #permalink, #btn_refresh, .drag-handle.btn {
         display: none !important;
     }
 }
