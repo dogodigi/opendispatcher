@@ -59,7 +59,7 @@ dbkjs.init = function () {
     dbkjs.layers.createBaseLayers();
 
     dbkjs.mapcontrols.registerMapEvents();
-    
+
     dbkjs.showStatus = false;
 
 };
@@ -351,7 +351,7 @@ dbkjs.bind_dbkjs_init_complete = function() {
     });
 };
 
-    
+
 // dbkjs.js: $(document).ready
 dbkjs.documentReady = function() {
     // Make sure i18n is initialized
@@ -403,7 +403,9 @@ dbkjs.documentReady = function() {
                 dbkjs.util.getModalPopup(panelId).show();
             });
 
-            $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
+            // Create the DBK infopanel
+            dbkjs.util.createModalPopup({name: 'wmsclickpanel'}).getView().append($('<div></div>').attr({'id': 'wmsclickpanel_b'}));
+
             $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;'));
             $('body').append(dbkjs.util.createModal('printpanel', '<i class="fa fa-print"></i> ' + t("app.print"), ''));
             dbkjs.wms_panel = dbkjs.util.createTabbable();
@@ -414,7 +416,7 @@ dbkjs.documentReady = function() {
             dbkjs.util.setModalTitle('overlaypanel', i18n.t('map.overlays'));
             dbkjs.util.setModalTitle('baselayerpanel', i18n.t('map.baselayers'));
         }
-        
+
         dbkjs.init();
 
         $('#infopanel_b').html(dbkjs.options.info);
