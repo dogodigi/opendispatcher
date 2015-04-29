@@ -52,9 +52,27 @@ dbkjs.modules.livep2000 = {
             .append('<i class="fa fa-fire"></i>')
             .click(function(e) {
                 e.preventDefault();
+
+                if(me.marker) {
+                    me.markerLayer.removeMarker(me.marker);
+                    $('#info_livep2000').hide();
+                }
                 me.popup.show();
             })
             .appendTo('#btngrp_3');
+
+        $('<span></span>')
+                .attr({
+                    'id': 'info_livep2000',
+                    'class': 'btn btn-default navbar-btn',
+                    'style': 'margin-right: 5px; display: none',
+                })
+                .click(function(e) {
+                    if(me.marker) {
+                        dbkjs.map.setCenter(me.marker.lonlat, dbkjs.options.zoom);
+                    }
+                })
+                .prependTo('#footer');
 
         this.markerLayer = new OpenLayers.Layer.Markers("P2000 Marker");
         dbkjs.map.addLayer(this.markerLayer);
@@ -127,7 +145,8 @@ dbkjs.modules.livep2000 = {
 
             var titel = $(lat && long ? "<a/>" : "<div/>");
             titel.attr({class: "titel"});
-            titel.append(me.encode($(this).find('title').text()));
+            var regel = me.encode($(this).find('title').text());
+            titel.append(regel);
 
             if(lat && long) {
                 titel.on("click", function() {
@@ -137,6 +156,7 @@ dbkjs.modules.livep2000 = {
                     lat = t.y;
                     var reprojected = new OpenLayers.LonLat(lon, lat);
                     me.setMarker(reprojected);
+                    $('#info_livep2000').html("<i class=\"fa fa-fire\"></i>&nbsp;" + regel).show();
                     dbkjs.map.setCenter(reprojected, dbkjs.options.zoom);
                     me.popup.hide();
                 });
