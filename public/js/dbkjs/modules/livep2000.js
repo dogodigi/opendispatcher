@@ -153,7 +153,7 @@ dbkjs.modules.livep2000 = {
             this.markerLayer.removeMarker(this.marker);
         }
 
-        var size = new OpenLayers.Size(36,36);
+        var size = new OpenLayers.Size(21,25);
         var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
         this.marker = new OpenLayers.Marker(
                 lonlat,
