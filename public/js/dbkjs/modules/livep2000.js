@@ -26,6 +26,8 @@ dbkjs.modules.livep2000 = {
     popup: null,
     dataXml: null,
     updated: null,
+    markerLayer: null,
+    marker: null,
     encode: function(s) {
         if(s) {
             return dbkjs.util.htmlEncode(s);
@@ -53,6 +55,9 @@ dbkjs.modules.livep2000 = {
                 me.popup.show();
             })
             .appendTo('#btngrp_3');
+
+        this.markerLayer = new OpenLayers.Layer.Markers("P2000 Marker");
+        dbkjs.map.addLayer(this.markerLayer);
 
         this.loadP2000();
     },
@@ -131,6 +136,7 @@ dbkjs.modules.livep2000 = {
                     lon = t.x;
                     lat = t.y;
                     var reprojected = new OpenLayers.LonLat(lon, lat);
+                    me.setMarker(reprojected);
                     dbkjs.map.setCenter(reprojected, dbkjs.options.zoom);
                     me.popup.hide();
                 });
@@ -141,5 +147,17 @@ dbkjs.modules.livep2000 = {
 
             div.appendTo("#p2000");
         });
+    },
+    setMarker: function(lonlat) {
+        if(this.marker) {
+            this.markerLayer.removeMarker(this.marker);
+        }
+
+        var size = new OpenLayers.Size(36,36);
+        var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+        this.marker = new OpenLayers.Marker(
+                lonlat,
+                new OpenLayers.Icon("images/marker-red.png", size, offset));
+        this.markerLayer.addMarker(this.marker);
     }
 };
