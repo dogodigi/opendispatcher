@@ -118,7 +118,7 @@ dbkjs.modules.gms = {
                         } else {
                             // Update voor zelfde melding
                             // Geen rood icoon tonen
-                            //me.viewed = false;
+                            me.viewed = false;
                         };
                         var newPos = null;
                         if(me.gms.Gms && me.gms.Gms.IncidentAdres && me.gms.Gms.IncidentAdres.Positie) {
