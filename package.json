@@ -8,6 +8,20 @@
     "email": "milo@dogodigi.net",
     "url": "http://www.dogodigi.net/"
   },
+  "contributors": [
+    {
+      "name": "Matthijs Laan",
+      "email": "matthijslaan@b3partners.nl"
+    },
+    {
+      "name": "Eddy Scheper",
+      "email": "eddy.scheper@aris.nl"
+    },
+    {
+      "name": "Joost Vermeulen",
+      "email": "j.vermeulen@falck.nl"
+    }
+  ],
   "private": true,
   "scripts": {
     "start": "node index.js"
