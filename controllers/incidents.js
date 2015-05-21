@@ -1,22 +1,26 @@
 /**
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  * 
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher. safetymapDBK as a derived product
+ *  complies to the same license.
  *  
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global exports, global */
+
 /**
  * 
  * @param {type} req
@@ -32,7 +36,7 @@ exports.getGroupByClasses = function(req, res) {
         global.pool.query(query_str,
             function(err, result){
                 if(err) {
-                    res.json(err);
+                    res.status(400).json(err);
                 } else {
                     res.json(result.rows);
                 }
@@ -90,7 +94,7 @@ exports.getGroupByClass2 = function(req, res) {
             global.pool.query(query_str,[c1],
                 function(err, result){
                     if(err) {
-                        res.json(err);
+                        res.status(400).json(err);
                     } else {
                         res.json(result.rows);
                     }
@@ -130,7 +134,7 @@ exports.getGroupByClass3 = function(req, res) {
             global.pool.query(query_str,[c2],
                 function(err, result){
                     if(err) {
-                        res.json(err);
+                        res.status(400).json(err);
                     } else {
                         res.json(result.rows);
                     }
@@ -142,7 +146,7 @@ exports.getGroupByClass3 = function(req, res) {
             global.pool.query(query_str,[c1,c2],
                 function(err, result){
                     if(err) {
-                        res.json(err);
+                        res.status(400).json(err);
                     } else {
                         res.json(result.rows);
                     }

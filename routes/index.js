@@ -83,10 +83,9 @@ function checkToken(token, res) {
         require('crypto').randomBytes(24, function (ex, buf) {
             var newtoken = buf.toString('hex');
             if (newtoken === token) {
-                res.render('error', {title: 'Yeah!', error: 'Goed zo!'});
+                res.status(400).render('error', {title: 'Yeah!', error: 'Goed zo!'});
             } else {
-                res.status(500);
-                res.render('error', {title: 'Fout', error: token + ' is niet gelijk aan ' + newtoken});
+                res.status(400).render('error', {title: 'Fout', error: token + ' is niet gelijk aan ' + newtoken});
             }
         });
     }
@@ -140,13 +139,12 @@ function setup(app) {
             req.pipe(x);
             x.pipe(res);
             x.on('error', function (err) {
-                //console.log(err);
-                res.json({
+                res.status(400).json({
                     "error": "Timeout on proxy"
-                })
+                });
             });
         } else {
-            res.json({"error": "wrong use of proxy"});
+            res.status(400).json({"error": "wrong use of proxy"});
         }
     });
     app.get('/eughs.html', eughs);
