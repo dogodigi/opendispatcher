@@ -19,9 +19,8 @@ lib-cov
 *.out
 *.pid
 *.gz
-
+*.log
 pids
-logs
 results
 
 nodeless_deploy
@@ -30,7 +29,9 @@ api_bak
 
 npm-debug.log
 node_modules
-
+/app_aris.js
+/public/api/
+/build/
 app_vru.js
 /dbk-component
 /public/api

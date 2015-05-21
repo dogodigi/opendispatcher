@@ -1,20 +1,23 @@
+/* global global */
+
 /**
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  * 
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher. safetymapDBK as a derived product
+ *  complies to the same license.
  *  
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -32,14 +35,20 @@ global.conf = require('nconf');
 // First consider commandline arguments and environment variables, respectively.
 global.conf.argv().env();
 // Then load configuration from a designated file.
-global.conf.file({file: 'config.json'});
+//check to see if config file exists, if not, default to config.default.json
+if (!fs.existsSync('config.json')) {
+    console.log('Warning, no config.json present. Falling back to config.default.json');
+    //check to see if config file exists, if not, default to config.default.json
+    global.conf.file({file: 'config.default.json'});
+} else {
+    global.conf.file({file: 'config.json'});
+}
 // Provide default values for settings not provided above.
 global.conf.defaults({
     'http': {
         'port': 9999
     }
 });
-var expressLogFile = fs.createWriteStream('./logs/express.log', {flags: 'a'});
 
 i18n.init({
     lng: 'nl',
@@ -79,6 +88,7 @@ app.configure('development', function () {
     app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
 app.configure('production', function () {
+   var expressLogFile = fs.createWriteStream('./logs/express.log', {flags: 'a'});
     app.use(express.logger({stream: expressLogFile}));
     app.use(express.errorHandler());
 });
