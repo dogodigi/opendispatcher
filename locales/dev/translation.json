@@ -26,6 +26,7 @@
         "selectContrast": "app.selectContrast",
         "scaleStyle": "app.scaleStyle",
         "styleSizeAdjust": "app.styleSizeAdjust",
+        "alwaysShowInformationLabels": "app.alwaysShowInformationLabels",
         "next": "app.next",
         "map": "app.map",
         "correctBuildings": "app.correctBuildings",
@@ -72,7 +73,11 @@
         "invalidImage": "dialogs.invalidImage",
         "layerNotFound": "dialogs.layerNotFound",
         "infoNotFound": "dialogs.infoNotFound",
-        "running": "dialogs.running"
+        "running": "dialogs.running",
+        "print": "dialogs.print",
+        "printready": "dialogs.printready",
+        "downloadpdf": "dialogs.downloadpdf",
+        "printerror": "dialogs.printerror"
     },
     "care": {
         "managementinfo": "care.managementinfo",
@@ -141,10 +146,10 @@
         "name": "prevention.name",
         "comment": "prevention.comment"
     },
-    "omsdetail":{
-      "name":"omsdetail.name",  
-      "mobile":"omsdetail.mobile",
-      "telephone":"omsdetail.telephone"
+    "omsdetail": {
+        "name": "omsdetail.name",
+        "mobile": "omsdetail.mobile",
+        "telephone": "omsdetail.telephone"
     },
     "contact": {
         "role": "contact.role",
@@ -173,7 +178,21 @@
         "annotation": "email.annotation",
         "annotationtitle": "email.annotationtitle",
         "kindregards": "email.kindregards",
-        "team": "email.team"
+        "team": "email.team",
+        "new": "email.new",
+        "name": "email.name",
+        "address": "email.address",
+        "subject": "email.subject",
+        "remarks": "email.remarks",
+        "sender": "email.sender",
+        "send": "email.send",
+        "sent": "email.sent",
+        "error": "email.error",
+        "email": "email.email",
+        "link": "email.link",
+        "phone": "email.phone",
+        "help": "email.help",
+        "generalmessage": "email.generalmessage"
     },
     "eughs": {
         "intro": "Het Globally Harmonised System van de Verenigde Naties (VN-GHS) is in 2002 door de VN vastgesteld",

@@ -6,6 +6,7 @@
         "queryDBK": "dbk",
         "organisation": "regio",
         "error": "Fout",
+        "errorfeatures": "Features konden niet worden ingelezen",
         "fail": "Mislukt",
         "loggedinAs": "U bent ingelogd als:",
         "firstName": "Voornaam",
@@ -27,6 +28,7 @@
         "layout": "Layout instellingen",
         "scaleStyle": "Schaal iconen op basis van zoomniveau",
         "styleSizeAdjust": "Grootte van iconen aanpassen:",
+        "alwaysShowInformationLabels": "Labels altijd tonen",
         "next": "Volgende",
         "map": "Kaart",
         "correctBuildings": " Zijn de juiste panden geselecteerd?",
@@ -63,23 +65,33 @@
         "systemOverlays": "Systeem",
         "permalink": "Snelkoppeling"
     },
-    "dialogs":{
-      "info": "Informatie",
-      "bag": "BAG",
-      "clickinfo": "Klik informatie",
-      "refmap": "Referentie kaart",
-      "busyloading": "Bezig met laden van",
-      "invalidImage": "geen geldige afbeelding",
-      "layerNotFound": "Laag niet gevonden (of meer dan 1)",
-      "infoNotFound": "Kon geen informatie ophalen",
-      "running": "Objectinformatie wordt opgehaald..."
+    "dialogs": {
+        "info": "Informatie",
+        "bag": "BAG",
+        "clickinfo": "Klik informatie",
+        "refmap": "Referentie kaart",
+        "busyloading": "Bezig met laden van",
+        "invalidImage": "geen geldige afbeelding",
+        "layerNotFound": "Laag niet gevonden (of meer dan 1)",
+        "infoNotFound": "Kon geen informatie ophalen",
+        "running": "Objectinformatie wordt opgehaald...",
+        "selectarea": "Selecteer het gewenste afdrukgebied.",
+        "print": "Afdruk wordt voorbereid...",
+        "printready": "Afdruk gereed voor",
+        "downloadpdf": "download",
+        "printerror": "Afdruk mislukt",
+        "printtimeout": "Kan niet verbinden met de afdruk service",
+        "bagbuildings": "Panden",
+        "bagselectedbuildings": "geselecteerd pand",
+        "bagvbuildings": "Verblijfsobject(en) in geselecteerd pand",
+        "bagdescription": "Toont de panden uit de BAG en geeft de mogelijkheid op een pand te klikken om vervolgens informatie te krijgen over de panden en verblijfsobjecten. Deze laag wordt direct betrokken bij PDOK."
     },
     "care": {
         "managementinfo": "Management informatie",
         "details": "Details",
         "incidents": "Incidenten",
         "incidentsOn": "Incidenten aan",
-        "incidentsOff": "Incidenten uit",        
+        "incidentsOff": "Incidenten uit",
         "coverage": "Dekkingsplan",
         "coverageOn": "Dekkingsplan aan",
         "coverageOff": "Dekkingsplan uit",
@@ -126,53 +138,87 @@
         "prevention": "Brandweervoorziening",
         "chemicals": "Gevaarlijke stoffen",
         "risk": "Risicoklasse",
-        "omsdetail": "OMS contacten"
+        "omsdetail": "OMS"
     },
     "chemicals": {
-      "type": "Soort",
-      "name": "Naam",
-      "quantity": "Hoeveelheid",
-      "indication": "Gevi",
-      "information": "Informatie",
-      "unnumber": "UN nummer"
+        "type": "Soort",
+        "name": "Naam",
+        "quantity": "Hoeveelheid",
+        "indication": "Gevi",
+        "information": "Informatie",
+        "unnumber": "UN nummer"
     },
-    "prevention":{
-      "type": "Soort",
-      "name": "Naam",
-      "comment": "Informatie"
+    "prevention": {
+        "type": "Soort",
+        "name": "Naam",
+        "comment": "Informatie"
     },
     "tarry": {
-        "from":"van",
+        "from": "van",
         "to": "tot",
-        "ammount":"Aantal",
+        "ammount": "Aantal",
         "notSelfReliant": "Nzr",
         "group": "Groep",
         "days": "Dagen"
     },
-    "particularies":{
+    "particularies": {
         "type": "Soort",
         "comment": "Informatie"
     },
-    "omsdetail":{
-      "name":"Naam",  
-      "mobile":"Tel. mobiel",
-      "telephone":"Tel. vast"
+    "oms": {
+        "contact": "Contact",
+        "number": "OMS nummer",
+        "mobile": "Tel. mobiel",
+        "telephone": "Tel. vast",
+        "objectname": "Object naam",
+        "criterium": "Criterium"
     },
-    "contact":{
+    "contact": {
         "role": "Functie",
         "name": "Naam",
         "telephone": "Telefoon"
     },
-    "search":{
+    "filter": {
+        "activate": "Activeren",
+        "reset": "Reset",
+        "filter": "Filter",
+        "button": "Filter toepassen",
+        "oms":"OMS",
+        "bhv":"BHV",
+        "adjust": "Filter aanpassen",
+        "set": "Filter instellen",
+        "selected": "geselecteerd",
+        "with": "met",
+        "without": "zonder",
+        "nofilter": "niet filteren",
+        "procedure": "Inzetprocedure",
+        "hazard": "Gevaarlijke stoffen",
+        "risk": "Risicoklasse",
+        "norisk": "Er zijn geen risicoklassen",
+        "functions": "Functies",
+        "nofunctions": "Er zijn geen functies",
+        "guidance": "Brandweer voorziening",
+        "noguidance": "Er zijn geen brandweervoorzieningen",
+        "notset":"niet ingesteld",
+        "flooring": "Bouwlagen",
+        "below": "volledig ondergronds",
+        "above": "volledig bovengronds",
+        "both": "onder- en bovengronds",
+        "construction": "Gebouwconstructie",
+        "noconstruction": "Er zijn geen gebouwconstructies"
+    },
+    "search": {
         "search": "Zoek",
         "dbk": "DBK",
-        "dbkplaceholder": "Zoek DBK",
+        "dbkplaceholder": "DBK naam",
         "oms": "OMS",
-        "omsplaceholder": "Zoek OMS",
+        "omsplaceholder": "OMS nummer",
         "address": "Adres",
-        "addressplaceholder": "Zoek adres",
+        "addressplaceholder": "Adres",
         "coordinates": "Coordinaten",
-        "coordplaceholder": "Lon,lat of X,Y punt voor decimaal"
+        "coordplaceholder": "Lon,lat of X,Y punt voor decimaal",
+        "infrastructure": "Hectometer",
+        "infraplaceholder": "Naam en hectometer"
     },
     "gms":{
         "gms": "Melding"
@@ -184,10 +230,26 @@
         "toggleDanger": "Toon/verberg Repressie"
     },
     "email": {
-        "annotation": "Terugmelding",
-        "annotationtitle": "Er is een terugmelding gedaan",
+        "title": "Melding",
+        "new": "Nieuwe melding",
+        "annotation": "Melding",
+        "annotationtitle": "Er is een melding gedaan",
+        "name": "Naam",
+        "address": "Adres",
+        "subject": "Onderwerp",
+        "remarks": "Opmerking",
+        "sender": "Afzender",
+        "send": "Verstuur",
+        "sent":"Melding is verstuurd.",
+        "error":"Er is iets fout gegaan.",
+        "email": "E-mail",
+        "link": "Link naar de melding",
+        "phone": "Telefoon",
         "kindregards": "Met vriendelijke groet",
-        "team": "de safetymapsDBK applicatie"
+        "team": "de safetymapsDBK applicatie",
+        "help": "Versleep eventueel het symbool op de kaart om aan te geven waar de fout is geconstateerd of waar de melding over gaat.",
+        "generalmessage":"Algemene melding",
+        "construction": "Gebouw constructie"
     },
     "eughs": {
         "intro": "Het Globally Harmonised System van de Verenigde Naties (VN-GHS) is in 2002 door de VN vastgesteld",
@@ -196,6 +258,6 @@
         "abstract1": "Het VN-GHS beschrijft criteria voor de indeling en etikettering van chemische stoffen en mengsels op basis van hun gevaarseigenschappen. VN-GHS levert wereldwijde criteria voor gevaarscommunicatie over chemische stoffen en mengsels. De VN-GHS zelf is niet bindend. Dit systeem kan worden overgenomen in wetgeving over de levering, het gebruik en het transport van chemische stoffen en mengsels. De leden van de VN worden aangemoedigd de VN-GHS criteria op te nemen in nationale en/of internationale wetgeving voor het indelen en etiketteren van chemische stoffen en mengsels.",
         "abstract2": "De lidstaten in de Europese Unie (EU) hebben de Europese Commissie gevraagd om de VN-afspraken om te zetten in bindende Europese regelgeving voor de indeling en etikettering voor de levering en gebruik van chemische stoffen en mengsels. Met de verordening (EU-GHS/CLP) is het VN-GHS-systeem in de Europese wetgeving verankerd. De Europese Verordening is rechtstreeks werkend in alle lidstaten.",
         "abstract3": "EU-GHS/CLP bevat ook elementen uit de Stoffenrichtlijn (67/548/EEG) en de Preparatenrichtlijn (1999/45/EC) die niet in VN-GHS zijn opgenomen. Zo zijn in de verordening ook criteria voor het gebruik van  enkele risicozinnen (R-zinnen) opgenomen als EUH-zinnen. EU-GHS/CLP vervangt na een overgangsperiode de richtlijnen over indeling en etikettering van stoffen en mengsels (Stoffenrichtlijn 67/548/EG en Preparatenrichtlijn 1999/45/EG).",
-        "source": "bron:"        
+        "source": "bron:"
     }
 }
