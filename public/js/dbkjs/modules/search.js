@@ -1,22 +1,25 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  *
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher. safetymapDBK as a derived product
+ *  complies to the same license.
  *
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global OpenLayers, i18n */
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
@@ -148,11 +151,11 @@ dbkjs.modules.search = {
                 {},
                 {
                     graphicName: 'circle',
-                    fillColor: '#ff0000',
-                    strokeColor: '#ff0000',
+                    fillColor: '#BE81F7',
+                    strokeColor: '#BE81F7',
                     strokeWidth: 3,
-                    fillOpacity: 0.1,
-                    pointRadius: 7
+                    fillOpacity: 0.9,
+                    pointRadius: 10
                 }
             ),
             circle
@@ -175,6 +178,7 @@ dbkjs.modules.search = {
             if (count>16) {
                 clearInterval(window.resizeInterval);
                 _obj.layer.removeFeatures(feature,{silent: true});
+                _obj.layer.destroyFeatures();
             } else {
                 var interval = radius * 0.03;
                 var ratio = interval/radius;
@@ -190,6 +194,7 @@ dbkjs.modules.search = {
                 }
                 if(count>16){
                     _obj.layer.removeFeatures(feature,{silent: true});
+                    _obj.layer.destroyFeatures();
                 } else {
                     feature.geometry.resize(1+ratio, point);
                     _obj.layer.drawFeature(feature);
@@ -397,11 +402,5 @@ dbkjs.modules.search = {
             mdiv.removeClass('active');
             return false;
         });
-
-        if (this.viewmode !== 'fullscreen') {
-            // default handler
-            dbkjs.modules.feature.search_dbk();
-        }
-
     }
 };
