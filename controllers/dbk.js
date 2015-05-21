@@ -49,67 +49,14 @@ exports.getOrganisation = function(req, res) {
     }
 };
 
-exports.postAnnotation = function(req, res) {
-    var point = 'POINT(' + parseFloat(req.body.geometry.coordinates[0]) + ' '+ parseFloat(req.body.geometry.coordinates[1]) + ')';
-    //console.log(point);
-    var query_str = 'insert into organisation.annotation (subject, name, email, '+
-        'municipality, place, address, phone, remarks, permalink, the_geom) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, ST_transform(ST_PointFromText($10, $11),4326))';
-    global.pool.query(query_str, [req.body.subject, req.body.name, req.body.email, 
-        req.body.municipality, req.body.place, req.body.address, req.body.phone, req.body.remarks, req.body.permalink, point, req.body.srid],
-        function(err, result){
-            if(err) {
-                res.json(err);
-            } else {
-                res.json({"result":"ok"});
-            }
-            return;
-        }
-    );
-    
-};
-
-exports.mailAnnotation = function(req, res) {
-
-    var nodemailer = require("nodemailer");
-    var smtp = nodemailer.createTransport({host: global.conf.get('support:smtp'), ignoreTLS: true});
-
-    var search = global.conf.get('support:linkreplace:search');
-    var replacement = global.conf.get('support:linkreplace:replacement');
-
-    var link = req.body.permalink;
-    if(search && replacement) {
-        var link = link.replace(new RegExp(search), replacement);
-    };
-
-    var htmltemplate = 'Er is een melding gedaan over een fout in de kaart:<br/><br/>' +
-        '<table>' +
-                '<tr><th>Adres:</th><td>' + req.body.address + '</td></tr>' +
-                '<tr><th>Onderwerp:</th><td>' + req.body.subject + '</td></tr>' +
-                '<tr><th>Melding:</th><td><pre>' + req.body.remarks + '</pre></td></tr>' +
-                '<tr><td colspan="2"><hr /><td></tr>' +
-                '<tr><th>Melder:</th><td>' + req.body.name + '</td></tr>' +
-                '<tr><th>Email:</th><td>' + req.body.email + '</td></tr>' +
-                '<tr><th>Telefoon:</th><td>' + req.body.phone + '</td></tr>' +
-                '<tr><td colspan="2"><hr /><td></tr>' +
-                '<tr><td colspan="2">Klik op de link om de melding te openen:</td></tr>' +
-                '<tr><td colspan="2"><a href="' + link + '">'  + link + '</td></tr><br/><br/>' +
-        '<br/><br/>';
-    smtp.sendMail({
-        from: global.conf.get('support:from'),
-        to: global.conf.get('support:sendto') + ',' + req.body.email,
-        subject: 'Melding fout in de kaart',
-        html: htmltemplate
-    }, function(error, response) {
-        smtp.close();
-        if (error) {
-            console.log("Mail error", error);
-            res.json({"result": "error"});
-        } else {
-            res.json({"result":"ok"});
-        }
-    });
-};
-
+/**
+ * Select an object from the database by id. takes srid as parameter. 
+ * If srid is undefined, falls back to WGS84
+ * 
+ * @param {type} req
+ * @param {type} res
+ * @returns object
+ */
 exports.getObject = function(req, res) {
     if (req.query) {
         id = req.params.id;
