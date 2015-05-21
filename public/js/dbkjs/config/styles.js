@@ -131,10 +131,10 @@ dbkjs.config.styles = {
             },
             mygraphicwidth: function(feature) {
                 if (feature.cluster) {
-                    return 51;
+                    return 85;
                 } else {
                     if (feature.attributes.typeFeature === 'Object') {
-                        return 21;
+                        return 24;
                     } else {
                         return 85;
                     }
@@ -180,14 +180,14 @@ dbkjs.config.styles = {
             },
             myicon: function(feature) {
                 if (feature.cluster) {
-                    return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + "images/cluster.png" : imagesBase64["images/cluster.png"];
+                    return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + "images/jcartier_city_3.png" : imagesBase64["images/jcartier_city_3.png"];
                 } else {
                     if (feature.attributes.typeFeature === 'Object') {
                         var img;
                         if(feature.attributes.verdiepingen || feature.attributes.verdiepingen !== 0) {
-                            img = "images/meerdereverdiepingen.png";
+                            img = "images/jcartier_building_1.png";
                         }  else {
-                            img = "images/enkeleverdieping.png";
+                            img = "images/jcartier_building_2.png";
                         }
                         return typeof imagesBase64 === 'undefined'  ? dbkjs.basePath + img : imagesBase64[img];
                     } else {
@@ -207,7 +207,6 @@ dbkjs.config.styles = {
                         }
                         return lbl_txt;
                     } else {
-                        //return feature.attributes.formeleNaam;
                         return "";
                     }
                 } else {
@@ -264,7 +263,7 @@ dbkjs.config.styles = {
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
             strokeWidth: "${mystrokewidth}",
-            strokeLinecap : "butt",
+            strokeLinecap: "butt",
             strokeDashstyle: "${mystrokedashstyle}",
             fontColor: "${mycolor}",
             pointRadius: 5,
