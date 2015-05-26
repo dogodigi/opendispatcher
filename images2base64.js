@@ -29,7 +29,12 @@ var fs = require('fs');
 
 var imagesBase64 = {};
 
-var imagesDir = path.resolve(__dirname, "public/images");
+/* directory to process can be specified on command line, use "nodeless_output" to allow
+ * images to be overridden in nodeless:config directory from config.json used by nodeless.js
+ */
+var startDir = process.argv.length > 2 ? process.argv[2] : "public";
+
+var imagesDir = path.resolve(__dirname, startDir + "/images");
 
 var ignore = ["brandweer-nederland_alpha_shaded.png", "brandweer-nederland_alpha_shaded-s.png", "doiv_logo_def.png", "missing.gif",
     "MNarrow.png", "overview_replacement.gif"];
@@ -53,7 +58,7 @@ function convertRecursive(dir, id) {
 
 convertRecursive(imagesDir, "images/");
 
-fs.writeFileSync(path.resolve(__dirname, 'public/js/dbkjs/images_base64.js'), "var imagesBase64 = " + JSON.stringify(imagesBase64));
+fs.writeFileSync(path.resolve(__dirname, startDir + '/js/dbkjs/images_base64.js'), "var imagesBase64 = " + JSON.stringify(imagesBase64));
 
 
 
