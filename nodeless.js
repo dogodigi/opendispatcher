@@ -96,7 +96,9 @@ var organisationsDone = false, featuresDone = false, objectsToBeWritten = null;
 
 dbk.getOrganisation(
         {params: {id: 0}, query: {srid: 28992}},
-{json: function(json) {
+{
+    status: function() { return this; },
+    json: function(json) {
         var legendsToBeDownloaded = null;
         if(json.organisation) {
 
@@ -151,7 +153,7 @@ dbk.getOrganisation(
                 }
             }
         } else {
-            console.log('An error occured, could not get organisation.json');
+            console.log('An error occured, could not get organisation.json', json);
         }
         (function checkLegends(fn) {
             if(legendsToBeDownloaded !== null) {
@@ -187,93 +189,102 @@ if(!skipObjects) {
     fs.mkdirSync(outDir + '/api/gebied');
     dbk.getFeatures(
         { query: { srid: 28992 } },
-        { json: function(json) {
-            var features = json;
-            fs.writeFileSync(outDir + '/api/features.json', JSON.stringify(features));
+        {
+            status: function() { return this; },
+            json: function(json) {
+                if(!json.features) {
+                    console.log("Error getting DBK features", json);
+                    featuresDone = true;
+                    objectsToBeWritten = 0;
+                    return;
+                }
+                var features = json;
+                fs.writeFileSync(outDir + '/api/features.json', JSON.stringify(features));
 
-            // write all /api/object/:id.json files
+                // write all /api/object/:id.json files
 
-            objectsToBeWritten = features.features.length;
-            console.log("DBK objects: " + objectsToBeWritten);
+                objectsToBeWritten = features.features.length;
+                console.log("DBK objects: " + objectsToBeWritten);
 
-            for(var i in features.features) {
-                var feature = features.features[i];
+                for(var i in features.features) {
+                    var feature = features.features[i];
 
-                if(feature.properties.identificatie) {
+                    if(feature.properties.identificatie) {
 
-                    var writeDbkObject = function(identificatie) {
-                        function req(identif) {
-                            return {
-                                query: { srid: 28992 },
-                                params: { id: identif }
-                            };
-                        }
+                        var writeDbkObject = function(identificatie) {
+                            function req(identif) {
+                                return {
+                                    query: { srid: 28992 },
+                                    params: { id: identif }
+                                };
+                            }
 
-                        var writeDbkJson = function(json, id) {
-                            if(!json) {
-                                console.log("Geen JSON voor id  " + id);
-                                objectsToBeWritten--;
-                                return;
-                            };
-                            var filename;
-                            if(json.DBKObject) {
-                                filename = outDir + '/api/object/' + json.DBKObject.identificatie + '.json';
-                            } else {
-                                filename = outDir + '/api/gebied/' + json.DBKGebied.identificatie + '.json';
-                            };
-                            fs.writeFile(filename, JSON.stringify(json), function(err) {
-                                objectsToBeWritten--;
-                                if(err) throw err;
-                            });
-                        };
-
-                        var getFunction;
-                        if(feature.properties.typeFeature === "Object") {
-                            getFunction = dbk.getObject;
-                        } else {
-                            getFunction = dbk.getGebied;
-                        };
-
-                        getFunction(req(identificatie), { json:
-                            function(json) {
-
+                            var writeDbkJson = function(json, id) {
                                 if(!json) {
                                     console.log("Geen JSON voor id  " + id);
                                     objectsToBeWritten--;
                                     return;
                                 };
+                                var filename;
+                                if(json.DBKObject) {
+                                    filename = outDir + '/api/object/' + json.DBKObject.identificatie + '.json';
+                                } else {
+                                    filename = outDir + '/api/gebied/' + json.DBKGebied.identificatie + '.json';
+                                };
+                                fs.writeFile(filename, JSON.stringify(json), function(err) {
+                                    objectsToBeWritten--;
+                                    if(err) throw err;
+                                });
+                            };
 
-                                // XXX can't detect error...
-                                writeDbkJson(json);
+                            var getFunction;
+                            if(feature.properties.typeFeature === "Object") {
+                                getFunction = dbk.getObject;
+                            } else {
+                                getFunction = dbk.getGebied;
+                            };
 
-                                // export verdiepingen
-                                if(json.hasOwnProperty("DBKObject") && json.DBKObject.verdiepingen) {
-                                    for(var i in json.DBKObject.verdiepingen) {
-                                        var verdieping = json.DBKObject.verdiepingen[i];
-                                        if(verdieping.identificatie !== json.DBKObject.identificatie) {
-                                            objectsToBeWritten++;
-                                            totalVerdiepingen++;
+                            getFunction(req(identificatie), {
+                                status: function() { return this; },
+                                json: function(json) {
 
-                                            dbk.getObject(req(verdieping.identificatie), { json:
-                                                function(json) {
-                                                    writeDbkJson(json);
-                                                }
-                                            });
+                                    if(!json) {
+                                        console.log("Geen JSON voor id  " + id);
+                                        objectsToBeWritten--;
+                                        return;
+                                    };
+
+                                    // XXX can't detect error...
+                                    writeDbkJson(json);
+
+                                    // export verdiepingen
+                                    if(json.hasOwnProperty("DBKObject") && json.DBKObject.verdiepingen) {
+                                        for(var i in json.DBKObject.verdiepingen) {
+                                            var verdieping = json.DBKObject.verdiepingen[i];
+                                            if(verdieping.identificatie !== json.DBKObject.identificatie) {
+                                                objectsToBeWritten++;
+                                                totalVerdiepingen++;
+
+                                                dbk.getObject(req(verdieping.identificatie), { json:
+                                                    function(json) {
+                                                        writeDbkJson(json);
+                                                    }
+                                                });
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        });
-                    };
-                    writeDbkObject(feature.properties.identificatie);
-                } else {
-                    console.log("Error: feature has no identificatie property", feature);
-                    objectstoBeWritten--;
+                            });
+                        };
+                        writeDbkObject(feature.properties.identificatie);
+                    } else {
+                        console.log("Error: feature has no identificatie property", feature);
+                        objectstoBeWritten--;
+                    }
                 }
+                featuresDone = true;
             }
-            featuresDone = true;
         }
-    }
     );
 } else {
     featuresDone = true;
