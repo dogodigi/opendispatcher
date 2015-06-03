@@ -449,6 +449,9 @@ dbkjs.util = {
 
     },
     onClick: function(e) {
+        if(dbkjs.viewmode === "fullscreen") {
+            return;
+        }
         $('#wmsclickpanel').hide();
         //controleer of de layer onderdeel is van een module en een getfeatureinfo heeft
         $.each(dbkjs.map.layers, function(lay_index, lay) {
