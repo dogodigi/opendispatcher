@@ -18,199 +18,320 @@
  *
  */
 
+/* global OpenLayers, i18n */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 
 dbkjs.modules.print = {
     id: 'dbk.modules.print',
-    register: function(options) {
+    rotation: 0,
+    scale: 1,
+    printbox: null,
+    register: function (options) {
         var _obj = dbkjs.modules.print;
         _obj.printDialog('#printpanel_b');
         _obj.namespace = options.namespace || _obj.namespace;
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
-        $('#btngrp_3').append(
-            '<a id="btn_print" class="btn btn-default navbar-btn" href="#" title="' + 
-            i18n.t('app.print') + 
-            '"><i class="fa fa-print"></i></a>'
-        );
-
-        $('#btn_print').click(function() {
-            //$('#printpanel').modal();
-            //_obj.printdirect(dbkjs.map, 2, options);
-            _obj.doPrint();
-        });
-    },
-    doPrint: function(){
-        if (!dbkjs.util.isJsonNull(dbkjs.options.dbk) && dbkjs.options.dbk !== 0) {
-                var currentFeature = dbkjs.options.feature;
-                var testObject = {
-                    "options": {
-                        "units": "m",
-                        "srs": "EPSG:28992",
-                        "layout": "A3 Landscape",
-                        "dpi": 150,
-                        "mapTitle": dbkjs.options.organisation.title,
-                        "titlepage": true
-                    },
-                    "pages": [{}]
-                };
-                //add the features porperties
-                $.extend(testObject.options, currentFeature);
-                testObject.options.informatie = {};
-                testObject.options.informatie.columns = ["soort", "tekst"];
-                testObject.options.informatie.data = [];
-                //remove unwanted stuff if available
-                if(currentFeature.adres){
-                    if (currentFeature.adres.length > 0) {
-                        var adr_str = '';
-                        $.each(currentFeature.adres, function(adr_index, adr) {
-                            adr_str += adr.openbareRuimteNaam + ' ' + adr.huisnummer + 
-                                adr.huisnummertoevoeging + adr.huisletter + '\n' + 
-                                adr.postcode + ' ' + adr.woonplaatsNaam + ' ' + adr.gemeenteNaam +
-                                '\n\n';
-                        });
-                        testObject.options.adres = adr_str;
+        _obj.layer = new OpenLayers.Layer.Vector('print', {
+            styleMap: new OpenLayers.StyleMap({
+                // a nice style for the transformation box
+                "default": new OpenLayers.Style({
+                    fillOpacity: 0
+                }),
+                "transform": new OpenLayers.Style({
+                    display: "${getDisplay}",
+                    cursor: "${role}",
+                    pointRadius: 5,
+                    fillColor: "white",
+                    fillOpacity: 1,
+                    strokeColor: "#ff0000"
+                }, {
+                    context: {
+                        getDisplay: function (feature) {
+                            // hide the resize handle at the south-east corner
+                            return feature.attributes.role === "se-resize" ? "none" : "";
+                        }
                     }
+                }),
+                "rotate": new OpenLayers.Style({
+                    display: "${getDisplay}",
+                    pointRadius: 10,
+                    fillColor: "#ddd",
+                    fillOpacity: 1,
+                    strokeColor: "#ff0000"
+                }, {
+                    context: {
+                        getDisplay: function (feature) {
+                            // only display the rotate handle at the south-east corner
+                            return feature.attributes.role === "se-rotate" ? "" : "none";
+                        }
+                    }
+                })
+            })
+        });
+        dbkjs.map.addLayer(_obj.layer);
+        _obj.printcontrol = new OpenLayers.Control.TransformFeature(_obj.layer, {
+            renderIntent: "transform",
+            rotationHandleSymbolizer: "rotate",
+            preserveAspectRatio: true,
+            dragControl: new OpenLayers.Control.DragFeature()
+        });
+        dbkjs.map.addControl(_obj.printcontrol);
+        $('#btngrp_3').append(
+                '<a id="btn_print" class="btn btn-default navbar-btn" href="#" title="' +
+                i18n.t('app.print') +
+                '"><i class="fa fa-print"></i></a>'
+                );
+
+        $('#btn_print').click(function () {
+            _obj.layer.destroyFeatures();
+
+            dbkjs.util.alert(i18n.t('dialogs.selectarea'), '<button class="btn btn-primary" id="printclick">' + i18n.t('app.print') + "</button>", 'alert-info');
+
+            //first move the layer to the top!
+            dbkjs.selectControl.deactivate();
+            dbkjs.map.setLayerIndex(_obj.layer, dbkjs.map.getNumLayers());
+            var dims = _obj.calculatePrintbox();
+            var ring = [
+                new OpenLayers.Geometry.Point(dims.min.lon, dims.min.lat),
+                new OpenLayers.Geometry.Point(dims.min.lon, dims.max.lat),
+                new OpenLayers.Geometry.Point(dims.max.lon, dims.max.lat),
+                new OpenLayers.Geometry.Point(dims.max.lon, dims.min.lat)
+            ];
+            var printfeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing(ring)]), {});
+            _obj.layer.addFeatures([printfeature]);
+            _obj.printbox = printfeature;
+            dbkjs.map.addControl(_obj.printcontrol);
+
+
+            _obj.printcontrol.setFeature(printfeature);
+            _obj.printcontrol.activate();
+            _obj.printcontrol.events.register("transformcomplete", _obj, _obj.transformComplete);
+            _obj.printcontrol.events.register("transform", _obj, _obj.transform);
+
+            // When the dialog gets closed, deactivate too!
+            $('#systeem_meldingen').children('.close').click(function () {
+                _obj.clear();
+            });
+            $('#printclick').click(function () {
+                _obj.printcontrol.deactivate();
+                dbkjs.selectControl.activate();
+                _obj.doPrint();
+            });
+            _obj.printcontrol.activate();
+        });
+
+
+    },
+    clear: function () {
+        var _obj = dbkjs.modules.print;
+        _obj.printcontrol.deactivate();
+        dbkjs.selectControl.activate();
+        _obj.printbox.destroy();
+    },
+    transform: function (evt) {
+        var _obj = dbkjs.modules.print;
+        if (evt.rotation) {
+            _obj.rotation -= evt.rotation;
+        }
+
+
+    },
+    transformComplete: function (evt) {
+        var _obj = dbkjs.modules.print;
+        _obj.printbox = evt.feature;
+
+    },
+    doPrint: function () {
+        var _obj = dbkjs.modules.print;
+        var myBox = [
+            _obj.printbox.geometry.getBounds().left,
+            _obj.printbox.geometry.getBounds().bottom,
+            _obj.printbox.geometry.getBounds().right,
+            _obj.printbox.geometry.getBounds().top
+        ];
+        dbkjs.util.alert('<i class="fa fa-spinner fa-spin"></i>', i18n.t('dialogs.print'), 'alert-warning');
+        if (!dbkjs.util.isJsonNull(dbkjs.options.dbk) && dbkjs.options.dbk !== 0) {
+            var currentFeature = dbkjs.options.feature;
+            var testObject = {
+                "options": {
+                    "units": "m",
+                    "srs": "EPSG:28992",
+                    "layout": "A3 Landscape",
+                    "dpi": 96,
+                    "mapTitle": dbkjs.options.organisation.title,
+                    "titlepage": true
+                },
+                "pages": [{}]
+            };
+            //add the features porperties
+            $.extend(testObject.options, currentFeature);
+            testObject.options.informatie = {};
+            testObject.options.informatie.columns = ["soort", "tekst"];
+            testObject.options.informatie.data = [];
+            if (currentFeature.adres) {
+                if (currentFeature.adres.length > 0) {
+                    var adr_str = '';
+                    $.each(currentFeature.adres, function (adr_index, adr) {
+                        var street = adr.openbareRuimteNaam + ' ' || '';
+                        var number = adr.huisnummer || '';
+                        var ad1 = adr.huisnummertoevoeging || '';
+                        var ad2 = adr.huisletter || '';
+                        var postalcode = adr.postcode + ' ' || '';
+                        var place = adr.woonplaatsNaam + ' ' || '';
+                        var city = adr.gemeenteNaam || '';
+                        adr_str += street + ' ' + number + ad1 + ad2 + postalcode + place + city + '\n\n';
+                    });
+                    testObject.options.adres = adr_str;
                 }
-                $.each(testObject.options, function(op_idx, op_val){
-                    if (dbkjs.util.isJsonNull(op_val)){
-                        delete testObject.options[op_idx];
+            }
+            $.each(testObject.options, function (op_idx, op_val) {
+                if (dbkjs.util.isJsonNull(op_val)) {
+                    delete testObject.options[op_idx];
+                }
+            });
+            if (currentFeature.bijzonderheid) {
+                testObject.options.bijzonderheid = {};
+                testObject.options.bijzonderheid.columns = ["soort", "tekst"];
+                testObject.options.bijzonderheid.data = [];
+                var adr_str = '';
+                var set = {
+                    "Algemeen": '',
+                    "Preparatie": '',
+                    "Preventie": '',
+                    "Repressie": ''
+                };
+                $.each(currentFeature.bijzonderheid, function (adr_index, adr) {
+                    set[adr.soort] += '' + adr.tekst + '\n';
+                    //adr_str += adr.soort + ': ' + adr.tekst + '\n\n';
+                });
+                if (set.Algemeen !== '') {
+                    testObject.options.bijzonderheid.data.push({"soort": "Algemeen", "tekst": set.Algemeen});
+                }
+                if (set.Preparatie !== '') {
+                    testObject.options.bijzonderheid.data.push({"soort": "Preparatie", "tekst": set.Preparatie});
+                }
+                if (set.Preventie !== '') {
+                    testObject.options.bijzonderheid.data.push({"soort": "Preventie", "tekst": set.Preventie});
+                }
+                if (set.Repressie !== '') {
+                    testObject.options.bijzonderheid.data.push({"soort": "Repressie", "tekst": set.Repressie});
+                }
+            }
+            if (currentFeature.brandcompartiment) {
+                delete testObject.options.brandcompartiment;
+                $.each(currentFeature.brandcompartiment, function (adr_index, adr) {
+                    if (!dbkjs.util.isJsonNull(adr.aanvullendeInformatie)) {
+                        testObject.options.informatie.data.push({"soort": "Compartiment", "tekst": adr.typeScheiding + ": " + adr.aanvullendeInformatie});
                     }
                 });
-                if (currentFeature.bijzonderheid){
-                    testObject.options.bijzonderheid = {};
-                    testObject.options.bijzonderheid.columns = ["soort", "tekst"];
-                    testObject.options.bijzonderheid.data = [];
-                    var adr_str = '';
-                        var set = {
-                            "Algemeen":'',
-                            "Preparatie":'', 
-                            "Preventie":'', 
-                            "Repressie": ''
-                        };
-                        $.each(currentFeature.bijzonderheid, function(adr_index, adr) {
-                            set[adr.soort] += ''  + adr.tekst + '\n';
-                            //adr_str += adr.soort + ': ' + adr.tekst + '\n\n';
-                        });
-                        if(set.Algemeen !== ''){
-                            testObject.options.bijzonderheid.data.push({"soort": "Algemeen", "tekst": set.Algemeen});
-                        }
-                        if(set.Preparatie !== ''){
-                            testObject.options.bijzonderheid.data.push({"soort": "Preparatie", "tekst": set.Preparatie});
-                        }
-                        if(set.Preventie !== ''){
-                            testObject.options.bijzonderheid.data.push({"soort": "Preventie", "tekst": set.Preventie});
-                        }
-                        if(set.Repressie !== ''){
-                            testObject.options.bijzonderheid.data.push({"soort": "Repressie", "tekst": set.Repressie});
-                        }
-                }
-                if (currentFeature.brandcompartiment){
-                    delete testObject.options.brandcompartiment;
-                    $.each(currentFeature.brandcompartiment, function(adr_index, adr) {
-                        if(!dbkjs.util.isJsonNull(adr.aanvullendeInformatie)){
-                            testObject.options.informatie.data.push({"soort": "Compartiment", "tekst": adr.typeScheiding + ": " +adr.aanvullendeInformatie});
-                        }
-                    });
-                }
-                if (currentFeature.brandweervoorziening){
-                    delete testObject.options.brandweervoorziening;
-                    $.each(currentFeature.brandweervoorziening, function(adr_index, adr) {
-                        if(!dbkjs.util.isJsonNull(adr.aanvullendeInformatie)){
-                            testObject.options.informatie.data.push({"soort": "Voorziening", "tekst": adr.naamVoorziening + ": " + adr.aanvullendeInformatie});
-                        }
-                    });
-                }
-
-                if(currentFeature.contact){
-                    if (currentFeature.contact.length > 0) {
-                        var adr_str = '';
-                        $.each(currentFeature.contact, function(adr_index, adr) {
-                            adr_str += adr.naam + '\n' + 
-                                adr.telefoonnummer + '\n' + 
-                                '('  + adr.functie + ')\n\n';
-                        });
-                        testObject.options.contact = adr_str;
-                    }
-                }
-                if (currentFeature.foto){
-                    delete testObject.options.foto;
-                }
-                if (currentFeature.hulplijn){
-                    delete testObject.options.hulplijn;
-                }
-                if (currentFeature.pandgeometrie){
-                    delete testObject.options.pandgeometrie;
-                }
-                if (currentFeature.tekstobject){
-                    delete testObject.options.tekstobject;
-                }
-                if (currentFeature.toegangterrein){
-                    delete testObject.options.toegangterrein;
-                }
-                if (currentFeature.verdiepingen){
-                    delete testObject.options.verdiepingen;
-                }
-                
-                if(currentFeature.verblijf){
-                    if (currentFeature.verblijf.length > 0) {
-                        testObject.options.verblijf = {};
-                        testObject.options.verblijf.columns = ["groep", "aantal", "begin", "eind", "nietzelfredzaam"];
-                        testObject.options.verblijf.data = [];
-                        $.each(currentFeature.verblijf, function(adr_index, adr) {
-                            testObject.options.verblijf.data.push(adr);
-                        });
-                    }
-                }
-                
-                if (currentFeature.images) {
-                    delete testObject.options.images;
-                    if (currentFeature.images.length > 0) {
-                        $.each(currentFeature.images, function(img_index, img) {
-                            testObject.options["image" + (img_index + 1)] = encodeURI(img);
-                        });
-                    }
-                }
-                if (currentFeature.gevaarlijkestof) {
-                    if (currentFeature.gevaarlijkestof.length > 0) {
-                        testObject.options.gevaarlijkestof = {};
-                        testObject.options.gevaarlijkestof.columns = ["icon", "gevaarsindicatienummer", "UNnummer", "naamStof", "hoeveelheid", "aanvullendeInformatie", "symboolCode"];
-                        testObject.options.gevaarlijkestof.data = [];
-                        $.each(currentFeature.gevaarlijkestof, function(adr_index, adr) {
-                            adr.icon = dbkjs.basePath + 'images/eughs/' + adr.symboolCode + '.png';
-                            testObject.options.gevaarlijkestof.data.push(adr);
-                        });
-                    }
-                }
-                if(testObject.options.informatie.data.length === 0){
-                    delete testObject.options.informatie;
-                }
-                
-                var center = dbkjs.map.getCenter();
-                testObject.pages[0].center = [center.lon, center.lat];
-                testObject.pages[0].scale = Math.ceil(dbkjs.map.getScale());
-                testObject.pages[0].rotation = 0;
-                dbkjs.modules.print.printdirect(dbkjs.map, 
-                    testObject.pages, 
-                    testObject.options);
-            } else {
-                var testObject = {
-                    "options": {
-                        "units": "m",
-                        "srs": "EPSG:28992",
-                        "layout": "A3 Landscape",
-                        "dpi": 150,
-                        "mapTitle": dbkjs.options.organisation.title
-                    },
-                    "pages": [{}]
-                };
-                var center = dbkjs.map.getCenter();
-                testObject.pages[0].center = [center.lon, center.lat];
-                testObject.pages[0].scale = Math.ceil(dbkjs.map.getScale());
-                testObject.pages[0].rotation = 0;
-                dbkjs.modules.print.printdirect(dbkjs.map, testObject.pages, testObject.options);                
             }
+            if (currentFeature.brandweervoorziening) {
+                delete testObject.options.brandweervoorziening;
+                $.each(currentFeature.brandweervoorziening, function (adr_index, adr) {
+                    if (!dbkjs.util.isJsonNull(adr.aanvullendeInformatie)) {
+                        testObject.options.informatie.data.push({"soort": "Voorziening", "tekst": adr.naamVoorziening + ": " + adr.aanvullendeInformatie});
+                    }
+                });
+            }
+
+            if (currentFeature.contact) {
+                if (currentFeature.contact.length > 0) {
+                    var adr_str = '';
+                    //maximum of 6 contacts. Otherwise it will mess up print format.
+                    $.each(currentFeature.contact, function (adr_index, adr) {
+                        //trim the telephone number to 25 chars.
+                        var tel = (adr.telefoonnummer + Array(25).join(' ')).slice(-25);
+                        adr_str += tel + ' ' + adr.naam + ' ' + '(' + adr.functie + ')\n';
+                    });
+                    //cut the address at max-string length (45 chars at max)
+                    testObject.options.contact = adr_str;
+                }
+            }
+            if (currentFeature.foto) {
+                delete testObject.options.foto;
+            }
+            if (currentFeature.hulplijn) {
+                delete testObject.options.hulplijn;
+            }
+            if (currentFeature.pandgeometrie) {
+                delete testObject.options.pandgeometrie;
+            }
+            if (currentFeature.tekstobject) {
+                delete testObject.options.tekstobject;
+            }
+            if (currentFeature.toegangterrein) {
+                delete testObject.options.toegangterrein;
+            }
+            if (currentFeature.verdiepingen) {
+                delete testObject.options.verdiepingen;
+            }
+
+            if (currentFeature.verblijf) {
+                if (currentFeature.verblijf.length > 0) {
+                    testObject.options.verblijf = {};
+                    testObject.options.verblijf.columns = ["groep", "aantal", "begin", "eind", "nietzelfredzaam"];
+                    testObject.options.verblijf.data = [];
+                    $.each(currentFeature.verblijf, function (adr_index, adr) {
+                        testObject.options.verblijf.data.push(adr);
+                    });
+                }
+            }
+
+            if (currentFeature.images) {
+                delete testObject.options.images;
+                if (currentFeature.images.length > 0) {
+                    $.each(currentFeature.images, function (img_index, img) {
+                        testObject.options["image" + (img_index + 1)] = encodeURI(img);
+                    });
+                }
+            }
+            if (currentFeature.gevaarlijkestof) {
+                if (currentFeature.gevaarlijkestof.length > 0) {
+                    testObject.options.gevaarlijkestof = {};
+                    testObject.options.gevaarlijkestof.columns = ["icon", "gevaarsindicatienummer", "UNnummer", "naamStof", "hoeveelheid", "aanvullendeInformatie", "symboolCode"];
+                    testObject.options.gevaarlijkestof.data = [];
+                    $.each(currentFeature.gevaarlijkestof, function (adr_index, adr) {
+                        adr.icon = dbkjs.basePath + 'images/eughs/' + adr.symboolCode + '.png';
+                        testObject.options.gevaarlijkestof.data.push(adr);
+                    });
+                }
+            }
+            if (testObject.options.informatie.data.length === 0) {
+                delete testObject.options.informatie;
+            }
+
+            //var center = dbkjs.map.getCenter();
+            //testObject.pages[0].center = [center.lon, center.lat];
+            //testObject.pages[0].scale = Math.ceil(dbkjs.map.getScale());
+            testObject.pages[0].bbox = myBox;
+            testObject.pages[0].rotation = _obj.rotation;
+            dbkjs.modules.print.printdirect(dbkjs.map,
+                    testObject.pages,
+                    testObject.options);
+        } else {
+            //voer verschillende controlles uit alvorens de betreffende layout te selecteren
+            // A3 Landscape; ruimte voor 2 foto's
+            // A3 Geenfoto; fotoruimte verwijderd en vrijgegeven voor gevaarlijke stoffen.
+            var testObject = {
+                "options": {
+                    "units": "m",
+                    "srs": "EPSG:28992",
+                    "layout": "A3 Landscape",
+                    "dpi": 150,
+                    "mapTitle": dbkjs.options.organisation.title
+                },
+                "pages": [{}]
+            };
+            //var center = dbkjs.map.getCenter();
+            //testObject.pages[0].center = [center.lon, center.lat];
+            //testObject.pages[0].scale = Math.ceil(dbkjs.map.getScale());
+            testObject.pages[0].bbox = myBox;
+            testObject.pages[0].rotation = _obj.rotation;
+            dbkjs.modules.print.printdirect(dbkjs.map, testObject.pages, testObject.options);
+        }
     },
     capabilities: null,
     method: "POST",
@@ -265,7 +386,7 @@ dbkjs.modules.print = {
         layers.splice(a,1);
         layers.unshift(map.baseLayer);
         $.each(layers, function(layer_idx, layer) {
-            if (layer.name !== null && "Feature,feature_sketch,BAG".indexOf(layer.name) === -1) {
+            if (layer.name !== null && "Feature,feature_sketch,print".indexOf(layer.name) === -1) {
                 if (
                         //layer !== pagesLayer && 
                         layer.getVisibility() === true) {
@@ -280,10 +401,9 @@ dbkjs.modules.print = {
         $.each(pages, function(page_idx, page) {
             encodedPages.push(
                     $.extend(page.customParams, {
-                center: [page.center[0], page.center[1]],
-                scale: page.scale,
-                rotation: page.rotation
-            })
+                        bbox: page.bbox,
+                        rotation: page.rotation
+                    })
                     );
         });
         jsonData.pages = encodedPages;
@@ -307,10 +427,19 @@ dbkjs.modules.print = {
             data: JSON.stringify(jsonData),
             dataType: "json",
             success: function(response) {
-                _obj.download(response.getURL);
+                _obj.layer.destroyFeatures();
+                _obj.printbox.destroy();
+                var url = response.getURL;
+                var url_arr = url.split('/');
+                var filename = url_arr[url_arr.length - 1];
+                var newURL = "/print/pdf/" + filename;
+                dbkjs.util.alert('<a href="' + newURL + '"><i class="fa fa-file-pdf-o fa-2x"></i></a> ', i18n.t('dialogs.printready') + ' ' +
+                        '<a href="' + newURL + '">' +
+                        i18n.t('dialogs.downloadpdf') + '</a>.', 'alert-success');
+                //_obj.download(response.getURL);
             },
             error: function(response) {
-                alert(response.responseText);
+                dbkjs.util.alert('<i class="fa fa-warning"></i>', i18n.t('dialogs.printerror'), 'alert-danger');
             }
         });
     },
@@ -349,8 +478,8 @@ dbkjs.modules.print = {
                     callback.call();
                 }
             },
-            error: function(response) {
-                alert(response.responseText);
+            error: function (response) {
+                dbkjs.util.alert('<i class="fa fa-warning"></i>', i18n.t('dialogs.printtimeout'), 'alert-danger');
             }
         });
 
@@ -533,7 +662,7 @@ dbkjs.modules.print = {
                     feature = features[i];
                     style = feature.style || layer.style ||
                             layer.styleMap.createSymbolizer(feature,
-                            feature.renderIntent);
+                                    feature.renderIntent);
 
                     // don't send unvisible features
                     if (style.display === 'none') {
@@ -608,5 +737,19 @@ dbkjs.modules.print = {
             a.href = url;
         }
         return a.href;
+    },
+    calculatePrintbox: function () {
+        var size = dbkjs.map.getSize();
+        var center = {x: Math.round(size.w / 2), y: Math.round(size.h /2)};        
+        var w = size.w - 200;
+        var h = Math.round(w / 1.428571429);
+        if(h > size.h - 200){
+            h = size.h - 200;
+            w = Math.round(h * 1.428571429);
+        }
+        var min = dbkjs.map.getLonLatFromViewPortPx({x: center.x - Math.round(w / 2), y: center.y + Math.round(h/2)});
+        var max = dbkjs.map.getLonLatFromViewPortPx({x: center.x + Math.round(w / 2), y: center.y - Math.round(h/2)});
+        return {min: min, max:max};
+
     }
 };
