@@ -31,20 +31,20 @@ dbkjs.modules.care = {
     sel_array: [],
     sel_care: null,
     cql_array: ["'Prio 1'", "'Prio 2'", "'Prio 3'"],
-    updateLayerIncident: function (string) {
+    updateLayerIncident: function(string) {
         var _obj = dbkjs.modules.care;
         _obj.layerIncident.mergeNewParams({'time': string});
     },
-    updateSelectieIncident: function () {
+    updateSelectieIncident: function() {
         var _obj = dbkjs.modules.care;
         _obj.refreshCQL();
     },
-    register: function (options) {
+    register: function(options) {
         var _obj = dbkjs.modules.care;
         $('#btngrp_3').append('<a id="btn_care" class="btn btn-default navbar-btn" href="#" title="' +
                 i18n.t('care.managementinfo') + '"><i class="fa fa-fire"></i></a>');
         $('body').append(dbkjs.util.createDialog('carepanel', '<i class="fa fa-fire"></i> ' + i18n.t('care.details'), 'right:0;bottom:0;'));
-        $('#btn_care').click(function () {
+        $('#btn_care').click(function() {
             $('#care_dialog').toggle();
         });
         _obj.namespace = options.namespace || _obj.namespace;
@@ -92,17 +92,17 @@ dbkjs.modules.care = {
         );
         _obj.layerNorm.dbkjsParent = _obj;
         this.updateLayerIncident();
-        _obj.layerIncident.events.register("loadstart", _obj.layerIncident, function () {
+        _obj.layerIncident.events.register("loadstart", _obj.layerIncident, function() {
             dbkjs.util.loadingStart(_obj.layerIncident);
         });
 
-        _obj.layerIncident.events.register("loadend", _obj.layerIncident, function () {
+        _obj.layerIncident.events.register("loadend", _obj.layerIncident, function() {
             dbkjs.util.loadingEnd(_obj.layerIncident);
         });
-        _obj.layerNorm.events.register("loadstart", _obj.layerNorm, function () {
+        _obj.layerNorm.events.register("loadstart", _obj.layerNorm, function() {
             dbkjs.util.loadingStart(_obj.layerNorm);
         });
-        _obj.layerNorm.events.register("loadend", _obj.layerNorm, function () {
+        _obj.layerNorm.events.register("loadend", _obj.layerNorm, function() {
             dbkjs.util.loadingEnd(_obj.layerNorm);
         });
         dbkjs.map.addLayers([_obj.layerIncident, _obj.layerNorm]);
@@ -247,7 +247,7 @@ dbkjs.modules.care = {
             dekkingsplan_button.addClass('btn-primary').html(i18n.t('care.coverageOff'));
         }
 
-        $(incidenten_button).click(function () {
+        $(incidenten_button).click(function() {
             incidentSel.toggle();
             if (_obj.layerIncident.getVisibility()) {
                 incidenten_button.removeClass('btn-primary').html(i18n.t('care.incidentsOn'));
@@ -257,7 +257,7 @@ dbkjs.modules.care = {
                 _obj.layerIncident.setVisibility(true);
             }
         });
-        $(dekkingsplan_button).click(function () {
+        $(dekkingsplan_button).click(function() {
             normSel.toggle();
             if (_obj.layerNorm.getVisibility()) {
                 dekkingsplan_button.removeClass('btn-primary').html(i18n.t('care.coverageOn'));
@@ -271,16 +271,16 @@ dbkjs.modules.care = {
         $('#care_dialog_b').append(incidentSel);
         $('#care_dialog_b').append(dekkingsplan_button);
         $('#care_dialog_b').append(normSel);
-        $.each(dbkjs.options.organisation.care, function (care_k, care_v) {
+        $.each(dbkjs.options.organisation.care, function (care_k, care_v){
             var btn = $('<button class="btn btn-block btn_5px" type="button">' + care_v.button + '</button>');
-            $(btn).click(function () {
+            $(btn).click(function() {
                 window.open(care_v.url);
                 return false;
             });
             $('#care_dialog_b').append(btn);
         });
-        $('input[name="chk_koppel"]').click(function () {
-            $.each($('input[name="chk_koppel"]'), function (chk_idx, chk) {
+        $('input[name="chk_koppel"]').click(function() {
+            $.each($('input[name="chk_koppel"]'), function(chk_idx, chk) {
                 if ($(chk).is(':checked')) {
                     _obj.layerIncident.mergeNewParams({typename: _obj.namespace + ":incidentscare", layers: _obj.namespace + ":incidentscare", styles: 'careincidenten'});
                 } else {
@@ -289,7 +289,7 @@ dbkjs.modules.care = {
             });
 
         });
-        $('input[name="chk_prio"]').click(function () {
+        $('input[name="chk_prio"]').click(function() {
             _obj.refreshCQL();
         });
     },
@@ -320,7 +320,7 @@ dbkjs.modules.care = {
         cqlfilterfinal = out;
         _obj.layerIncident.mergeNewParams({'cql_filter': cqlfilterfinal});
     },
-    getfeatureinfo: function (e) {
+    getfeatureinfo: function(e) {
         if (this.layerIncident.getVisibility()) {
             this.getIncidentInfo(e);
         }
@@ -328,7 +328,7 @@ dbkjs.modules.care = {
             this.getNormInfo(e);
         }
     },
-    getNormInfo: function (e) {
+    getNormInfo: function(e) {
         var _obj = dbkjs.modules.care;
         var llMin = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x - 12, e.xy.y + 12));
         var llMax = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x + 12, e.xy.y - 12));
@@ -355,7 +355,7 @@ dbkjs.modules.care = {
         OpenLayers.Request.GET({url: _obj.url + 'wfs', "params": params, callback: _obj.panelNorm});
         //OpenLayers.Event.stop(e);
     },
-    getIncidentInfo: function (e) {
+    getIncidentInfo: function(e) {
         var _obj = dbkjs.modules.care;
         var llMin = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x - 12, e.xy.y + 12));
         var llMax = dbkjs.map.getLonLatFromPixel(new OpenLayers.Pixel(e.xy.x + 12, e.xy.y - 12));
@@ -391,7 +391,7 @@ dbkjs.modules.care = {
         }
         OpenLayers.Request.GET({url: _obj.url + 'wfs', "params": params, callback: _obj.panelIncident});
     },
-    panelIncident: function (response) {
+    panelIncident: function(response) {
         var _obj = dbkjs.modules.care;
         var geojson_format = new OpenLayers.Format.GeoJSON();
         //todo: conflicted with the Array.prototype.where, 
@@ -485,16 +485,15 @@ dbkjs.modules.care = {
             $('#carepanel_b').append(ft_div);
             $('#carepanel_f').html('');
             $('#carepanel').show();
-            $(".export").on('click', function () {
+            $(".export").on('click', function() {
                 // CSV
                 dbkjs.util.exportTableToCSV.apply(this, [$('#incidenten_export'), 'export.csv']);
                 $('#carepanel').toggle(true);
             });
         }
     },
-    panelNorm: function (response) {
+    panelNorm: function(response) {
         var _obj = dbkjs.modules.care;
-        
         //verwerk de featureinformatie
         //g = new OpenLayers.Format.GML.v3();
         var geojson_format = new OpenLayers.Format.GeoJSON();
@@ -538,7 +537,7 @@ dbkjs.modules.care = {
             $('#carepanel_b').append(ft_div);
             $('#carepanel_f').html('');
             $('#carepanel').show();
-            $(".export").on('click', function () {
+            $(".export").on('click', function() {
                 // CSV
                 dbkjs.util.exportTableToCSV.apply(this, [$('#dekkingsplan_export'), 'export.csv']);
                 $('#carepanel').toggle(true);
