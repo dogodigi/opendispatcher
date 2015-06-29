@@ -18,6 +18,8 @@
  *
  */
 
+/* global OpenLayers */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.Layer = dbkjs.Class({
@@ -30,8 +32,6 @@ dbkjs.Layer = dbkjs.Class({
         var defaultparams = {
             format: 'image/png',
             transparent: true
-                    //tiled: true,
-                    //tilesorigin: [dbkjs.map.maxExtent.left, dbkjs.map.maxExtent.bottom]
         };
         var defaultoptions = {
             transitionEffect: 'resize',
@@ -74,6 +74,12 @@ dbkjs.Layer = dbkjs.Class({
                         params,
                         options
                         );
+                ly.events.register("loadstart", ly, function () {
+                    dbkjs.util.loadingStart(ly);
+                });
+                ly.events.register("loadend", ly, function () {
+                    dbkjs.util.loadingEnd(ly);
+                });
                 break;
             case "WMS":
             default:
@@ -100,6 +106,13 @@ dbkjs.Layer = dbkjs.Class({
 
         dbkjs.map.addLayer(this.layer);
         if (!options.isBaseLayer) {
+            var newparent = "";
+            var nameArray = name.split("\\");
+            if (nameArray.length > 1) {
+                newparent = nameArray[0];
+                name = nameArray[1];
+            }
+
             // @todo functie maken om layerindex dynamisch te toveren 0 is onderop de stapel
             if (index) {
                 dbkjs.map.setLayerIndex(this.layer, index);
@@ -109,7 +122,6 @@ dbkjs.Layer = dbkjs.Class({
 
             var dv_panel_heading = $('<div class="panel-heading"></div>');
             var dv_panel_title = $('<h4 class="panel-title"></div>');
-            // dv_panel_title.append('<input type="checkbox" name="box_' + this.id + '"/>&nbsp;');
             dv_panel_title.append(name + '&nbsp;<a class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
                     this.id + '" data-parent="' + parent + '" ><i class="fa fa-info-circle"></i></a>');
             dv_panel_heading.append(dv_panel_title);
@@ -122,14 +134,27 @@ dbkjs.Layer = dbkjs.Class({
                 if (metadata.pl) {
                     this.layer.metadata.pl = metadata.pl;
                 }
+                this.layer.metadata.div = this.div;
             }
             this.div.append(dv_panel_content);
+
+            if (dbkjs.util.isJsonNull(parent) && !dbkjs.util.isJsonNull(newparent)) {
+                var findMyParent = 'overlay_tab' + newparent.toLowerCase();
+                if ($('#' + findMyParent).length === 0 && $('#' + findMyParent + '_panel').length === 0) {
+                    //create a panel to hold the layer
+                    $('#overlaypanel_ul').append('<li><a href="#' + findMyParent +
+                            '" data-toggle="tab">' + newparent + '</a></li>');
+                    $('#overlaypanel_div').append('<div class="tab-pane" id="' +
+                            findMyParent + '">' +
+                            '<div id="' + findMyParent + '_panel" class="panel-group"></div>' +
+                            '</div>');
+                }
+                parent = '#' + findMyParent;
+            }
             $(parent).append(this.div);
             $(parent).sortable({handle: '.panel'});
             if (this.layer) {
                 if (this.layer.getVisibility()) {
-                    //checkbox aan
-                    // $('input[name="box_' + this.id + '"]').attr('checked', 'checked');
                     dv_panel_heading.addClass('active');
                     dv_panel_heading.addClass('layActive');
                 }
