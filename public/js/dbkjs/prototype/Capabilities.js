@@ -18,6 +18,8 @@
  *
  */
 
+/* global OpenLayers */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.Capabilities = dbkjs.Class({
@@ -28,11 +30,11 @@ dbkjs.Capabilities = dbkjs.Class({
     VERSION: '1.1.1',
     REQUEST: 'GetCapabilities',
     title: 'WMS lagen',
-    onLayerLoadError: function(e) {
+    onLayerLoadError: function (e) {
         /* Display error message, etc */
         //alert(e);
     },
-    initialize: function(options){
+    initialize: function (options) {
         this.options = OpenLayers.Util.extend({}, options);
         OpenLayers.Util.extend(this, options);
         var _obj = this;
@@ -43,7 +45,7 @@ dbkjs.Capabilities = dbkjs.Class({
                 VERSION: this.VERSION, // For example, '1.1.1'
                 REQUEST: this.REQUEST
             },
-            success: function(r) {
+            success: function (r) {
                 var doc = r.responseXML;
                 if (!doc || !doc.documentElement) {
                     doc = r.responseText;
@@ -51,71 +53,41 @@ dbkjs.Capabilities = dbkjs.Class({
                 var c = _obj.wmsCapabilitiesFormat.read(doc);
                 if (!c || !c.capability) {
                     dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
-                    if(dbkjs.loadingcapabilities === 0){
+                    if (dbkjs.loadingcapabilities === 0) {
                         dbkjs.finishMap();
                     }
                     _obj.onLayerLoadError(c);
                     return;
                 } else {
-                    
-                    //construct a unique identifier
-                    if(dbkjs.util.isJsonNull(options.parent)){
-                        var myID = OpenLayers.Util.createUniqueID('overlay_tab');
-                        //create a panel to hold the layers
-                        $('#overlaypanel_ul').append('<li><a href="#' + myID + 
-                                '" data-toggle="tab">' + 
-                                _obj.title + '</a></li>');
-                        $('#overlaypanel_div').append('<div class="tab-pane" id="' + 
-                            myID + '">' +
-                            '<div id="' + myID + '_panel" class="panel-group"></div>' +
-                            '</div>');
-                    } else {
-                        //todo: check for parent and append layers if 
-                        //the parent exists. 
-                        if($(options.parent).length === 0 && $(options.parent + '_panel').length === 0){
-                            //Or use parent as id for a new panel
-                            //constructing new parent
-                            myID = options.parent.replace('#','');
-                            $('#overlaypanel_ul').append('<li><a href="#' + myID + 
-                                '" data-toggle="tab">' + 
-                                _obj.title + '</a></li>');
-                            $('#overlaypanel_div').append('<div class="tab-pane" id="' + 
-                                myID + '">' +
-                                '<div id="' + myID + '_panel" class="panel-group"></div>' +
-                                '</div>');
-                        } else {
-                            myID = options.parent.replace('#','');
-                        }
-                    }
-                    
-                    //loop through all the layers and make them available
-                    $.each(c.capability.layers, function(lkey, lval) {
+                    var parent = options.title;
+
+                    $.each(c.capability.layers, function (lkey, lval) {
                         var metadata = {};
-                        if (!dbkjs.util.isJsonNull(lval.abstract)){
+                        if (!dbkjs.util.isJsonNull(lval.abstract)) {
                             metadata.abstract = lval.abstract;
                         }
-                        if (!dbkjs.util.isJsonNull(options.pl)){
+                        if (!dbkjs.util.isJsonNull(options.pl)) {
                             metadata.pl = options.pl + lkey;
                         }
-                        var myLayer = new dbkjs.Layer(lval.title,
-                            _obj.url,
-                            {layers: lval.name},
-                            {},
-                            '#' + myID + '_panel',
-                            options.index + lkey,
-                            metadata
-                        );
+                        var myLayer = new dbkjs.Layer(parent + '\\' + lval.title,
+                                _obj.url,
+                                {layers: lval.name},
+                                {},
+                                '',
+                                options.index + lkey,
+                                metadata
+                                );
                     });
                     dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
-                    if(dbkjs.loadingcapabilities === 0){
+                    if (dbkjs.loadingcapabilities === 0) {
                         dbkjs.finishMap();
                     }
                     return;
                 }
             },
-            failure: function(r) {
+            failure: function (r) {
                 dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
-                if(dbkjs.loadingcapabilities === 0){
+                if (dbkjs.loadingcapabilities === 0) {
                     dbkjs.finishMap();
                 }
                 _obj.onLayerLoadError(r);
