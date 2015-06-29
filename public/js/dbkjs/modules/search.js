@@ -18,6 +18,8 @@
  *
  */
 
+/* global OpenLayers, i18n */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
@@ -75,6 +77,8 @@ dbkjs.modules.search = {
         search_group.append(search_btn_grp);
         search_div.append(search_group);
         search_div.show();
+        // If function is enabled, add ability to search infrastructure point objects
+        $('#search_dropdown').append('<li id="li_s_infra"><a href="#" id="s_infra"><i class="fa fa-car"></i> ' + i18n.t("search.infrastructure") + '</a></li>');
         this.activate();
     },
     fullscreenLayout: function() {
@@ -119,13 +123,15 @@ dbkjs.modules.search = {
                 '<ul class="dropdown-menu pull-right" id="search_dropdown" role="menu">' +
                     '<li><a href="#" id="s_dbk"><i class="fa fa-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
                     '<li><a href="#" id="s_oms"><i class="fa fa-bell"></i> ' + i18n.t("search.oms") + '</a></li>' +
-                    '<li><a href="#" id="s_adres"><i class="fafa-home"></i> ' + i18n.t("search.address") + '</a></li>' +
+                    '<li><a href="#" id="s_adres"><i class="fa fa-home"></i> ' + i18n.t("search.address") + '</a></li>' +
                     '<li><a href="#" id="s_coord"><i class="fa fa-thumb-tack"></i> ' + i18n.t("search.coordinates") + '</a></li>' +
                 '</ul>' +
             '</span>'
         );
         search_group.append(search_input);
         search_group.append(search_btn_grp);
+        // If function is enabled, add ability to search infrastructure point objects
+        $('#search_dropdown').append('<li id="li_s_infra"><a href="#" id="s_infra"><i class="fa fa-car"></i> ' + i18n.t("search.infrastructure") + '</a></li>');
         return $('<div class="row"></div>').append($('<div class="col-lg-12"></div>').append(search_group));
     },
     zoomAndPulse: function(lonlat){
@@ -148,11 +154,11 @@ dbkjs.modules.search = {
                 {},
                 {
                     graphicName: 'circle',
-                    fillColor: '#ff0000',
-                    strokeColor: '#ff0000',
+                    fillColor: '#BE81F7',
+                    strokeColor: '#BE81F7',
                     strokeWidth: 3,
-                    fillOpacity: 0.1,
-                    pointRadius: 7
+                    fillOpacity: 0.9,
+                    pointRadius: 10
                 }
             ),
             circle
@@ -175,6 +181,7 @@ dbkjs.modules.search = {
             if (count>16) {
                 clearInterval(window.resizeInterval);
                 _obj.layer.removeFeatures(feature,{silent: true});
+                _obj.layer.destroyFeatures();
             } else {
                 var interval = radius * 0.03;
                 var ratio = interval/radius;
@@ -190,6 +197,7 @@ dbkjs.modules.search = {
                 }
                 if(count>16){
                     _obj.layer.removeFeatures(feature,{silent: true});
+                    _obj.layer.destroyFeatures();
                 } else {
                     feature.geometry.resize(1+ratio, point);
                     _obj.layer.drawFeature(feature);
@@ -383,6 +391,80 @@ dbkjs.modules.search = {
                 mbtn.html('<i class="fa fa-bell"></i>');
                 minp.attr("placeholder", i18n.t("search.omsplaceholder"));
                 dbkjs.modules.feature.search_oms();
+            } else if (searchtype === i18n.t("search.infrastructure")) {
+                mbtn.html('<i class="fa fa-car"></i>');
+                minp.attr("placeholder", i18n.t("search.infraplaceholder"));
+                 if (dbkjs.modules.search) {
+                    dbkjs.modules.search.activateinfra();
+                }
+            }
+            mdiv.removeClass('open');
+            mdiv.removeClass('active');
+            return false;
+        });
+    },
+    activateinfra: function() {
+        var _obj = dbkjs.modules.search;
+        $('#search_input').typeahead({
+            name: 'infra',
+            remote: {
+                url: 'api/autocomplete/autoweg/%QUERY',
+                filter: function(parsedResponse) {
+                    return _obj.parseAddressResponse(parsedResponse);
+                }
+            }
+        });
+        $('#search_input').bind('typeahead:selected', function(obj, datum) {
+            for (var i = 0, len = dbkjs.map.layers.length; i < len; i++) {
+                //get the layer with the pl that is right for infra: ih
+                
+                if(dbkjs.map.layers[i].metadata.pl === "ih"){
+                    //make sure it is visible and that the overlay bar is set to activated
+                    dbkjs.map.layers[i].metadata.div.children('.panel-heading').addClass('active layActive');
+                    dbkjs.map.layers[i].setVisibility(true);
+                }
+            }
+            dbkjs.modules.updateFilter(datum.id);
+            _obj.zoomAndPulse(datum.geometry.getBounds().getCenterLonLat());
+        });
+        $('#search_dropdown a').click(function(e) {
+            $('#search_input').typeahead('destroy');
+            $('#search_input').val('');
+            var mdiv = $(this).parent().parent().parent();
+            var mbtn = $('#search-add-on');
+            var minp = mdiv.parent().find('input');
+            var searchtype = $(this).text().trim();
+            if (searchtype === i18n.t("search.i")) {
+                mbtn.html('<i class="fa fa-home"></i>');
+                minp.attr("placeholder", i18n.t("search.addressplaceholder"));
+                if (dbkjs.modules.search) {
+                    dbkjs.modules.search.activate();
+                }
+            } else if (searchtype === i18n.t("search.coordinates")) {
+                mbtn.html('<i class="fa fa-thumb-tack"></i>');
+                minp.attr("placeholder", i18n.t("search.coordplaceholder"));
+                $('#search_input').change(function() {
+                    var loc = _obj.handleCoordinatesSearch();
+                    if(loc) {
+                        dbkjs.modules.updateFilter(0);
+                        _obj.zoomAndPulse(loc);
+                    }
+                    return false;
+                });
+            } else if (searchtype === i18n.t("search.dbk")) {
+                mbtn.html('<i class="fa fa-building"></i>');
+                minp.attr("placeholder", i18n.t("search.dbkplaceholder"));
+                dbkjs.modules.feature.search_dbk();
+            } else if (searchtype === i18n.t("search.oms")) {
+                mbtn.html('<i class="fa fa-bell"></i>');
+                minp.attr("placeholder", i18n.t("search.omsplaceholder"));
+                dbkjs.modules.feature.search_oms();
+            } else if (searchtype === i18n.t("search.infrastructure")) {
+                mbtn.html('<i class="fa fa-car"></i>');
+                minp.attr("placeholder", i18n.t("search.infraplaceholder"));
+                 if (dbkjs.modules.search) {
+                    dbkjs.modules.search.activateinfra();
+                }
             }
             mdiv.removeClass('open');
             mdiv.removeClass('active');
