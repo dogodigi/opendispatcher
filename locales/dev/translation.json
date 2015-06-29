@@ -26,6 +26,7 @@
         "selectContrast": "app.selectContrast",
         "scaleStyle": "app.scaleStyle",
         "styleSizeAdjust": "app.styleSizeAdjust",
+        "alwaysShowInformationLabels": "app.alwaysShowInformationLabels",
         "next": "app.next",
         "map": "app.map",
         "correctBuildings": "app.correctBuildings",
@@ -42,6 +43,12 @@
         "download": "app.download",
         "hyperlink": "app.hyperlink"
     },
+    "bag":{
+      "updated": "bag.updated"
+    },
+    "infra":{
+      "updated": "infra.updated"
+    },
     "map": {
         "prev": "map.prev",
         "next": "map.next",
@@ -52,7 +59,7 @@
         "mini": "map.mini",
         "settings": "map.settings",
         "overlays": "map.overlays",
-        "baselayers": "map.baselayers",
+        "baseLayers": "map.baseLayers",
         "measureDistance": "map.measureDistance",
         "measureArea": "map.measureArea",
         "info": "map.info",
@@ -72,7 +79,11 @@
         "invalidImage": "dialogs.invalidImage",
         "layerNotFound": "dialogs.layerNotFound",
         "infoNotFound": "dialogs.infoNotFound",
-        "running": "dialogs.running"
+        "running": "dialogs.running",
+        "print": "dialogs.print",
+        "printready": "dialogs.printready",
+        "downloadpdf": "dialogs.downloadpdf",
+        "printerror": "dialogs.printerror"
     },
     "care": {
         "managementinfo": "care.managementinfo",
@@ -98,6 +109,7 @@
         "all": "care.all"
     },
     "dbk": {
+        "formalName": "dbk.formalName",
         "alternativeName": "dbk.alternativeName",
         "dateChecked": "dbk.dateChecked",
         "status": "dbk.status",
@@ -140,10 +152,10 @@
         "name": "prevention.name",
         "comment": "prevention.comment"
     },
-    "omsdetail":{
-      "name":"omsdetail.name",  
-      "mobile":"omsdetail.mobile",
-      "telephone":"omsdetail.telephone"
+    "omsdetail": {
+        "name": "omsdetail.name",
+        "mobile": "omsdetail.mobile",
+        "telephone": "omsdetail.telephone"
     },
     "contact": {
         "role": "contact.role",
@@ -165,11 +177,28 @@
         "coordinates": "search.coordinates",
         "coordplaceholder": "search.coordplaceholder"
     },
+    "gms":{
+        "gms": "gms.gms"
+    },
     "email": {
         "annotation": "email.annotation",
         "annotationtitle": "email.annotationtitle",
         "kindregards": "email.kindregards",
-        "team": "email.team"
+        "team": "email.team",
+        "new": "email.new",
+        "name": "email.name",
+        "address": "email.address",
+        "subject": "email.subject",
+        "remarks": "email.remarks",
+        "sender": "email.sender",
+        "send": "email.send",
+        "sent": "email.sent",
+        "error": "email.error",
+        "email": "email.email",
+        "link": "email.link",
+        "phone": "email.phone",
+        "help": "email.help",
+        "generalmessage": "email.generalmessage"
     },
     "eughs": {
         "intro": "Het Globally Harmonised System van de Verenigde Naties (VN-GHS) is in 2002 door de VN vastgesteld",
