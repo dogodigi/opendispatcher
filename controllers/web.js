@@ -18,6 +18,8 @@
  *
  */
 
+/* global exports, require, global */
+
 exports.validate_GET = function(req, res) {
     var token = req.params.token;
     checkToken(token, res);
@@ -79,7 +81,7 @@ getJSON = function(req, res) {
         global.pool.query(query_str, [id, srid],
             function(err, result) {
                 if (err) {
-                    res.json(err);
+                    res.status(400).json(err);
                 } else {
                     var resultset = {};
                     for (index = 0; index < result.rows.length; ++index) {
