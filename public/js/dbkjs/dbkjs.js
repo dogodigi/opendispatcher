@@ -17,6 +17,9 @@
  *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global OpenLayers, i18n, Proj4js, dbkjsLang */
+
 OpenLayers.ProxyHost = "proxy/?q=";
 OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <>";
@@ -37,8 +40,8 @@ dbkjs.init = function () {
     dbkjs.setPaths();
 
     if (!dbkjs.map) {
-      dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
-    };
+        dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
+    }
     dbkjs.options.organisation = {
         id: dbkjs.util.getQueryVariable(i18n.t('app.organisation'), 'demo')
     };
@@ -56,7 +59,7 @@ dbkjs.init = function () {
 };
 
 /**
- * Functie voor updaten van de zichtbaarheid van baselayers
+ * Function to update the visibility for baseLayers
  * @param {integer} nr
  */
 dbkjs.toggleBaseLayer = function (nr) {
@@ -89,7 +92,7 @@ dbkjs.activateClick = function () {
 
 dbkjs.challengeAuth = function () {
     var params = {srid: dbkjs.options.projection.srid};
-    $.getJSON(dbkjs.dataPath + 'organisation.json', params).done(function(data) {
+    $.getJSON(dbkjs.dataPath + 'organisation.json', params).done(function (data) {
         if (data.organisation) {
             dbkjs.options.organisation = data.organisation;
             if (dbkjs.options.organisation.title) {
@@ -108,6 +111,16 @@ dbkjs.challengeAuth = function () {
                 }
             });
         }
+    }).fail(function () {
+        $.getJSON('data/organisation.sample.json', params).done(function (data) {
+            if (data.organisation) {
+                dbkjs.options.organisation = data.organisation;
+                if (dbkjs.options.organisation.title) {
+                    document.title = dbkjs.options.organisation.title;
+                }
+                dbkjs.successAuth();
+            }
+        });
     });
 };
 
@@ -117,6 +130,7 @@ dbkjs.successAuth = function () {
             {
                 hover: true,
                 highlightOnly: true,
+                clickTolerance: 30,
                 renderIntent: "temporary"
             }
     );
@@ -127,6 +141,7 @@ dbkjs.successAuth = function () {
             [],
             {
                 clickout: true,
+                clickTolerance: 30,
                 toggle: true,
                 multiple: false
             }
@@ -152,73 +167,81 @@ dbkjs.successAuth = function () {
 };
 
 //@TODO: Deze goed controleren, er was een haakjes conflict na de resolve
-dbkjs.loadOrganisationCapabilities = function() {
-    if(dbkjs.options.organisation.wms){
+dbkjs.loadOrganisationCapabilities = function () {
+    if (dbkjs.options.organisation.wms) {
         dbkjs.loadingcapabilities = 0;
-            $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v){
-                var index = wms_v.index || 0;
-                if(wms_v.getcapabilities === true){
-                    dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
-                    var options = {
-                        url: wms_v.url,
-                        title: wms_v.name,
-                        proxy: wms_v.proxy,
-                        index: index,
-                        parent: wms_v.parent
-                    };
-                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
-                        options.pl = wms_v.pl;
-                    }
-                    var myCapabilities = new dbkjs.Capabilities(options);
-                } else if (!wms_v.baselayer) {
-                    var params = wms_v.params || {};
-                    var options = wms_v.options || {};
-                    var parent = wms_v.parent || null;
-                    var metadata = {};
-                    if (!dbkjs.util.isJsonNull(wms_v.abstract)){
-                        metadata.abstract = wms_v.abstract;
-                    }
-                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
-                        metadata.pl = wms_v.pl;
-                    }
-                    var myLayer = new dbkjs.Layer(
-                        wms_v.name,
-                        wms_v.url,
-                        params,
-                        options,
-                        parent,
-                        index,
-                        metadata
-                    );
-                } else {
-                    var params = wms_v.params || {};
-                    var options = wms_v.options || {};
-                    options = OpenLayers.Util.extend({isBaseLayer: true}, options);
-                    var parent = wms_v.parent || null;
-                    var metadata = {};
-                    if (!dbkjs.util.isJsonNull(wms_v.abstract)){
-                        metadata.abstract = wms_v.abstract;
-                    }
-                    if (!dbkjs.util.isJsonNull(wms_v.pl)){
-                        metadata.pl = wms_v.pl;
-                    }
-                    var myLayer = new dbkjs.Layer(
-                        wms_v.name,
-                        wms_v.url,
-                        params,
-                        options,
-                        parent,
-                        index,
-                        metadata
-                    );
+        $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v) {
+            var index = wms_v.index || 0;
+            if (wms_v.getcapabilities === true) {
+                dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
+                var options = {
+                    url: wms_v.url,
+                    title: wms_v.name,
+                    proxy: wms_v.proxy,
+                    index: index,
+                    parent: wms_v.parent
+                };
+                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
+                    options.pl = wms_v.pl;
                 }
-
-            });
-            if(dbkjs.loadingcapabilities === 0){
-                dbkjs.finishMap();
+                var myCapabilities = new dbkjs.Capabilities(options);
+            } else if (!wms_v.baselayer) {
+                var params = wms_v.params || {};
+                var options = wms_v.options || {};
+                var parent = wms_v.parent || null;
+                var metadata = {};
+                if (!dbkjs.util.isJsonNull(wms_v.abstract)) {
+                    metadata.abstract = wms_v.abstract;
+                }
+                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
+                    metadata.pl = wms_v.pl;
+                }
+                var layertype = wms_v.layertype || null;
+                var myLayer = new dbkjs.Layer(
+                        wms_v.name,
+                        wms_v.url,
+                        params,
+                        options,
+                        parent,
+                        index,
+                        metadata,
+                        layertype
+                        );
+            } else {
+                var params = wms_v.params || {};
+                var options = wms_v.options || {};
+                options = OpenLayers.Util.extend({isBaseLayer: true}, options);
+                var parent = wms_v.parent || null;
+                var metadata = {};
+                if (!dbkjs.util.isJsonNull(wms_v.abstract)) {
+                    metadata.abstract = wms_v.abstract;
+                }
+                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
+                    metadata.pl = wms_v.pl;
+                }
+                var layertype = wms_v.layertype || null;
+                var myLayer = new dbkjs.Layer(
+                        wms_v.name,
+                        wms_v.url,
+                        params,
+                        options,
+                        parent,
+                        index,
+                        metadata,
+                        layertype
+                        );
             }
 
-         }
+        });
+        if (dbkjs.loadingcapabilities === 0) {
+            dbkjs.finishMap();
+        }
+
+    } else {
+        if (dbkjs.loadingcapabilities === 0) {
+            dbkjs.finishMap();
+        }
+    }
 };
 
 dbkjs.finishMap = function () {
@@ -271,13 +294,13 @@ dbkjs.finishMap = function () {
     //get dbk!
 };
 
-dbkjs.setPaths = function() {
+dbkjs.setPaths = function () {
     if (!dbkjs.basePath) {
         dbkjs.basePath = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
         var pathname = window.location.pathname;
         // ensure basePath always ends with '/', remove 'index.html' if exists
-        if(pathname.charAt(pathname.length - 1) !== '/') {
-            pathname = pathname.substring(0, pathname.lastIndexOf('/')+1);
+        if (pathname.charAt(pathname.length - 1) !== '/') {
+            pathname = pathname.substring(0, pathname.lastIndexOf('/') + 1);
         }
         // ensure single '/' between hostname and path
         dbkjs.basePath = dbkjs.basePath + (pathname.charAt(0) === "/" ? pathname : "/" + pathname);
@@ -294,7 +317,7 @@ dbkjs.setPaths = function() {
 };
 
 // dbkjs.js: $(document).ready
-dbkjs.documentReady = function() {
+dbkjs.documentReady = function () {
     // Make sure i18n is initialized
     i18n.init({
         lng: dbkjsLang, debug: false, postProcess: "doReplacements"
@@ -310,7 +333,7 @@ dbkjs.documentReady = function() {
         });
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
         OpenLayers.Lang[dbkjsLang] = OpenLayers.Util.applyDefaults(
-            {'Scale = 1 : ${scaleDenom}': t("app.scale")}
+                {'Scale = 1 : ${scaleDenom}': t("app.scale")}
         );
         OpenLayers.Lang.setCode(dbkjsLang);
         if (dbkjs.viewmode !== 'fullscreen') {
@@ -378,8 +401,8 @@ dbkjs.documentReady = function() {
                 if (dbkjs.options.organisation.area.geometry.type === "Point") {
                     dbkjs.map.setCenter(
                             new OpenLayers.LonLat(
-                                    data.organisation.area.geometry.coordinates[0],
-                                    data.organisation.area.geometry.coordinates[1]
+                                    dbkjs.options.organisation.area.geometry.coordinates[0],
+                                    dbkjs.options.organisation.area.geometry.coordinates[1]
                                     ).transform(
                             new OpenLayers.Projection(dbkjs.options.projection.code),
                             dbkjs.map.getProjectionObject()
@@ -394,10 +417,10 @@ dbkjs.documentReady = function() {
             }
         });
 
-        $(dbkjs).bind('dbkjs_init_complete', function() {
+        $(dbkjs).bind('dbkjs_init_complete', function () {
 
-             if(dbkjs.viewmode !== 'fullscreen') {
-                $('#zoom_prev').click(function() {
+            if (dbkjs.viewmode !== 'fullscreen') {
+                $('#zoom_prev').click(function () {
                     dbkjs.naviHis.previousTrigger();
                 });
                 $('#zoom_next').click(function () {
@@ -426,6 +449,6 @@ dbkjs.documentReady = function() {
     });
 };
 
-$(document).ready(function() {
+$(document).ready(function () {
     dbkjs.documentReady();
 });

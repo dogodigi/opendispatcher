@@ -38,10 +38,14 @@ Create a file called config.json.
 
 To start the applicatie in "development mode":
 
-    node index.js
-
-    or
-
     npm start
+
+To start the application in "production mode":
+
+export NODE_ENV=production && npm start
+
+Or, using forever:
+
+    NODE_ENV=production /usr/bin/forever start -c "npm start" /path/to/opendispatcher/
 
 Point your browser to [http://localhost:3000](http://localhost:3000) to check if the application is running.
