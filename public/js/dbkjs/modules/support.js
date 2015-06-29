@@ -18,6 +18,8 @@
  *
  */
 
+/* global OpenLayers */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
@@ -28,53 +30,44 @@ dbkjs.modules.support = {
         _obj.layer = new OpenLayers.Layer.Vector("Support");
         dbkjs.map.addLayer(_obj.layer);
 
-        var markerStyle = {externalGraphic: 'images/supportmarker.png', graphicHeight:32, graphicWidth:32, graphicXOffset: -16, graphicYOffset: -32};
-
+        var markerStyle = {externalGraphic: 'images/supportmarker.png', graphicHeight: 32, graphicWidth: 32, graphicXOffset: -16, graphicYOffset: -32};
         var mark = dbkjs.util.getQueryVariable('mark');
 
-        if(mark) {
+        if (mark) {
             var coords = mark.split(",");
             var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(coords[0], coords[1]),
-                {},
-                markerStyle
-            );
+                    {},
+                    markerStyle
+                    );
             _obj.layer.addFeatures(feature);
         }
 
         if (dbkjs.options.organisation.support) {
             $('body').append('<div id="foutknop" class="btn-group">' +
                     '<a class="btn btn-default navbar-btn">' +
-                    '<span><i class="fa fa-envelope-o"></i> ' + dbkjs.options.organisation.support.button +'</span>' +
+                    '<span><i class="fa fa-envelope-o"></i> ' + dbkjs.options.organisation.support.button + '</span>' +
                     '</a>' +
                     '</div>');
             var supportpanel = dbkjs.util.createDialog('supportpanel', '<i class="fa fa-envelope-o"></i> ' + dbkjs.options.organisation.support.button, 'bottom:0;left:0;');
             $('body').append(supportpanel);
-            if(dbkjs.viewmode !== 'fullscreen') {
+            if (dbkjs.viewmode !== 'fullscreen') {
                 $('.dialog').drags({handle: '.panel-heading'});
                 $('.btn-group').drags({handle: '.drag-handle'});
             }
-            // Foutknop //
-//            var reciever = 'mailto:' + dbkjs.options.organisation.support.mail;
-//            var subject = 'subject=' + dbkjs.options.APPLICATION + ' Melding' + dbkjs.options.VERSION + ' (' + dbkjs.options.RELEASEDATE + ')';
-//            var body = 'body=' + location.href + ' (deze link wordt door de beheerder gecontroleerd)';
-//            var sMailTo = dbkjs.util.htmlEncode(reciever + '?' + subject);
-//            sMailTo += '&' + dbkjs.util.htmlEncode(body);
-//            $('#foutknop').find('a').attr('href', sMailTo);
-
-            $('#foutknop').click(function(){
+            $('#foutknop').click(function () {
                 dbkjs.hoverControl.deactivate();
                 dbkjs.selectControl.deactivate();
                 _obj.layer.destroyFeatures();
                 dbkjs.map.raiseLayer(_obj.layer, dbkjs.map.layers.length);
                 var center = dbkjs.map.getCenter();
                 var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(center.lon, center.lat),
-                    {some:'data'},
-                    markerStyle
-                );
+                        {some: 'data'},
+                markerStyle
+                        );
                 _obj.feature = feature;
                 _obj.layer.addFeatures(feature);
-                _obj.drag = new OpenLayers.Control.DragFeature(_obj.layer,{
-                    'onDrag':function(feature, pixel){
+                _obj.drag = new OpenLayers.Control.DragFeature(_obj.layer, {
+                    'onDrag': function (feature, pixel) {
                         _obj.feature = feature;
                     }
                 });
@@ -83,55 +76,64 @@ dbkjs.modules.support = {
                 $('#supportpanel_b').html('');
                 //Selectie voor kaartlagen
                 var layerarray = [];
-                $.each(dbkjs.map.layers, function(l_index, layer) {
-                    if ($.inArray(layer.name, ['hulplijn1', 'hulplijn2', 'Feature', 'Support']) === -1) {
+                $.each(dbkjs.map.layers, function (l_index, layer) {
+                    if ($.inArray(layer.name, ['hulplijn1', 'hulplijn2', 'Feature', 'Support', 'print']) === -1) {
                         //layername mag niet beginnen met OpenLayers_
-                        if(layer.name.substring(0,11) !== "OpenLayers_"){
+                        if (layer.name.substring(0, 11) !== "OpenLayers_" && layer.getVisibility()) {
                             layerarray.push(layer.name);
                         }
                     }
                 });
                 layerarray.sort();
-                var p = $('<form id="support-form" role="form"></form>');
-                p.append('<p class="bg-info">Versleep eventueel het rode symbooltje op de kaart om <br>aan te geven waar de fout is geconstateerd<br> of waar de melding over gaat.</p>');
-                var laag_input = $('<div class="form-group"><label for="subject">Onderwerp</label></div>');
-                var select = $('<select name="subject" class="form-control" MULTIPLE></select>');
-                select.append('<option selected>Algemene melding</option>');
+                var p = $('<form id="support-form"  class="form-horizontal" role="form"></form>');
+                //p.append('<p class="bg-info">' + i18n.t('email.help') +'</p>');
+                var laag_input = $('<div class="form-group"></div>');
+                var select = $('<select name="subject" class="form-control"></select>');
+                select.append('<option selected>' + i18n.t('email.generalmessage') + '</option>');
                 var ignoreLayers = ["GMS Marker", "GPS Marker", "search"];
-                $.each(layerarray, function(l_index, name) {
-                    if($.inArray(name, ignoreLayers) === -1) {
+                $.each(layerarray, function (l_index, name) {
+                    if ($.inArray(name, ignoreLayers) === -1) {
                         select.append('<option>' + name + '</option>');
                     }
                 });
-                laag_input.append(select);
+                laag_input.append('<label class="col-sm-4 control-label" for="subject">' + i18n.t('email.subject') + '</label>');
+                laag_input.append($('<div class="col-sm-8"></div>').append(select));
                 p.append(laag_input);
-                var adres_input = $('<div class="form-group"><label for="address">Adres</label><input id="address" name="address" type="text" class="form-control" placeholder="Adres"></div>');
+                var adres_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="address">' +
+                        i18n.t('email.address') +
+                        '</label><div class="col-sm-8"><input id="address" name="address" type="text" class="form-control" placeholder="' +
+                        i18n.t('email.address') + '"></div></div>');
                 p.append(adres_input);
-                if(dbkjs.viewmode !== 'fullscreen') {
-                    var gemeente_input = $('<div class="form-group"><label for="municipality">Gemeente</label><input id="municipality" name="municipality" type="text" class="form-control" placeholder="Gemeente"></div>');
-                    p.append(gemeente_input);
-                    var plaats_input = $('<div class="form-group"><label for="place">Plaats</label><input id="place" name="municipality" type="text" class="form-control" placeholder="Plaats"></div>');
-                    p.append(plaats_input);
-                }
-                var user_input = $('<div class="form-group"><label for="name">Naam melder *</label><input id="name" name="name" type="text" class="form-control required" placeholder="Naam melder"></div>');
+                var user_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="name">' +
+                        i18n.t('email.name') +
+                        ' *</label><div class="col-sm-8"><input id="name" name="name" type="text" class="form-control required" placeholder="' +
+                        i18n.t('email.name') + '"></div></div>');
                 p.append(user_input);
-                var mail_input = $('<div class="form-group"><label for="email">E-mail *</label><input id="email" name="email" type="email" class="form-control required" placeholder="E-mail"></div>');
+                var mail_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="email">' +
+                        i18n.t('email.email') +
+                        ' *</label><div class="col-sm-8"><input id="email" name="email" type="email" class="form-control required" placeholder="'
+                        + i18n.t('email.email') + '"></div></div>');
                 p.append(mail_input);
-                var tel_input = $('<div class="form-group"><label for="phone">Telefoon</label><input id="phone" name="phone" type="tel" class="form-control" placeholder="Telefoon"></div>');
+                var tel_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="phone">' +
+                        i18n.t('email.phone') +
+                        '</label><div class="col-sm-8"><input id="phone" name="phone" type="tel" class="form-control" placeholder="' +
+                        i18n.t('email.phone') + '"></div></div>');
                 p.append(tel_input);
-                var remarks_input = $('<div class="form-group"><label for="remarks">Melding *</label><textarea id="remarks" name="remarks" class="form-control required" placeholder="Melding"></textarea></div>');
+                var remarks_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="remarks">' +
+                        i18n.t('email.remarks') +
+                        ' *</label><div class="col-sm-8"><textarea id="remarks" name="remarks" class="form-control required" placeholder="' +
+                        i18n.t('email.remarks') + '"></textarea></div></div>');
                 p.append(remarks_input);
-                p.append('<p class="bg-danger">De velden met een sterretje <em>*</em> zijn verplicht!</p>');
-                p.append('<button type="submit" class="btn btn-default">Verstuur</button>');
+                p.append('<button type="submit" class="btn btn-primary btn-block">' + i18n.t('email.send') + '</button>');
                 $('#supportpanel_b').append(p);
                 $('#supportpanel').show();
                 $('#foutknop').hide();
                 $("#support-form").bind('submit', function (e) {
                     var isValid = true;
                     var data = {};
-                    $('#support-form').find('input, textarea, select').each(function(i, field) {
+                    $('#support-form').find('input, textarea, select').each(function (i, field) {
 
-                        if($(field).hasClass("required") && field.value === ""){
+                        if ($(field).hasClass("required") && field.value === "") {
                             isValid = false;
                             $(field).addClass("has-error");
                         }
@@ -146,32 +148,43 @@ dbkjs.modules.support = {
                         data.permalink = $('#permalink').attr('href');
                         var i = data.permalink.indexOf("#");
                         var markParam = (data.permalink.indexOf("?") === -1 ? "?" : "&") + "mark=" + _obj.feature.geometry.x + "," + _obj.feature.geometry.y;
-                        if(i === -1) {
+                        if (i === -1) {
                             data.permalink += markParam;
                         } else {
                             var hash = data.permalink.substring(i);
-                            data.permalink = data.permalink.substring(0,i) + markParam + hash;
+                            data.permalink = data.permalink.substring(0, i) + markParam + hash;
                         }
                         var geoJSON = new OpenLayers.Format.GeoJSON();
                         data.geometry = JSON.parse(geoJSON.write(_obj.feature.geometry));
                         data.srid = dbkjs.options.projection.srid;
                         var url = (dbkjs.options.urls && dbkjs.options.urls.annotation
-                            ? dbkjs.options.urls.annotation
-                            : dbkjs.basePath + 'api/annotation/');
+                                ? dbkjs.options.urls.annotation
+                                : dbkjs.basePath + 'api/annotation/');
                         jQuery.ajax({
                             type: "POST",
                             url: url,
-                            dataType: "html",
+                            dataType: "json",
                             data: data,
                             success: function (result) {
-                                $('#supportpanel_b').html('<p class="bg-info">Uw melding is verstuurd. U ontvangt bericht omtrent de afhandeling.</p>');
+                                $('#supportpanel_b').html('<p class="bg-info">' + i18n.t('email.sent') + '</p>');
                                 _obj.layer.destroyFeatures();
                                 _obj.drag.deactivate();
                                 dbkjs.map.removeControl(_obj.drag);
                                 dbkjs.hoverControl.activate();
                                 dbkjs.selectControl.activate();
 
-                                setTimeout(function() {
+                                setTimeout(function () {
+                                    supportpanel.find(".close").click();
+                                }, 5000);
+                            },
+                            error: function (response) {
+                                $('#supportpanel_b').html('<p class="bg-info">' + i18n.t('email.error') + '</p>');
+                                _obj.layer.destroyFeatures();
+                                _obj.drag.deactivate();
+                                dbkjs.map.removeControl(_obj.drag);
+                                dbkjs.hoverControl.activate();
+                                dbkjs.selectControl.activate();
+                                setTimeout(function () {
                                     supportpanel.find(".close").click();
                                 }, 5000);
                             }
@@ -186,7 +199,7 @@ dbkjs.modules.support = {
                     }
                 });
             });
-            supportpanel.find('.close').click(function(){
+            supportpanel.find('.close').click(function () {
                 _obj.layer.destroyFeatures();
                 _obj.drag.deactivate();
                 dbkjs.map.removeControl(_obj.drag);
