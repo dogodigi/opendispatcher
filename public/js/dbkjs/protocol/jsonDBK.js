@@ -480,7 +480,7 @@ dbkjs.protocol.jsonDBK = {
                 };
 
                 var myrow = $('<tr id="' +idx +'">' +
-                        '<td><img class="thumb" src="' + dbkjs.basePath + "images/" + myFeature.attributes.namespace + '/' +
+                        '<td><img class="thumb" src="' + dbkjs.basePath + "images/" + myFeature.attributes.namespace.toLowerCase() + '/' +
                             myFeature.attributes.type + '.png" alt="'+
                             myFeature.attributes.type +'" title="'+
                             myFeature.attributes.type+'"></td>' +
@@ -534,7 +534,7 @@ dbkjs.protocol.jsonDBK = {
                             myFeature.attributes.unnumber + '</div>';
                 }
                 var myrow = $('<tr id="' +idx +'">' +
-                        '<td><img class="thumb" src="' + dbkjs.basePath + 'images/' + myFeature.attributes.namespace + '/' +
+                        '<td><img class="thumb" src="' + dbkjs.basePath + 'images/' + myFeature.attributes.namespace.toLowerCase() + '/' +
                             myFeature.attributes.type + '.png" alt="'+
                             myFeature.attributes.type +'" title="'+
                             myFeature.attributes.type+'"></td>' +
