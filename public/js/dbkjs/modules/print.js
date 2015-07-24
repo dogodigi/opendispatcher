@@ -599,7 +599,8 @@ dbkjs.modules.print = {
         }
         var a;
         if ($.browser.msie) {
-            a = document.createElement("<a href='" + url + "'/>");
+            a = document.createElement("a");
+            a.href = url;
             a.style.display = "none";
             document.body.appendChild(a);
             document.body.removeChild(a);
