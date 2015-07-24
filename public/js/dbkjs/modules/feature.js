@@ -271,6 +271,9 @@ dbkjs.modules.feature = {
                 } else {
                     _obj.currentCluster = e.feature.cluster.slice();
                     _obj.currentCluster.sort(function(lhs, rhs) {
+                        if(!lhs.attributes.formeleNaam || !rhs.attributes.formeleNaam) {
+                            return 0;
+                        }
                         return lhs.attributes.formeleNaam.localeCompare(rhs.attributes.formeleNaam);
                     });
                     if(dbkjs.viewmode === 'fullscreen') {
