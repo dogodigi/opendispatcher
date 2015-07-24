@@ -605,7 +605,7 @@ dbkjs.config.styles = {
         }, {
             context: {
                 myicon: function(feature) {
-                    var img = "images/" + feature.attributes.namespace + "/" + feature.attributes.type + ".png";
+                    var img = "images/" + feature.attributes.namespace.toLowerCase() + "/" + feature.attributes.type + ".png";
                     return typeof imagesBase64 === 'undefined'  ? dbkjs.basePath + img : imagesBase64[img];
                 },
                 myrotation: function(feature) {
@@ -657,7 +657,7 @@ dbkjs.config.styles = {
                     return dbkjs.scaleStyleValue(12);
                 },
                 myicon: function(feature) {
-                    var img = "images/" + feature.attributes.namespace + "/" + feature.attributes.type + ".png";
+                    var img = "images/" + feature.attributes.namespace.toLowerCase() + "/" + feature.attributes.type + ".png";
                     return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + img : imagesBase64[img];
                     }
                 }
