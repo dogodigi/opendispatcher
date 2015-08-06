@@ -1,0 +1,120 @@
+
+#jsKeyboard {
+    z-index: 9999999;
+    display: none;
+    position: fixed;
+    bottom: 0;
+    width: 850px;
+    height: 400px;
+    height: 310px;
+    left: 50%;
+    margin-left: -425px;
+    text-align: center;
+    background: rgba(52,42,42,0.5);
+    border: 2px solid rgba(26,21,21,0.8);
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+}
+#keyboard {
+    padding:10px;
+    width:844px;
+    margin: 0 auto;
+    height:288px;
+    display:block;
+    padding-left:25px;
+    display:block;
+    left:0px;
+}
+#keyboard:after {content: ".";display: block;height: 0;clear: both;visibility: hidden;}
+
+.keyboard_top {
+    bottom: auto; 
+    top:0px;
+}
+.keyboard_bottom {
+    bottom:0px; 
+    top: auto;
+}
+
+#keyboardHeader {position:relative;}
+#keyboardHeader div {color:#fff; background-color:#7b8490;padding:3px; padding-left:15px; padding-right:15px; position:absolute; cursor:pointer; right:-10px; top:-40px;}
+
+#keyboardCapitalLetter {display:none;}
+#keyboardSmallLetter {display:block;}
+#keyboardNumber {display:none;}
+#keyboardSymbols {display:none;}
+
+.button {
+    width:60px; height:60px;
+    background-color:#fff;
+    position:relative;
+    float:left;
+    margin-right:9px;
+    margin-top:10px;
+    cursor:pointer;
+    font-size:26px;
+    -webkit-box-shadow: 0px 1px 3px #000000;-moz-box-shadow: 0px 1px 3px #000000;box-shadow: 0px 1px 3px #000000;
+    -moz-border-radius: 5px;border-radius: 5px;
+    background: #ffffff; /* old browsers */
+    background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* firefox */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* ie */
+}
+
+.buttonDown {background:none;background-color: #c9cdd5; -webkit-box-shadow:none;-moz-box-shadow: none;box-shadow: none;}
+.button_a {margin-left:26px;}
+.button_dash {margin-left:26px;}
+.button_underscore {margin-left:26px;}
+.button_enter {width:103px; font-size:20px; }
+.button_del{width:103px; font-size:20px;}
+.button_smallletter{font-size:20px;width:110px;}
+.button_capitalletterleft{font-size:20px;width:110px;}
+.button_capitalletterright{width:129px; font-size:20px;}
+.button_numberleft{width:162px; font-size:20px; margin-left:26px;}
+.button_numberright{width:129px; font-size:20px;}
+.button_space {width:376px;}
+.button_symbolsleft{width:172px; font-size:20px; margin-left:26px;}
+.button_symbolsright{width:129px; font-size:20px;}
+.button_close{width:60px; right: 0px; font-size:20px;}
+
+.button:hover {
+    border-color: rgba(82, 168, 236, 0.8);
+    outline: 0;
+    outline: thin dotted;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
+    -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(82,168,236,0.6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
+}
+
+.key {
+    width:100%; 
+    height:100%; 
+    text-align:center;
+    text-shadow: 0px 1px 1px #ffffff;
+    filter: dropshadow(color=#ffffff, offx=0, offy=1);
+    font-family: Tahoma;
+    padding-top: 18px;
+    line-height: 20px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.key_del {padding-top:18px;}
+.key_enter {padding-top:18px;}
+.key_smallletter {padding-top:18px;}
+.key_capitalletterleft {padding-top:18px;}
+.key_capitalletterright {padding-top:18px;}
+.key_number {padding-top:18px;}
+.key_symbols {padding-top:18px;}
+.key_close {
+    padding-top:0px !important; 
+    background-image: url(./keyboardclose.png);
+    background-repeat: no-repeat;
+    background-size: 23px 23px;
+    background-position: center; 
+}

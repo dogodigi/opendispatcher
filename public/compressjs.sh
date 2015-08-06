@@ -43,6 +43,7 @@ cat js/libs/jquery.pagination.js \
     js/dbkjs/modules/measure.js \
     js/dbkjs/modules/layertoggle.js \
     js/dbkjs/modules/gms.js \
+    js/dbkjs/modules/onscreenkeyboard.js \
     js/dbkjs/dbkjs.js \
     js/dbkjs/docready.js | node ../node_modules/uglify-js/bin/uglifyjs -o js/dbk.min.js
 
