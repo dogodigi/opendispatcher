@@ -1,6 +1,6 @@
 
 dbkjs.bind_dbkjs_init_complete = function() {
-    
+
     $(dbkjs).bind('dbkjs_init_complete', function() {
         FastClick.attach(document.body);
         (function() {
@@ -29,7 +29,7 @@ dbkjs.bind_dbkjs_init_complete = function() {
 };
 
 dbkjs.challengeAuth = function() {
-    var params = {srid: dbkjs.options.projection.srid};
+    var params = {srid: dbkjs.options.projection.srid, cache: false};
     $.getJSON(dbkjs.dataPath + 'organisation.json', params).done(function(data) {
         if (data.organisation) {
             dbkjs.options.organisation = data.organisation;
@@ -42,7 +42,7 @@ dbkjs.challengeAuth = function() {
 };
 
 dbkjs.setPaths = function() {
-    
+
     dbkjs.basePath = window.location.protocol + '//' + window.location.hostname;
     var pathname = window.location.pathname;
     // ensure basePath always ends with '/', remove 'index.html' if exists

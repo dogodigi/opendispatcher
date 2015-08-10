@@ -97,7 +97,7 @@ dbkjs.activateClick = function () {
 };
 
 dbkjs.challengeAuth = function () {
-    var params = {srid: dbkjs.options.projection.srid};
+    var params = {srid: dbkjs.options.projection.srid, cache: false};
     $.getJSON(dbkjs.dataPath + 'organisation.json', params).done(function(data) {
         if (data.organisation) {
             dbkjs.options.organisation = data.organisation;
