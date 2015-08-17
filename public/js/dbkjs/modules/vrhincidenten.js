@@ -117,6 +117,7 @@ dbkjs.modules.vrhincidenten = {
                 console.log("Fout: incidenten tabel niet gevonden in ArcGIS service " + dbkjs.options.vrhIncidentenUrl);
             } else {
                 me.loadVrhIncidenten();
+                me.popup.show();
             }
         });
     },
@@ -129,7 +130,7 @@ dbkjs.modules.vrhincidenten = {
             dataType: "json",
             data: {
                 f: "pjson",
-                where: "IND_DISC_INCIDENT LIKE '_B_' AND DTG_START_INCIDENT > TO_DATE('" + new moment().subtract(24, 'hours').format("YYYY-MM-DD HH:mm:ss") + "','YYYY-MM-DD HH24:MI:SS')",
+                where: "IND_DISC_INCIDENT LIKE '_B_' AND PRIORITEIT_INCIDENT_BRANDWEER <= 3 AND DTG_START_INCIDENT > TO_DATE('" + new moment().subtract(24, 'hours').format("YYYY-MM-DD HH:mm:ss") + "','YYYY-MM-DD HH24:MI:SS')",
                 orderByFields: "DTG_START_INCIDENT DESC",
                 outFields: "*",
             },
@@ -258,7 +259,11 @@ dbkjs.modules.vrhincidenten = {
             }
         }
         html += '</table>';
-        html += '<div id="eenheden" style="padding-bottom: 5px"/><div id="kladblok"/></div>';
+        html += '<div id="eenheden" style="padding-bottom: 10px"/>';
+        html += '<div id="mldClass" style="padding-bottom: 10px"></div>';
+        html += '<div id="incidentClass" style="padding-bottom: 10px"></div>';
+        html += '<div id="karakteristiek" style="padding-bottom: 10px"></div>';
+        html += '<div id="kladblok"/></div>';
 
         $('#incidentContent').html(html);
 
@@ -302,7 +307,7 @@ dbkjs.modules.vrhincidenten = {
         .done(function(data, textStatus, jqXHR) {
             var html = "<h4>Eenheden: ";
 
-            if(data.features.length == 0) {
+            if(data.features.length === 0) {
                 html += "-";
             } else {
                 var first = true;
@@ -313,7 +318,7 @@ dbkjs.modules.vrhincidenten = {
                     } else {
                         first = false;
                     }
-                    html += a.CODE_VOERTUIGSOORT + " " + a.ROEPNAAM_EENHEID;
+                    html += (a.CODE_VOERTUIGSOORT ? a.CODE_VOERTUIGSOORT : "") + " " + a.ROEPNAAM_EENHEID;
                     if(a.KAZ_NAAM) {
                         html += " (" + a.KAZ_NAAM + ")";
                     }
@@ -324,6 +329,110 @@ dbkjs.modules.vrhincidenten = {
             d.html(html + "</h4>");
             d.appendTo('#eenheden');
         });
+
+        $.ajax({
+            url: me.layerUrls.mldClass + "/query",
+            dataType: "json",
+            data: {
+                f: "pjson",
+                where: "MELDING_CL_ID = " + a.BRW_MELDING_CL_ID,
+                outFields: "WAARDE_MELD_CLASS"
+            },
+            cache: false
+        })
+        .done(function(data, textStatus, jqXHR) {
+            var html = "<h4>GMS_MLD_CLASS: ";
+
+            if(data.features.length === 0) {
+                html += "-";
+            } else {
+                var first = true;
+                $.each(data.features, function(i, feature) {
+                    var a = feature.attributes;
+                    if(!a.WAARDE_MELD_CLASS) {
+                        return;
+                    }
+                    if(!first) {
+                        html += ", ";
+                    } else {
+                        first = false;
+                    }
+                    html += me.encode(a.WAARDE_MELD_CLASS);
+                });
+            }
+
+            var d = $("<div/>");
+            d.html(html + "</h4>");
+            d.appendTo('#mldClass');
+        });
+
+        $.ajax({
+            url: me.layerUrls.incidentClass + "/query",
+            dataType: "json",
+            data: {
+                f: "pjson",
+                where: "INCIDENT_ID = " + a.INCIDENT_ID,
+                outFields: "BRW_MELDING_CL1,BRW_MELDING_CL2"
+            },
+            cache: false
+        })
+        .done(function(data, textStatus, jqXHR) {
+            var html = "<h4>GMSARC_INCIDENT: ";
+
+            if(data.features.length === 0) {
+                html += "-";
+            } else {
+                var a = data.features[0].attributes;
+                html += me.encodeIfNotEmpty(a.BRW_MELDING_CL1);
+                if(a.BRW_MELDING_CL2) {
+                    if(a.BRW_MELDING_CL1) {
+                        html += ", ";
+                    }
+                    html += me.encode(a.BRW_MELDING_CL2);
+                };
+                if(!a.BRW_MELDING_CL1 && !a.BRW_MELDING_CL1) {
+                    html += "-";
+                }
+            }
+
+            var d = $("<div/>");
+            d.html(html + "</h4>");
+            d.appendTo('#incidentClass');
+        });
+
+        $.ajax({
+            url: me.layerUrls.karakteristiek + "/query",
+            dataType: "json",
+            data: {
+                f: "pjson",
+                where: "INCIDENT_ID = " + a.INCIDENT_ID,
+                outFields: "NAAM_KARAKTERISTIEK,ACTUELE_KAR_WAARDE"
+            },
+            cache: false
+        })
+        .done(function(data, textStatus, jqXHR) {
+            var html = "<h4>Karakteristieken:";
+
+            if(data.features.length === 0) {
+                html += " -</h4>";
+            } else {
+                html += '</h4><div style:"width: 100%" class="table-responsive">';
+                html += '<table class="table table-hover">';
+                $.each(data.features, function(i, feature) {
+                    var a = feature.attributes;
+                    if(!a.ACTUELE_KAR_WAARDE) {
+                        return;
+                    }
+                    html += "<tr><td>" +me.encode(a.NAAM_KARAKTERISTIEK) + "</td><td>" + me.encode(a.ACTUELE_KAR_WAARDE) + "</td></tr>";
+                });
+            }
+
+            var d = $("<div/>");
+            d.html(html + "</table>");
+            d.appendTo('#karakteristiek');
+        });
+
+        // TODO: set timeout om data te updaten, stop bij closen window
 
         this.incidentPopup.show();
     }
