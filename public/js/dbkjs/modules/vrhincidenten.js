@@ -120,16 +120,6 @@ dbkjs.modules.vrhincidenten = {
             }
         });
     },
-    updateLastUpdated: function() {
-        var me = this;
-        if(me.lastUpdated && !me.updating) {
-            var header = $("<span>Laatst geupdate: " + me.lastUpdated.fromNow() + "</span>");
-            $("#incidentenUpdate").empty().append(header);
-        }
-        window.setTimeout(function() {
-            me.updateLastUpdated();
-        }, 5000);
-    },
     loadVrhIncidenten: function() {
         var me = this;
         me.updating = true;
@@ -156,9 +146,13 @@ dbkjs.modules.vrhincidenten = {
             $("#incidentenUpdate").text("Fout bij ophalen incidenten: " + jqXHR.statusText);
         })
         .done(function(data, textStatus, jqXHR) {
+            if(!data.features) {
+                return;
+            }
+
             me.lastUpdated = new moment();
 
-            var size = new OpenLayers.Size(21,25);
+            var size = new OpenLayers.Size(20,25);
             var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
 
             var actief = 0;
@@ -170,8 +164,9 @@ dbkjs.modules.vrhincidenten = {
             andersDiv.append($("<span>Overige incidenten:</span>"));
             andersDiv.appendTo("#incidenten");
 
+            me.markerLayer.clearMarkers();
             $.each(data.features, function(i, feature) {
-                var isActief = /^.I.$/.test(feature.attributes.T_BRW_STATUS_INCIDENT);
+                var isActief = feature.attributes.T_BRW_STATUS_INCIDENT === "I";
 
                 if(isActief) {
                     actief++;
