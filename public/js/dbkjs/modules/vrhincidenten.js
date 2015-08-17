@@ -129,7 +129,8 @@ dbkjs.modules.vrhincidenten = {
             dataType: "json",
             data: {
                 f: "pjson",
-                where: "IND_DISC_INCIDENT LIKE '_B_'",
+                where: "IND_DISC_INCIDENT LIKE '_B_' AND DTG_START_INCIDENT > TO_DATE('" + new moment().subtract(24, 'hours').format("YYYY-MM-DD HH:mm:ss") + "','YYYY-MM-DD HH24:MI:SS')",
+                orderByFields: "DTG_START_INCIDENT DESC",
                 outFields: "*",
             },
             cache: false
@@ -160,7 +161,7 @@ dbkjs.modules.vrhincidenten = {
 
             var actiefDiv = $("<div/>");
             actiefDiv.appendTo("#incidenten");
-            var andersDiv = $("<div/>");
+            var andersDiv = $("<div style='padding-top: 10px'/>");
             andersDiv.append($("<span>Overige incidenten:</span>"));
             andersDiv.appendTo("#incidenten");
 
@@ -207,6 +208,7 @@ dbkjs.modules.vrhincidenten = {
                     });
                 }
                 div.append(titel);
+                div.append(", " + me.getAGSMoment(feature.attributes.DTG_START_INCIDENT).fromNow());
 
                 //var pubDate = moment($(this).find('pubDate').text());
                 //div.append($("<div class=\"tijd\">" + pubDate.format("dddd, D-M-YYYY HH:mm:ss") + " (" + pubDate.fromNow() + ")</div>"));
@@ -219,9 +221,14 @@ dbkjs.modules.vrhincidenten = {
 
         });
     },
+    getAGSMoment: function(epoch) {
+        // Contrary to docs, AGS returns milliseconds since epoch in local time
+        // instead of UTC
+        return new moment(epoch).add(new Date().getTimezoneOffset(), 'minutes');
+    },
     getIncidentTitle: function(feature) {
         var a = feature.attributes;
-        return this.encode(a.INCIDENT_ID + (a.PRIORITEIT_INCIDENT_BRANDWEER ? " PRIO " + a.PRIORITEIT_INCIDENT_BRANDWEER : "") + " " + a.T_GUI_LOCATIE);
+        return this.getAGSMoment(a.DTG_START_INCIDENT).format("D-M-YYYY HH:mm:ss") + " " + this.encode((a.PRIORITEIT_INCIDENT_BRANDWEER ? " PRIO " + a.PRIORITEIT_INCIDENT_BRANDWEER : "") + " " + a.T_GUI_LOCATIE);
     },
     markerClick: function(marker, feature) {
         this.incidentClick(feature);
@@ -239,12 +246,19 @@ dbkjs.modules.vrhincidenten = {
             if ($.inArray(j, ['DTG_START_INCIDENT', 'POSTCODE', 'T_GUI_LOCATIE', 'T_X_COORD_LOC', 'T_Y_COORD_LOC',
                 'PLAATS_ID', 'PRIORITEIT_INCIDENT_BRANDWEER']) > -1) {
                 if (!dbkjs.util.isJsonNull(a[j])) {
-                    html += '<tr><td><span>' + j + "</span>: </td><td>" + this.encode(a[j]) + "</td></tr>";
+                    var v;
+                    if(j === "DTG_START_INCIDENT") {
+                        var d = this.getAGSMoment(a[j]);
+                        v = d.format("dddd, D-M-YYYY HH:mm:ss") + " (" + d.fromNow() + ")";
+                    } else {
+                        v = this.encode(a[j]);
+                    }
+                    html += '<tr><td><span>' + j + "</span>: </td><td>" + v + "</td></tr>";
                 }
             }
         }
         html += '</table>';
-        html += '</div>';
+        html += '<div id="eenheden" style="padding-bottom: 5px"/><div id="kladblok"/></div>';
 
         $('#incidentContent').html(html);
 
@@ -254,12 +268,25 @@ dbkjs.modules.vrhincidenten = {
             data: {
                 f: "pjson",
                 where: "INCIDENT_ID = " + a.INCIDENT_ID,
+                orderByFields: "KLADBLOK_REGEL_ID,VOLG_NR_KLADBLOK_REGEL",
                 outFields: "*"
             },
             cache: false
         })
         .done(function(data, textStatus, jqXHR) {
-            // ...
+            if(!data.features) {
+                return;
+            }
+            var pre = "";
+            $.each(data.features, function(i, f) {
+                var k = f.attributes;
+                var r = "";
+                if(k.VOLG_NR_KLADBLOK_REGEL !== 1) {
+                    r = "                 ";
+                }
+                pre += r + me.encode(k.INHOUD_KLADBLOK_REGEL) + "\n";
+            });
+            $("#kladblok").append("<pre>" + pre + "</pre>");
         });
 
         $.ajax({
@@ -295,7 +322,7 @@ dbkjs.modules.vrhincidenten = {
 
             var d = $("<div/>");
             d.html(html + "</h4>");
-            d.appendTo('#incidentContent');
+            d.appendTo('#eenheden');
         });
 
         this.incidentPopup.show();
