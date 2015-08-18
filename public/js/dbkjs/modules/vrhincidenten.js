@@ -42,6 +42,7 @@ dbkjs.modules.vrhincidenten = {
     register: function(options) {
         var me = this;
 
+        this.createStyle();
         this.createPopups();
 
         $('<a></a>')
@@ -65,6 +66,22 @@ dbkjs.modules.vrhincidenten = {
         dbkjs.map.addLayer(this.markerLayer);
 
         this.initVrhService();
+    },
+    createStyle: function() {
+        var css = '#eenheden div { margin: 3px; float: left } \n\
+#eenheden { padding-bottom: 10px } \n\
+#eenheden span.einde { color: gray } \n\
+#kladblok { clear: both; padding-top: 10px; }',
+            head = document.getElementsByTagName('head')[0],
+            style = document.createElement('style');
+
+        style.type = 'text/css';
+        if(style.styleSheet) {
+            style.styleSheet.cssText = css;
+        } else {
+            style.appendChild(document.createTextNode(css));
+        }
+        head.appendChild(style);
     },
     createPopups: function() {
         this.popup = dbkjs.util.createModalPopup({
@@ -129,7 +146,7 @@ dbkjs.modules.vrhincidenten = {
             dataType: "json",
             data: {
                 f: "pjson",
-                where: "IND_DISC_INCIDENT LIKE '_B_' AND PRIORITEIT_INCIDENT_BRANDWEER <= 3 AND DTG_START_INCIDENT > TO_DATE('" + new moment().subtract(24, 'hours').format("YYYY-MM-DD HH:mm:ss") + "','YYYY-MM-DD HH24:MI:SS')",
+                where: "IND_DISC_INCIDENT LIKE '_B_' AND (PRIORITEIT_INCIDENT_BRANDWEER IS NULL OR PRIORITEIT_INCIDENT_BRANDWEER <= 3) AND DTG_START_INCIDENT > TO_DATE('" + new moment().subtract(24, 'hours').format("YYYY-MM-DD HH:mm:ss") + "','YYYY-MM-DD HH24:MI:SS')",
                 orderByFields: "DTG_START_INCIDENT DESC",
                 outFields: "*",
             },
@@ -242,26 +259,30 @@ dbkjs.modules.vrhincidenten = {
 
         var html = '<div style:"width: 100%" class="table-responsive">';
         html += '<table class="table table-hover">';
-        for (var j in a) {
-            if ($.inArray(j, ['DTG_START_INCIDENT', 'POSTCODE', 'T_GUI_LOCATIE', 'T_X_COORD_LOC', 'T_Y_COORD_LOC',
-                'PLAATS_ID', 'PRIORITEIT_INCIDENT_BRANDWEER']) > -1) {
-                if (!dbkjs.util.isJsonNull(a[j])) {
-                    var v;
-                    if(j === "DTG_START_INCIDENT") {
-                        var d = this.getAGSMoment(a[j]);
-                        v = d.format("dddd, D-M-YYYY HH:mm:ss") + " (" + d.fromNow() + ")";
-                    } else {
-                        v = this.encode(a[j]);
-                    }
-                    html += '<tr><td><span>' + j + "</span>: </td><td>" + v + "</td></tr>";
+
+        $.each(['DTG_START_INCIDENT','T_GUI_LOCATIE', 'POSTCODE', ,
+                'PLAATS_NAAM', 'PRIORITEIT_INCIDENT_BRANDWEER'], function(i, prop) {
+            var p = a[prop];
+            if (!dbkjs.util.isJsonNull(p)) {
+                var v;
+                if(prop === "DTG_START_INCIDENT") {
+                    var d = me.getAGSMoment(p);
+                    v = d.format("dddd, D-M-YYYY HH:mm:ss") + " (" + d.fromNow() + ")";
+                } else {
+                    v = me.encode(p);
                 }
+                if(prop === "PRIORITEIT_INCIDENT_BRANDWEER") {
+                    html += '<tr><td>&nbsp;</td><td></td></tr>';
+                }
+                html += '<tr><td><span>' + prop + "</span>: </td><td>" + v + "</td></tr>";
             }
-        }
+        });
+
         html += '</table>';
-        html += '<div id="eenheden" style="padding-bottom: 10px"/>';
         html += '<div id="mldClass" style="padding-bottom: 10px"></div>';
         html += '<div id="incidentClass" style="padding-bottom: 10px"></div>';
         html += '<div id="karakteristiek" style="padding-bottom: 10px"></div>';
+        html += '<div id="eenheden"><h4>Eenheden:</h4><div id="brw"><b>Brandweer</b><br/></div><div id="pol"><b>Politie</b><br/></div><div id="ambu"><b>Ambu</b><br/></div></div>';
         html += '<div id="kladblok"/></div>';
 
         $('#incidentContent').html(html);
@@ -271,7 +292,7 @@ dbkjs.modules.vrhincidenten = {
             dataType: "json",
             data: {
                 f: "pjson",
-                where: "INCIDENT_ID = " + a.INCIDENT_ID + " AND TYPE_KLADBLOK_REGEL = 'KB'",
+                where: "INCIDENT_ID = " + a.INCIDENT_ID + " AND TYPE_KLADBLOK_REGEL = 'KB' AND T_IND_DISC_KLADBLOK_REGEL LIKE '_B_'",
                 orderByFields: "KLADBLOK_REGEL_ID,VOLG_NR_KLADBLOK_REGEL",
                 outFields: "*"
             },
@@ -295,34 +316,34 @@ dbkjs.modules.vrhincidenten = {
             data: {
                 f: "pjson",
                 where: "INCIDENT_ID = " + a.INCIDENT_ID,
+                orderByFields: "DTG_OPDRACHT_INZET",
                 outFields: "*"
             },
             cache: false
         })
         .done(function(data, textStatus, jqXHR) {
-            var html = "<h4>Eenheden: ";
-
             if(data.features.length === 0) {
-                html += "-";
-            } else {
-                var first = true;
-                $.each(data.features, function(i, feature) {
-                    var a = feature.attributes;
-                    if(!first) {
-                        html += ", ";
-                    } else {
-                        first = false;
-                    }
-                    html += (a.CODE_VOERTUIGSOORT ? a.CODE_VOERTUIGSOORT : "") + " " + a.ROEPNAAM_EENHEID;
-                    if(a.KAZ_NAAM) {
-                        html += " (" + a.KAZ_NAAM + ")";
-                    }
-                });
+                return;
             }
 
-            var d = $("<div/>");
-            d.html(html + "</h4>");
-            d.appendTo('#eenheden');
+            var first = true;
+            $.each(data.features, function(i, feature) {
+                var a = feature.attributes;
+                var eenheid = (a.CODE_VOERTUIGSOORT ? a.CODE_VOERTUIGSOORT : "") + " " + a.ROEPNAAM_EENHEID;
+                if(a.KAZ_NAAM) {
+                    eenheid += " (" + a.KAZ_NAAM + ")";
+                }
+                var container;
+                if(a.T_IND_DISC_EENHEID === "B") {
+                    container = "#brw";
+                } else if(a.T_IND_DISC_EENHEID === "P") {
+                    container = "#pol";
+                } else if(a.T_IND_DISC_EENHEID === "A") {
+                    container = "#ambu";
+                }
+                var span = a.DTG_EIND_ACTIE ? "<span class='einde'>" : "<span>";
+                $(container).append(span + me.encode(eenheid) + "</span><br/>");
+            });
         });
 
         $.ajax({
