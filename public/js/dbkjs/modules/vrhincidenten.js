@@ -117,7 +117,6 @@ dbkjs.modules.vrhincidenten = {
                 console.log("Fout: incidenten tabel niet gevonden in ArcGIS service " + dbkjs.options.vrhIncidentenUrl);
             } else {
                 me.loadVrhIncidenten();
-                me.popup.show();
             }
         });
     },
@@ -272,7 +271,7 @@ dbkjs.modules.vrhincidenten = {
             dataType: "json",
             data: {
                 f: "pjson",
-                where: "INCIDENT_ID = " + a.INCIDENT_ID,
+                where: "INCIDENT_ID = " + a.INCIDENT_ID + " AND TYPE_KLADBLOK_REGEL = 'KB'",
                 orderByFields: "KLADBLOK_REGEL_ID,VOLG_NR_KLADBLOK_REGEL",
                 outFields: "*"
             },
@@ -285,11 +284,7 @@ dbkjs.modules.vrhincidenten = {
             var pre = "";
             $.each(data.features, function(i, f) {
                 var k = f.attributes;
-                var r = "";
-                if(k.VOLG_NR_KLADBLOK_REGEL !== 1) {
-                    r = "                 ";
-                }
-                pre += r + me.encode(k.INHOUD_KLADBLOK_REGEL) + "\n";
+                pre += me.getAGSMoment(k.DTG_KLADBLOK_REGEL).format("DD-MM-YYYY HH:mm:ss ") + me.encode(k.INHOUD_KLADBLOK_REGEL) + "\n";
             });
             $("#kladblok").append("<pre>" + pre + "</pre>");
         });
