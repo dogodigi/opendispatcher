@@ -69,9 +69,10 @@ dbkjs.modules.vrhincidenten = {
     },
     createStyle: function() {
         var css = '#eenheden div { margin: 3px; float: left } \n\
-#eenheden { padding-bottom: 10px } \n\
+#eenheden div { border-left: 1px solid #ddd; padding-left: 8px; } \n\
 #eenheden span.einde { color: gray } \n\
-#kladblok { clear: both; padding-top: 10px; }',
+#kladblok { clear: both; padding-top: 10px; }\n\
+td { padding: 4px !important } ',
             head = document.getElementsByTagName('head')[0],
             style = document.createElement('style');
 
@@ -146,9 +147,10 @@ dbkjs.modules.vrhincidenten = {
             dataType: "json",
             data: {
                 f: "pjson",
-                where: "IND_DISC_INCIDENT LIKE '_B_' AND (PRIORITEIT_INCIDENT_BRANDWEER IS NULL OR PRIORITEIT_INCIDENT_BRANDWEER <= 3) AND DTG_START_INCIDENT > TO_DATE('" + new moment().subtract(24, 'hours').format("YYYY-MM-DD HH:mm:ss") + "','YYYY-MM-DD HH24:MI:SS')",
+                where: "IND_DISC_INCIDENT LIKE '_B_'",
+//                where: "IND_DISC_INCIDENT LIKE '_B_' AND (PRIORITEIT_INCIDENT_BRANDWEER IS NULL OR PRIORITEIT_INCIDENT_BRANDWEER <= 3) AND DTG_START_INCIDENT > TO_DATE('" + new moment().subtract(24, 'hours').format("YYYY-MM-DD HH:mm:ss") + "','YYYY-MM-DD HH24:MI:SS')",
                 orderByFields: "DTG_START_INCIDENT DESC",
-                outFields: "*",
+                outFields: "*"
             },
             cache: false
         })
@@ -196,7 +198,8 @@ dbkjs.modules.vrhincidenten = {
                 if(feature.attributes.T_X_COORD_LOC && feature.attributes.T_Y_COORD_LOC) {
                     pos = new OpenLayers.LonLat(feature.attributes.T_X_COORD_LOC, feature.attributes.T_Y_COORD_LOC);
                 } else {
-                    console.log("no location", feature);
+                    return;
+                    //console.log("no location", feature);
                 }
 
                 // evt alleen actief
@@ -260,30 +263,41 @@ dbkjs.modules.vrhincidenten = {
         var html = '<div style:"width: 100%" class="table-responsive">';
         html += '<table class="table table-hover">';
 
-        $.each(['DTG_START_INCIDENT','T_GUI_LOCATIE', 'POSTCODE', ,
-                'PLAATS_NAAM', 'PRIORITEIT_INCIDENT_BRANDWEER'], function(i, prop) {
-            var p = a[prop];
+        var columns = [
+            { property: 'DTG_START_INCIDENT', date: true, label: 'Start incident' },
+            { property: 'T_GUI_LOCATIE', date: false, label: 'Adres' },
+            { property: 'POSTCODE', date: false, label: 'Postcode' },
+            { property: 'PLAATS_NAAM', date: false, label: 'Woonplaats' },
+            { property: 'PRIORITEIT_INCIDENT_BRANDWEER', date: false, label: 'Prioriteit', separate: true }
+        ];
+
+        $.each(columns, function(i, column) {
+            var p = a[column.property];
             if (!dbkjs.util.isJsonNull(p)) {
                 var v;
-                if(prop === "DTG_START_INCIDENT") {
+                if(column.date) {
                     var d = me.getAGSMoment(p);
                     v = d.format("dddd, D-M-YYYY HH:mm:ss") + " (" + d.fromNow() + ")";
                 } else {
                     v = me.encode(p);
                 }
-                if(prop === "PRIORITEIT_INCIDENT_BRANDWEER") {
+                if(column.separate) {
                     html += '<tr><td>&nbsp;</td><td></td></tr>';
                 }
-                html += '<tr><td><span>' + prop + "</span>: </td><td>" + v + "</td></tr>";
+                html += '<tr><td><span>' + column.label + "</span>: </td><td>" + v + "</td></tr>";
             }
         });
 
+        html += '<tr><td>Melding classificatie:</td><td id="mldClass"></td></tr>';
+        html += '<tr><td></td><td id="incidentClass"></td></tr>';
+        html += '<tr><td>Karakteristieken:</td><td id="karakteristiek"></td></tr>';
+        html += '<tr><td>Ingezette eenheden:</td><td id="eenheden"><div id="brw"><b>Brandweer</b><br/></div><div id="pol"><b>Politie</b><br/></div><div id="ambu"><b>Ambu</b><br/></div></td></tr>';
+        html += '<tr><td>Kladblok:</td><td id="kladblok"></td></tr>';
         html += '</table>';
-        html += '<div id="mldClass" style="padding-bottom: 10px"></div>';
-        html += '<div id="incidentClass" style="padding-bottom: 10px"></div>';
-        html += '<div id="karakteristiek" style="padding-bottom: 10px"></div>';
-        html += '<div id="eenheden"><h4>Eenheden:</h4><div id="brw"><b>Brandweer</b><br/></div><div id="pol"><b>Politie</b><br/></div><div id="ambu"><b>Ambu</b><br/></div></div>';
-        html += '<div id="kladblok"/></div>';
+        html += '<table id="mldClass" style="padding-bottom: 10px"></div>';
+//        html += '<div id="incidentClass" style="padding-bottom: 10px"></div>';
+//        html += '<div id="eenheden"><h4>Eenheden:</h4><div id="brw"><b>Brandweer</b><br/></div><div id="pol"><b>Politie</b><br/></div><div id="ambu"><b>Ambu</b><br/></div></div>';
+//        html += '<div id="kladblok"><h4>Kladblok:</h4></div>';
 
         $('#incidentContent').html(html);
 
@@ -357,10 +371,10 @@ dbkjs.modules.vrhincidenten = {
             cache: false
         })
         .done(function(data, textStatus, jqXHR) {
-            var html = "<h4>GMS_MLD_CLASS: ";
+            var t = "";
 
             if(data.features.length === 0) {
-                html += "-";
+                t = "-";
             } else {
                 var first = true;
                 $.each(data.features, function(i, feature) {
@@ -369,17 +383,15 @@ dbkjs.modules.vrhincidenten = {
                         return;
                     }
                     if(!first) {
-                        html += ", ";
+                        t += ", ";
                     } else {
                         first = false;
                     }
-                    html += me.encode(a.WAARDE_MELD_CLASS);
+                    t += me.encode(a.WAARDE_MELD_CLASS);
                 });
             }
 
-            var d = $("<div/>");
-            d.html(html + "</h4>");
-            d.appendTo('#mldClass');
+            $("#mldClass").text(t);
         });
 
         $.ajax({
@@ -393,27 +405,25 @@ dbkjs.modules.vrhincidenten = {
             cache: false
         })
         .done(function(data, textStatus, jqXHR) {
-            var html = "<h4>GMSARC_INCIDENT: ";
+            var t = "";
 
             if(data.features.length === 0) {
-                html += "-";
+                t = "-";
             } else {
                 var a = data.features[0].attributes;
-                html += me.encodeIfNotEmpty(a.BRW_MELDING_CL1);
+                t += me.encodeIfNotEmpty(a.BRW_MELDING_CL1);
                 if(a.BRW_MELDING_CL2) {
                     if(a.BRW_MELDING_CL1) {
-                        html += ", ";
+                        t += ", ";
                     }
-                    html += me.encode(a.BRW_MELDING_CL2);
+                    t += me.encode(a.BRW_MELDING_CL2);
                 };
                 if(!a.BRW_MELDING_CL1 && !a.BRW_MELDING_CL1) {
-                    html += "-";
+                    t += "-";
                 }
             }
 
-            var d = $("<div/>");
-            d.html(html + "</h4>");
-            d.appendTo('#incidentClass');
+            $("#incidentClass").text(t);
         });
 
         $.ajax({
@@ -427,7 +437,7 @@ dbkjs.modules.vrhincidenten = {
             cache: false
         })
         .done(function(data, textStatus, jqXHR) {
-            var html = "<h4>Karakteristieken:";
+            var html = "";
 
             if(data.features.length === 0) {
                 html += " -</h4>";
