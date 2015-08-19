@@ -34,10 +34,7 @@ dbkjs.modules.vrhincidenten = {
         if(s) {
             return dbkjs.util.htmlEncode(s);
         }
-        return null;
-    },
-    encodeIfNotEmpty: function(s) {
-        return s === null ? "" : this.encode(s);
+        return "";
     },
     register: function(options) {
         var me = this;
@@ -147,8 +144,7 @@ td { padding: 4px !important } ',
             dataType: "json",
             data: {
                 f: "pjson",
-                where: "IND_DISC_INCIDENT LIKE '_B_'",
-//                where: "IND_DISC_INCIDENT LIKE '_B_' AND (PRIORITEIT_INCIDENT_BRANDWEER IS NULL OR PRIORITEIT_INCIDENT_BRANDWEER <= 3) AND DTG_START_INCIDENT > TO_DATE('" + new moment().subtract(24, 'hours').format("YYYY-MM-DD HH:mm:ss") + "','YYYY-MM-DD HH24:MI:SS')",
+                where: "IND_DISC_INCIDENT LIKE '_B_' AND PRIORITEIT_INCIDENT_BRANDWEER <= 3",
                 orderByFields: "DTG_START_INCIDENT DESC",
                 outFields: "*"
             },
@@ -170,8 +166,6 @@ td { padding: 4px !important } ',
                 return;
             }
 
-            me.lastUpdated = new moment();
-
             var size = new OpenLayers.Size(20,25);
             var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
 
@@ -181,18 +175,11 @@ td { padding: 4px !important } ',
             var actiefDiv = $("<div/>");
             actiefDiv.appendTo("#incidenten");
             var andersDiv = $("<div style='padding-top: 10px'/>");
-            andersDiv.append($("<span>Overige incidenten:</span>"));
+            //andersDiv.append($("<span>Overige incidenten:</span>"));
             andersDiv.appendTo("#incidenten");
 
             me.markerLayer.clearMarkers();
             $.each(data.features, function(i, feature) {
-                var isActief = feature.attributes.T_BRW_STATUS_INCIDENT === "I";
-
-                if(isActief) {
-                    actief++;
-                } else {
-                    anders++;
-                }
                 var pos = null;
 
                 if(feature.attributes.T_X_COORD_LOC && feature.attributes.T_Y_COORD_LOC) {
@@ -201,8 +188,6 @@ td { padding: 4px !important } ',
                     return;
                     //console.log("no location", feature);
                 }
-
-                // evt alleen actief
 
                 if(pos !== null) {
                     var marker = new OpenLayers.Marker(
@@ -230,14 +215,11 @@ td { padding: 4px !important } ',
                 div.append(titel);
                 div.append(", " + me.getAGSMoment(feature.attributes.DTG_START_INCIDENT).fromNow());
 
-                //var pubDate = moment($(this).find('pubDate').text());
-                //div.append($("<div class=\"tijd\">" + pubDate.format("dddd, D-M-YYYY HH:mm:ss") + " (" + pubDate.fromNow() + ")</div>"));
-
-                div.appendTo(isActief ? actiefDiv : andersDiv);
+                div.appendTo(actiefDiv);
             });
             me.markerLayer.setZIndex(100000);
 
-            $("#incidentenUpdate").empty().append($("<span>" + actief + " actieve incidenten, " + anders + " overige incidenten</span>"));
+            $("#incidentenUpdate").empty().append($("<span>" + actief + " actieve incidenten</span>"));
 
         });
     },
@@ -248,7 +230,7 @@ td { padding: 4px !important } ',
     },
     getIncidentTitle: function(feature) {
         var a = feature.attributes;
-        return this.getAGSMoment(a.DTG_START_INCIDENT).format("D-M-YYYY HH:mm:ss") + " " + this.encode((a.PRIORITEIT_INCIDENT_BRANDWEER ? " PRIO " + a.PRIORITEIT_INCIDENT_BRANDWEER : "") + " " + a.T_GUI_LOCATIE);
+        return this.getAGSMoment(a.DTG_START_INCIDENT).format("D-M-YYYY HH:mm:ss") + " " + this.encode((a.PRIORITEIT_INCIDENT_BRANDWEER ? " PRIO " + a.PRIORITEIT_INCIDENT_BRANDWEER : "") + " " + a.T_GUI_LOCATIE + ", " + this.encode(a.PLAATS_NAAM));
     },
     markerClick: function(marker, feature) {
         this.incidentClick(feature);
@@ -295,9 +277,6 @@ td { padding: 4px !important } ',
         html += '<tr><td>Kladblok:</td><td id="kladblok"></td></tr>';
         html += '</table>';
         html += '<table id="mldClass" style="padding-bottom: 10px"></div>';
-//        html += '<div id="incidentClass" style="padding-bottom: 10px"></div>';
-//        html += '<div id="eenheden"><h4>Eenheden:</h4><div id="brw"><b>Brandweer</b><br/></div><div id="pol"><b>Politie</b><br/></div><div id="ambu"><b>Ambu</b><br/></div></div>';
-//        html += '<div id="kladblok"><h4>Kladblok:</h4></div>';
 
         $('#incidentContent').html(html);
 
@@ -336,11 +315,10 @@ td { padding: 4px !important } ',
             cache: false
         })
         .done(function(data, textStatus, jqXHR) {
-            if(data.features.length === 0) {
+            if(!data.features || data.features.length === 0) {
                 return;
             }
 
-            var first = true;
             $.each(data.features, function(i, feature) {
                 var a = feature.attributes;
                 var eenheid = (a.CODE_VOERTUIGSOORT ? a.CODE_VOERTUIGSOORT : "") + " " + a.ROEPNAAM_EENHEID;
@@ -373,7 +351,7 @@ td { padding: 4px !important } ',
         .done(function(data, textStatus, jqXHR) {
             var t = "";
 
-            if(data.features.length === 0) {
+            if(!data.features || data.features.length === 0) {
                 t = "-";
             } else {
                 var first = true;
@@ -407,11 +385,11 @@ td { padding: 4px !important } ',
         .done(function(data, textStatus, jqXHR) {
             var t = "";
 
-            if(data.features.length === 0) {
+            if(!data.features || data.features.length === 0) {
                 t = "-";
             } else {
                 var a = data.features[0].attributes;
-                t += me.encodeIfNotEmpty(a.BRW_MELDING_CL1);
+                t += me.encode(a.BRW_MELDING_CL1);
                 if(a.BRW_MELDING_CL2) {
                     if(a.BRW_MELDING_CL1) {
                         t += ", ";
@@ -439,7 +417,7 @@ td { padding: 4px !important } ',
         .done(function(data, textStatus, jqXHR) {
             var html = "";
 
-            if(data.features.length === 0) {
+            if(!data.features || data.features.length === 0) {
                 html += " -</h4>";
             } else {
                 html += '</h4><div style:"width: 100%" class="table-responsive">';
