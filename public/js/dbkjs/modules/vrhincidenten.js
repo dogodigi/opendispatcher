@@ -119,7 +119,7 @@ td { padding: 4px !important } ',
                     me.layerUrls.status = dbkjs.options.vrhIncidentenUrl + "/" + table.id;
                 } else if(/GMS_EENHEID$/.test(table.name)) {
                     me.layerUrls.eenheid = dbkjs.options.vrhIncidentenUrl + "/" + table.id;
-                } else if(/GMS_MLD_CLASS$/.test(table.name)) {
+                } else if(/GMS_MLD_CLASS_NIVO_VIEW$/.test(table.name)) {
                     me.layerUrls.mldClass = dbkjs.options.vrhIncidentenUrl + "/" + table.id;
                 } else if(/GMSARC_INCIDENT$/.test(table.name)) {
                     me.layerUrls.incidentClass = dbkjs.options.vrhIncidentenUrl + "/" + table.id;
@@ -192,7 +192,7 @@ td { padding: 4px !important } ',
                 if(pos !== null) {
                     var marker = new OpenLayers.Marker(
                         pos,
-                        new OpenLayers.Icon(isActief ? "images/marker-red.png" : "images/marker-gray.png", size, offset)
+                        new OpenLayers.Icon("images/marker-red.png", size, offset)
                     );
                     marker.id = feature.attributes.INCIDENT_ID;
                     marker.events.register("click", marker, function() { me.markerClick(marker, feature); });
@@ -271,7 +271,6 @@ td { padding: 4px !important } ',
         });
 
         html += '<tr><td>Melding classificatie:</td><td id="mldClass"></td></tr>';
-        html += '<tr><td></td><td id="incidentClass"></td></tr>';
         html += '<tr><td>Karakteristieken:</td><td id="karakteristiek"></td></tr>';
         html += '<tr><td>Ingezette eenheden:</td><td id="eenheden"><div id="brw"><b>Brandweer</b><br/></div><div id="pol"><b>Politie</b><br/></div><div id="ambu"><b>Ambu</b><br/></div></td></tr>';
         html += '<tr><td>Kladblok:</td><td id="kladblok"></td></tr>';
@@ -344,41 +343,7 @@ td { padding: 4px !important } ',
             data: {
                 f: "pjson",
                 where: "MELDING_CL_ID = " + a.BRW_MELDING_CL_ID,
-                outFields: "WAARDE_MELD_CLASS"
-            },
-            cache: false
-        })
-        .done(function(data, textStatus, jqXHR) {
-            var t = "";
-
-            if(!data.features || data.features.length === 0) {
-                t = "-";
-            } else {
-                var first = true;
-                $.each(data.features, function(i, feature) {
-                    var a = feature.attributes;
-                    if(!a.WAARDE_MELD_CLASS) {
-                        return;
-                    }
-                    if(!first) {
-                        t += ", ";
-                    } else {
-                        first = false;
-                    }
-                    t += me.encode(a.WAARDE_MELD_CLASS);
-                });
-            }
-
-            $("#mldClass").text(t);
-        });
-
-        $.ajax({
-            url: me.layerUrls.incidentClass + "/query",
-            dataType: "json",
-            data: {
-                f: "pjson",
-                where: "INCIDENT_ID = " + a.INCIDENT_ID,
-                outFields: "BRW_MELDING_CL1,BRW_MELDING_CL2"
+                outFields: "NIVO1,NIVO2,NIVO3"
             },
             cache: false
         })
@@ -389,19 +354,22 @@ td { padding: 4px !important } ',
                 t = "-";
             } else {
                 var a = data.features[0].attributes;
-                t += me.encode(a.BRW_MELDING_CL1);
-                if(a.BRW_MELDING_CL2) {
-                    if(a.BRW_MELDING_CL1) {
-                        t += ", ";
-                    }
-                    t += me.encode(a.BRW_MELDING_CL2);
-                };
-                if(!a.BRW_MELDING_CL1 && !a.BRW_MELDING_CL1) {
-                    t += "-";
+
+                var vals = [];
+                if(a.NIVO1) {
+                    vals.push(me.encode(a.NIVO1));
                 }
+                if(a.NIVO2) {
+                    vals.push(me.encode(a.NIVO2));
+                }
+                if(a.NIVO3) {
+                    vals.push(me.encode(a.NIVO3));
+                }
+
+                t = vals.join(", ");
             }
 
-            $("#incidentClass").text(t);
+            $("#mldClass").text(t);
         });
 
         $.ajax({
