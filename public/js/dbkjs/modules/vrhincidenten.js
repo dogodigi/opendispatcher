@@ -166,60 +166,99 @@ td { padding: 4px !important } ',
                 return;
             }
 
-            var size = new OpenLayers.Size(20,25);
-            var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+            // Haal classificaties op
 
-            var actief = 0;
-            var anders = 0;
-
-            var actiefDiv = $("<div/>");
-            actiefDiv.appendTo("#incidenten");
-            var andersDiv = $("<div style='padding-top: 10px'/>");
-            //andersDiv.append($("<span>Overige incidenten:</span>"));
-            andersDiv.appendTo("#incidenten");
-
-            me.markerLayer.clearMarkers();
+            var ids = [];
             $.each(data.features, function(i, feature) {
-                var pos = null;
-
-                if(feature.attributes.T_X_COORD_LOC && feature.attributes.T_Y_COORD_LOC) {
-                    pos = new OpenLayers.LonLat(feature.attributes.T_X_COORD_LOC, feature.attributes.T_Y_COORD_LOC);
-                } else {
-                    return;
-                    //console.log("no location", feature);
-                }
-
-                if(pos !== null) {
-                    var marker = new OpenLayers.Marker(
-                        pos,
-                        new OpenLayers.Icon("images/marker-red.png", size, offset)
-                    );
-                    marker.id = feature.attributes.INCIDENT_ID;
-                    marker.events.register("click", marker, function() { me.markerClick(marker, feature); });
-                    me.markerLayer.addMarker(marker);
-                }
-
-                var div = $("<div class=\"melding\"></div>");
-
-                var titel = $(pos !== null ? "<a/>" : "<div/>");
-                titel.attr({class: "titel"});
-                titel.append(me.getIncidentTitle(feature));
-
-                if(pos) {
-                    titel.on("click", function() {
-                        //dbkjs.map.setCenter(pos, dbkjs.options.zoom);
-                        me.popup.hide();
-                        me.incidentClick(feature);
-                    });
-                }
-                div.append(titel);
-                div.append(", " + me.getAGSMoment(feature.attributes.DTG_START_INCIDENT).fromNow());
-
-                div.appendTo(actiefDiv);
+                ids.push(feature.attributes.BRW_MELDING_CL_ID);
             });
-            me.markerLayer.setZIndex(100000);
 
-            $("#incidentenUpdate").empty().append($("<span>" + actief + " actieve incidenten</span>"));
+            $.ajax({
+                url: me.layerUrls.mldClass + "/query",
+                dataType: "json",
+                data: {
+                    f: "pjson",
+                    where: "MELDING_CL_ID IN (" + ids.join(",") + ")",
+                    outFields: "*"
+                },
+                cache: false
+            }).done(function(classData) {
+                var classificaties = {};
+
+                $.each(classData.features, function(i, cl) {
+                    var c = cl.attributes;
+                    var vals = [];
+                    if(c.NIVO1) {
+                        vals.push(c.NIVO1);
+                    }
+                    if(c.NIVO2) {
+                        vals.push(c.NIVO2);
+                    }
+                    if(c.NIVO3) {
+                        vals.push(c.NIVO3);
+                    }
+                    classificaties[c.MELDING_CL_ID] = vals.join(", ");
+                });
+
+
+                var size = new OpenLayers.Size(20,25);
+                var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+
+                var actief = 0;
+
+                var actiefDiv = $("<div/>");
+                actiefDiv.appendTo("#incidenten");
+                var andersDiv = $("<div style='padding-top: 10px'/>");
+                //andersDiv.append($("<span>Overige incidenten:</span>"));
+                andersDiv.appendTo("#incidenten");
+
+                me.markerLayer.clearMarkers();
+                $.each(data.features, function(i, feature) {
+                    var pos = null;
+
+                    if(feature.attributes.T_X_COORD_LOC && feature.attributes.T_Y_COORD_LOC) {
+                        pos = new OpenLayers.LonLat(feature.attributes.T_X_COORD_LOC, feature.attributes.T_Y_COORD_LOC);
+                    } else {
+                        return;
+                        //console.log("no location", feature);
+                    }
+
+                    if(pos !== null) {
+                        var marker = new OpenLayers.Marker(
+                            pos,
+                            new OpenLayers.Icon("images/marker-red.png", size, offset)
+                        );
+                        marker.id = feature.attributes.INCIDENT_ID;
+                        marker.events.register("click", marker, function() { me.markerClick(marker, feature); });
+                        me.markerLayer.addMarker(marker);
+                    }
+
+                    var div = $("<div class=\"melding\"></div>");
+
+                    var titel = $(pos !== null ? "<a/>" : "<div/>");
+                    titel.attr({class: "titel"});
+                    titel.append(me.getIncidentTitle(feature));
+
+                    if(pos) {
+                        titel.on("click", function() {
+                            //dbkjs.map.setCenter(pos, dbkjs.options.zoom);
+                            me.popup.hide();
+                            me.incidentClick(feature);
+                        });
+                    }
+                    div.append(titel);
+                    var iclass = classificaties[feature.attributes.BRW_MELDING_CL_ID];
+                    if(iclass) {
+                        div.append(", " + me.encode(iclass));
+                    }
+                    div.append(", " + me.getAGSMoment(feature.attributes.DTG_START_INCIDENT).fromNow());
+
+                    div.appendTo(actiefDiv);
+                });
+                me.markerLayer.setZIndex(100000);
+
+                $("#incidentenUpdate").empty().append($("<span>" + data.features.length + " actieve incidenten</span>"));
+            });
 
         });
     },
