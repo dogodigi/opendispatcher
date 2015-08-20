@@ -30,6 +30,7 @@ dbkjs.modules.vrhincidenten = {
     lastUpdated: null,
     markerLayer: null,
     marker: null,
+    token: null,
     encode: function(s) {
         if(s) {
             return dbkjs.util.htmlEncode(s);
@@ -92,22 +93,61 @@ td { padding: 4px !important } ',
         });
         this.incidentPopup.getView().append($('<h4 id="incidentHead" style="padding-bottom: 15px"></h4><div id="incidentContent"></div>'));
     },
+    getVrhToken: function(done) {
+        var me = this;
+        $.ajax({
+            url: dbkjs.options.vrhTokenUrl,
+            dataType: "json",
+            data: {
+                f: "pjson",
+                username: dbkjs.options.vrhUsername,
+                password: dbkjs.options.vrhPassword
+            },
+            cache: false
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            alert("Kan geen authenticatietoken ophalen bij ArcGIS service: " + jqXHR.statusText);
+        })
+        .done(function(data) {
+            me.token = data.token;
+            window.setTimeout(function() {
+                me.getVrhToken();
+            }, data.expires - new moment().valueOf());
+
+            if(done) {
+                done();
+            }
+        });
+    },
     initVrhService: function() {
         var me = this;
         if(!dbkjs.options.vrhIncidentenUrl) {
             console.log("Missing dbkjs.options.vrhIncidentenUrl setting");
             return;
         }
+        if(dbkjs.options.vrhUsername && !me.token) {
+            me.getVrhToken(function() { me.initVrhService(); });
+            return;
+        }
+
         this.layerUrls = {};
         $.ajax({
             url: dbkjs.options.vrhIncidentenUrl,
             dataType: "json",
             data: {
-                f: "pjson"
+                f: "pjson",
+                token: me.token
             },
             cache: false
         })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            alert("Kan geen info ophalen van ArcGIS service: ", arguments);
+        })
         .done(function(data) {
+            if(data.error) {
+                alert("ArcGIS service foutmelding " + data.error.code + ": "+ data.error.message);
+                return;
+            }
             $.each(data.tables, function(i,table) {
                 if(/GMS_INCIDENT$/.test(table.name)) {
                     me.layerUrls.incident = dbkjs.options.vrhIncidentenUrl + "/" + table.id;
@@ -144,6 +184,7 @@ td { padding: 4px !important } ',
             dataType: "json",
             data: {
                 f: "pjson",
+                token: me.token,
                 where: "IND_DISC_INCIDENT LIKE '_B_' AND PRIORITEIT_INCIDENT_BRANDWEER <= 3",
                 orderByFields: "DTG_START_INCIDENT DESC",
                 outFields: "*"
@@ -162,7 +203,8 @@ td { padding: 4px !important } ',
             $("#incidentenUpdate").text("Fout bij ophalen incidenten: " + jqXHR.statusText);
         })
         .done(function(data, textStatus, jqXHR) {
-            if(!data.features) {
+            if(data.error) {
+                alert("ArcGIS service foutmelding " + data.error.code + ": "+ data.error.message);
                 return;
             }
 
@@ -178,6 +220,7 @@ td { padding: 4px !important } ',
                 dataType: "json",
                 data: {
                     f: "pjson",
+                    token: me.token,
                     where: "MELDING_CL_ID IN (" + ids.join(",") + ")",
                     outFields: "*"
                 },
@@ -323,6 +366,7 @@ td { padding: 4px !important } ',
             dataType: "json",
             data: {
                 f: "pjson",
+                token: me.token,
                 where: "INCIDENT_ID = " + a.INCIDENT_ID + " AND TYPE_KLADBLOK_REGEL = 'KB' AND T_IND_DISC_KLADBLOK_REGEL LIKE '_B_'",
                 orderByFields: "KLADBLOK_REGEL_ID,VOLG_NR_KLADBLOK_REGEL",
                 outFields: "*"
@@ -330,7 +374,8 @@ td { padding: 4px !important } ',
             cache: false
         })
         .done(function(data, textStatus, jqXHR) {
-            if(!data.features) {
+            if(data.error) {
+                alert("ArcGIS service foutmelding " + data.error.code + ": "+ data.error.message);
                 return;
             }
             var pre = "";
@@ -346,6 +391,7 @@ td { padding: 4px !important } ',
             dataType: "json",
             data: {
                 f: "pjson",
+                token: me.token,
                 where: "INCIDENT_ID = " + a.INCIDENT_ID,
                 orderByFields: "DTG_OPDRACHT_INZET",
                 outFields: "*"
@@ -381,6 +427,7 @@ td { padding: 4px !important } ',
             dataType: "json",
             data: {
                 f: "pjson",
+                token: me.token,
                 where: "MELDING_CL_ID = " + a.BRW_MELDING_CL_ID,
                 outFields: "NIVO1,NIVO2,NIVO3"
             },
@@ -416,6 +463,7 @@ td { padding: 4px !important } ',
             dataType: "json",
             data: {
                 f: "pjson",
+                token: me.token,
                 where: "INCIDENT_ID = " + a.INCIDENT_ID,
                 outFields: "NAAM_KARAKTERISTIEK,ACTUELE_KAR_WAARDE"
             },
