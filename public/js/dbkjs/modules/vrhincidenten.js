@@ -33,6 +33,9 @@ dbkjs.modules.vrhincidenten = {
     token: null,
     updateIncidentTimeout: null,
     currentIncidentId: null,
+    readIncidentIds: null,
+    shownIncidentIds: null,
+    newIncidentInterval: null,
     encode: function(s) {
         if(s) {
             return dbkjs.util.htmlEncode(s);
@@ -45,6 +48,9 @@ dbkjs.modules.vrhincidenten = {
         this.createStyle();
         this.createPopups();
 
+        me.readIncidentIds = [];
+        me.shownIncidentIds = [];
+
         $('<a></a>')
             .attr({
                 'id': 'btn_openvrhincidenten',
@@ -52,10 +58,16 @@ dbkjs.modules.vrhincidenten = {
                 'href': '#',
                 'title': 'Incidenten'
             })
-            .append('<i class="fa fa-fire"></i>')
+            .append('<i class="fa fa-fire" style="width: 27.5px"></i>')
             .click(function(e) {
                 e.preventDefault();
 
+                me.readIncidentIds = me.shownIncidentIds;
+                $($("#btn_openvrhincidenten").css({color: 'black'}).children()[0]).removeClass("fa-exclamation").addClass("fa-fire");
+                if(me.newIncidentInterval) {
+                    window.clearInterval(me.newIncidentInterval);
+                    me.newIncidentInterval = null;
+                }
                 me.popup.show();
             })
             .appendTo('#btngrp_3');
@@ -329,6 +341,11 @@ td { padding: 4px !important } ',
                     andersDiv.appendTo("#incidenten");
 
                     me.markerLayer.clearMarkers();
+
+                    var incidentIds = [];
+
+                    var popupHidden = !me.popup.getView().parent().hasClass("modal-popup-active");
+
                     $.each(incidenten, function(i, incident) {
                         var pos = null;
 
@@ -338,15 +355,28 @@ td { padding: 4px !important } ',
                             return;
                         }
 
-                        if(pos !== null) {
-                            var marker = new OpenLayers.Marker(
-                                pos,
-                                new OpenLayers.Icon("images/marker-red.png", size, offset)
-                            );
-                            marker.id = incident.INCIDENT_ID;
-                            marker.events.register("click", marker, function() { me.markerClick(marker, incident); });
-                            me.markerLayer.addMarker(marker);
+                        incidentIds.push(incident.INCIDENT_ID);
+                        if(popupHidden && !me.newIncidentInterval) {
+                            if(me.readIncidentIds.indexOf(incident.INCIDENT_ID) === -1) {
+                                $($("#btn_openvrhincidenten").css({color: 'red'}).children()[0]).removeClass("fa-fire").addClass("fa-exclamation");
+                                me.newIncidentInterval = window.setInterval(function() {
+                                    var el = $($("#btn_openvrhincidenten").children()[0]);
+                                    if(el.hasClass("fa-fire")) {
+                                        el.removeClass("fa-fire").addClass("fa-exclamation");
+                                    } else {
+                                        el.removeClass("fa-exclamation").addClass("fa-fire");
+                                    }
+                                }, 1500);
+                            }
                         }
+
+                        var marker = new OpenLayers.Marker(
+                            pos,
+                            new OpenLayers.Icon("images/marker-red.png", size, offset)
+                        );
+                        marker.id = incident.INCIDENT_ID;
+                        marker.events.register("click", marker, function() { me.markerClick(marker, incident); });
+                        me.markerLayer.addMarker(marker);
 
                         var div = $("<div class=\"melding\"></div>");
 
@@ -370,6 +400,11 @@ td { padding: 4px !important } ',
 
                         div.appendTo(actiefDiv);
                     });
+                    if(!popupHidden) {
+                        me.readIncidentIds = incidentIds;
+                    }
+                    me.shownIncidentIds = incidentIds;
+
                     me.markerLayer.setZIndex(100000);
 
                     $("#incidentenUpdate").empty().append($("<span>" + incidenten.length + " actieve incidenten met inzet brandweereenheden</span>"));
