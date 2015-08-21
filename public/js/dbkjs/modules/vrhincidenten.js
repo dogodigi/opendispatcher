@@ -51,6 +51,9 @@ dbkjs.modules.vrhincidenten = {
         me.readIncidentIds = [];
         me.shownIncidentIds = [];
 
+        $(".main-button-group").css({paddingRight: "10px", width: "auto", float: "right", right: "0%"});
+        $("#tb02").click(function() { me.incidentPopup.hide(); });
+
         $('<a></a>')
             .attr({
                 'id': 'btn_openvrhincidenten',
@@ -68,7 +71,22 @@ dbkjs.modules.vrhincidenten = {
                     window.clearInterval(me.newIncidentInterval);
                     me.newIncidentInterval = null;
                 }
+                me.incidentPopup.hide();
                 me.popup.show();
+            })
+            .appendTo('#btngrp_3');
+
+        $('<a></a>')
+            .attr({
+                'id': 'btn_openreset',
+                'class': 'btn btn-default navbar-btn',
+                'href': '#',
+                'title': 'Reset'
+            })
+            .append('<i class="fa fa-repeat" style="width: 27.5px"></i>')
+            .click(function(e) {
+                me.incidentPopup.hide();
+                $("#zoom_extent").click();
             })
             .appendTo('#btngrp_3');
 
@@ -108,12 +126,17 @@ td { padding: 4px !important } ',
             hideCallback: function() { me.onPopupClose(); }
         });
         this.incidentPopup.getView().append($('<h4 id="incidentHead" style="padding-bottom: 15px"></h4><div id="incidentContent"></div>'));
+        this.incidentPopup.getView().parent().find("a").html('<i class="fa fa-arrow-left"/> Kaart');
     },
     onPopupClose: function() {
         if(this.updateIncidentTimeout) {
             window.clearTimeout(this.updateIncidentTimeout);
             this.updateIncidentTimeout = null;
         }
+        $("#mapc1map1").css({width: "100%"});
+        dbkjs.map.updateSize();
+        this.incidentPopup.getView().parent().css({width: "0%"});
+        $(".main-button-group").css({right: "0%"});
     },
     getVrhToken: function(done) {
         var me = this;
@@ -388,7 +411,7 @@ td { padding: 4px !important } ',
                             titel.on("click", function() {
                                 //dbkjs.map.setCenter(pos, dbkjs.options.zoom);
                                 me.popup.hide();
-                                me.incidentClick(incident);
+                                me.incidentClick(incident,true);
                             });
                         }
                         div.append(titel);
@@ -421,7 +444,7 @@ td { padding: 4px !important } ',
         return this.getAGSMoment(incident.DTG_START_INCIDENT).format("D-M-YYYY HH:mm:ss") + " " + this.encode((incident.PRIORITEIT_INCIDENT_BRANDWEER ? " PRIO " + incident.PRIORITEIT_INCIDENT_BRANDWEER : "") + " " + incident.T_GUI_LOCATIE + ", " + this.encode(incident.PLAATS_NAAM));
     },
     markerClick: function(marker, feature) {
-        this.incidentClick(feature);
+        this.incidentClick(feature, true);
     },
     updateIncident: function() {
         var me = this;
@@ -445,6 +468,10 @@ td { padding: 4px !important } ',
         });
     },
     incidentClick: function(incident, setCenter) {
+
+        // TODO: voeg toe aan readIncidentIds, indien timer actief maar alle
+        // incidentIds in readIncidentIds dan stop timer
+
         var me = this;
         if(setCenter) {
             dbkjs.map.setCenter(new OpenLayers.LonLat(incident.T_X_COORD_LOC, incident.T_Y_COORD_LOC), dbkjs.options.zoom);
@@ -483,7 +510,7 @@ td { padding: 4px !important } ',
         html += '<tr><td>Melding classificatie:</td><td id="mldClass"></td></tr>';
         html += '<tr><td>Karakteristieken:</td><td id="karakteristiek"></td></tr>';
         html += '<tr><td>Ingezette eenheden:</td><td id="eenheden"><div id="brw"><b>Brandweer</b><br/></div><div id="pol"><b>Politie</b><br/></div><div id="ambu"><b>Ambu</b><br/></div></td></tr>';
-        html += '<tr><td>Kladblok:</td><td id="kladblok"></td></tr>';
+        html += '<tr><td id="kladblok" colspan="2"></td></tr>';
         html += '</table>';
         html += '<table id="mldClass" style="padding-bottom: 10px"></div>';
 
@@ -511,7 +538,7 @@ td { padding: 4px !important } ',
                 var k = f.attributes;
                 pre += me.getAGSMoment(k.DTG_KLADBLOK_REGEL).format("DD-MM-YYYY HH:mm:ss ") + me.encode(k.INHOUD_KLADBLOK_REGEL) + "\n";
             });
-            $("#kladblok").append("<pre>" + pre + "</pre>");
+            $("#kladblok").append("Kladblok:<br/><pre>" + pre + "</pre>");
         });
 
         me.getInzetEenheden([incident.INCIDENT_ID], false, function(inzetEenheden) {
@@ -571,6 +598,10 @@ td { padding: 4px !important } ',
         });
 
         this.incidentPopup.show();
+        $("#mapc1map1").css({width: "55%"});
+        dbkjs.map.updateSize();
+        me.incidentPopup.getView().parent().css({width: "45%"});
+        $(".main-button-group").css({right: "45%"});
 
         if(me.updateIncidentTimeout) {
             window.clearTimeout(me.updateIncidentTimeout);
