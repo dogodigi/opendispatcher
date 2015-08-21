@@ -430,7 +430,7 @@ td { padding: 4px !important } ',
 
                     me.markerLayer.setZIndex(100000);
 
-                    $("#incidentenUpdate").empty().append($("<span>" + incidenten.length + " actieve incidenten met inzet brandweereenheden</span>"));
+                    $("#incidentenUpdate").empty().append($("<span>" + incidenten.length + " actie" + (incidenten.length == 1 ? "f incident" : "ve incidenten" ) + " met inzet brandweereenheden</span>"));
                 });
             });
         });
