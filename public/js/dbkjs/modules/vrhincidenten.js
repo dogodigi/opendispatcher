@@ -175,6 +175,99 @@ td { padding: 4px !important } ',
             }
         });
     },
+    getInzetEenheden: function(incidentIds, alleenBrandweer, done) {
+        var me = this;
+        if(!incidentIds || incidentIds.length === 0) {
+            return [];
+        }
+        $.ajax({
+            url: me.layerUrls.inzetEenheid + "/query",
+            dataType: "json",
+            data: {
+                f: "pjson",
+                token: me.token,
+                where: "INCIDENT_ID IN (" + incidentIds.join(",") + ") " + (alleenBrandweer ? "AND T_IND_DISC_EENHEID = 'B'" : ""),
+                orderByFields: "DTG_OPDRACHT_INZET",
+                outFields: "*"
+            },
+            cache: false
+        })
+        .done(function(data, textStatus, jqXHR) {
+            if(data.error) {
+                alert("Fout bij ophalen inzet eenheid: " + data.error.code + ": "+ data.error.message);
+                return;
+            }
+            var f = [];
+            $.each(data.features, function(i, feature) {
+                f.push(feature.attributes);
+            });
+            done(f);
+        });
+    },
+    getClassificaties: function(meldingClIds, done) {
+        var me = this;
+        if(!meldingClIds || meldingClIds.length === 0) {
+            return [];
+        }
+        $.ajax({
+            url: me.layerUrls.mldClass + "/query",
+            dataType: "json",
+            data: {
+                f: "pjson",
+                token: me.token,
+                where: "MELDING_CL_ID IN (" + meldingClIds.join(",") + ")",
+                outFields: "*"
+            },
+            cache: false
+        })
+        .done(function(data, textStatus, jqXHR) {
+            if(data.error) {
+                alert("Fout bij ophalen classificaties: " + data.error.code + ": "+ data.error.message);
+                return;
+            }
+            var classificaties = {};
+            $.each(data.features, function(i, cl) {
+                var c = cl.attributes;
+                var vals = [];
+                if(c.NIVO1) {
+                    vals.push(c.NIVO1);
+                }
+                if(c.NIVO2) {
+                    vals.push(c.NIVO2);
+                }
+                if(c.NIVO3) {
+                    vals.push(c.NIVO3);
+                }
+                classificaties[c.MELDING_CL_ID] = vals.join(", ");
+            });
+            done(classificaties);
+        });
+    },
+    getIncidentenMetInzet: function(incidentenData, done) {
+        var me = this;
+        var incidenten = [], incidentIds = [];
+        $.each(incidentenData.features, function(i, incident) {
+            incidenten.push(incident.attributes);
+            incidentIds.push(incident.attributes.INCIDENT_ID);
+        });
+        // Filter incidenten zonder inzet BRW eruit
+        me.getInzetEenheden(incidentIds, true, function(inzetEenheden) {
+            var incidentIdsMetInzet = [];
+
+            $.each(inzetEenheden, function(i, inzetEenheid) {
+                // Kan leiden tot dubbele INCIDENT_IDs bij meerdere eenheden
+                incidentIdsMetInzet.push(inzetEenheid.INCIDENT_ID);
+            });
+
+            var incidentenMetInzet = [];
+            $.each(incidenten, function(i, incident) {
+                if(incidentIdsMetInzet.indexOf(incident.INCIDENT_ID) !== -1) {
+                    incidentenMetInzet.push(incident);
+                }
+            });
+            done(incidentenMetInzet);
+        });
+    },
     loadVrhIncidenten: function() {
         var me = this;
         me.updating = true;
@@ -204,105 +297,74 @@ td { padding: 4px !important } ',
         })
         .done(function(data, textStatus, jqXHR) {
             if(data.error) {
-                alert("ArcGIS service foutmelding " + data.error.code + ": "+ data.error.message);
+                $("#incidentenUpdate").text("ArcGIS service foutmelding " + data.error.code + ": "+ data.error.message);
                 return;
             }
 
-            // Haal classificaties op
-
-            var ids = [];
-            $.each(data.features, function(i, feature) {
-                ids.push(feature.attributes.BRW_MELDING_CL_ID);
-            });
-
-            $.ajax({
-                url: me.layerUrls.mldClass + "/query",
-                dataType: "json",
-                data: {
-                    f: "pjson",
-                    token: me.token,
-                    where: "MELDING_CL_ID IN (" + ids.join(",") + ")",
-                    outFields: "*"
-                },
-                cache: false
-            }).done(function(classData) {
-                var classificaties = {};
-
-                $.each(classData.features, function(i, cl) {
-                    var c = cl.attributes;
-                    var vals = [];
-                    if(c.NIVO1) {
-                        vals.push(c.NIVO1);
-                    }
-                    if(c.NIVO2) {
-                        vals.push(c.NIVO2);
-                    }
-                    if(c.NIVO3) {
-                        vals.push(c.NIVO3);
-                    }
-                    classificaties[c.MELDING_CL_ID] = vals.join(", ");
+            me.getIncidentenMetInzet(data, function(incidenten) {
+                // Haal classificaties op
+                var meldingClIds = [];
+                $.each(incidenten, function(i, incident) {
+                    meldingClIds.push(incident.BRW_MELDING_CL_ID);
                 });
 
+                me.getClassificaties(meldingClIds, function(classificaties) {
+                    var size = new OpenLayers.Size(20,25);
+                    var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
 
-                var size = new OpenLayers.Size(20,25);
-                var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+                    var actiefDiv = $("<div/>");
+                    actiefDiv.appendTo("#incidenten");
+                    var andersDiv = $("<div style='padding-top: 10px'/>");
+                    //andersDiv.append($("<span>Overige incidenten:</span>"));
+                    andersDiv.appendTo("#incidenten");
 
-                var actief = 0;
+                    me.markerLayer.clearMarkers();
+                    $.each(incidenten, function(i, incident) {
+                        var pos = null;
 
-                var actiefDiv = $("<div/>");
-                actiefDiv.appendTo("#incidenten");
-                var andersDiv = $("<div style='padding-top: 10px'/>");
-                //andersDiv.append($("<span>Overige incidenten:</span>"));
-                andersDiv.appendTo("#incidenten");
+                        if(incident.T_X_COORD_LOC && incident.T_Y_COORD_LOC) {
+                            pos = new OpenLayers.LonLat(incident.T_X_COORD_LOC, incident.T_Y_COORD_LOC);
+                        } else {
+                            return;
+                        }
 
-                me.markerLayer.clearMarkers();
-                $.each(data.features, function(i, feature) {
-                    var pos = null;
+                        if(pos !== null) {
+                            var marker = new OpenLayers.Marker(
+                                pos,
+                                new OpenLayers.Icon("images/marker-red.png", size, offset)
+                            );
+                            marker.id = incident.INCIDENT_ID;
+                            marker.events.register("click", marker, function() { me.markerClick(marker, incident); });
+                            me.markerLayer.addMarker(marker);
+                        }
 
-                    if(feature.attributes.T_X_COORD_LOC && feature.attributes.T_Y_COORD_LOC) {
-                        pos = new OpenLayers.LonLat(feature.attributes.T_X_COORD_LOC, feature.attributes.T_Y_COORD_LOC);
-                    } else {
-                        return;
-                        //console.log("no location", feature);
-                    }
+                        var div = $("<div class=\"melding\"></div>");
 
-                    if(pos !== null) {
-                        var marker = new OpenLayers.Marker(
-                            pos,
-                            new OpenLayers.Icon("images/marker-red.png", size, offset)
-                        );
-                        marker.id = feature.attributes.INCIDENT_ID;
-                        marker.events.register("click", marker, function() { me.markerClick(marker, feature); });
-                        me.markerLayer.addMarker(marker);
-                    }
+                        var titel = $(pos !== null ? "<a/>" : "<div/>");
+                        titel.attr({class: "titel"});
+                        titel.append(me.getIncidentTitle(incident));
 
-                    var div = $("<div class=\"melding\"></div>");
+                        if(pos) {
+                            titel.on("click", function() {
+                                //dbkjs.map.setCenter(pos, dbkjs.options.zoom);
+                                me.popup.hide();
+                                me.incidentClick(incident);
+                            });
+                        }
+                        div.append(titel);
+                        var iclass = classificaties[incident.BRW_MELDING_CL_ID];
+                        if(iclass) {
+                            div.append(", " + me.encode(iclass));
+                        }
+                        div.append(", " + me.getAGSMoment(incident.DTG_START_INCIDENT).fromNow());
 
-                    var titel = $(pos !== null ? "<a/>" : "<div/>");
-                    titel.attr({class: "titel"});
-                    titel.append(me.getIncidentTitle(feature));
+                        div.appendTo(actiefDiv);
+                    });
+                    me.markerLayer.setZIndex(100000);
 
-                    if(pos) {
-                        titel.on("click", function() {
-                            //dbkjs.map.setCenter(pos, dbkjs.options.zoom);
-                            me.popup.hide();
-                            me.incidentClick(feature);
-                        });
-                    }
-                    div.append(titel);
-                    var iclass = classificaties[feature.attributes.BRW_MELDING_CL_ID];
-                    if(iclass) {
-                        div.append(", " + me.encode(iclass));
-                    }
-                    div.append(", " + me.getAGSMoment(feature.attributes.DTG_START_INCIDENT).fromNow());
-
-                    div.appendTo(actiefDiv);
+                    $("#incidentenUpdate").empty().append($("<span>" + incidenten.length + " actieve incidenten met inzet brandweereenheden</span>"));
                 });
-                me.markerLayer.setZIndex(100000);
-
-                $("#incidentenUpdate").empty().append($("<span>" + data.features.length + " actieve incidenten</span>"));
             });
-
         });
     },
     getAGSMoment: function(epoch) {
@@ -310,19 +372,17 @@ td { padding: 4px !important } ',
         // instead of UTC
         return new moment(epoch).add(new Date().getTimezoneOffset(), 'minutes');
     },
-    getIncidentTitle: function(feature) {
-        var a = feature.attributes;
-        return this.getAGSMoment(a.DTG_START_INCIDENT).format("D-M-YYYY HH:mm:ss") + " " + this.encode((a.PRIORITEIT_INCIDENT_BRANDWEER ? " PRIO " + a.PRIORITEIT_INCIDENT_BRANDWEER : "") + " " + a.T_GUI_LOCATIE + ", " + this.encode(a.PLAATS_NAAM));
+    getIncidentTitle: function(incident) {
+        return this.getAGSMoment(incident.DTG_START_INCIDENT).format("D-M-YYYY HH:mm:ss") + " " + this.encode((incident.PRIORITEIT_INCIDENT_BRANDWEER ? " PRIO " + incident.PRIORITEIT_INCIDENT_BRANDWEER : "") + " " + incident.T_GUI_LOCATIE + ", " + this.encode(incident.PLAATS_NAAM));
     },
     markerClick: function(marker, feature) {
         this.incidentClick(feature);
     },
-    incidentClick: function(feature) {
+    incidentClick: function(incident) {
         var me = this;
-        var a = feature.attributes;
-        dbkjs.map.setCenter(new OpenLayers.LonLat(a.T_X_COORD_LOC, a.T_Y_COORD_LOC), dbkjs.options.zoom);
+        dbkjs.map.setCenter(new OpenLayers.LonLat(incident.T_X_COORD_LOC, incident.T_Y_COORD_LOC), dbkjs.options.zoom);
 
-        $("#incidentHead").text(this.getIncidentTitle(feature));
+        $("#incidentHead").text(this.getIncidentTitle(incident));
 
         var html = '<div style:"width: 100%" class="table-responsive">';
         html += '<table class="table table-hover">';
@@ -336,7 +396,7 @@ td { padding: 4px !important } ',
         ];
 
         $.each(columns, function(i, column) {
-            var p = a[column.property];
+            var p = incident[column.property];
             if (!dbkjs.util.isJsonNull(p)) {
                 var v;
                 if(column.date) {
@@ -367,7 +427,7 @@ td { padding: 4px !important } ',
             data: {
                 f: "pjson",
                 token: me.token,
-                where: "INCIDENT_ID = " + a.INCIDENT_ID + " AND TYPE_KLADBLOK_REGEL = 'KB' AND T_IND_DISC_KLADBLOK_REGEL LIKE '_B_'",
+                where: "INCIDENT_ID = " + incident.INCIDENT_ID + " AND TYPE_KLADBLOK_REGEL = 'KB' AND T_IND_DISC_KLADBLOK_REGEL LIKE '_B_'",
                 orderByFields: "KLADBLOK_REGEL_ID,VOLG_NR_KLADBLOK_REGEL",
                 outFields: "*"
             },
@@ -386,76 +446,27 @@ td { padding: 4px !important } ',
             $("#kladblok").append("<pre>" + pre + "</pre>");
         });
 
-        $.ajax({
-            url: me.layerUrls.inzetEenheid + "/query",
-            dataType: "json",
-            data: {
-                f: "pjson",
-                token: me.token,
-                where: "INCIDENT_ID = " + a.INCIDENT_ID,
-                orderByFields: "DTG_OPDRACHT_INZET",
-                outFields: "*"
-            },
-            cache: false
-        })
-        .done(function(data, textStatus, jqXHR) {
-            if(!data.features || data.features.length === 0) {
-                return;
-            }
-
-            $.each(data.features, function(i, feature) {
-                var a = feature.attributes;
-                var eenheid = (a.CODE_VOERTUIGSOORT ? a.CODE_VOERTUIGSOORT : "") + " " + a.ROEPNAAM_EENHEID;
-                if(a.KAZ_NAAM) {
-                    eenheid += " (" + a.KAZ_NAAM + ")";
+        me.getInzetEenheden([incident.INCIDENT_ID], false, function(inzetEenheden) {
+            $.each(inzetEenheden, function(i, inzet) {
+                var eenheid = (inzet.CODE_VOERTUIGSOORT ? inzet.CODE_VOERTUIGSOORT : "") + " " + inzet.ROEPNAAM_EENHEID;
+                if(inzet.KAZ_NAAM) {
+                    eenheid += " (" + inzet.KAZ_NAAM + ")";
                 }
                 var container;
-                if(a.T_IND_DISC_EENHEID === "B") {
+                if(inzet.T_IND_DISC_EENHEID === "B") {
                     container = "#brw";
-                } else if(a.T_IND_DISC_EENHEID === "P") {
+                } else if(inzet.T_IND_DISC_EENHEID === "P") {
                     container = "#pol";
-                } else if(a.T_IND_DISC_EENHEID === "A") {
+                } else if(inzet.T_IND_DISC_EENHEID === "A") {
                     container = "#ambu";
                 }
-                var span = a.DTG_EIND_ACTIE ? "<span class='einde'>" : "<span>";
+                var span = inzet.DTG_EIND_ACTIE ? "<span class='einde'>" : "<span>";
                 $(container).append(span + me.encode(eenheid) + "</span><br/>");
             });
         });
 
-        $.ajax({
-            url: me.layerUrls.mldClass + "/query",
-            dataType: "json",
-            data: {
-                f: "pjson",
-                token: me.token,
-                where: "MELDING_CL_ID = " + a.BRW_MELDING_CL_ID,
-                outFields: "NIVO1,NIVO2,NIVO3"
-            },
-            cache: false
-        })
-        .done(function(data, textStatus, jqXHR) {
-            var t = "";
-
-            if(!data.features || data.features.length === 0) {
-                t = "-";
-            } else {
-                var a = data.features[0].attributes;
-
-                var vals = [];
-                if(a.NIVO1) {
-                    vals.push(me.encode(a.NIVO1));
-                }
-                if(a.NIVO2) {
-                    vals.push(me.encode(a.NIVO2));
-                }
-                if(a.NIVO3) {
-                    vals.push(me.encode(a.NIVO3));
-                }
-
-                t = vals.join(", ");
-            }
-
-            $("#mldClass").text(t);
+        me.getClassificaties([incident.BRW_MELDING_CL_ID], function(classificaties) {
+            $("#mldClass").text(classificaties[incident.BRW_MELDING_CL_ID]);
         });
 
         $.ajax({
@@ -464,7 +475,7 @@ td { padding: 4px !important } ',
             data: {
                 f: "pjson",
                 token: me.token,
-                where: "INCIDENT_ID = " + a.INCIDENT_ID,
+                where: "INCIDENT_ID = " + incident.INCIDENT_ID,
                 outFields: "NAAM_KARAKTERISTIEK,ACTUELE_KAR_WAARDE"
             },
             cache: false
