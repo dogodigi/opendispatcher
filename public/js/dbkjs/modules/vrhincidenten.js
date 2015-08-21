@@ -31,6 +31,8 @@ dbkjs.modules.vrhincidenten = {
     markerLayer: null,
     marker: null,
     token: null,
+    updateIncidentTimeout: null,
+    currentIncidentId: null,
     encode: function(s) {
         if(s) {
             return dbkjs.util.htmlEncode(s);
@@ -83,15 +85,23 @@ td { padding: 4px !important } ',
         head.appendChild(style);
     },
     createPopups: function() {
+        var me = this;
         this.popup = dbkjs.util.createModalPopup({
             title: 'Incidenten'
         });
         this.popup.getView().append($('<h4 id="incidentenUpdate" style="padding-bottom: 15px">Gegegevens ophalen...</h4><div id="incidenten"></div>'));
 
         this.incidentPopup = dbkjs.util.createModalPopup({
-            title: 'Incident'
+            title: 'Incident',
+            hideCallback: function() { me.onPopupClose(); }
         });
         this.incidentPopup.getView().append($('<h4 id="incidentHead" style="padding-bottom: 15px"></h4><div id="incidentContent"></div>'));
+    },
+    onPopupClose: function() {
+        if(this.updateIncidentTimeout) {
+            window.clearTimeout(this.updateIncidentTimeout);
+            this.updateIncidentTimeout = null;
+        }
     },
     getVrhToken: function(done) {
         var me = this;
@@ -378,9 +388,32 @@ td { padding: 4px !important } ',
     markerClick: function(marker, feature) {
         this.incidentClick(feature);
     },
-    incidentClick: function(incident) {
+    updateIncident: function() {
         var me = this;
-        dbkjs.map.setCenter(new OpenLayers.LonLat(incident.T_X_COORD_LOC, incident.T_Y_COORD_LOC), dbkjs.options.zoom);
+
+        $("#incidentHead").text($("#incidentHead").text() + " (verversen...)");
+        $.ajax({
+            url: me.layerUrls.incident + "/query",
+            dataType: "json",
+            data: {
+                f: "pjson",
+                token: me.token,
+                where: "INCIDENT_ID = " + me.currentIncidentId,
+                outFields: "*"
+            },
+            cache: false
+        })
+        .done(function(data, textStatus, jqXHR) {
+            if(data.features.length !== 0) {
+                me.incidentClick(data.features[0].attributes, false);
+            }
+        });
+    },
+    incidentClick: function(incident, setCenter) {
+        var me = this;
+        if(setCenter) {
+            dbkjs.map.setCenter(new OpenLayers.LonLat(incident.T_X_COORD_LOC, incident.T_Y_COORD_LOC), dbkjs.options.zoom);
+        }
 
         $("#incidentHead").text(this.getIncidentTitle(incident));
 
@@ -502,8 +535,14 @@ td { padding: 4px !important } ',
             d.appendTo('#karakteristiek');
         });
 
-        // TODO: set timeout om data te updaten, stop bij closen window
-
         this.incidentPopup.show();
+
+        if(me.updateIncidentTimeout) {
+            window.clearTimeout(me.updateIncidentTimeout);
+        }
+        me.currentIncidentId = incident.INCIDENT_ID;
+        me.updateIncidentTimeout = window.setTimeout(function() {
+            me.updateIncident();
+        }, 10000);
     }
 };
