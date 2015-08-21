@@ -125,7 +125,7 @@ td { padding: 4px !important } ',
             title: 'Incident',
             hideCallback: function() { me.onPopupClose(); }
         });
-        this.incidentPopup.getView().append($('<h4 id="incidentHead" style="padding-bottom: 15px"></h4><div id="incidentContent"></div>'));
+        this.incidentPopup.getView().append($('<div id="incidentContent"></div>'));
         this.incidentPopup.getView().parent().find("a").html('<i class="fa fa-arrow-left"/> Kaart');
     },
     onPopupClose: function() {
@@ -449,7 +449,6 @@ td { padding: 4px !important } ',
     updateIncident: function() {
         var me = this;
 
-        $("#incidentHead").text($("#incidentHead").text() + " (verversen...)");
         $.ajax({
             url: me.layerUrls.incident + "/query",
             dataType: "json",
@@ -476,8 +475,6 @@ td { padding: 4px !important } ',
         if(setCenter) {
             dbkjs.map.setCenter(new OpenLayers.LonLat(incident.T_X_COORD_LOC, incident.T_Y_COORD_LOC), dbkjs.options.zoom);
         }
-
-        $("#incidentHead").text(this.getIncidentTitle(incident));
 
         var html = '<div style:"width: 100%" class="table-responsive">';
         html += '<table class="table table-hover">';
