@@ -220,11 +220,12 @@ td { padding: 4px !important } ',
             }
         });
     },
-    getInzetEenheden: function(incidentIds, alleenBrandweer, done) {
+    getInzetEenheden: function(incidentIds, alleenBrandweer) {
         var me = this;
         if(!incidentIds || incidentIds.length === 0) {
             return [];
         }
+        var def = $.Deferred();
         $.ajax({
             url: me.layerUrls.inzetEenheid + "/query",
             dataType: "json",
@@ -246,14 +247,16 @@ td { padding: 4px !important } ',
             $.each(data.features, function(i, feature) {
                 f.push(feature.attributes);
             });
-            done(f);
+            def.resolve(f);
         });
+        return def.promise();
     },
-    getClassificaties: function(meldingClIds, done) {
+    getClassificaties: function(meldingClIds) {
         var me = this;
         if(!meldingClIds || meldingClIds.length === 0) {
             return [];
         }
+        var def = $.Deferred();
         $.ajax({
             url: me.layerUrls.mldClass + "/query",
             dataType: "json",
@@ -285,8 +288,9 @@ td { padding: 4px !important } ',
                 }
                 classificaties[c.MELDING_CL_ID] = vals.join(", ");
             });
-            done(classificaties);
+            def.resolve(classificaties);
         });
+        return def.promise();
     },
     getIncidentenMetInzet: function(incidentenData, done) {
         var me = this;
@@ -296,7 +300,7 @@ td { padding: 4px !important } ',
             incidentIds.push(incident.attributes.INCIDENT_ID);
         });
         // Filter incidenten zonder inzet BRW eruit
-        me.getInzetEenheden(incidentIds, true, function(inzetEenheden) {
+        me.getInzetEenheden(incidentIds, true).done(function(inzetEenheden) {
             var incidentIdsMetInzet = [];
 
             $.each(inzetEenheden, function(i, inzetEenheid) {
@@ -353,7 +357,7 @@ td { padding: 4px !important } ',
                     meldingClIds.push(incident.BRW_MELDING_CL_ID);
                 });
 
-                me.getClassificaties(meldingClIds, function(classificaties) {
+                me.getClassificaties(meldingClIds).done(function(classificaties) {
                     var size = new OpenLayers.Size(20,25);
                     var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
 
@@ -476,44 +480,7 @@ td { padding: 4px !important } ',
             dbkjs.map.setCenter(new OpenLayers.LonLat(incident.T_X_COORD_LOC, incident.T_Y_COORD_LOC), dbkjs.options.zoom);
         }
 
-        var html = '<div style:"width: 100%" class="table-responsive">';
-        html += '<table class="table table-hover">';
-
-        var columns = [
-            { property: 'DTG_START_INCIDENT', date: true, label: 'Start incident' },
-            { property: 'T_GUI_LOCATIE', date: false, label: 'Adres' },
-            { property: 'POSTCODE', date: false, label: 'Postcode' },
-            { property: 'PLAATS_NAAM', date: false, label: 'Woonplaats' },
-            { property: 'PRIORITEIT_INCIDENT_BRANDWEER', date: false, label: 'Prioriteit', separate: true }
-        ];
-
-        $.each(columns, function(i, column) {
-            var p = incident[column.property];
-            if (!dbkjs.util.isJsonNull(p)) {
-                var v;
-                if(column.date) {
-                    var d = me.getAGSMoment(p);
-                    v = d.format("dddd, D-M-YYYY HH:mm:ss") + " (" + d.fromNow() + ")";
-                } else {
-                    v = me.encode(p);
-                }
-                if(column.separate) {
-                    html += '<tr><td>&nbsp;</td><td></td></tr>';
-                }
-                html += '<tr><td><span>' + column.label + "</span>: </td><td>" + v + "</td></tr>";
-            }
-        });
-
-        html += '<tr><td>Melding classificatie:</td><td id="mldClass"></td></tr>';
-        html += '<tr><td>Karakteristieken:</td><td id="karakteristiek"></td></tr>';
-        html += '<tr><td>Ingezette eenheden:</td><td id="eenheden"><div id="brw"><b>Brandweer</b><br/></div><div id="pol"><b>Politie</b><br/></div><div id="ambu"><b>Ambu</b><br/></div></td></tr>';
-        html += '<tr><td id="kladblok" colspan="2"></td></tr>';
-        html += '</table>';
-        html += '<table id="mldClass" style="padding-bottom: 10px"></div>';
-
-        $('#incidentContent').html(html);
-
-        $.ajax({
+        var dfdKladblok = $.ajax({
             url: me.layerUrls.klablok + "/query",
             dataType: "json",
             data: {
@@ -524,44 +491,10 @@ td { padding: 4px !important } ',
                 outFields: "*"
             },
             cache: false
-        })
-        .done(function(data, textStatus, jqXHR) {
-            if(data.error) {
-                alert("ArcGIS service foutmelding " + data.error.code + ": "+ data.error.message);
-                return;
-            }
-            var pre = "";
-            $.each(data.features, function(i, f) {
-                var k = f.attributes;
-                pre += me.getAGSMoment(k.DTG_KLADBLOK_REGEL).format("DD-MM-YYYY HH:mm:ss ") + me.encode(k.INHOUD_KLADBLOK_REGEL) + "\n";
-            });
-            $("#kladblok").append("Kladblok:<br/><pre>" + pre + "</pre>");
         });
-
-        me.getInzetEenheden([incident.INCIDENT_ID], false, function(inzetEenheden) {
-            $.each(inzetEenheden, function(i, inzet) {
-                var eenheid = (inzet.CODE_VOERTUIGSOORT ? inzet.CODE_VOERTUIGSOORT : "") + " " + inzet.ROEPNAAM_EENHEID;
-                if(inzet.KAZ_NAAM) {
-                    eenheid += " (" + inzet.KAZ_NAAM + ")";
-                }
-                var container;
-                if(inzet.T_IND_DISC_EENHEID === "B") {
-                    container = "#brw";
-                } else if(inzet.T_IND_DISC_EENHEID === "P") {
-                    container = "#pol";
-                } else if(inzet.T_IND_DISC_EENHEID === "A") {
-                    container = "#ambu";
-                }
-                var span = inzet.DTG_EIND_ACTIE ? "<span class='einde'>" : "<span>";
-                $(container).append(span + me.encode(eenheid) + "</span><br/>");
-            });
-        });
-
-        me.getClassificaties([incident.BRW_MELDING_CL_ID], function(classificaties) {
-            $("#mldClass").text(classificaties[incident.BRW_MELDING_CL_ID]);
-        });
-
-        $.ajax({
+        var dfdInzetEenheden = me.getInzetEenheden([incident.INCIDENT_ID], false);
+        var dfdClassificaties = me.getClassificaties([incident.BRW_MELDING_CL_ID]);
+        var dfdKarakteristiek = $.ajax({
             url: me.layerUrls.karakteristiek + "/query",
             dataType: "json",
             data: {
@@ -571,41 +504,107 @@ td { padding: 4px !important } ',
                 outFields: "NAAM_KARAKTERISTIEK,ACTUELE_KAR_WAARDE"
             },
             cache: false
-        })
-        .done(function(data, textStatus, jqXHR) {
-            var html = "";
+        });
 
-            if(!data.features || data.features.length === 0) {
-                html += " -</h4>";
+        $.when(dfdKladblok, dfdInzetEenheden, dfdClassificaties, dfdKarakteristiek).done(function(kladblok, inzetEenheden, classificaties, karakteristiek) {
+            var html = '<div style:"width: 100%" class="table-responsive">';
+            html += '<table class="table table-hover">';
+
+            var columns = [
+                { property: 'DTG_START_INCIDENT', date: true, label: 'Start incident' },
+                { property: 'T_GUI_LOCATIE', date: false, label: 'Adres' },
+                { property: 'POSTCODE', date: false, label: 'Postcode' },
+                { property: 'PLAATS_NAAM', date: false, label: 'Woonplaats' },
+                { property: 'PRIORITEIT_INCIDENT_BRANDWEER', date: false, label: 'Prioriteit', separate: true }
+            ];
+
+            $.each(columns, function(i, column) {
+                var p = incident[column.property];
+                if (!dbkjs.util.isJsonNull(p)) {
+                    var v;
+                    if(column.date) {
+                        var d = me.getAGSMoment(p);
+                        v = d.format("dddd, D-M-YYYY HH:mm:ss") + " (" + d.fromNow() + ")";
+                    } else {
+                        v = me.encode(p);
+                    }
+                    if(column.separate) {
+                        html += '<tr><td>&nbsp;</td><td></td></tr>';
+                    }
+                    html += '<tr><td><span>' + column.label + "</span>: </td><td>" + v + "</td></tr>";
+                }
+            });
+
+            html += '<tr><td>Melding classificatie:</td><td>' + classificaties[incident.BRW_MELDING_CL_ID] + '</td></tr>';
+
+            html += '<tr><td>Karakteristieken:</td><td>';
+            if(!karakteristiek[0].features || karakteristiek[0].features.length === 0) {
+                html += "<h4>-</h4>";
             } else {
-                html += '</h4><div style:"width: 100%" class="table-responsive">';
+                html += '<div style:"width: 100%" class="table-responsive">';
                 html += '<table class="table table-hover">';
-                $.each(data.features, function(i, feature) {
+                $.each(karakteristiek[0].features, function(i, feature) {
                     var a = feature.attributes;
                     if(!a.ACTUELE_KAR_WAARDE) {
                         return;
                     }
                     html += "<tr><td>" +me.encode(a.NAAM_KARAKTERISTIEK) + "</td><td>" + me.encode(a.ACTUELE_KAR_WAARDE) + "</td></tr>";
                 });
+                html += '</table><div/>';
             }
+            html += '</td></tr>';
 
-            var d = $("<div/>");
-            d.html(html + "</table>");
-            d.appendTo('#karakteristiek');
+            html += '<tr><td>Ingezette eenheden:</td><td id="eenheden">';
+            var eenhBrw = "", eenhPol = "", eenhAmbu = "";
+            $.each(inzetEenheden, function(i, inzet) {
+                var eenheid = (inzet.CODE_VOERTUIGSOORT ? inzet.CODE_VOERTUIGSOORT : "") + " " + inzet.ROEPNAAM_EENHEID;
+                if(inzet.KAZ_NAAM) {
+                    eenheid += " (" + inzet.KAZ_NAAM + ")";
+                }
+                var span = (inzet.DTG_EIND_ACTIE ? "<span class='einde'>" : "<span>") + me.encode(eenheid) + "</span><br/>";
+                if(inzet.T_IND_DISC_EENHEID === "B") {
+                    eenhBrw += span;
+                } else if(inzet.T_IND_DISC_EENHEID === "P") {
+                    eenhPol += span;
+                } else if(inzet.T_IND_DISC_EENHEID === "A") {
+                    eenhAmbu += span;
+                }
+            });
+            html += '<div id="brw"><b>Brandweer</b><br/>' + eenhBrw + '</div>';
+            html += '<div id="pol"><b>Politie</b><br/>' + eenhPol + '</div>';
+            html += '<div id="ambu"><b>Ambu</b><br/>' + eenhAmbu + '</div>';
+            html += '</td></tr>';
+
+            html += '<tr><td id="kladblok" colspan="2">';
+
+            var pre = "";
+            if(kladblok[0].features) {
+                $.each(kladblok[0].features, function(i, f) {
+                    var k = f.attributes;
+                    pre += me.getAGSMoment(k.DTG_KLADBLOK_REGEL).format("DD-MM-YYYY HH:mm:ss ") + me.encode(k.INHOUD_KLADBLOK_REGEL) + "\n";
+                });
+            }
+            html += "Kladblok:<br/><pre>" + pre + "</pre>";
+
+            html += '</td></tr>';
+            html += '</table>';
+            html += '<table id="mldClass" style="padding-bottom: 10px"></div>';
+
+            $('#incidentContent').html(html);
+
+            me.incidentPopup.show();
+            $("#mapc1map1").css({width: "55%"});
+            dbkjs.map.updateSize();
+            me.incidentPopup.getView().parent().css({width: "45%"});
+            $(".main-button-group").css({right: "45%"});
+
+            if(me.updateIncidentTimeout) {
+                window.clearTimeout(me.updateIncidentTimeout);
+            }
+            me.currentIncidentId = incident.INCIDENT_ID;
+            me.updateIncidentTimeout = window.setTimeout(function() {
+                me.updateIncident();
+            }, 10000);
         });
-
-        this.incidentPopup.show();
-        $("#mapc1map1").css({width: "55%"});
-        dbkjs.map.updateSize();
-        me.incidentPopup.getView().parent().css({width: "45%"});
-        $(".main-button-group").css({right: "45%"});
-
-        if(me.updateIncidentTimeout) {
-            window.clearTimeout(me.updateIncidentTimeout);
-        }
-        me.currentIncidentId = incident.INCIDENT_ID;
-        me.updateIncidentTimeout = window.setTimeout(function() {
-            me.updateIncident();
-        }, 10000);
     }
 };
