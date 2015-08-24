@@ -487,7 +487,7 @@ td { padding: 4px !important } ',
                 f: "pjson",
                 token: me.token,
                 where: "INCIDENT_ID = " + incident.INCIDENT_ID + " AND TYPE_KLADBLOK_REGEL = 'KB' AND T_IND_DISC_KLADBLOK_REGEL LIKE '_B_'",
-                orderByFields: "KLADBLOK_REGEL_ID,VOLG_NR_KLADBLOK_REGEL",
+                orderByFields: "DTG_KLADBLOK_REGEL,KLADBLOK_REGEL_ID,VOLG_NR_KLADBLOK_REGEL",
                 outFields: "*"
             },
             cache: false
