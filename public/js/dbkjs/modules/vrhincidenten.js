@@ -34,8 +34,8 @@ dbkjs.modules.vrhincidenten = {
     updateIncidentTimeout: null,
     currentIncidentId: null,
     readIncidentIds: null,
-    shownIncidentIds: null,
-    newIncidentInterval: null,
+    activeIncidentIds: null,
+    exclamationFlashInterval: null,
     archiefMarker: null,
     encode: function(s) {
         if(s) {
@@ -48,9 +48,6 @@ dbkjs.modules.vrhincidenten = {
 
         this.createStyle();
         this.createPopups();
-
-        me.readIncidentIds = [];
-        me.shownIncidentIds = [];
 
         $(".main-button-group").css({paddingRight: "10px", width: "auto", float: "right", right: "0%"});
         $("#tb02").click(function() { me.incidentPopup.hide(); });
@@ -66,14 +63,7 @@ dbkjs.modules.vrhincidenten = {
             .click(function(e) {
                 e.preventDefault();
 
-                me.readIncidentIds = me.shownIncidentIds;
-                $($("#btn_openvrhincidenten").css({color: 'black'}).children()[0]).removeClass("fa-exclamation").addClass("fa-fire");
-                if(me.newIncidentInterval) {
-                    window.clearInterval(me.newIncidentInterval);
-                    me.newIncidentInterval = null;
-                }
-                me.incidentPopup.hide();
-                me.popup.show();
+                me.onIncidentenLijstOpen();
             })
             .appendTo('#btngrp_3');
 
@@ -124,12 +114,89 @@ td { padding: 4px !important } ',
 
         this.incidentPopup = dbkjs.util.createModalPopup({
             title: 'Incident',
-            hideCallback: function() { me.onPopupClose(); }
+            hideCallback: function() { me.onIncidentPopupClose(); }
         });
         this.incidentPopup.getView().append($('<div id="incidentContent"></div>'));
         this.incidentPopup.getView().parent().find("a").html('<i class="fa fa-arrow-left"/> Kaart');
     },
-    onPopupClose: function() {
+    onIncidentenLijstOpen: function() {
+        var me = this;
+
+        // TODO alleen indien geopend?
+        me.incidentPopup.hide();
+        me.popup.show();
+
+        me.readIncidentIds = me.activeIncidentIds;
+        me.checkAlleIncidentenRead();
+
+    },
+    checkAlleIncidentenRead: function() {
+        var me = this;
+
+        var read = true;
+        if(me.activeIncidentIds !== null && me.activeIncidentIds.length > 0) {
+            if(me.readIncidentIds !== null) {
+                $.each(me.activeIncidentIds, function(i, incidentId) {
+                    if(me.readIncidentIds.indexOf(incidentId) === -1) {
+                        read = false;
+                        return false;
+                    }
+                });
+            }
+        }
+        if(read) {
+            $($("#btn_openvrhincidenten").css({color: 'black'}).children()[0]).removeClass("fa-exclamation").addClass("fa-fire");
+            if(me.exclamationFlashInterval) {
+                window.clearInterval(me.exclamationFlashInterval);
+                me.exclamationFlashInterval = null;
+            }
+        }
+    },
+    nieuweIncidentenLijst: function(incidentIds) {
+        var me = this;
+
+        // Als nog geen activeIncidentIds is het eerste refresh
+        if(me.activeIncidentIds === null) {
+                //  geen alert
+//            me.readIncidentIds = incidentIds;
+//            return;
+
+            // wel alert bij incident
+            me.readIncidentIds = [];
+        }
+
+        var incidentListHidden = !me.popup.getView().parent().hasClass("modal-popup-active");
+
+        // Als incidentenlijst verborgen en nog geen alert check of nieuw incident id
+        // nog niet in readIncidentIds
+        if(incidentListHidden && !me.exclamationFlashInterval) {
+            var newIncident = false;
+            $.each(incidentIds, function(i, incidentIds) {
+                if(me.readIncidentIds.indexOf(incidentIds) === -1) {
+                    newIncident = true;
+                    return false;
+                }
+            });
+
+            if(newIncident) {
+                $($("#btn_openvrhincidenten").css({color: 'red'}).children()[0]).removeClass("fa-fire").addClass("fa-exclamation");
+                me.exclamationFlashInterval = window.setInterval(function() {
+                    var el = $($("#btn_openvrhincidenten").children()[0]);
+                    if(el.hasClass("fa-fire")) {
+                        el.removeClass("fa-fire").addClass("fa-exclamation");
+                    } else {
+                        el.removeClass("fa-exclamation").addClass("fa-fire");
+                    }
+                }, 1500);
+            }
+        }
+
+        if(!incidentListHidden) {
+            me.readIncidentIds = incidentIds;
+        }
+        me.activeIncidentIds = incidentIds;
+    },
+    onIncidentPopupClose: function() {
         if(this.updateIncidentTimeout) {
             window.clearTimeout(this.updateIncidentTimeout);
             this.updateIncidentTimeout = null;
@@ -390,8 +457,6 @@ td { padding: 4px !important } ',
 
                     var incidentIds = [];
 
-                    var popupHidden = !me.popup.getView().parent().hasClass("modal-popup-active");
-
                     $.each(incidenten, function(i, incident) {
                         var pos = null;
 
@@ -402,19 +467,6 @@ td { padding: 4px !important } ',
                         }
 
                         incidentIds.push(incident.INCIDENT_ID);
-                        if(popupHidden && !me.newIncidentInterval) {
-                            if(me.readIncidentIds.indexOf(incident.INCIDENT_ID) === -1) {
-                                $($("#btn_openvrhincidenten").css({color: 'red'}).children()[0]).removeClass("fa-fire").addClass("fa-exclamation");
-                                me.newIncidentInterval = window.setInterval(function() {
-                                    var el = $($("#btn_openvrhincidenten").children()[0]);
-                                    if(el.hasClass("fa-fire")) {
-                                        el.removeClass("fa-fire").addClass("fa-exclamation");
-                                    } else {
-                                        el.removeClass("fa-exclamation").addClass("fa-fire");
-                                    }
-                                }, 1500);
-                            }
-                        }
 
                         var marker = new OpenLayers.Marker(
                             pos,
@@ -446,10 +498,7 @@ td { padding: 4px !important } ',
 
                         div.appendTo(actiefDiv);
                     });
-                    if(!popupHidden) {
-                        me.readIncidentIds = incidentIds;
-                    }
-                    me.shownIncidentIds = incidentIds;
+                    me.nieuweIncidentenLijst(incidentIds);
 
                     me.markerLayer.setZIndex(100000);
 
@@ -574,11 +623,13 @@ td { padding: 4px !important } ',
         });
     },
     incidentClick: function(incident, setCenter) {
-
-        // TODO: voeg toe aan readIncidentIds, indien timer actief maar alle
-        // incidentIds in readIncidentIds dan stop timer
-
         var me = this;
+
+        if(me.readIncidentIds.indexOf(incident.INCIDENT_ID) === -1) {
+            me.readIncidentIds.push(incident.INCIDENT_ID);
+            me.checkAlleIncidentenRead();
+        }
+
         if(setCenter) {
             dbkjs.map.setCenter(new OpenLayers.LonLat(incident.T_X_COORD_LOC, incident.T_Y_COORD_LOC), dbkjs.options.zoom);
         }
