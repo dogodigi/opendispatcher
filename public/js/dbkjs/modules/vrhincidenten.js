@@ -26,7 +26,6 @@ dbkjs.modules.vrhincidenten = {
     layerUrls: null,
     popup: null,
     incidentPopup: null,
-    updating: null,
     lastUpdated: null,
     markerLayer: null,
     marker: null,
@@ -210,7 +209,7 @@ td { padding: 4px !important } ',
             this.archiefMarker = null;
         }
     },
-    getVrhToken: function(done) {
+    getVrhToken: function(done, retryCount) {
         var me = this;
         $.ajax({
             url: dbkjs.options.vrhTokenUrl,
@@ -223,9 +222,18 @@ td { padding: 4px !important } ',
             cache: false
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
-            alert("Kan geen authenticatietoken ophalen bij ArcGIS service: " + jqXHR.statusText);
+            if(retryCount > 3) {
+                alert("Kan na " + retryCount + " pogingen geen authenticatietoken ophalen bij ArcGIS service: " + jqXHR.statusText);
+            }
+            window.setTimeout(function() {
+                me.getVrhToken(done, retryCount ? retryCount+1 : 1);
+            }, 3000);
         })
         .done(function(data) {
+            if(data.error) {
+                alert("ArcGIS service foutmelding bij ophalen authenticatietoken, code " + data.error.code + ": "+ data.error.message);
+                return;
+            }
             me.token = data.token;
             window.setTimeout(function() {
                 me.getVrhToken();
@@ -404,9 +412,8 @@ td { padding: 4px !important } ',
     },
     loadVrhIncidenten: function() {
         var me = this;
-        me.updating = true;
 
-        $("#incidentenUpdate").empty().append($("<span>Ophalen incidenten...</span>"));
+        $("#incidentenUpdate").append($("<span> (Ophalen incidenten...)</span>"));
         $.ajax({
             url: me.layerUrls.incident + "/query",
             dataType: "json",
@@ -420,7 +427,6 @@ td { padding: 4px !important } ',
             cache: false
         })
         .always(function() {
-            me.updating = false;
             $("#incidenten").empty();
 
             window.setTimeout(function () {
@@ -447,6 +453,7 @@ td { padding: 4px !important } ',
                     var size = new OpenLayers.Size(20,25);
                     var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
 
+                    $("#incidenten").empty();
                     var actiefDiv = $("<div/>");
                     actiefDiv.appendTo("#incidenten");
 
@@ -526,7 +533,6 @@ td { padding: 4px !important } ',
             cache: false
         })
         .always(function() {
-            me.updating = false;
             $("#incidentenArchief").empty();
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
