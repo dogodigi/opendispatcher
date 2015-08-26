@@ -621,9 +621,9 @@ td { padding: 4px !important } ',
         .done(function(data, textStatus, jqXHR) {
             if(data.features.length !== 0) {
                 if(archief) {
-                    me.incidentClick(data.features[0].attributes, false);
+                    me.archiefIncidentClick(data.features[0].attributes, false);
                 } else {
-                    me.incidentArchiefClick(data.features[0].attributes, false);
+                    me.incidentClick(data.features[0].attributes, false);
                 }
             }
         });
@@ -908,7 +908,7 @@ td { padding: 4px !important } ',
             me.currentIncidentId = incident.INCIDENT_ID;
             me.updateIncidentTimeout = window.setTimeout(function() {
                 me.updateIncident(true);
-            }, 10000);
+            }, 30000);
         });
     }
 
