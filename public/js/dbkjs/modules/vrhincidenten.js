@@ -427,17 +427,17 @@ td { padding: 4px !important } ',
             cache: false
         })
         .always(function() {
-            $("#incidenten").empty();
-
             window.setTimeout(function () {
                 me.loadVrhIncidenten();
             }, 15000);
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
+            $("#incidenten").empty();
             $("#incidentenUpdate").text("Fout bij ophalen incidenten: " + jqXHR.statusText);
         })
         .done(function(data, textStatus, jqXHR) {
             if(data.error) {
+                $("#incidenten").empty();
                 $("#incidentenUpdate").text("ArcGIS service foutmelding " + data.error.code + ": "+ data.error.message);
                 return;
             }
@@ -450,68 +450,75 @@ td { padding: 4px !important } ',
                 });
 
                 me.getClassificaties(meldingClIds).done(function(classificaties) {
-                    var size = new OpenLayers.Size(20,25);
-                    var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-
-                    $("#incidenten").empty();
-                    var actiefDiv = $("<div/>");
-                    actiefDiv.appendTo("#incidenten");
-
-                    me.markerLayer.clearMarkers();
-                    if(me.archiefMarker) {
-                        me.markerLayer.addMarker(me.archiefMarker);
-                    }
 
                     var incidentIds = [];
-
                     $.each(incidenten, function(i, incident) {
-                        var pos = null;
-
-                        if(incident.T_X_COORD_LOC && incident.T_Y_COORD_LOC) {
-                            pos = new OpenLayers.LonLat(incident.T_X_COORD_LOC, incident.T_Y_COORD_LOC);
-                        } else {
-                            return;
-                        }
-
                         incidentIds.push(incident.INCIDENT_ID);
-
-                        var marker = new OpenLayers.Marker(
-                            pos,
-                            new OpenLayers.Icon("images/marker-red.png", size, offset)
-                        );
-                        marker.id = incident.INCIDENT_ID;
-                        marker.events.register("click", marker, function() { me.markerClick(marker, incident); });
-                        me.markerLayer.addMarker(marker);
-
-                        var div = $("<div class=\"melding\"></div>");
-
-                        var titel = $(pos !== null ? "<a/>" : "<div/>");
-                        titel.attr({class: "titel"});
-                        titel.append(me.getIncidentTitle(incident));
-
-                        if(pos) {
-                            titel.on("click", function() {
-                                //dbkjs.map.setCenter(pos, dbkjs.options.zoom);
-                                me.popup.hide();
-                                me.incidentClick(incident,true);
-                            });
-                        }
-                        div.append(titel);
-                        var iclass = classificaties[incident.BRW_MELDING_CL_ID];
-                        if(iclass) {
-                            div.append(", " + me.encode(iclass));
-                        }
-                        div.append(", " + me.getAGSMoment(incident.DTG_START_INCIDENT).fromNow());
-
-                        div.appendTo(actiefDiv);
                     });
-                    me.nieuweIncidentenLijst(incidentIds);
 
-                    me.markerLayer.setZIndex(100000);
+                    var dfdArchiefIncidenten = me.getArchiefIncidenten(incidentIds);
 
-                    $("#incidentenUpdate").empty().append($("<span>" + incidenten.length + " actie" + (incidenten.length == 1 ? "f incident" : "ve incidenten" ) + " met inzet brandweereenheden</span>"));
+                    $.when(dfdArchiefIncidenten).done(function(renderArchief) {
+                        var size = new OpenLayers.Size(20,25);
+                        var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
 
-                    me.getArchiefIncidenten(incidentIds);
+                        var scrollTop = me.popup.getView().scrollTop();
+                        $("#incidenten").empty();
+                        var actiefDiv = $("<div/>");
+                        actiefDiv.appendTo("#incidenten");
+
+                        me.markerLayer.clearMarkers();
+                        if(me.archiefMarker) {
+                            me.markerLayer.addMarker(me.archiefMarker);
+                        }
+
+                        $.each(incidenten, function(i, incident) {
+                            var pos = null;
+
+                            if(incident.T_X_COORD_LOC && incident.T_Y_COORD_LOC) {
+                                pos = new OpenLayers.LonLat(incident.T_X_COORD_LOC, incident.T_Y_COORD_LOC);
+                            } else {
+                                return;
+                            }
+
+                            var marker = new OpenLayers.Marker(
+                                pos,
+                                new OpenLayers.Icon("images/marker-red.png", size, offset)
+                            );
+                            marker.id = incident.INCIDENT_ID;
+                            marker.events.register("click", marker, function() { me.markerClick(marker, incident); });
+                            me.markerLayer.addMarker(marker);
+
+                            var div = $("<div class=\"melding\"></div>");
+
+                            var titel = $(pos !== null ? "<a/>" : "<div/>");
+                            titel.attr({class: "titel"});
+                            titel.append(me.getIncidentTitle(incident));
+
+                            if(pos) {
+                                titel.on("click", function() {
+                                    //dbkjs.map.setCenter(pos, dbkjs.options.zoom);
+                                    me.popup.hide();
+                                    me.incidentClick(incident,true);
+                                });
+                            }
+                            div.append(titel);
+                            var iclass = classificaties[incident.BRW_MELDING_CL_ID];
+                            if(iclass) {
+                                div.append(", " + me.encode(iclass));
+                            }
+                            div.append(", " + me.getAGSMoment(incident.DTG_START_INCIDENT).fromNow());
+
+                            div.appendTo(actiefDiv);
+                        });
+                        me.nieuweIncidentenLijst(incidentIds);
+
+                        me.markerLayer.setZIndex(100000);
+
+                        $("#incidentenUpdate").empty().append($("<span>" + incidenten.length + " actie" + (incidenten.length == 1 ? "f incident" : "ve incidenten" ) + " met inzet brandweereenheden</span>"));
+                        renderArchief();
+                        me.popup.getView().scrollTop(scrollTop);
+                    });
                 });
             });
         });
@@ -519,7 +526,7 @@ td { padding: 4px !important } ',
     getArchiefIncidenten: function(actieveIncidentIds) {
         var me = this;
         var where = actieveIncidentIds.length === 0 ? "" : "INCIDENT_ID NOT IN (" + actieveIncidentIds.join(",") + ") AND ";
-
+        var def = $.Deferred();
         $.ajax({
             url: me.layerUrls.incidentArchief + "/query",
             dataType: "json",
@@ -532,53 +539,51 @@ td { padding: 4px !important } ',
             },
             cache: false
         })
-        .always(function() {
-            $("#incidentenArchief").empty();
-        })
         .fail(function(jqXHR, textStatus, errorThrown) {
-            $("#incidentenArchiefUpdate").text("Fout bij ophalen incidenten: " + jqXHR.statusText);
+            def.resolve(function() { $("#incidentenArchief").empty(); $("#incidentenArchief").text("Fout bij ophalen incidenten: " + jqXHR.statusText); });
         })
         .done(function(data, textStatus, jqXHR) {
             if(data.error) {
-                $("#incidentenArchiefUpdate").text("ArcGIS service foutmelding " + data.error.code + ": "+ data.error.message);
+                def.resolve(function() { $("#incidentenArchief").empty(); $("#incidentenArchief").text("ArcGIS service foutmelding " + data.error.code + ": "+ data.error.message); });
                 return;
             }
 
             me.getIncidentenMetInzet(data, true, function(incidenten) {
-                var count = 0;
-//            $.each(data.features, function(i, f) {
-//                var incident = f.attributes;
-                $.each(incidenten, function(i, incident) {
-                    if(!(incident.T_X_COORD_LOC && incident.T_Y_COORD_LOC)) {
-                        return;
-                    }
+                def.resolve(function() {
+                    $("#incidentenArchief").empty();
+                    var count = 0;
+                    $.each(incidenten, function(i, incident) {
+                        if(!(incident.T_X_COORD_LOC && incident.T_Y_COORD_LOC)) {
+                            return;
+                        }
 
-                    var div = $("<div class=\"melding\"></div>");
+                        var div = $("<div class=\"melding\"></div>");
 
-                    var titel = $("<a/>");
-                    titel.attr({class: "titel"});
-                    titel.append(me.getIncidentTitle(incident));
+                        var titel = $("<a/>");
+                        titel.attr({class: "titel"});
+                        titel.append(me.getIncidentTitle(incident));
 
-                    titel.on("click", function() {
-                        //dbkjs.map.setCenter(pos, dbkjs.options.zoom);
-                        me.popup.hide();
-                        me.archiefIncidentClick(incident,true);
+                        titel.on("click", function() {
+                            //dbkjs.map.setCenter(pos, dbkjs.options.zoom);
+                            me.popup.hide();
+                            me.archiefIncidentClick(incident,true);
+                        });
+                        div.append(titel);
+
+                        var classificaties = me.getArchiefIncidentClassificaties(incident);
+                        if(classificaties.length > 0) {
+                            div.append(", " + classificaties);
+                        }
+                        div.append(", " + me.getAGSMoment(incident.DTG_START_INCIDENT).fromNow());
+
+                        div.appendTo("#incidentenArchief");
+                        count++;
                     });
-                    div.append(titel);
-
-                    var classificaties = me.getArchiefIncidentClassificaties(incident);
-                    if(classificaties.length > 0) {
-                        div.append(", " + classificaties);
-                    }
-                    div.append(", " + me.getAGSMoment(incident.DTG_START_INCIDENT).fromNow());
-
-                    div.appendTo("#incidentenArchief");
-                    count++;
+                    $("#incidentenArchiefUpdate").empty().append($("<span>" + count + " gearchiveerd" + (count === 1 ? " incident" : "e incidenten" ) + " met inzet brandweereenheden van de laatste 24 uur</span>"));
                 });
-                $("#incidentenArchiefUpdate").empty().append($("<span>" + count + " gearchiveerd" + (count == 1 ? " incident" : "e incidenten" ) + " met inzet brandweereenheden van de laatste 24 uur</span>"));
             });
         });
-
+        return def.promise();
     },
     getArchiefIncidentClassificaties: function(incident) {
         var classificaties = [];
