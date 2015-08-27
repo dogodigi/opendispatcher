@@ -36,6 +36,7 @@ dbkjs.modules.vrhincidenten = {
     activeIncidentIds: null,
     exclamationFlashInterval: null,
     archiefMarker: null,
+    dbkLayer: null,
     encode: function(s) {
         if(s) {
             return dbkjs.util.htmlEncode(s);
@@ -253,6 +254,11 @@ td { padding: 4px !important } ',
         if(dbkjs.options.vrhUsername && !me.token) {
             me.getVrhToken(function() { me.initVrhService(); });
             return;
+        }
+
+        if(dbkjs.options.vrhDbkUrl && me.token) {
+            me.dbkLayer = new OpenLayers.Layer.ArcGIS93Rest("DBK", dbkjs.options.vrhDbkUrl, { transparent: "true", token: me.token }, { maxResolution: 1.68 });
+            dbkjs.map.addLayer(me.dbkLayer);
         }
 
         this.layerUrls = {};
