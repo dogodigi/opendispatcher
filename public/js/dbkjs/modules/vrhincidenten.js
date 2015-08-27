@@ -257,8 +257,10 @@ td { padding: 4px !important } ',
         }
 
         if(dbkjs.options.vrhDbkUrl && me.token) {
-            me.dbkLayer = new OpenLayers.Layer.ArcGIS93Rest("DBK", dbkjs.options.vrhDbkUrl, { transparent: "true", token: me.token }, { maxResolution: 1.68 });
+            me.dbkLayer = new OpenLayers.Layer.ArcGIS93Rest("DBK", dbkjs.options.vrhDbkUrl, { transparent: "true", layers: "hide:0,25", token: me.token }, { maxResolution: 0.42 });
             dbkjs.map.addLayer(me.dbkLayer);
+
+            $("#baselayerpanel_b").append('<hr/><label><input type="checkbox" checked onclick="dbkjs.modules.vrhincidenten.dbkLayer.setVisibility(event.target.checked)">Toon DBK\'s</label>');
         }
 
         this.layerUrls = {};
