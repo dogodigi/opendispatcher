@@ -659,7 +659,7 @@ td { padding: 4px !important } ',
             data: {
                 f: "pjson",
                 token: me.token,
-                where: "INCIDENT_ID = " + incident.INCIDENT_ID + " AND TYPE_KLADBLOK_REGEL = 'KB' AND T_IND_DISC_KLADBLOK_REGEL LIKE '_B_'",
+                where: "INCIDENT_ID = " + incident.INCIDENT_ID + " AND TYPE_KLADBLOK_REGEL = 'KB' AND T_IND_DISC_KLADBLOK_REGEL LIKE '_B_' AND WIJZIGING_ID IS NULL",
                 orderByFields: "DTG_KLADBLOK_REGEL,KLADBLOK_REGEL_ID,VOLG_NR_KLADBLOK_REGEL",
                 outFields: "*"
             },
@@ -804,7 +804,7 @@ td { padding: 4px !important } ',
             data: {
                 f: "pjson",
                 token: me.token,
-                where: "INCIDENT_ID = " + incident.INCIDENT_ID + " AND TYPE_KLADBLOK_REGEL = 'KB' AND T_IND_DISC_KLADBLOK_REGEL LIKE '_B_'",
+                where: "INCIDENT_ID = " + incident.INCIDENT_ID + " AND TYPE_KLADBLOK_REGEL = 'KB' AND T_IND_DISC_KLADBLOK_REGEL LIKE '_B_' AND WIJZIGING_ID IS NULL",
                 orderByFields: "DTG_KLADBLOK_REGEL,KLADBLOK_REGEL_ID,VOLG_NR_KLADBLOK_REGEL",
                 outFields: "*"
             },
