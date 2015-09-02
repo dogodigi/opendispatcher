@@ -1,6 +1,6 @@
 {
     "app": {
-        "title": "Safetymaps DBK",
+        "title": "opendispatcher",
         "queryAddress": "adres",
         "queryNumber": "omsnummer",
         "queryDBK": "dbk",
@@ -44,6 +44,12 @@
         "emergencyContactExtraFunction": "Nevenfunctie",
         "download": "Download bestand",
         "hyperlink": "Open URL"
+    },
+    "bag":{
+      "updated": "Mutatiedatum BAG"
+    },
+    "infra":{
+      "updated": "Mutatiedatum NWB"
     },
     "map": {
         "prev": "Vorige",
@@ -246,7 +252,7 @@
         "link": "Link naar de melding",
         "phone": "Telefoon",
         "kindregards": "Met vriendelijke groet",
-        "team": "de safetymapsDBK applicatie",
+        "team": "de opendispatcher applicatie",
         "help": "Versleep eventueel het symbool op de kaart om aan te geven waar de fout is geconstateerd of waar de melding over gaat.",
         "generalmessage":"Algemene melding",
         "construction": "Gebouw constructie"

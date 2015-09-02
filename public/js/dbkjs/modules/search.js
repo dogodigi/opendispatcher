@@ -1,8 +1,7 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  *
- *  This file is part of opendispatcher. safetymapDBK as a derived product
- *  complies to the same license.
+ *  This file is part of opendispatcher/safetymapsDBK
  *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -78,6 +77,8 @@ dbkjs.modules.search = {
         search_group.append(search_btn_grp);
         search_div.append(search_group);
         search_div.show();
+        // If function is enabled, add ability to search infrastructure point objects
+        $('#search_dropdown').append('<li id="li_s_infra"><a href="#" id="s_infra"><i class="fa fa-car"></i> ' + i18n.t("search.infrastructure") + '</a></li>');
         this.activate();
     },
     fullscreenLayout: function() {
@@ -87,7 +88,7 @@ dbkjs.modules.search = {
                 'id': 'btn_opensearch',
                 'class': 'btn btn-default navbar-btn',
                 'href': '#',
-                'title': i18n.t('search.search')
+                'title': i18n.t('map.search.search')
             })
             .append('<i class="fa fa-search"></i>')
             .click(function(e) {
@@ -129,6 +130,8 @@ dbkjs.modules.search = {
         );
         search_group.append(search_input);
         search_group.append(search_btn_grp);
+        // If function is enabled, add ability to search infrastructure point objects
+        $('#search_dropdown').append('<li id="li_s_infra"><a href="#" id="s_infra"><i class="fa fa-car"></i> ' + i18n.t("search.infrastructure") + '</a></li>');
         return $('<div class="row"></div>').append($('<div class="col-lg-12"></div>').append(search_group));
     },
     zoomAndPulse: function(lonlat){
@@ -215,38 +218,29 @@ dbkjs.modules.search = {
                 's_oms': { 'icon': 'fa fa-bell', 'text': i18n.t("search.oms"), 'placeholder': i18n.t("search.omsplaceholder"), 'search': 'oms' }
             };
 
-        var timer;
-
         searchField.on('keyup', function(e) {
-            if(timer) {
-                clearTimeout(timer);
-            }
-
             var searchText = searchField.val();
-            if(searchText.length <= 3) {
+            if(searchText.length === 0) {
                 $('.search_result').html('');
                 return;
-            };
-
-            timer = setTimeout(function() {
-                if(currentSearch === 'dbk') {
-                    _obj.searchDbkOms(dbkjs.modules.feature.getDbkSearchValues(), searchText);
-                };
-                if(currentSearch === 'oms') {
-                    _obj.searchDbkOms(dbkjs.modules.feature.getOmsSearchValues(), searchText);
-                };
-                if(currentSearch === 'coordinates') {
-                    var loc = _obj.handleCoordinatesSearch();
-                    if(loc && e.keyCode === 13) {
-                        dbkjs.modules.updateFilter(0);
-                        _obj.zoomAndPulse(loc);
-                    }
-                };
-                if(currentSearch === 'address') {
-                    _obj.handleAddressSearch(searchText);
-                };
-            }, 500);
-         });
+            }
+            if(currentSearch === 'dbk') {
+                _obj.searchDbkOms(dbkjs.modules.feature.getDbkSearchValues(), searchText);
+            }
+            if(currentSearch === 'oms') {
+                _obj.searchDbkOms(dbkjs.modules.feature.getOmsSearchValues(), searchText);
+            }
+            if(currentSearch === 'coordinates') {
+                var loc = _obj.handleCoordinatesSearch();
+                if(loc && e.keyCode === 13) {
+                    dbkjs.modules.updateFilter(0);
+                    _obj.zoomAndPulse(loc);
+                }
+            }
+            if(currentSearch === 'address') {
+                _obj.handleAddressSearch(searchText);
+            }
+        });
         $('#search_dropdown a').click(function(e) {
             var searchType = $(this).attr('id'),
                 dropdownText = $('.dropdown-text'),
@@ -397,6 +391,80 @@ dbkjs.modules.search = {
                 mbtn.html('<i class="fa fa-bell"></i>');
                 minp.attr("placeholder", i18n.t("search.omsplaceholder"));
                 dbkjs.modules.feature.search_oms();
+            } else if (searchtype === i18n.t("search.infrastructure")) {
+                mbtn.html('<i class="fa fa-car"></i>');
+                minp.attr("placeholder", i18n.t("search.infraplaceholder"));
+                 if (dbkjs.modules.search) {
+                    dbkjs.modules.search.activateinfra();
+                }
+            }
+            mdiv.removeClass('open');
+            mdiv.removeClass('active');
+            return false;
+        });
+    },
+    activateinfra: function() {
+        var _obj = dbkjs.modules.search;
+        $('#search_input').typeahead({
+            name: 'infra',
+            remote: {
+                url: 'api/autocomplete/autoweg/%QUERY',
+                filter: function(parsedResponse) {
+                    return _obj.parseAddressResponse(parsedResponse);
+                }
+            }
+        });
+        $('#search_input').bind('typeahead:selected', function(obj, datum) {
+            for (var i = 0, len = dbkjs.map.layers.length; i < len; i++) {
+                //get the layer with the pl that is right for infra: ih
+                
+                if(dbkjs.map.layers[i].metadata.pl === "ih"){
+                    //make sure it is visible and that the overlay bar is set to activated
+                    dbkjs.map.layers[i].metadata.div.children('.panel-heading').addClass('active layActive');
+                    dbkjs.map.layers[i].setVisibility(true);
+                }
+            }
+            dbkjs.modules.updateFilter(datum.id);
+            _obj.zoomAndPulse(datum.geometry.getBounds().getCenterLonLat());
+        });
+        $('#search_dropdown a').click(function(e) {
+            $('#search_input').typeahead('destroy');
+            $('#search_input').val('');
+            var mdiv = $(this).parent().parent().parent();
+            var mbtn = $('#search-add-on');
+            var minp = mdiv.parent().find('input');
+            var searchtype = $(this).text().trim();
+            if (searchtype === i18n.t("search.i")) {
+                mbtn.html('<i class="fa fa-home"></i>');
+                minp.attr("placeholder", i18n.t("search.addressplaceholder"));
+                if (dbkjs.modules.search) {
+                    dbkjs.modules.search.activate();
+                }
+            } else if (searchtype === i18n.t("search.coordinates")) {
+                mbtn.html('<i class="fa fa-thumb-tack"></i>');
+                minp.attr("placeholder", i18n.t("search.coordplaceholder"));
+                $('#search_input').change(function() {
+                    var loc = _obj.handleCoordinatesSearch();
+                    if(loc) {
+                        dbkjs.modules.updateFilter(0);
+                        _obj.zoomAndPulse(loc);
+                    }
+                    return false;
+                });
+            } else if (searchtype === i18n.t("search.dbk")) {
+                mbtn.html('<i class="fa fa-building"></i>');
+                minp.attr("placeholder", i18n.t("search.dbkplaceholder"));
+                dbkjs.modules.feature.search_dbk();
+            } else if (searchtype === i18n.t("search.oms")) {
+                mbtn.html('<i class="fa fa-bell"></i>');
+                minp.attr("placeholder", i18n.t("search.omsplaceholder"));
+                dbkjs.modules.feature.search_oms();
+            } else if (searchtype === i18n.t("search.infrastructure")) {
+                mbtn.html('<i class="fa fa-car"></i>');
+                minp.attr("placeholder", i18n.t("search.infraplaceholder"));
+                 if (dbkjs.modules.search) {
+                    dbkjs.modules.search.activateinfra();
+                }
             }
             mdiv.removeClass('open');
             mdiv.removeClass('active');

@@ -1,7 +1,7 @@
 {
-  "name": "safetymapsdbk",
-  "description": "safetymaps dbk - applicatie voor de digitale bereikbaarheidskaart",
-  "version": "2.9.0",
+  "name": "opendispatcher",
+  "description": "opendispatcher - First responder HTML5 nodejs client application",
+  "version": "3.0.0",
   "license": "GPL-3.0+",
   "author": {
     "name": "Milo van der Linden",
@@ -24,33 +24,33 @@
   ],
   "private": true,
   "scripts": {
-    "start": "node index.js"
+    "start": "grunt && node index.js"
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/opengeogroep/safetymapsDBK.git"
+    "url": "http://github.com/dogodigi/opendispatcher.git"
   },
   "dependencies": {
+    "any-db": "*",
+    "any-db-postgres": "*",
+    "clean-css": "*",
+    "compression": "^1.4.3",
     "express": "3.5.0",
-    "nodemailer": "*",
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-copy": "^0.8.0",
+    "grunt-contrib-cssmin": "^0.10.0",
+    "grunt-contrib-uglify": "^0.8.0",
     "i18next": "*",
     "less-middleware": "<2.0.0",
     "jade": "*",
     "nconf": "*",
-    "any-db": "*",
-    "any-db-postgres": "*",
+    "nodemailer": "0.7.1",
     "pg": "*",
     "request": "*",
-    "uglify-js": "*",
-    "clean-css": "*"
+    "uglify-js": "*"
   },
   "devDependencies": {
-    "db-migrate": "^0.7.1",
-    "grunt": "^0.4.5",
-    "grunt-contrib-cssmin": "^0.10.0",
-    "grunt-contrib-less": "^0.12.0",
-    "grunt-contrib-nodeunit": "^0.4.1",
-    "nodeunit-express": "0.0.1",
-    "sqlite3": "^3.0.2"
+    "supertest": "^0.15.0"
   }
 }

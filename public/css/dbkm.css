@@ -1,3 +1,22 @@
+/*!
+ *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
+ * 
+ *  This file is part of opendispatcher/safetymapsDBK
+ *  
+ *  opendispatcher is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  opendispatcher is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 html, body {
     margin: 0;
     width: 100%;
@@ -323,11 +342,15 @@ input[type="radio"], input[type="checkbox"] {
     filter: alpha(opacity=40);
 }
 #footer {
+    /*background: none repeat scroll 0 0 rgba(53, 126, 189, 0.3);*/
+    background: none repeat scroll 0 0 #ffffff;
     border-radius: 5px 0 0 0;
     bottom: 0;
     right: 0;
+    color: #000000;
     position: absolute;
     text-align: right;
+    width: 100%;
     padding-right: 1em;
 }
 #footer #measure {

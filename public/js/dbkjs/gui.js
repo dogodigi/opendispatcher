@@ -22,11 +22,11 @@ dbkjs.gui = {
         });
     },
     // feature.js
-    updateSearchInput: function(obj,dbk_naam_array) {
+    updateSearchInput: function(obj,name, dbk_naam_array) {
         $('#search_input').typeahead('destroy');
         $('#search_input').val('');
         $('#search_input').typeahead({
-            name: 'dbk',
+            name: name,
             local: dbk_naam_array,
             limit: 10
         });
@@ -74,7 +74,7 @@ dbkjs.gui = {
     },
     // jsonDBK.js
     detailsPanelUpdateTitle: function(text) {
-        $('#vectorclickpanel_h').html('<span class="h4"><i class="fa fa-info-circle">&nbsp;' + text + '</span>');
+        $('#vectorclickpanel_h').html('<span class="h4"><i class="fa fa-info-circle"></i>&nbsp;' + text + '</span>');
         //$('#vectorclickpanel_h').html(text);
     },
     // jsonDBK.js

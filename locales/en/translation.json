@@ -44,6 +44,12 @@
         "download": "Download file",
         "hyperlink": "Open hyperlink"
     },
+    "bag":{
+      "updated": "Last address update"
+    },
+    "infra":{
+      "updated": "Last roadnetwork update"
+    },
     "map": {
         "prev": "Previous",
         "next": "Next",

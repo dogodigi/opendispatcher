@@ -1,22 +1,24 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  * 
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher/safetymapsDBK
  *  
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global OpenLayers */
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
@@ -28,11 +30,11 @@ dbkjs.Capabilities = dbkjs.Class({
     VERSION: '1.1.1',
     REQUEST: 'GetCapabilities',
     title: 'WMS lagen',
-    onLayerLoadError: function(e) {
+    onLayerLoadError: function (e) {
         /* Display error message, etc */
         //alert(e);
     },
-    initialize: function(options){
+    initialize: function (options) {
         this.options = OpenLayers.Util.extend({}, options);
         OpenLayers.Util.extend(this, options);
         var _obj = this;
@@ -43,7 +45,7 @@ dbkjs.Capabilities = dbkjs.Class({
                 VERSION: this.VERSION, // For example, '1.1.1'
                 REQUEST: this.REQUEST
             },
-            success: function(r) {
+            success: function (r) {
                 var doc = r.responseXML;
                 if (!doc || !doc.documentElement) {
                     doc = r.responseText;
@@ -51,7 +53,7 @@ dbkjs.Capabilities = dbkjs.Class({
                 var c = _obj.wmsCapabilitiesFormat.read(doc);
                 if (!c || !c.capability) {
                     dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
-                    if(dbkjs.loadingcapabilities === 0){
+                    if (dbkjs.loadingcapabilities === 0) {
                         dbkjs.finishMap();
                     }
                     _obj.onLayerLoadError(c);
@@ -89,12 +91,12 @@ dbkjs.Capabilities = dbkjs.Class({
                     }
                     
                     //loop through all the layers and make them available
-                    $.each(c.capability.layers, function(lkey, lval) {
+                    $.each(c.capability.layers, function (lkey, lval) {
                         var metadata = {};
-                        if (!dbkjs.util.isJsonNull(lval.abstract)){
+                        if (!dbkjs.util.isJsonNull(lval.abstract)) {
                             metadata.abstract = lval.abstract;
                         }
-                        if (!dbkjs.util.isJsonNull(options.pl)){
+                        if (!dbkjs.util.isJsonNull(options.pl)) {
                             metadata.pl = options.pl + lkey;
                         }
                         var myLayer = new dbkjs.Layer(lval.title,
@@ -107,15 +109,15 @@ dbkjs.Capabilities = dbkjs.Class({
                         );
                     });
                     dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
-                    if(dbkjs.loadingcapabilities === 0){
+                    if (dbkjs.loadingcapabilities === 0) {
                         dbkjs.finishMap();
                     }
                     return;
                 }
             },
-            failure: function(r) {
+            failure: function (r) {
                 dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
-                if(dbkjs.loadingcapabilities === 0){
+                if (dbkjs.loadingcapabilities === 0) {
                     dbkjs.finishMap();
                 }
                 _obj.onLayerLoadError(r);

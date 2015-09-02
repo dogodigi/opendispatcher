@@ -3,26 +3,26 @@
         "port": 3000
     },
     "database": {
-      "user": "user",
-      "password": "password",
+      "user": "ubuntu",
+      "password": "",
       "host": "localhost",
       "port": 5432,
-      "dbname": "demo"
+      "dbname": "circle_test"
     },
     "bag":{
-      "user": "user",
-      "password": "password",
+      "user": "ubuntu",
+      "password": "",
       "host": "localhost",
       "port": 5432,
-      "dbname": "bag"
+      "dbname": "circle_test"
     },
     "media": { 
       "path" : "/real/path/to/media",
       "symbols": "/real/path/to/symbols"
     },
     "support": {
-        "sendto": "boo@default.com",
-        "from": "noreply@default.com",
+        "sendto": "support@opendispatcher.org",
+        "from": "noreply@opendispatcher.org",
         "ccsender": true,
         "smtp":{
             "host": "smtphost",

@@ -1,26 +1,29 @@
 /**
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  * 
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher/safetymapsDBK
  *  
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global exports, require, global */
 
 var web = require('../controllers/web.js'),
         dbk = require('../controllers/dbk.js'),
         bag = require('../controllers/bag.js'),
+        infra = require('../controllers/infrastructure.js'),
         incidents = require('../controllers/incidents.js'),
         emailer = require('../controllers/emailer.js'),
         querystring = require('querystring'),
@@ -35,9 +38,8 @@ function nen1414(req, res) {
     global.pool.query(query_str,
             function (err, result) {
                 if (err) {
-                    res.render('error', {title: 'Fout opgetreden', error: 'De NEN1414 bibliotheek kan niet worden getoond'});
+                    res.status(400).render('error', {title: 'Fout opgetreden', error: 'De NEN1414 bibliotheek kan niet worden getoond'});
                 } else {
-                    console.log(result.rows);
                     res.render('nen1414', {title: 'nen1414', items: result.rows});
                 }
                 return;
@@ -49,13 +51,13 @@ function nen1414(req, res) {
 function index(req, res) {
     var activelang;
     if (req.i18n.language() !== 'nl' && req.i18n.language() !== 'dev' && req.i18n.language() !== 'en') {
-        req.i18n.setLng('nl');
-        activelang = 'nl';
+        req.i18n.setLng('en');
+        activelang = 'en';
     } else {
         activelang = req.i18n.language();
     }
-    if (req.headers['x-safetymaps-dn']) {
-        var arr1 = req.headers['x-safetymaps-dn'].split('/');
+    if (req.headers['x-opendispatcher-dn']) {
+        var arr1 = req.headers['x-opendispatcher-dn'].split('/');
         var user = {};
         for (index = 0; index < arr1.length; ++index) {
             var arr2 = arr1[index].split('=');
@@ -97,9 +99,12 @@ function setup(app) {
     app.post('/api/annotation', emailer.postAnnotation);
     app.get('/api/gebied/:id.json', dbk.getGebied);
     app.get('/api/features.json', dbk.getFeatures);
+    app.get('/api/bag/info', bag.getVersion);
     app.get('/api/bag/adres/:id', bag.getAdres);
     app.get('/api/bag/panden/:id', bag.getPanden);
+    app.get('/api/infra/info', infra.getVersion);
     app.get('/api/autocomplete/:searchphrase', bag.autoComplete);
+    app.get('/api/autocomplete/:searchtype/:searchphrase', infra.autoComplete);
     app.get('/api/incidents/list/classifications', incidents.getGroupByClasses);
     app.get('/api/incidents/list/class/1', incidents.getGroupByClass1);
     app.get('/api/incidents/list/class/2', incidents.getGroupByClass2);
@@ -129,7 +134,7 @@ function setup(app) {
             var options = {
                 url: req.query.q,
                 headers: {
-                    'User-Agent': 'safetymapsDBK'
+                    'User-Agent': 'opendispatcher'
                 },
                 timeout: 6000 //6 seconds
             };

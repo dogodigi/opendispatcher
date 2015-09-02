@@ -43,6 +43,12 @@
         "download": "app.download",
         "hyperlink": "app.hyperlink"
     },
+    "bag":{
+      "updated": "bag.updated"
+    },
+    "infra":{
+      "updated": "infra.updated"
+    },
     "map": {
         "prev": "map.prev",
         "next": "map.next",

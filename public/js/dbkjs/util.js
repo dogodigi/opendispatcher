@@ -1,27 +1,33 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  *
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher/safetymapsDBK
  *
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-Array.prototype.unique = function(){
-  return this.filter(
-      function(a){return !this[a] ? this[a] = true : false;}, {}
-  );
+
+/* global OpenLayers, i18n, jsts, moment */
+
+Array.prototype.unique = function () {
+    return this.filter(
+            function (a) {
+                return !this[a] ? this[a] = true : false;
+            }, {}
+    );
 };
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 $.browser = {};
@@ -32,11 +38,11 @@ $.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 $.browser.device = (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase()));
 dbkjs.argParser =
     OpenLayers.Class(OpenLayers.Control.ArgParser, {
-        setMap: function(map) {
+        setMap: function (map) {
             OpenLayers.Control.prototype.setMap.apply(this, arguments);
 
             //make sure we dont already have an arg parser attached
-            for(var i=0, len=this.map.controls.length; i<len; i++) {
+            for (var i = 0, len = this.map.controls.length; i < len; i++) {
                 var control = this.map.controls[i];
                 if ( (control !== this) &&
                      (control.CLASS_NAME === "OpenLayers.Control.ArgParser") ) {
@@ -57,8 +63,7 @@ dbkjs.argParser =
                 // Be careful to set layer first, to not trigger unnecessary layer loads
                 if (args.b) {
                     // when we add a new layer, set its visibility
-                    this.map.events.register('addlayer', this,
-                                             this.configureLayers);
+                    this.map.events.register('addlayer', this, this.configureLayers);
                     this.configureLayers();
                 }
                 if (args.lat && args.lon) {

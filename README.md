@@ -1,46 +1,51 @@
-# safetymapsDBK
+# CircleCi Build status
 
-Digitale bereikbaarheidskaarten voor de Brandweer.
+[![Circle CI](https://circleci.com/gh/dogodigi/opendispatcher.svg?style=svg)](https://circleci.com/gh/dogodigi/opendispatcher)
 
-Gebruikt de volgende componenten:
+# opendispatcher
 
-Node.js, Express, Postgresql/Postgis, Jade, Fontawesome, jQuery, OpenLayers, moment.js en Bootstrap.
+Helping first responders during incidents.
 
-[Demo](http://demo.safetymaps.nl)
+Uses:
+
+Node.js, Express, Postgresql/Postgis, Jade, Fontawesome, jQuery, OpenLayers, moment.js and Bootstrap.
 
 ## Requirements
+
 * [NodeJS & NPM](http://nodejs.org/download)
-* Git, uiteraard
-* [Python (versie 2.7)] (https://www.python.org/download/releases/2.7.6/) Windows: voeg aan de system variables PYTHON met als waarde de bestandsnaam python.exe (inclusief directory) toe.
-* [PostgreSQL (versie 9.3)] (http://www.postgresql.org/download/) Windows: voeg aan de system variables PATH met als waarde de bin directory van PostgreSQL toe.
+* Git
+
+### Windows specifics
+* [Python (version 2.7)] (https://www.python.org/download/releases/2.7.6/) Windows: add PYTHON system variable pointing to the full path to python.exe.
+* [PostgreSQL (version 9.3)] (http://www.postgresql.org/download/) Windows: Add to the PATH system variable the /bin directory for PostgreSQL.
 * Microsoft Visual Studio C++
+* Restart Windows after altering system variables.
 
-Windows: na aanpassen system variables opnieuw opstarten.
+## Installation
 
-## Installatie
+From a console or terminal:
 
-Vanaf een terminal:
-
-    git clone git@github.com:opengeogroep/safetymapsDBK.git
-    cd safetymapsDBK
+    git clone git@github.com:dogodigi/opendispatcher.git
+    cd opendispatcher
     npm install .
     
-*Let op:* Controleer het npm install . proces op fouten. De installatie vertelt namelijk of je b.v. de postgresql client nog moet installeren
+*Note:* Check that `npm install .` doesn't generate errors. The installation
+ process will tell you what components are missing (f.i. postgresql)
 
-Maak een config.json bestand aan.
+Create a file called config.json.
 
-*Tip:* kopieer config.default.json naar config.json en vul de juiste waarden in.
+*Note:* you can copy `config.default.json` to `config.json` to get hints on the required variables.
 
-start de applicatie in "development mode":
+To start the applicatie in "development mode":
 
     npm start
 
-start de applicatie in "production mode":
+To start the application in "production mode":
 
-    export NODE_ENV=production && npm start
+export NODE_ENV=production && npm start
 
-Of met forever:
+Or, using forever:
 
-    NODE_ENV=production /usr/bin/forever start -c "npm start" /home/webdev/nodeapp/
+    NODE_ENV=production /usr/bin/forever start -c "npm start" /path/to/opendispatcher/
 
-Ga met een browser naar [http://localhost:3000](http://localhost:3000) als het goed is is de applicatie nu gestart.
+Point your browser to [http://localhost:3000](http://localhost:3000) to check if the application is running.

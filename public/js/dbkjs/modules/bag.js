@@ -1,20 +1,20 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  * 
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher/safetymapsDBK
  *  
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -131,13 +131,11 @@ dbkjs.modules.bag = {
             dv_panel.append(dv_panel_heading);
             var dv_panel_content = $('<div id="collapse_' + _obj.id + '" class="panel-collapse collapse"></div>');
             dv_panel_content.append('<div class="panel-body">' +
-                    '<p>Toont de panden uit de BAG en geeft de mogelijkheid op een pand ' +
-                    'te klikken om vervolgens informatie te krijgen over de panden en verblijfsobjecten.' +
-                    'Deze laag wordt direct betrokken bij PDOK.</p>' +
+                    '<p>' + i18n.t('dialogs.bagdescription') + '</p>' +
                     '<p>' +
-                    '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#cccccc;border:3px solid #000000;">&nbsp;</div></div><div class="col-xs-10"> Panden</div></div>' +
-                    '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#D7DF01;border:2px solid #ff0000;">&nbsp;</div></div><div class="col-xs-10"> Geselecteerd pand</div></div>' +
-                    '<div class="row"><div class="col-xs-2 text-center"><i class="fa fa-circle" style="color:#610B21;"></i></div><div class="col-xs-10"> Verblijfsobject(en) in geselecteerd pand</div></div>' +
+                    '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#cccccc;border:3px solid #000000;">&nbsp;</div></div><div class="col-xs-10"> ' + i18n.t('dialogs.bagbuildings') + '</div></div>' +
+                    '<div class="row"><div class="col-xs-2"><div style="margin:4px 0 4px 0;background-color:#D7DF01;border:2px solid #ff0000;">&nbsp;</div></div><div class="col-xs-10"> ' + i18n.t('dialogs.selectedbuildings') + '</div></div>' +
+                    '<div class="row"><div class="col-xs-2 text-center"><i class="fa fa-circle" style="color:#610B21;"></i></div><div class="col-xs-10"> ' + i18n.t('dialogs.bagvbuildings') + '</div></div>' +
                     '</p></div>');
             dv_panel.append(dv_panel_content);
             $('#overlaypanel_b1').append(dv_panel);

@@ -1,31 +1,33 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  *
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher/safetymapsDBK
  *
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global OpenLayers, imagesBase64 */
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.config = dbkjs.config || {};
-OpenLayers.Renderer.symbol.arrow = [0,2, 1,0, 2,2, 1,0, 0,2];
+OpenLayers.Renderer.symbol.arrow = [0, 2, 1, 0, 2, 2, 1, 0, 0, 2];
 
 // Factor to scale styling elements with
 dbkjs.getStyleScaleFactor = function() {
-    if(!dbkjs.options.styleScaleAdjust) {
+    if (!dbkjs.options.styleScaleAdjust) {
         return 1;
     } else {
         dbkjs.options.originalScale = dbkjs.options.originalScale ? dbkjs.options.originalScale : 595.2744;
@@ -44,102 +46,106 @@ dbkjs.redrawScaledLayers = function() {
     dbkjs.protocol.jsonDBK.layerTekstobject.redraw();
 };
 
-// Return a styling value with user size adjustment and scaled according to map
-// map scale (if style scaling is enabled). If featureAttributeValue is not
-// undefined use that instead of the first argument. If attributeScaleFactor
-// is not undefined scale the featureAttributeValue by that factor.
-dbkjs.scaleStyleValue = function(value, featureAttributeValue, attributeScaleFactor) {
-    if(featureAttributeValue !== undefined) {
+/**
+ * 
+ * Return a styling value with user size adjustment and scaled according to map
+ * map scale (if style scaling is enabled). If featureAttributeValue is not
+ * undefined use that instead of the first argument. If attributeScaleFactor
+ * is not undefined scale the featureAttributeValue by that factor.
+ * 
+ * @param {type} value
+ * @param {type} featureAttributeValue
+ * @param {type} attributeScaleFactor
+ * @returns {Number|dbkjs.options.originalScaledbkjs.options.originalScale|
+ */
+dbkjs.scaleStyleValue = function (value, featureAttributeValue, attributeScaleFactor) {
+    if (featureAttributeValue) {
         attributeScaleFactor = attributeScaleFactor ? attributeScaleFactor : 1;
         value = featureAttributeValue * attributeScaleFactor;
     }
     value = value + (dbkjs.options.styleSizeAdjust ? dbkjs.options.styleSizeAdjust : 0);
     return value * dbkjs.getStyleScaleFactor();
-
 };
 
 dbkjs.config.styles = {
     dbkfeature: new OpenLayers.StyleMap({
-       "default" : new OpenLayers.Style({
-        cursor: "pointer",
-        display: "${mydisplay}",
-        graphicWidth: "${mygraphicwidth}",
-        graphicHeight: "${mygraphicheight}",
-        fontColor: "${myfontcolor}",
-        fontSize: "${myfontsize}",
-        fontWeight: "${myfontweight}",
-        externalGraphic: "${myicon}",
-        label: "${labeltext}",
-        labelSelect: true,
-        labelAlign: "${mylabelalign}",
-        labelXOffset: "${mylabelxoffset}",
-        labelYOffset: "${mylabelyoffset}",
-        labelOutlineWidth: 5,
-        labelOutlineColor: '#000000'
-    }, {
-        context: {
-            mydisplay: function(feature) {
-                if(dbkjs.map.getResolution() > 1) {
-                    // pandgeometrie not visible above resolution 1, always show feature icon
-                    return "true";
-                } else {
-                    if(dbkjs.options.alwaysShowDbkFeature) {
-                        // Always show feature except the active feature
+        "default": new OpenLayers.Style({
+            cursor: "pointer",
+            display: "${mydisplay}",
+            graphicWidth: "${mygraphicwidth}",
+            graphicHeight: "${mygraphicheight}",
+            fontColor: "${myfontcolor}",
+            fontSize: "${myfontsize}",
+            fontWeight: "${myfontweight}",
+            externalGraphic: "${myicon}",
+            label: "${labeltext}",
+            labelSelect: true,
+            labelAlign: "${mylabelalign}",
+            labelXOffset: "${mylabelxoffset}",
+            labelYOffset: "${mylabelyoffset}",
+            labelOutlineWidth: 5,
+            labelOutlineColor: '#000000'
+        }, {
+            context: {
+                mydisplay: function(feature) {
+                    if (dbkjs.map.getResolution() > 1) {
+                        // pandgeometrie not visible above resolution 1, always show feature icon
+                        return "true";
+                    } else {
+                        if (dbkjs.options.alwaysShowDbkFeature) {
+                            // Always show feature except the active feature
+                            if (dbkjs.options.dbk && feature.attributes.identificatie === dbkjs.options.dbk) {
+                                return "none";
+                            } else {
+                                // Controleer of actieve DBK  meerdere verdiepingen heeft
+                                // en feature om display van te bepalen niet het hoofdobject
+                                // is van de actieve DBK. Zo ja, dan niet tonen
+                                // Gebied heeft geen verdiepingen
+                                if (dbkjs.options.feature && dbkjs.options.feature.verdiepingen && dbkjs.options.feature.verdiepingen.length > 1) {
+                                    // Het ID van de dbk waarvan we de display property
+                                    // bepalen
+                                    var verdiepingCheckDbkId = feature.attributes.identificatie;
 
-                        if(dbkjs.options.dbk && feature.attributes.identificatie === dbkjs.options.dbk) {
-                            return "none";
-                        } else {
-                            // Controleer of actieve DBK  meerdere verdiepingen heeft
-                            // en feature om display van te bepalen niet het hoofdobject
-                            // is van de actieve DBK. Zo ja, dan niet tonen
-
-                                                        // Gebied heeft geen verdiepingen
-                            if(dbkjs.options.feature && dbkjs.options.feature.verdiepingen && dbkjs.options.feature.verdiepingen.length > 1) {
-                                // Het ID van de dbk waarvan we de display property
-                                // bepalen
-                                var verdiepingCheckDbkId = feature.attributes.identificatie;
-
-                                // Loop over alle verdiepingen van actieve feature en check
-                                // of verdieping id overeenkomt met dbkId
-                                for(var i = 0; i < dbkjs.options.feature.verdiepingen.length; i++) {
-                                    var verdieping = dbkjs.options.feature.verdiepingen[i];
-                                    if(verdieping.identificatie === verdiepingCheckDbkId) {
-                                        return "none";
+                                    // Loop over alle verdiepingen van actieve feature en check
+                                    // of verdieping id overeenkomt met dbkId
+                                    for (var i = 0; i < dbkjs.options.feature.verdiepingen.length; i++) {
+                                        var verdieping = dbkjs.options.feature.verdiepingen[i];
+                                        if (verdieping.identificatie === verdiepingCheckDbkId) {
+                                            return "none";
+                                        }
                                     }
                                 }
+                                return "true";
                             }
-
-                            return "true";
+                        } else {
+                            // User should switch layer "Naburige DBK's" on (if configured)
+                            return "none";
                         }
-                    } else {
-                        // User should switch layer "Naburige DBK's" on (if configured)
-                        return "none";
                     }
-                }
-            },
-            mygraphicheight: function(feature) {
-                if (feature.cluster) {
-                    return 56;
-                } else {
-                    if (feature.attributes.typeFeature === 'Object') {
-                        return 38;
+                },
+                mygraphicheight: function (feature) {
+                    if (feature.cluster) {
+                        return 56;
                     } else {
-                        return 65;
+                        if (feature.attributes.typeFeature === 'Object') {
+                            return 38;
+                        } else {
+                            return 65;
+                        }
                     }
-                }
 
-            },
-            mygraphicwidth: function(feature) {
-                if (feature.cluster) {
-                    return 85;
-                } else {
-                    if (feature.attributes.typeFeature === 'Object') {
-                        return 24;
-                    } else {
+                },
+                mygraphicwidth: function(feature) {
+                    if (feature.cluster) {
                         return 85;
+                    } else {
+                        if (feature.attributes.typeFeature === 'Object') {
+                            return 24;
+                        } else {
+                            return 85;
+                        }
                     }
-                }
-            },
+                },
             myfontweight: function(feature) {
                 if (feature.cluster) {
                     return "bold";
@@ -235,11 +241,11 @@ dbkjs.config.styles = {
             fillOpacity: 0.2,
             strokeColor: "${mycolor}",
             strokeWidth: 1
-        },{
-            context:{
+        }, {
+            context: {
                 mycolor: function(feature) {
                     if (feature.attributes.type) {
-                        if (feature.attributes.type === "gebied"){
+                        if (feature.attributes.type === "gebied") {
                             return "#B45F04";
                         } else {
                             return "#66ff66";
@@ -274,71 +280,71 @@ dbkjs.config.styles = {
             labelOutlineWidth: 1,
             label: "${mylabel}"
         }, {
-        context: {
-            mycolor: function(feature) {
-                switch(feature.attributes.type) {
-                    case "30 minuten brandwerende scheiding":
-                        return "#c1001f";
-                        break;
-                    case "60 minuten brandwerende scheiding":
-                        return "#5da03b";
-                        break;
-                    case "> 60 minuten brandwerende scheiding":
-                        return "#ff0000";
-                        break;
-                    case "Rookwerende scheiding":
-                        return "#009cdd";
-                        break;
-                    default:
-                        return "#000000";
-                }
+            context: {
+                mycolor: function(feature) {
+                    switch (feature.attributes.type) {
+                        case "30 minuten brandwerende scheiding":
+                            return "#c1001f";
+                            break;
+                        case "60 minuten brandwerende scheiding":
+                            return "#5da03b";
+                            break;
+                        case "> 60 minuten brandwerende scheiding":
+                            return "#ff0000";
+                            break;
+                        case "Rookwerende scheiding":
+                            return "#009cdd";
+                            break;
+                        default:
+                            return "#000000";
+                    }
 
-            },
-            mystrokewidth: function(feature) {
-                switch(feature.attributes.type) {
-                    case "60 minuten brandwerende scheiding":
-                    case "> 60 minuten brandwerende scheiding":
-                        return dbkjs.scaleStyleValue(4);
-                        break;
-                    default:
-                        return dbkjs.scaleStyleValue(2);
-                }
+                },
+                mystrokewidth: function(feature) {
+                    switch (feature.attributes.type) {
+                        case "60 minuten brandwerende scheiding":
+                        case "> 60 minuten brandwerende scheiding":
+                            return dbkjs.scaleStyleValue(4);
+                            break;
+                        default:
+                            return dbkjs.scaleStyleValue(2);
+                    }
 
-            },
-            mystrokedashstyle: function(feature) {
-                switch(feature.attributes.type) {
-                    case "30 minuten brandwerende scheiding":
-                        return dbkjs.scaleStyleValue(8) + " " + dbkjs.scaleStyleValue(4);
-                        break;
-                    case "60 minuten brandwerende scheiding":
-                        return dbkjs.scaleStyleValue(4) + " " + dbkjs.scaleStyleValue(4);
-                        break;
-                    case "> 60 minuten brandwerende scheiding":
-                        return "solid";
-                        break;
-                    case "Rookwerende scheiding":
-                        return dbkjs.scaleStyleValue(8) + " " + dbkjs.scaleStyleValue(4) + dbkjs.scaleStyleValue(2) + " " + dbkjs.scaleStyleValue(4);
-                        break;
-                    default:
-                        return dbkjs.scaleStyleValue(10) + " " + dbkjs.scaleStyleValue(10);
-                }
-            },
-            mylabel: function(feature) {
-                if(feature.attributes.label){
-                    return feature.attributes.label;
-                } else {
-                    return "";
+                },
+                mystrokedashstyle: function(feature) {
+                    switch (feature.attributes.type) {
+                        case "30 minuten brandwerende scheiding":
+                            return dbkjs.scaleStyleValue(8) + " " + dbkjs.scaleStyleValue(4);
+                            break;
+                        case "60 minuten brandwerende scheiding":
+                            return dbkjs.scaleStyleValue(4) + " " + dbkjs.scaleStyleValue(4);
+                            break;
+                        case "> 60 minuten brandwerende scheiding":
+                            return "solid";
+                            break;
+                        case "Rookwerende scheiding":
+                            return dbkjs.scaleStyleValue(8) + " " + dbkjs.scaleStyleValue(4) + dbkjs.scaleStyleValue(2) + " " + dbkjs.scaleStyleValue(4);
+                            break;
+                        default:
+                            return dbkjs.scaleStyleValue(10) + " " + dbkjs.scaleStyleValue(10);
+                    }
+                },
+                mylabel: function (feature) {
+                    if (feature.attributes.label) {
+                        return feature.attributes.label;
+                    } else {
+                        return "";
+                    }
                 }
             }
-        }
-    }),
-    "temporary": new OpenLayers.Style({strokeColor: "#009FC3"}),
-    "select": new OpenLayers.Style({strokeColor: "#8F00C3"})
+        }),
+        "temporary": new OpenLayers.Style({strokeColor: "#009FC3"}),
+        "select": new OpenLayers.Style({strokeColor: "#8F00C3"})
     }),
     hulplijn: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
-            strokeLinecap : "butt",
+            strokeLinecap: "butt",
             strokeDashstyle: "${mydash}",
             fillColor: "${mycolor}",
             fillOpacity: "${myopacity}",

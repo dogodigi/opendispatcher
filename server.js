@@ -1,10 +1,7 @@
-/* global global */
-
 /**
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  * 
- *  This file is part of opendispatcher. safetymapDBK as a derived product
- *  complies to the same license.
+ *  This file is part of opendispatcher/safetymapsDBK
  *  
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,6 +18,8 @@
  *
  */
 
+/* global global */
+
 // To run in production: NODE_ENV=production
 
 var express = require('express'),
@@ -29,7 +28,9 @@ var express = require('express'),
         path = require('path'),
         i18n = require('i18next'),
         anyDB = require('any-db'),
-        fs = require('fs');
+        fs = require('fs'),
+        compress = require('compression');
+;
 
 global.conf = require('nconf');
 // First consider commandline arguments and environment variables, respectively.
@@ -71,7 +72,15 @@ var bagURL = 'postgres://' +
         global.conf.get('bag:host') + ':' +
         global.conf.get('bag:port') + '/' +
         global.conf.get('bag:dbname');
-
+if (global.conf.get('infrastructure:user')) {
+    var infraURL = 'postgres://' +
+            global.conf.get('infrastructure:user') + ':' +
+            global.conf.get('infrastructure:password') + '@' +
+            global.conf.get('infrastructure:host') + ':' +
+            global.conf.get('infrastructure:port') + '/' +
+            global.conf.get('infrastructure:dbname');
+    global.infra = anyDB.createPool(infraURL, {min: 2, max: 20});
+}
 global.pool = anyDB.createPool(dbURL, {min: 2, max: 20});
 global.bag = anyDB.createPool(bagURL, {min: 2, max: 20});
 
@@ -88,24 +97,19 @@ app.configure('development', function () {
     app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
 app.configure('production', function () {
-   var expressLogFile = fs.createWriteStream('./logs/express.log', {flags: 'a'});
     app.use(express.logger({stream: expressLogFile}));
     app.use(express.errorHandler());
 });
 // Configuration
 app.configure(function () {
     app.set('port', process.env.PORT || global.conf.get('http:port'));
+    app.use(compress());
     app.enable('trust proxy');
     app.use(i18n.handle);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
     app.locals.pretty = true;
     app.use(express.favicon(__dirname + '/public/images/favicon.ico', {maxAge: 25920000000}));
-    app.use(require('less-middleware')(path.join(__dirname, 'less'), {
-        dest: __dirname + '/public',
-        prefix: '/public',
-        debug: true
-    }));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use('/locales', express.static(__dirname + '/locales'));

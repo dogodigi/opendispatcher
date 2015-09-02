@@ -1,22 +1,24 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  *
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher/safetymapsDBK
  *
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global i18n */
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
@@ -50,6 +52,10 @@ dbkjs.modules.feature = {
 //    }),
     caches: {},
     getActive: function() {
+        var _obj = dbkjs.modules.feature;
+        if (_obj.active){
+            return feature;
+        } else {
         var _obj = dbkjs.modules.feature;
         var feature;
         var _search_field = 'identificatie';
@@ -88,6 +94,7 @@ dbkjs.modules.feature = {
                 return false;
             }
         }
+    }
     },
     register: function(options) {
         var _obj = dbkjs.modules.feature;
@@ -101,18 +108,15 @@ dbkjs.modules.feature = {
             },
             strategies: [
                 new OpenLayers.Strategy.Cluster({
-                    distance: 80,
-                    threshold: 3
+                    distance: 100,
+                    threshold: 2
                 })
             ],
             styleMap: dbkjs.config.styles.dbkfeature
         });
         _obj.layer.setZIndex(2006);
-        //_obj.sketch.setZIndex(2002);
         _obj.layer.displayInLayerSwitcher = false;
-        //_obj.sketch.displayInLayerSwitcher = false;
         dbkjs.map.addLayer(_obj.layer);
-        //Add the layer to the selectControl
         dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.layer));
         dbkjs.selectControl.activate();
         _obj.layer.events.on({
@@ -135,14 +139,6 @@ dbkjs.modules.feature = {
         $.getJSON(dbkjs.dataPath + 'features.json', params).done(function(data) {
             var geojson_format = new OpenLayers.Format.GeoJSON();
                 _obj.features = geojson_format.read(data);
-//                var test = data.features.where( "( el, i, res, param ) => el.properties.gevaarlijkestof !== null");
-//                console.log(test.length + ' DBK Features met gevaarlijke stoffen');
-//                var test = data.features.where( "( el, i, res, param ) => el.properties.OMSNummer !== null");
-//                console.log(test.length + ' DBK Features met OMS nummer');
-//                var test = data.features.where( "( el, i, res, param ) => el.properties.typeFeature === 'Object'");
-//                console.log(test.length + ' DBK objecten');
-//                var test = data.features.where( "( el, i, res, param ) => el.properties.typeFeature === 'Gebied'");
-//                console.log(test.length + ' DBK gebieden');
             if(dbkjs.modules.filter && dbkjs.modules.filter.selectie.length > 0 ) {
                 var selfeat = [];
                 $.each(_obj.features, function(fix,feat){
@@ -164,7 +160,7 @@ dbkjs.modules.feature = {
         }).fail(function( jqxhr, textStatus, error ) {
             $('#btn_refresh > i').removeClass('fa-spin');
             dbkjs.options.feature = null;
-            dbkjs.gui.showError('Features konden niet worden ingelezen');
+            dbkjs.gui.showError(" " + i18n.t('app.errorfeatures'));
         });
     },
     featureInfohtml: function(feature) {
@@ -179,12 +175,12 @@ dbkjs.modules.feature = {
     search_dbk: function() {
         var _obj = dbkjs.modules.feature;
         var dbk_naam_array = _obj.getDbkSearchValues();
-        dbkjs.gui.updateSearchInput(_obj, dbk_naam_array);
+        dbkjs.gui.updateSearchInput(_obj, 'dbk', dbk_naam_array);
     },
     search_oms: function() {
         var _obj = dbkjs.modules.feature;
-        var dbk_naam_array = _obj.getOmsSearchValues();
-        dbkjs.gui.updateSearchInput(_obj, dbk_naam_array);
+        var oms_naam_array = _obj.getOmsSearchValues();
+        dbkjs.gui.updateSearchInput(_obj, 'oms', oms_naam_array);
     },
     getDbkSearchValues: function() {
         var _obj = dbkjs.modules.feature;
@@ -205,7 +201,7 @@ dbkjs.modules.feature = {
     },
     getOmsSearchValues: function() {
         var _obj = dbkjs.modules.feature,
-            dbk_naam_array = [];
+            oms_naam_array = [];
         if(_obj.caches.hasOwnProperty('oms')) {
             return _obj.caches.oms;
         }
@@ -214,10 +210,10 @@ dbkjs.modules.feature = {
                 // Extend feature object with value and id for searching
                 feature.value = feature.attributes.OMSNummer + ' ' + feature.attributes.formeleNaam;
                 feature.id = feature.attributes.identificatie;
-                dbk_naam_array.push(feature);
+                oms_naam_array.push(feature);
             }
         });
-        _obj.caches.oms = dbk_naam_array;
+        _obj.caches.oms = oms_naam_array;
         return _obj.caches.oms;
     },
     handleDbkOmsSearch: function(object) {
@@ -316,18 +312,14 @@ dbkjs.modules.feature = {
                 }
             } else {
                 _obj.currentCluster = [];
-                _obj.showFeatureInfo(e.feature);
+                dbkjs.protocol.jsonDBK.process(e.feature);
+                _obj.zoomToFeature(e.feature);
+                if(dbkjs.viewmode === 'fullscreen') {
+                    dbkjs.util.getModalPopup('infopanel').hide();
+                } else {
+                    dbkjs.gui.infoPanelHide();
+                }
             }
-        }
-    },
-    showFeatureInfo: function(feature) {
-        var _obj = dbkjs.modules.feature;
-        dbkjs.protocol.jsonDBK.process(feature);
-        _obj.zoomToFeature(feature);
-        if(dbkjs.viewmode === 'fullscreen') {
-            dbkjs.util.getModalPopup('infopanel').hide();
-        } else {
-            dbkjs.gui.infoPanelHide();
         }
     },
     handleFeatureTitleClick: function(e) {

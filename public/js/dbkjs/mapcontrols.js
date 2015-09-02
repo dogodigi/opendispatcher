@@ -1,3 +1,5 @@
+/* global OpenLayers */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.mapcontrols = {
@@ -35,8 +37,13 @@ dbkjs.mapcontrols = {
         );
     },
     //dbkjs.js: init
-    registerMapEvents: function() {
+    registerMapEvents: function(baselayer_ul) {
+        $('#baselayerpanel_b').append(baselayer_ul);
         dbkjs.map.events.register("moveend", dbkjs.map, function() {
+            // Clear print when active. It should not be available after move.
+            if(dbkjs.modules.print.printbox){
+                dbkjs.modules.print.clear();
+            }
             //check if the naviHis has any content
             if (dbkjs.naviHis.nextStack.length > 0) {
                 //enable next button

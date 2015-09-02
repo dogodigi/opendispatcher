@@ -1,22 +1,24 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  *
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher/safetymapsDBK
  *
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global OpenLayers */
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
@@ -25,13 +27,11 @@ dbkjs.Layer = dbkjs.Class({
     layer: null,
     div: null,
     legend: null,
-    initialize: function(name, url, params, options, parent, index, metadata, layertype) {
+    initialize: function (name, url, params, options, parent, index, metadata, layertype) {
         var ly;
         var defaultparams = {
             format: 'image/png',
             transparent: true
-                    //tiled: true,
-                    //tilesorigin: [dbkjs.map.maxExtent.left, dbkjs.map.maxExtent.bottom]
         };
         var defaultoptions = {
             transitionEffect: 'resize',
@@ -74,6 +74,12 @@ dbkjs.Layer = dbkjs.Class({
                         params,
                         options
                         );
+                ly.events.register("loadstart", ly, function () {
+                    dbkjs.util.loadingStart(ly);
+                });
+                ly.events.register("loadend", ly, function () {
+                    dbkjs.util.loadingEnd(ly);
+                });
                 break;
             case "WMS":
             default:
@@ -100,6 +106,13 @@ dbkjs.Layer = dbkjs.Class({
 
         dbkjs.map.addLayer(this.layer);
         if (!options.isBaseLayer) {
+            var newparent = "";
+            var nameArray = name.split("\\");
+            if (nameArray.length > 1) {
+                newparent = nameArray[0];
+                name = nameArray[1];
+            }
+
             // @todo functie maken om layerindex dynamisch te toveren 0 is onderop de stapel
             if (index) {
                 dbkjs.map.setLayerIndex(this.layer, index);
@@ -109,7 +122,6 @@ dbkjs.Layer = dbkjs.Class({
 
             var dv_panel_heading = $('<div class="panel-heading"></div>');
             var dv_panel_title = $('<h4 class="panel-title"></div>');
-            // dv_panel_title.append('<input type="checkbox" name="box_' + this.id + '"/>&nbsp;');
             dv_panel_title.append(name + '&nbsp;<a class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
                     this.id + '" data-parent="' + parent + '" ><i class="fa fa-info-circle"></i></a>');
             dv_panel_heading.append(dv_panel_title);
@@ -122,6 +134,21 @@ dbkjs.Layer = dbkjs.Class({
                 if (metadata.pl) {
                     this.layer.metadata.pl = metadata.pl;
                 }
+                this.layer.metadata.div = this.div;
+            }
+
+            if (dbkjs.util.isJsonNull(parent) && !dbkjs.util.isJsonNull(newparent)) {
+                var findMyParent = 'overlay_tab' + newparent.toLowerCase();
+                if ($('#' + findMyParent).length === 0 && $('#' + findMyParent + '_panel').length === 0) {
+                    //create a panel to hold the layer
+                    $('#overlaypanel_ul').append('<li><a href="#' + findMyParent +
+                            '" data-toggle="tab">' + newparent + '</a></li>');
+                    $('#overlaypanel_div').append('<div class="tab-pane" id="' +
+                            findMyParent + '">' +
+                            '<div id="' + findMyParent + '_panel" class="panel-group"></div>' +
+                            '</div>');
+                }
+                parent = '#' + findMyParent;
             }
 
             if (dbkjs.viewmode === 'fullscreen') {
@@ -133,15 +160,13 @@ dbkjs.Layer = dbkjs.Class({
             $(parent).sortable({handle: '.panel'});
             if (this.layer) {
                 if (this.layer.getVisibility()) {
-                    //checkbox aan
-                    // $('input[name="box_' + this.id + '"]').attr('checked', 'checked');
                     dv_panel_heading.addClass('active');
                     dv_panel_heading.addClass('layActive');
                 }
                 var that = this;
                 dv_panel_heading.click(function (e) {
-                    //if (e.target.className.indexOf('fa-info-circle') !== -1 || e.target.className.indexOf('accordion-toggle') !== -1) {
-                    if (e.target.className.indexOf('icon-info-sign') !== -1 || e.target.className.indexOf('accordion-toggle') !== -1) {                        //click on the info sign
+                    if (e.target.className.indexOf('fa-info-circle') !== -1 || e.target.className.indexOf('accordion-toggle') !== -1) {
+                        //click on the info sign
                         //check to see if the legend is there already
                         if ($('#legend_' + that.id).length === 0) {
                             dv_panel_content.append('<img id="legend_' + that.id + '" src="' + (metadata.legend ? metadata.legend : legend) + '"/>');
@@ -175,7 +200,7 @@ dbkjs.Layer = dbkjs.Class({
             dbkjs.map.raiseLayer(this.layer, -1000);
             var _li = $('<li class="bl"><a href="#">' + name + '</a></li>');
             $('#baselayerpanel_ul').append(_li);
-            _li.click(function() {
+            _li.click(function () {
                 dbkjs.toggleBaseLayer($(this).index());
                 if (dbkjs.viewmode === 'fullscreen') {
                     dbkjs.util.getModalPopup('baselayerpanel').hide();
@@ -183,7 +208,7 @@ dbkjs.Layer = dbkjs.Class({
             });
         }
     },
-    getfeatureinfo: function(e) {
+    getfeatureinfo: function (e) {
         _obj = this;
         if (!this.layer.options.hidefeatureinfo) {
             if (this.layer.visibility) {
@@ -218,7 +243,7 @@ dbkjs.Layer = dbkjs.Class({
             }
         }
     },
-    panel: function(response) {
+    panel: function (response) {
         _obj = this;
         //verwerk de featureinformatie
         g = new OpenLayers.Format.GML.v3();

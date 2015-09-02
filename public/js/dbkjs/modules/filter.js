@@ -1,20 +1,20 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  * 
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher/safetymapsDBK
  *  
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -31,11 +31,11 @@ dbkjs.modules.filter = {
         _obj.namespace = options.namespace || _obj.namespace;
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
-        $('#btngrp_3').append('<a id="btn_filter" class="btn btn-default navbar-btn" href="#" title="Filter activeren">' +
+        $('#btngrp_3').append('<a id="btn_filter" class="btn btn-default navbar-btn" href="#" title="' + i18n.t('filter.button') + '">' +
                 '<i class="fa fa-filter"></i>' +
                 '</a>');
-        $('body').append(dbkjs.util.createModal('filter_dialog', '<i class="fa fa-filter"></i> Filter'));
-        $('#btn_filter').click(function() {
+        $('body').append(dbkjs.util.createModal('filter_dialog', '<i class="fa fa-filter"></i> ' + i18n.t('filter.filter')));
+        $('#btn_filter').click(function () {
             //zet alle dbk's uit en zoom naar de regio.
             dbkjs.modules.updateFilter(0);
             $.each(dbkjs.protocol.jsonDBK.layers, function(idx, lyr){

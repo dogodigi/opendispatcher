@@ -1,33 +1,35 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  * 
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher/safetymapsDBK
  *  
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global dbkjsbuildinfo, parseFloat */
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.layout = {
     id: 'dbk.layout',
-    activate: function() {
+    activate: function () {
         var _obj = dbkjs.layout;
         _obj.settingsDialog('#settingspanel_b');
     },
-    settingsDialog: function(parent) {
-        $(parent).append('<h4>' + i18n.t('app.contrast') +'</h4><p>' + i18n.t('app.selectContrast') + '</p>');
+    settingsDialog: function (parent) {
+        $(parent).append('<h4>' + i18n.t('app.contrast') + '</h4><p>' + i18n.t('app.selectContrast') + '</p>');
         $(parent).append('<p><div class="row"><div class="col-xs-6">' +
                 '<div class="input-group">' +
                 '<input id="input_contrast" type="text" class="form-control">' +
@@ -53,27 +55,58 @@ dbkjs.layout = {
             value: dbkjs.options.styleSizeAdjust,
             tooltip: "always"
         });
-        $("#slider_styleSizeAdjust").on('slide', function(e) {
+        $("#slider_styleSizeAdjust").on('slide', function (e) {
             dbkjs.options.styleSizeAdjust = e.value;
             dbkjs.redrawScaledLayers();
         });
-        $("#slider_styleSizeAdjust").on('slideStop', function(e) {
+        $("#slider_styleSizeAdjust").on('slideStop', function (e) {
             dbkjs.options.styleSizeAdjust = e.value;
             dbkjs.redrawScaledLayers();
         });
         $("#checkbox_scaleStyle").prop("checked", dbkjs.options.styleScaleAdjust);
-        $("#checkbox_scaleStyle").on('change', function(e) {
+        $("#checkbox_scaleStyle").on('change', function (e) {
             dbkjs.options.styleScaleAdjust = e.target.checked;
             dbkjs.redrawScaledLayers();
         });
 
+        var _relversion = 'Development';
+        var _relapp = 'Opendispatcher';
+        var _reldate = 'N/A';
+        var _relremarks = 'The app is running in development mode';
+        
+        if (window.dbkjsbuildinfo) {
+            _relversion = dbkjsbuildinfo.VERSION || 'Development';
+            _relapp = dbkjsbuildinfo.APPLICATION || 'Opendispatcher';
+            _reldate = dbkjsbuildinfo.RELEASEDATE || 'N/A';
+            _relremarks = dbkjsbuildinfo.REMARKS || 'The app is running in development mode';
+        }
+        $.getJSON(dbkjs.dataPath + 'bag/info').done(function(data) {
+            if(data[0].bag_update){
+                $(parent).append(
+                '<p><hr/><strong>' + i18n.t('bag.updated') + '</strong> ' + data[0].bag_update + '</p>'
+                );
+            }
+        });
+        $.getJSON(dbkjs.dataPath + 'infra/info').done(function(data) {
+            if(data[0].updated){
+                $(parent).append(
+                '<p><hr/><strong>' + i18n.t('infra.updated') + '</strong> ' + data[0].updated + '</p>'
+                );
+            } else {
+                //remove infra search
+                $( "#li_s_infra" ).remove();
+            }
+        }).fail(function(data){
+            $( "#li_s_infra" ).remove();
+        });
+
         $(parent).append(
-                '<p><strong>' + dbkjs.options.APPLICATION + '</strong> ' + dbkjs.options.VERSION + ' (' + dbkjs.options.RELEASEDATE + ')' + '</p>' +
-                '<p>' + dbkjs.options.REMARKS + '</p>'
+                '<p><hr/><strong>' + _relapp + '</strong> ' + _relversion + ' (' + _reldate + ')' + '</p>' +
+                '<p>' + _relremarks + '</p>'
                 );
 
         $('#input_contrast').val(parseFloat(dbkjs.map.baseLayer.opacity).toFixed(1));
-        $('#input_contrast').keypress(function(event) {
+        $('#input_contrast').keypress(function (event) {
             if (event.keyCode === 13) {
                 var newOpacity = parseFloat($('#input_contrast').val()).toFixed(1);
                 if (newOpacity > 1.0) {
@@ -88,7 +121,7 @@ dbkjs.layout = {
                 }
             }
         });
-        $('#click_contrast_up').click(function() {
+        $('#click_contrast_up').click(function () {
             var newOpacity = parseFloat(($('#input_contrast').val()) + 0.1).toFixed(1);
             if (newOpacity > 1.0) {
                 $('#input_contrast').val(1.0);
@@ -98,7 +131,7 @@ dbkjs.layout = {
                 dbkjs.map.baseLayer.setOpacity(newOpacity);
             }
         });
-        $('#click_contrast_down').click(function() {
+        $('#click_contrast_down').click(function () {
             var newOpacity = parseFloat(($('#input_contrast').val()) - 0.1).toFixed(1);
             if (newOpacity < 0.0) {
                 $('#input_contrast').val(0.0);
