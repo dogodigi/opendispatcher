@@ -1,7 +1,7 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  *
- *  This file is part of opendispatcher
+ *  This file is part of opendispatcher/safetymapsDBK
  *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@ dbkjs.modules.feature = {
                 }
             }
             $('#btn_refresh > i').removeClass('fa-spin');
-                _obj.search_dbk();
+            _obj.search_dbk();
         }).fail(function( jqxhr, textStatus, error ) {
             $('#btn_refresh > i').removeClass('fa-spin');
             dbkjs.options.feature = null;
@@ -165,7 +165,11 @@ dbkjs.modules.feature = {
     },
     featureInfohtml: function(feature) {
         var ret_title = $('<li></li>');
-        ret_title.append('<a id="' + feature.attributes.identificatie + '" href="#">' + feature.attributes.formeleNaam + '</a>');
+        var link = '<a id="' + feature.attributes.identificatie + '" href="#">' + feature.attributes.formeleNaam;
+        if(!dbkjs.util.isJsonNull(feature.attributes.informeleNaam)) {
+                link += ' (' + feature.attributes.informeleNaam + ')';
+        }
+        ret_title.append(link + '</a>');
         return ret_title;
     },
     search_dbk: function() {
@@ -186,7 +190,7 @@ dbkjs.modules.feature = {
         }
         $.each(_obj.features, function(key, value) {
             dbk_naam_array.push({
-                value: value.attributes.formeleNaam + ' ' + value.attributes.informeleNaam,
+                value: value.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(value.attributes.informeleNaam) ? '' : ' (' + value.attributes.informeleNaam + ')'),
                 geometry: value.geometry,
                 id: value.attributes.identificatie,
                 attributes: value.attributes
@@ -263,6 +267,9 @@ dbkjs.modules.feature = {
                 } else {
                     _obj.currentCluster = e.feature.cluster.slice();
                     _obj.currentCluster.sort(function(lhs, rhs) {
+                        if(!lhs.attributes.formeleNaam || !rhs.attributes.formeleNaam) {
+                            return 0;
+                        }
                         return lhs.attributes.formeleNaam.localeCompare(rhs.attributes.formeleNaam);
                     });
                     if(dbkjs.viewmode === 'fullscreen') {

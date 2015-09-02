@@ -1,7 +1,7 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  *
- *  This file is part of opendispatcher
+ *  This file is part of opendispatcher/safetymapsDBK
  *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,6 +38,12 @@ dbkjs.viewmode = 'default';
 dbkjs.init = function () {
 
     dbkjs.setPaths();
+
+    if(dbkjs.viewmode === "fullscreen" && "ontouchstart" in window) {
+        // Later wordt TouchNavigation toegevoegd, verwijder standaard
+        // navigation control (anders gekke zoom / pan effecten op touchscreen)
+        dbkjs.options.map.options.controls = [];
+    };
 
     if (!dbkjs.map) {
         dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
@@ -91,7 +97,7 @@ dbkjs.activateClick = function () {
 };
 
 dbkjs.challengeAuth = function () {
-    var params = {srid: dbkjs.options.projection.srid};
+    var params = {srid: dbkjs.options.projection.srid, cache: false};
     $.getJSON(dbkjs.dataPath + 'organisation.json', params).done(function (data) {
         if (data.organisation) {
             dbkjs.options.organisation = data.organisation;
@@ -201,15 +207,15 @@ dbkjs.loadOrganisationCapabilities = function () {
                 }
                 var layertype = wms_v.layertype || null;
                 var myLayer = new dbkjs.Layer(
-                        wms_v.name,
-                        wms_v.url,
-                        params,
-                        options,
-                        parent,
-                        index,
-                        metadata,
-                        layertype
-                        );
+                    wms_v.name,
+                    wms_v.url,
+                    params,
+                    options,
+                    parent,
+                    index,
+                    metadata,
+                    layertype
+                );
             } else {
                 var params = wms_v.params || {};
                 var options = wms_v.options || {};
@@ -227,22 +233,21 @@ dbkjs.loadOrganisationCapabilities = function () {
                 }
                 var layertype = wms_v.layertype || null;
                 var myLayer = new dbkjs.Layer(
-                        wms_v.name,
-                        wms_v.url,
-                        params,
-                        options,
-                        parent,
-                        index,
-                        metadata,
-                        layertype
-                        );
+                    wms_v.name,
+                    wms_v.url,
+                    params,
+                    options,
+                    parent,
+                    index,
+                    metadata,
+                    layertype
+                );
             }
 
         });
         if (dbkjs.loadingcapabilities === 0) {
             dbkjs.finishMap();
         }
-
     } else {
         if (dbkjs.loadingcapabilities === 0) {
             dbkjs.finishMap();
@@ -296,7 +301,9 @@ dbkjs.finishMap = function () {
     }
     dbkjs.permalink = new dbkjs.Permalink('permalink');
     dbkjs.map.addControl(dbkjs.permalink);
-    dbkjs.util.configureLayers();
+    if (dbkjs.viewmode !== 'fullscreen') {
+        dbkjs.util.configureLayers();
+    }
     //get dbk!
 };
 
@@ -339,7 +346,7 @@ dbkjs.documentReady = function () {
         });
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
         OpenLayers.Lang[dbkjsLang] = OpenLayers.Util.applyDefaults(
-                {'Scale = 1 : ${scaleDenom}': t("app.scale")}
+            {'Scale = 1 : ${scaleDenom}': t("app.scale")}
         );
         OpenLayers.Lang.setCode(dbkjsLang);
         if (dbkjs.viewmode !== 'fullscreen') {

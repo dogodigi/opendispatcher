@@ -1,7 +1,7 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  *
- *  This file is part of opendispatcher
+ *  This file is part of opendispatcher/safetymapsDBK
  *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -315,7 +315,6 @@ dbkjs.protocol.jsonDBK = {
         } else {
             laagstebouwlaag = i18n.t('dbk.unknown');
         }
-        ;
         if (!dbkjs.util.isJsonNull(DBKObject.hoogsteBouwlaag)) {
             hoogstebouwlaag = DBKObject.hoogsteBouwlaag === 0 ? 0 : DBKObject.hoogsteBouwlaag + ' (' + (DBKObject.hoogsteBouwlaag - 1) + ')';
         } else {
@@ -337,7 +336,6 @@ dbkjs.protocol.jsonDBK = {
             if (dbkjs.showStatus) {
                 algemeen_table.append(_obj.constructRow(status, i18n.t('dbk.status')));
             }
-            ;
             algemeen_table.append(_obj.constructRow(bhvaanwezig, i18n.t('dbk.emergencyResponse')));
             algemeen_table.append(_obj.constructRow(inzetprocedure, i18n.t('dbk.procedure')));
             algemeen_table.append(_obj.constructRow(gebouwconstructie, 'Gebouwconstructie'));
@@ -446,7 +444,7 @@ dbkjs.protocol.jsonDBK = {
                 };
 
                 var myrow = $('<tr id="' + idx + '">' +
-                        '<td><img class="thumb" src="' + dbkjs.basePath + "images/" + myFeature.attributes.namespace + '/' +
+                        '<td><img class="thumb" src="' + dbkjs.basePath + "images/" + myFeature.attributes.namespace.toLowerCase() + '/' +
                         myFeature.attributes.type + '.png" alt="' +
                         myFeature.attributes.type + '" title="' +
                         myFeature.attributes.type + '"></td>' +
@@ -475,11 +473,11 @@ dbkjs.protocol.jsonDBK = {
             var bv_table_div = $('<div class="table-responsive"></div>');
             var bv_table = $('<table id="gvslist" class="table table-hover"></table>');
             bv_table.append('<tr><th>' +
-                    i18n.t('chemicals.type') + '</th><th>' +
-                    i18n.t('chemicals.indication') + '</th><th>' +
-                    i18n.t('chemicals.name') + '</th><th>' +
-                    i18n.t('chemicals.quantity') + '</th><th>' +
-                    i18n.t('chemicals.information') + '</th></tr>');
+                i18n.t('chemicals.type') + '</th><th>' +
+                i18n.t('chemicals.indication') + '</th><th>' +
+                i18n.t('chemicals.name') + '</th><th>' +
+                i18n.t('chemicals.quantity') + '</th><th>' +
+                i18n.t('chemicals.information') + '</th></tr>');
             var features = [];
             $.each(feature.gevaarlijkestof, function (idx, myGeometry) {
                 var name = myGeometry.naamStof || '';
@@ -503,7 +501,7 @@ dbkjs.protocol.jsonDBK = {
                             myFeature.attributes.unnumber + '</div>';
                 }
                 var myrow = $('<tr id="' + idx + '">' +
-                        '<td><img class="thumb" src="' + dbkjs.basePath + 'images/' + myFeature.attributes.namespace + '/' +
+                        '<td><img class="thumb" src="' + dbkjs.basePath + 'images/' + myFeature.attributes.namespace.toLowerCase() + '/' +
                         myFeature.attributes.type + '.png" alt="' +
                         myFeature.attributes.type + '" title="' +
                         myFeature.attributes.type + '"></td>' +
@@ -540,11 +538,16 @@ dbkjs.protocol.jsonDBK = {
                     sterretje = ' (' + i18n.t('dbk.mainobject') + ')';
                 }
                 if (waarde.identificatie !== feature.identificatie) {
-
                     //Show the hyperlink!
                     myrow = $('<tr id="' + waarde.identificatie + '">' +
-                            '<td>' + waarde.bouwlaag + sterretje + '</td>' +
-                            '</tr>');
+                        '<td>' + waarde.bouwlaag + sterretje + '</td>' +
+                        '</tr>');
+                    myrow.click(function(){
+                        _obj.getObject(waarde.identificatie, 'verdiepingen', true);
+                        if(dbkjs.viewmode === 'fullscreen') {
+                            dbkjs.util.getModalPopup('dbkinfopanel').hide();
+                        }
+                    });
                 } else {
                     //No hyperlink, current object
                     myrow = $('<tr>' +

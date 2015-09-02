@@ -1,7 +1,7 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  * 
- *  This file is part of opendispatcher
+ *  This file is part of opendispatcher/safetymapsDBK
  *  
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,9 +28,9 @@ dbkjs.modules.measure = {
     area_control: null,
     register: function() {
         var _obj = dbkjs.modules.measure;
-        $('#btngrp_3').append('<a id="btn_measure_distance" class="btn btn-default navbar-btn" href="#" title="' + 
+        $('#btngrp_3').append('<a id="btn_measure_distance" class="btn btn-default navbar-btn" href="#" title="' +
                 i18n.t('map.measureDistance') + '"><i class="fa fa-arrows-v fa-rotate-45"></i></a>');
-        $('#btngrp_3').append('<a id="btn_measure_area" class="btn btn-default navbar-btn" href="#" title="' + 
+        $('#btngrp_3').append('<a id="btn_measure_area" class="btn btn-default navbar-btn" href="#" title="' +
                 i18n.t('map.measureArea') + '"><i class="fa fa-bookmark-o fa-rotate-45"></i></a>');
 
         // style the sketch fancy
@@ -95,6 +95,9 @@ dbkjs.modules.measure = {
         dbkjs.map.addControl(_obj.area_control);
         $('#btn_measure_distance').click(function() {
             $('#measure').html('');
+            if(dbkjs.viewmode === "fullscreen") {
+                $('#measure').hide();
+            }
             if ($(this).hasClass('active')) {
                 _obj.area_control.deactivate();
                 _obj.distance_control.deactivate();
@@ -107,6 +110,9 @@ dbkjs.modules.measure = {
         });
         $('#btn_measure_area').click(function() {
             $('#measure').html('');
+            if(dbkjs.viewmode === "fullscreen") {
+                $('#measure').hide();
+            }
             if ($(this).hasClass('active')) {
                 _obj.area_control.deactivate();
                 _obj.distance_control.deactivate();
@@ -129,6 +135,7 @@ dbkjs.modules.measure = {
         } else {
             out += "Oppervlakte: " + measure.toFixed(3) + " " + units + "<sup>2</" + "sup>";
         }
+        $('#measure').show();
         $('#measure').html(out);
     }
 };

@@ -1,7 +1,7 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  *
- *  This file is part of opendispatcher
+ *  This file is part of opendispatcher/safetymapsDBK
  *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,36 +37,35 @@ $.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
 $.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 $.browser.device = (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase()));
 dbkjs.argParser =
-        OpenLayers.Class(OpenLayers.Control.ArgParser, {
-            setMap: function (map) {
-                OpenLayers.Control.prototype.setMap.apply(this, arguments);
+    OpenLayers.Class(OpenLayers.Control.ArgParser, {
+        setMap: function (map) {
+            OpenLayers.Control.prototype.setMap.apply(this, arguments);
 
-                //make sure we dont already have an arg parser attached
-                for (var i = 0, len = this.map.controls.length; i < len; i++) {
-                    var control = this.map.controls[i];
-                    if ((control !== this) &&
-                            (control.CLASS_NAME === "OpenLayers.Control.ArgParser")) {
+            //make sure we dont already have an arg parser attached
+            for (var i = 0, len = this.map.controls.length; i < len; i++) {
+                var control = this.map.controls[i];
+                if ( (control !== this) &&
+                     (control.CLASS_NAME === "OpenLayers.Control.ArgParser") ) {
 
-                        // If a second argparser is added to the map, then we
-                        // override the displayProjection to be the one added to the
-                        // map.
-                        if (control.displayProjection !== this.displayProjection) {
-                            this.displayProjection = control.displayProjection;
-                        }
-
-                        break;
+                    // If a second argparser is added to the map, then we
+                    // override the displayProjection to be the one added to the
+                    // map.
+                    if (control.displayProjection !== this.displayProjection) {
+                        this.displayProjection = control.displayProjection;
                     }
+
+                    break;
                 }
-                if (i === this.map.controls.length) {
+            }
+            if (i === this.map.controls.length) {
 
-                    var args = this.getParameters();
-                    // Be careful to set layer first, to not trigger unnecessary layer loads
-                    if (args.b) {
-                        // when we add a new layer, set its visibility
-                        this.map.events.register('addlayer', this,
-                                this.configureLayers);
-                        this.configureLayers();
-                    }
+                var args = this.getParameters();
+                // Be careful to set layer first, to not trigger unnecessary layer loads
+                if (args.b) {
+                    // when we add a new layer, set its visibility
+                    this.map.events.register('addlayer', this, this.configureLayers);
+                    this.configureLayers();
+                }
                     if (args.lat && args.lon) {
                         this.center = new OpenLayers.LonLat(parseFloat(args.lon),
                                 parseFloat(args.lat));

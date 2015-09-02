@@ -1,7 +1,7 @@
 /**
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  * 
- *  This file is part of opendispatcher
+ *  This file is part of opendispatcher/safetymapsDBK
  *  
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
  *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global global */
 
 // To run in production: NODE_ENV=production
 
@@ -48,7 +50,6 @@ global.conf.defaults({
         'port': 9999
     }
 });
-var expressLogFile = fs.createWriteStream('./logs/express.log', {flags: 'a'});
 
 i18n.init({
     lng: 'nl',
@@ -82,7 +83,6 @@ if (global.conf.get('infrastructure:user')) {
 }
 global.pool = anyDB.createPool(dbURL, {min: 2, max: 20});
 global.bag = anyDB.createPool(bagURL, {min: 2, max: 20});
-
 
 var app = express(
 //    {

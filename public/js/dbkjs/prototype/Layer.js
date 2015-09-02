@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
- *  This file is part of opendispatcher
- *  
+ *
+ *  This file is part of opendispatcher/safetymapsDBK
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -136,7 +136,6 @@ dbkjs.Layer = dbkjs.Class({
                 }
                 this.layer.metadata.div = this.div;
             }
-            this.div.append(dv_panel_content);
 
             if (dbkjs.util.isJsonNull(parent) && !dbkjs.util.isJsonNull(newparent)) {
                 var findMyParent = 'overlay_tab' + newparent.toLowerCase();
@@ -151,6 +150,12 @@ dbkjs.Layer = dbkjs.Class({
                 }
                 parent = '#' + findMyParent;
             }
+
+            if (dbkjs.viewmode === 'fullscreen') {
+                dv_panel_content.append('<img src="' + (metadata.legend ? metadata.legend : legend) + '"/>');
+            }
+
+            this.div.append(dv_panel_content);
             $(parent).append(this.div);
             $(parent).sortable({handle: '.panel'});
             if (this.layer) {
@@ -257,7 +262,11 @@ dbkjs.Layer = dbkjs.Class({
             }
             html += '</table></div>';
             dbkjs.util.appendTab(dbkjs.wms_panel.attr("id"), _obj.layer.name, html, true, _obj.id + '_pn');
-            $('#wmsclickpanel').show();
+            if(dbkjs.viewmode === "fullscreen") {
+                dbkjs.util.getModalPopup('wmsclickpanel').show();
+            } else {
+                $('#wmsclickpanel').show();
+            }
         } else {
             dbkjs.util.removeTab(dbkjs.wms_panel.attr("id"), _obj.id + '_pn');
         }
