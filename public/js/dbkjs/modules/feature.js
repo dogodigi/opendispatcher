@@ -191,11 +191,7 @@ dbkjs.modules.feature = {
         }
         $.each(_obj.features, function(key, value) {
             dbk_naam_array.push({
-<<<<<<< HEAD
                 value: value.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(value.attributes.informeleNaam) ? '' : value.attributes.informeleNaam),
-=======
-                value: value.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(value.attributes.informeleNaam) ? '' : ' (' + value.attributes.informeleNaam + ')'),
->>>>>>> upstream/master
                 geometry: value.geometry,
                 id: value.attributes.identificatie,
                 attributes: value.attributes
