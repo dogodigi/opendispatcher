@@ -17,11 +17,7 @@ dbkjs.gui = {
         $('#btn_refresh').click(function() {
             if (dbkjs.viewmode !== 'fullscreen') {
                $('#btn_refresh > i').addClass('fa-spin');
-<<<<<<< HEAD
             }
-=======
-            };
->>>>>>> upstream/master
             obj.get();
         });
     },
