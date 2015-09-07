@@ -285,10 +285,6 @@ dbkjs.protocol.jsonDBK = {
         var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">' +
                 i18n.t('dbk.unknown') + '</span>' : moment(DBKObject.controleDatum).format('YYYY-MM-DD hh:mm');
 
-        if (dbkjs.showStatus) {
-            var status = dbkjs.util.isJsonNull(DBKObject.status) ? '<span class="label label-warning">' +
-                    i18n.t('dbk.unknown') + '</span>' : DBKObject.status;
-        }
         var bhvaanwezig = '<span class="label label-warning">' +
                 i18n.t('dbk.noEmergencyResponse') + '</span>';
         if (!dbkjs.util.isJsonNull(DBKObject.BHVaanwezig)) {
@@ -348,6 +344,8 @@ dbkjs.protocol.jsonDBK = {
             algemeen_table.append(_obj.constructRow(informelenaam, i18n.t('dbk.alternativeName')));
             algemeen_table.append(_obj.constructRow(controledatum, i18n.t('dbk.dateChecked')));
             if (dbkjs.showStatus) {
+              var status = dbkjs.util.isJsonNull(DBKObject.status) ? '<span class="label label-warning">' +
+                      i18n.t('dbk.unknown') + '</span>' : DBKObject.status;
                 algemeen_table.append(_obj.constructRow(status, i18n.t('dbk.status')));
             }
             algemeen_table.append(_obj.constructRow(bhvaanwezig, i18n.t('dbk.emergencyResponse')));
@@ -366,6 +364,7 @@ dbkjs.protocol.jsonDBK = {
         if (DBKObject.adres) {
             //adres is een array of null
             $.each(DBKObject.adres, function (adres_index, waarde) {
+                var bag_button;
                 var adres_row = $('<tr></tr>');
                 var adres_div = $('<td></td>');
                 var openbareruimtenaam = dbkjs.util.isJsonNull(waarde.openbareRuimteNaam) ? '' : waarde.openbareRuimteNaam;
@@ -387,9 +386,9 @@ dbkjs.protocol.jsonDBK = {
                         var bag_p = $('<p></p>');
 
                         if (dbkjs.viewmode === 'fullscreen') {
-                            var bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + waarde.bagId + '</button>');
+                            bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + waarde.bagId + '</button>');
                         } else {
-                            var bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + dbkjs.util.pad(waarde.bagId, 16) + '</button>');
+                            bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + dbkjs.util.pad(waarde.bagId, 16) + '</button>');
                         }
 
                         bag_p.append(bag_button);
@@ -402,7 +401,7 @@ dbkjs.protocol.jsonDBK = {
                                             waardeBagId = waarde.bagId;
                                         } else {
                                             waardeBagId = dbkjs.util.pad(waarde.bagId,16);
-                                        };
+                                        }
                                         $('#collapse_algemeen_' + _obj.feature.id).append(
                                             '<div class="alert alert-warning alert-dismissable">' +
                                             '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
@@ -475,8 +474,8 @@ dbkjs.protocol.jsonDBK = {
                         myFeature.attributes.type + '" title="' +
                         myFeature.attributes.type + '"></td>' +
                         '<td>' + myFeature.attributes.name + '</td>' +
-                        '<td>' + myFeature.attributes.information + '</td>'
-                        + '</tr>');
+                        '<td>' + myFeature.attributes.information + '</td>' +
+                        '</tr>');
                 //@@ Toekennen van callback verplaatst naar info().
                 bv_table.append(myrow);
                 features.push(myFeature);
@@ -610,8 +609,8 @@ dbkjs.protocol.jsonDBK = {
                         '<tr>' +
                         '<td>' + waarde.functie + '</td>' +
                         '<td>' + waarde.naam + '</td>' +
-                        '<td>' + waarde.telefoonnummer + '</td>'
-                        + '</tr>'
+                        '<td>' + waarde.telefoonnummer + '</td>' +
+                        '</tr>'
                         );
             });
             contact_table_div.append(contact_table);
@@ -665,10 +664,10 @@ dbkjs.protocol.jsonDBK = {
                         '<td colspan="2">' + waarde.tel_alg + '</td>' +
                         '</tr>'
                         );
-                for (var i = 1; i < 4; i++) {
-                    var naam = waarde['sh_' + i + '_naam'] || '';
-                    var telvast = waarde['sh_' + i + '_tel_vast'] || '';
-                    var telmob = waarde['sh_' + i + '_tel_mob'] || '';
+                for (var j = 1; j < 4; j++) {
+                    var naam = waarde['sh_' + j + '_naam'] || '';
+                    var telvast = waarde['sh_' + j + '_tel_vast'] || '';
+                    var telmob = waarde['sh_' + j + '_tel_mob'] || '';
                     var contactstring = '' + naam + telvast + telmob;
                     if ( contactstring.length > 0)
                         omscontact_table.append('<tr>' +
@@ -716,7 +715,7 @@ dbkjs.protocol.jsonDBK = {
                             '<tr>' +
                             '<td>' + set_entry.titel + '</td>' +
                             '<td>' + set_entry.waarde + '</td>' +
-                            +'</tr>'
+                            '</tr>'
                             );
                 }
             });

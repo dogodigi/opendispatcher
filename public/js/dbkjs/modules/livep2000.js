@@ -108,12 +108,12 @@ dbkjs.modules.livep2000 = {
                         me.updateWindow();
                     } else if(textStatus !== "notmodified") {
                         me.error = "Fout bij het ophalen van de informatie: " + jqXHR.statusText;
-                    };
+                    }
                 } catch(e) {
                     if(console && console.log) {
                         console.log("JS exception bij verwerken GMS info", e);
                     }
-                };
+                }
 
                 window.setTimeout(function() {
                     me.loadP2000();

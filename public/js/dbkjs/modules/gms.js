@@ -37,7 +37,7 @@ dbkjs.modules.gms = {
         return null;
     },
     encodeIfNotEmpty: function(s) {
-        var s = this.encode(s);
+        s = this.encode(s);
         return s === null ? "" : s;
     },
     register: function(options) {
@@ -104,7 +104,7 @@ dbkjs.modules.gms = {
                     if(textStatus === "success") {
                         if(monitor) {
                             monitor.onConnectionOK();
-                        };
+                        }
 
                         var lastModified = moment(jqXHR.getResponseHeader("Last-Modified"));
                         me.updated = lastModified.isValid() ? lastModified : moment();
@@ -119,11 +119,11 @@ dbkjs.modules.gms = {
                             // Update voor zelfde melding
                             // Geen rood icoon tonen
                             me.viewed = false;
-                        };
+                        }
                         var newPos = null;
                         if(me.gms.Gms && me.gms.Gms.IncidentAdres && me.gms.Gms.IncidentAdres.Positie) {
                             newPos = me.gms.Gms.IncidentAdres.Positie.X + "," + me.gms.Gms.IncidentAdres.Positie.Y;
-                        };
+                        }
                         if(me.zoomedPos === null || me.zoomedPos !== newPos) {
                             //  Verwijder marker zodat DBK wordt geselecteerd
                             // en naar positie wordt gezoomed
@@ -131,7 +131,7 @@ dbkjs.modules.gms = {
                                 me.markers.removeMarker(me.gmsMarker);
                                 me.gmsMarker = null;
                             }
-                        };
+                        }
                         me.zoomedPos = newPos;
                         me.displayGms();
                     } else if(textStatus === "notmodified") {
@@ -144,13 +144,13 @@ dbkjs.modules.gms = {
                         if(monitor) {
                             monitor.onConnectionError();
                         }
-                    };
+                    }
                     me.updateGmsTitle();
                 } catch(e) {
                     if(console && console.log) {
                         console.log("JS exception bij verwerken GMS info", e);
                     }
-                };
+                }
 
                 window.setTimeout(function() {
                     me.loadGms();

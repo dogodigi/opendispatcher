@@ -43,7 +43,7 @@ dbkjs.init = function () {
         // Later wordt TouchNavigation toegevoegd, verwijder standaard
         // navigation control (anders gekke zoom / pan effecten op touchscreen)
         dbkjs.options.map.options.controls = [];
-    };
+    }
 
     if (!dbkjs.map) {
         dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
@@ -269,6 +269,7 @@ dbkjs.loadOrganisationCapabilities = function () {
 dbkjs.finishMap = function () {
     //find the div that contains the baseLayer.name
     var listItems = $("#baselayerpanel_ul li");
+    var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
     listItems.each(function (idx, li) {
         var test = $(li).children(':first').text();
         if (test === dbkjs.map.baseLayer.name) {
@@ -302,12 +303,10 @@ dbkjs.finishMap = function () {
                         );
             } else if (dbkjs.options.organisation.area.geometry.type === "Polygon") {
                 if (dbkjs.viewmode === 'fullscreen') {
-                    var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
                     dbkjs.map.zoomToExtent(areaGeometry.getBounds());
                 } else {
                     //get the projection for the Polygon
                     var crs = dbkjs.options.organisation.area.geometry.crs.properties.name || "EPSG:4326";
-                    var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
                     dbkjs.map.zoomToExtent(areaGeometry.getBounds().transform(crs, dbkjs.map.getProjectionObject()));
                 }
             }
@@ -458,6 +457,7 @@ dbkjs.documentReady = function () {
         // Added touchstart event to trigger click on. There was some weird behaviour combined with FastClick,
         // this seems to fix the issue
         $('#zoom_extent').on('click touchstart', function () {
+          var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
             if (dbkjs.options.organisation.modules.regio) {
                 dbkjs.modules.regio.zoomExtent();
             } else {
@@ -474,12 +474,9 @@ dbkjs.documentReady = function () {
                             );
                 } else if (dbkjs.options.organisation.area.geometry.type === "Polygon") {
                     if (dbkjs.viewmode === 'fullscreen') {
-                        var areaGeometry = new OpenLayers.Format.GeoJSON().read(
-                                dbkjs.options.organisation.area.geometry, "Geometry");
                         dbkjs.map.zoomToExtent(areaGeometry.getBounds());
                     } else {
                         var crs = dbkjs.options.organisation.area.geometry.crs.properties.name || "EPSG:4326";
-                        var areaGeometry = new OpenLayers.Format.GeoJSON().read(dbkjs.options.organisation.area.geometry, "Geometry");
                         dbkjs.map.zoomToExtent(areaGeometry.getBounds().transform(crs, dbkjs.map.getProjectionObject()));
                     }
                 }

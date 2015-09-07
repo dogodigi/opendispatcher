@@ -224,13 +224,13 @@ if(!skipObjects) {
                                     console.log("Geen JSON voor id  " + id);
                                     objectsToBeWritten--;
                                     return;
-                                };
+                                }
                                 var filename;
                                 if(json.DBKObject) {
                                     filename = outDir + '/api/object/' + json.DBKObject.identificatie + '.json';
                                 } else {
                                     filename = outDir + '/api/gebied/' + json.DBKGebied.identificatie + '.json';
-                                };
+                                }
                                 fs.writeFile(filename, JSON.stringify(json), function(err) {
                                     objectsToBeWritten--;
                                     if(err) throw err;
@@ -242,7 +242,7 @@ if(!skipObjects) {
                                 getFunction = dbk.getObject;
                             } else {
                                 getFunction = dbk.getGebied;
-                            };
+                            }
 
                             getFunction(req(identificatie), {
                                 status: function() { return this; },
@@ -252,7 +252,7 @@ if(!skipObjects) {
                                         console.log("Geen JSON voor id  " + id);
                                         objectsToBeWritten--;
                                         return;
-                                    };
+                                    }
 
                                     // XXX can't detect error...
                                     writeDbkJson(json);
@@ -289,7 +289,7 @@ if(!skipObjects) {
 } else {
     featuresDone = true;
     objectsToBeWritten = 0;
-};
+}
 
 // Ignore /api/gebied/ for now
 
@@ -315,5 +315,3 @@ function check() {
 }
 
 process.nextTick(check);
-
-

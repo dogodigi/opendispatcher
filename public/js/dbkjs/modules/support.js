@@ -111,8 +111,8 @@ dbkjs.modules.support = {
                 p.append(user_input);
                 var mail_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="email">' +
                         i18n.t('email.email') +
-                        ' *</label><div class="col-sm-8"><input id="email" name="email" type="email" class="form-control required" placeholder="'
-                        + i18n.t('email.email') + '"></div></div>');
+                        ' *</label><div class="col-sm-8"><input id="email" name="email" type="email" class="form-control required" placeholder="' +
+                        i18n.t('email.email') + '"></div></div>');
                 p.append(mail_input);
                 var tel_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="phone">' +
                         i18n.t('email.phone') +
@@ -157,8 +157,7 @@ dbkjs.modules.support = {
                         var geoJSON = new OpenLayers.Format.GeoJSON();
                         data.geometry = JSON.parse(geoJSON.write(_obj.feature.geometry));
                         data.srid = dbkjs.options.projection.srid;
-                        var url = (dbkjs.options.urls && dbkjs.options.urls.annotation
-                                ? dbkjs.options.urls.annotation
+                        var url = (dbkjs.options.urls && dbkjs.options.urls.annotation ? dbkjs.options.urls.annotation
                                 : dbkjs.basePath + 'api/annotation/');
                         jQuery.ajax({
                             type: "POST",
@@ -211,4 +210,3 @@ dbkjs.modules.support = {
         }
     }
 };
-

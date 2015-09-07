@@ -119,4 +119,3 @@ dbkjs.modules.connectionmonitor = {
         });
     }
 };
-

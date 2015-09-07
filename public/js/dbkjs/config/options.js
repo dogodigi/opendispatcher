@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of opendispatcher/safetymapsDBK
- *  
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -38,9 +38,8 @@ dbkjs.options = {
 };
 
 dbkjs.options.baselayers = [
-    new OpenLayers.Layer.OSM(
-        "OpenStreetMap"
-    ,null,{
+    new OpenLayers.Layer.OSM("OpenStreetMap",
+        null,{
             tileOptions: {crossOriginKeyword: null},
             resolutions: [156543.03390625, 78271.516953125, 39135.7584765625,
                           19567.87923828125, 9783.939619140625, 4891.9698095703125,
@@ -62,7 +61,7 @@ dbkjs.options.baselayers = [
         }
     ),
     new OpenLayers.Layer.OSM(
-        "MapQuest", 
+        "MapQuest",
         [
             "http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
             "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",

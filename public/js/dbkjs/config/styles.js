@@ -47,12 +47,12 @@ dbkjs.redrawScaledLayers = function () {
 };
 
 /**
- * 
+ *
  * Return a styling value with user size adjustment and scaled according to map
  * map scale (if style scaling is enabled). If featureAttributeValue is not
  * undefined use that instead of the first argument. If attributeScaleFactor
  * is not undefined scale the featureAttributeValue by that factor.
- * 
+ *
  * @param {type} value
  * @param {type} featureAttributeValue
  * @param {type} attributeScaleFactor
@@ -285,16 +285,12 @@ dbkjs.config.styles = {
                     switch (feature.attributes.type) {
                         case "30 minuten brandwerende scheiding":
                             return "#c1001f";
-                            break;
                         case "60 minuten brandwerende scheiding":
                             return "#5da03b";
-                            break;
                         case "> 60 minuten brandwerende scheiding":
                             return "#ff0000";
-                            break;
                         case "Rookwerende scheiding":
                             return "#009cdd";
-                            break;
                         default:
                             return "#000000";
                     }
@@ -305,7 +301,6 @@ dbkjs.config.styles = {
                         case "60 minuten brandwerende scheiding":
                         case "> 60 minuten brandwerende scheiding":
                             return dbkjs.scaleStyleValue(4);
-                            break;
                         default:
                             return dbkjs.scaleStyleValue(2);
                     }
@@ -315,16 +310,12 @@ dbkjs.config.styles = {
                     switch (feature.attributes.type) {
                         case "30 minuten brandwerende scheiding":
                             return dbkjs.scaleStyleValue(8) + " " + dbkjs.scaleStyleValue(4);
-                            break;
                         case "60 minuten brandwerende scheiding":
                             return dbkjs.scaleStyleValue(4) + " " + dbkjs.scaleStyleValue(4);
-                            break;
                         case "> 60 minuten brandwerende scheiding":
                             return "solid";
-                            break;
                         case "Rookwerende scheiding":
                             return dbkjs.scaleStyleValue(8) + " " + dbkjs.scaleStyleValue(4) + dbkjs.scaleStyleValue(2) + " " + dbkjs.scaleStyleValue(4);
-                            break;
                         default:
                             return dbkjs.scaleStyleValue(10) + " " + dbkjs.scaleStyleValue(10);
                     }
@@ -359,7 +350,6 @@ dbkjs.config.styles = {
                 switch (feature.attributes.type) {
                     case "Arrow":
                         return 0.8;
-                        break;
                     default:
                         return 1;
                 }
@@ -378,14 +368,12 @@ dbkjs.config.styles = {
                     case "Fence":
                     case "Fence_O":
                         return dbkjs.scaleStyleValue(8);
-                        break;
                      case "HEAT":
                         return dbkjs.scaleStyleValue(3);
-                        break;
                     case "Broken":
                         return dbkjs.scaleStyleValue(1);
-                        break;
                     case "Arrow":
+                        return dbkjs.scaleStyleValue(2);
                     default:
                         return dbkjs.scaleStyleValue(2);
                }
@@ -395,16 +383,13 @@ dbkjs.config.styles = {
                     case "Cable":
                     case "Bbarrier":
                         return dbkjs.scaleStyleValue(10) + " " + dbkjs.scaleStyleValue(10);
-                        break;
                     case "Conduit":
                     case "Gate":
                     case "Fence":
                     case "Fence_O":
                         return dbkjs.scaleStyleValue(1) + " " + dbkjs.scaleStyleValue(20);
-                        break;
                     case "Broken":
                         return dbkjs.scaleStyleValue(3) + " " + dbkjs.scaleStyleValue(2);
-                        break;
                     default:
                         return "solid";
                 }
@@ -415,26 +400,19 @@ dbkjs.config.styles = {
                     //Gate
                     case "Bbarrier":
                         return "#ffffff";
-                        break;
                     case "Arrow":
                         return "#040404";
-                        break;
                     case "Gate":
                     case "Fence":
                         return "#000000";
-                        break;
                     case "Fence_O":
                         return "#ff7f00";
-                        break;
                     case "Cable":
                         return "#ffff00";
-                        break;
                     case "Conduit":
                         return "#ff00ff";
-                        break;
                     case "HEAT":
                         return "#ff0000";
-                        break;
                     default:
                         return "#000000";
                 }
@@ -444,7 +422,6 @@ dbkjs.config.styles = {
                 switch (feature.attributes.type) {
                     case "Arrow":
                         return "triangle";
-                        break;
                     default:
                         return "";
                 }
@@ -465,13 +442,11 @@ dbkjs.config.styles = {
                     case "Cable":
                     case "Bbarrier":
                         return dbkjs.scaleStyleValue(4);
-                        break;
                     case "Conduit":
                     case "Gate":
                     case "Fence":
                     case "Fence_O":
                         return dbkjs.scaleStyleValue(2);
-                        break;
                     default:
                         return dbkjs.scaleStyleValue(2);
                 }
@@ -486,16 +461,12 @@ dbkjs.config.styles = {
                 switch (feature.attributes.type) {
                     case "Conduit":
                         return "#ff00ff";
-                        break;
                     case "Bbarrier":
                         return "#ff0000";
-                        break;
                     case "Gate":
                         return "#ffffff";
-                        break;
                     case "Fence_O":
                         return "#ff7f00";
-                        break;
                     default:
                         return "#000000";
                 }
@@ -515,7 +486,6 @@ dbkjs.config.styles = {
                 switch (feature.attributes.type) {
                      case "Gate":
                         return dbkjs.scaleStyleValue(5);
-                        break;
                     default:
                         return dbkjs.scaleStyleValue(2);
                 }
@@ -524,7 +494,6 @@ dbkjs.config.styles = {
                 switch (feature.attributes.type) {
                     case "Gate":
                         return "none";
-                        break;
                     default:
                         return "none";
                 }
@@ -533,7 +502,6 @@ dbkjs.config.styles = {
                 switch (feature.attributes.type) {
                      case "Gate":
                         return "#000000";
-                        break;
                     default:
                         return "#000000";
                 }
@@ -564,7 +532,6 @@ dbkjs.config.styles = {
                 switch (feature.attributes.primary) {
                     case true:
                         return "#ff0000";
-                        break;
                     default:
                         return "#00ff00";
                 }
@@ -616,9 +583,8 @@ dbkjs.config.styles = {
                     return dbkjs.scaleStyleValue(12, feature.radius);
                 },
                 mydisplay: function(feature) {
-                    if (dbkjs.options.visibleCategories
-                            && feature.attributes.category
-                            && dbkjs.options.visibleCategories[feature.attributes.category] === false) {
+                    if (dbkjs.options.visibleCategories && feature.attributes.category &&
+                        dbkjs.options.visibleCategories[feature.attributes.category] === false) {
                         return "none";
                     } else {
                         // any string except "none" works here

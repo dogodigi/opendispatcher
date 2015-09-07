@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of opendispatcher/safetymapsDBK
- *  
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -144,6 +144,8 @@ dbkjs.modules.print = {
     },
     doPrint: function () {
         var _obj = dbkjs.modules.print;
+        var adr_str = '';
+        var testObject = {};
         var myBox = [
             _obj.printbox.geometry.getBounds().left,
             _obj.printbox.geometry.getBounds().bottom,
@@ -153,7 +155,7 @@ dbkjs.modules.print = {
         dbkjs.util.alert('<i class="fa fa-spinner fa-spin"></i>', i18n.t('dialogs.print'), 'alert-warning');
         if (!dbkjs.util.isJsonNull(dbkjs.options.dbk) && dbkjs.options.dbk !== 0) {
             var currentFeature = dbkjs.options.feature;
-            var testObject = {
+            testObject = {
                 "options": {
                     "units": "m",
                     "srs": "EPSG:28992",
@@ -171,7 +173,6 @@ dbkjs.modules.print = {
             testObject.options.informatie.data = [];
             if (currentFeature.adres) {
                 if (currentFeature.adres.length > 0) {
-                    var adr_str = '';
                     $.each(currentFeature.adres, function (adr_index, adr) {
                         var street = adr.openbareRuimteNaam + ' ' || '';
                         var number = adr.huisnummer || '';
@@ -194,7 +195,7 @@ dbkjs.modules.print = {
                 testObject.options.bijzonderheid = {};
                 testObject.options.bijzonderheid.columns = ["soort", "tekst"];
                 testObject.options.bijzonderheid.data = [];
-                var adr_str = '';
+                adr_str = '';
                 var set = {
                     "Algemeen": '',
                     "Preparatie": '',
@@ -237,7 +238,7 @@ dbkjs.modules.print = {
 
             if (currentFeature.contact) {
                 if (currentFeature.contact.length > 0) {
-                    var adr_str = '';
+                    adr_str = '';
                     //maximum of 6 contacts. Otherwise it will mess up print format.
                     $.each(currentFeature.contact, function (adr_index, adr) {
                         //trim the telephone number to 25 chars.
@@ -313,7 +314,7 @@ dbkjs.modules.print = {
             //voer verschillende controlles uit alvorens de betreffende layout te selecteren
             // A3 Landscape; ruimte voor 2 foto's
             // A3 Geenfoto; fotoruimte verwijderd en vrijgegeven voor gevaarlijke stoffen.
-            var testObject = {
+            testObject = {
                 "options": {
                     "units": "m",
                     "srs": "EPSG:28992",
@@ -385,11 +386,9 @@ dbkjs.modules.print = {
         layers.unshift(map.baseLayer);
         $.each(layers, function (layer_idx, layer) {
             if (layer.name !== null && "Feature,feature_sketch,print".indexOf(layer.name) === -1) {
-                if (
-                        //layer !== pagesLayer && 
-                        layer.getVisibility() === true) {
+                if ( layer.getVisibility() === true) {
                     var enc = _obj.encodeLayer(layer);
-                    enc && encodedLayers.push(enc);
+                    encodedLayers.push(enc);
                 }
             }
         });
@@ -409,7 +408,7 @@ dbkjs.modules.print = {
         if (options.overview) {
             $.each(options.overview.layers, function (layer) {
                 var enc = _obj.encodeLayer(layer);
-                enc && encodedOverviewLayers.push(enc);
+                encodedOverviewLayers.push(enc);
             });
             jsonData.overviewLayers = encodedOverviewLayers;
         } else {
@@ -483,7 +482,7 @@ dbkjs.modules.print = {
 
     },
     /**
-     * 
+     *
      * @param {type} layer
      * @returns {dbkjs.modules.print.encodeLayer.encLayer|@exp;encLayer@pro;type}
      */
@@ -606,19 +605,19 @@ dbkjs.modules.print = {
                 return $.extend(enc, {
                     type: 'KaMapCache',
                     // group param is mandatory when using KaMapCache
-                    group: layer.params['g'],
-                    metaTileWidth: layer.params['metaTileSize']['w'],
-                    metaTileHeight: layer.params['metaTileSize']['h']
+                    group: layer.params.g,
+                    metaTileWidth: layer.params.metaTileSize.w,
+                    metaTileHeight: layer.params.metaTileSize.h
                 });
             },
             "KaMap": function (layer) {
                 var enc = dbkjs.modules.print.encoders.layers.HTTPRequest.call(dbkjs.modules.print, layer);
                 return $.extend(enc, {
                     type: 'KaMap',
-                    map: layer.params['map'],
-                    extension: layer.params['i'],
+                    map: layer.params.map,
+                    extension: layer.params.i,
                     // group param is optional when using KaMap
-                    group: layer.params['g'] || "",
+                    group: layer.params.g || "",
                     maxExtent: layer.maxExtent.toArray(),
                     tileSize: [layer.tileSize.w, layer.tileSize.h],
                     resolutions: layer.serverResolutions || layer.resolutions
@@ -683,7 +682,7 @@ dbkjs.modules.print = {
                             encStyles[styleName] = style;
                         }
                     }
-                    feature.attributes['_style'] = styleName;
+                    feature.attributes._style = styleName;
                     var featureGeoJson = featureFormat.extract.feature.call(
                             featureFormat, feature);
                     encFeatures.push(featureGeoJson);
