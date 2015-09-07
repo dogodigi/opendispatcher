@@ -1,14 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
-<<<<<<< HEAD
  *
  *  This file is part of opendispatcher/safetymapsDBK
  *
-=======
- * 
- *  This file is part of opendispatcher/safetymapsDBK
- *  
->>>>>>> upstream/master
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -95,7 +89,6 @@ dbkjs.modules.print = {
             _obj.layer.destroyFeatures();
 
             dbkjs.util.alert(i18n.t('dialogs.selectarea'), '<button class="btn btn-primary" id="printclick">' + i18n.t('app.print') + "</button>", 'alert-info');
-<<<<<<< HEAD
 
             //first move the layer to the top!
             dbkjs.selectControl.deactivate();
@@ -113,25 +106,6 @@ dbkjs.modules.print = {
             dbkjs.map.addControl(_obj.printcontrol);
 
 
-=======
-
-            //first move the layer to the top!
-            dbkjs.selectControl.deactivate();
-            dbkjs.map.setLayerIndex(_obj.layer, dbkjs.map.getNumLayers());
-            var dims = _obj.calculatePrintbox();
-            var ring = [
-                new OpenLayers.Geometry.Point(dims.min.lon, dims.min.lat),
-                new OpenLayers.Geometry.Point(dims.min.lon, dims.max.lat),
-                new OpenLayers.Geometry.Point(dims.max.lon, dims.max.lat),
-                new OpenLayers.Geometry.Point(dims.max.lon, dims.min.lat)
-            ];
-            var printfeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing(ring)]), {});
-            _obj.layer.addFeatures([printfeature]);
-            _obj.printbox = printfeature;
-            dbkjs.map.addControl(_obj.printcontrol);
-
-
->>>>>>> upstream/master
             _obj.printcontrol.setFeature(printfeature);
             _obj.printcontrol.activate();
             _obj.printcontrol.events.register("transformcomplete", _obj, _obj.transformComplete);
@@ -170,11 +144,8 @@ dbkjs.modules.print = {
     },
     doPrint: function () {
         var _obj = dbkjs.modules.print;
-<<<<<<< HEAD
         var adr_str = '';
         var testObject = {};
-=======
->>>>>>> upstream/master
         var myBox = [
             _obj.printbox.geometry.getBounds().left,
             _obj.printbox.geometry.getBounds().bottom,
@@ -184,11 +155,7 @@ dbkjs.modules.print = {
         dbkjs.util.alert('<i class="fa fa-spinner fa-spin"></i>', i18n.t('dialogs.print'), 'alert-warning');
         if (!dbkjs.util.isJsonNull(dbkjs.options.dbk) && dbkjs.options.dbk !== 0) {
             var currentFeature = dbkjs.options.feature;
-<<<<<<< HEAD
             testObject = {
-=======
-            var testObject = {
->>>>>>> upstream/master
                 "options": {
                     "units": "m",
                     "srs": "EPSG:28992",
@@ -206,10 +173,6 @@ dbkjs.modules.print = {
             testObject.options.informatie.data = [];
             if (currentFeature.adres) {
                 if (currentFeature.adres.length > 0) {
-<<<<<<< HEAD
-=======
-                    var adr_str = '';
->>>>>>> upstream/master
                     $.each(currentFeature.adres, function (adr_index, adr) {
                         var street = adr.openbareRuimteNaam + ' ' || '';
                         var number = adr.huisnummer || '';
@@ -232,11 +195,7 @@ dbkjs.modules.print = {
                 testObject.options.bijzonderheid = {};
                 testObject.options.bijzonderheid.columns = ["soort", "tekst"];
                 testObject.options.bijzonderheid.data = [];
-<<<<<<< HEAD
                 adr_str = '';
-=======
-                var adr_str = '';
->>>>>>> upstream/master
                 var set = {
                     "Algemeen": '',
                     "Preparatie": '',
@@ -279,11 +238,7 @@ dbkjs.modules.print = {
 
             if (currentFeature.contact) {
                 if (currentFeature.contact.length > 0) {
-<<<<<<< HEAD
                     adr_str = '';
-=======
-                    var adr_str = '';
->>>>>>> upstream/master
                     //maximum of 6 contacts. Otherwise it will mess up print format.
                     $.each(currentFeature.contact, function (adr_index, adr) {
                         //trim the telephone number to 25 chars.
@@ -359,11 +314,7 @@ dbkjs.modules.print = {
             //voer verschillende controlles uit alvorens de betreffende layout te selecteren
             // A3 Landscape; ruimte voor 2 foto's
             // A3 Geenfoto; fotoruimte verwijderd en vrijgegeven voor gevaarlijke stoffen.
-<<<<<<< HEAD
             testObject = {
-=======
-            var testObject = {
->>>>>>> upstream/master
                 "options": {
                     "units": "m",
                     "srs": "EPSG:28992",
@@ -433,17 +384,9 @@ dbkjs.modules.print = {
         var a = layers.indexOf(map.baseLayer);
         layers.splice(a, 1);
         layers.unshift(map.baseLayer);
-<<<<<<< HEAD
         $.each(layers, function (layer_idx, layer) {
             if (layer.name !== null && "Feature,feature_sketch,print".indexOf(layer.name) === -1) {
                 if ( layer.getVisibility() === true) {
-=======
-        $.each(layers, function(layer_idx, layer) {
-            if (layer.name !== null && "Feature,feature_sketch,print".indexOf(layer.name) === -1) {
-                if (
-                        //layer !== pagesLayer && 
-                        layer.getVisibility() === true) {
->>>>>>> upstream/master
                     var enc = _obj.encodeLayer(layer);
                     encodedLayers.push(enc);
                 }
@@ -480,11 +423,7 @@ dbkjs.modules.print = {
             contentType: "application/json; charset=UTF-8",
             data: JSON.stringify(jsonData),
             dataType: "json",
-<<<<<<< HEAD
             success: function (response) {
-=======
-            success: function(response) {
->>>>>>> upstream/master
                 _obj.layer.destroyFeatures();
                 _obj.printbox.destroy();
                 var url = response.getURL;
@@ -496,11 +435,7 @@ dbkjs.modules.print = {
                         i18n.t('dialogs.downloadpdf') + '</a>.', 'alert-success');
                 //_obj.download(response.getURL);
             },
-<<<<<<< HEAD
             error: function (response) {
-=======
-            error: function(response) {
->>>>>>> upstream/master
                 dbkjs.util.alert('<i class="fa fa-warning"></i>', i18n.t('dialogs.printerror'), 'alert-danger');
             }
         });
@@ -803,7 +738,6 @@ dbkjs.modules.print = {
     },
     calculatePrintbox: function () {
         var size = dbkjs.map.getSize();
-<<<<<<< HEAD
         var center = {x: Math.round(size.w / 2), y: Math.round(size.h / 2)};
         var w = size.w - 200;
         var h = Math.round(w / 1.428571429);
@@ -814,18 +748,5 @@ dbkjs.modules.print = {
         var min = dbkjs.map.getLonLatFromViewPortPx({x: center.x - Math.round(w / 2), y: center.y + Math.round(h / 2)});
         var max = dbkjs.map.getLonLatFromViewPortPx({x: center.x + Math.round(w / 2), y: center.y - Math.round(h / 2)});
         return {min: min, max: max};
-=======
-        var center = {x: Math.round(size.w / 2), y: Math.round(size.h /2)};        
-        var w = size.w - 200;
-        var h = Math.round(w / 1.428571429);
-        if(h > size.h - 200){
-            h = size.h - 200;
-            w = Math.round(h * 1.428571429);
-        }
-        var min = dbkjs.map.getLonLatFromViewPortPx({x: center.x - Math.round(w / 2), y: center.y + Math.round(h/2)});
-        var max = dbkjs.map.getLonLatFromViewPortPx({x: center.x + Math.round(w / 2), y: center.y - Math.round(h/2)});
-        return {min: min, max:max};
-
->>>>>>> upstream/master
     }
 };
