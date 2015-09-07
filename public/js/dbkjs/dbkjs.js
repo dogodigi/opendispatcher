@@ -43,11 +43,7 @@ dbkjs.init = function () {
         // Later wordt TouchNavigation toegevoegd, verwijder standaard
         // navigation control (anders gekke zoom / pan effecten op touchscreen)
         dbkjs.options.map.options.controls = [];
-<<<<<<< HEAD
     }
-=======
-    };
->>>>>>> upstream/master
 
     if (!dbkjs.map) {
         dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
@@ -181,7 +177,6 @@ dbkjs.loadOrganisationCapabilities = function () {
     if (dbkjs.options.organisation.wms) {
         dbkjs.loadingcapabilities = 0;
         $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v) {
-<<<<<<< HEAD
           var options;
           var params;
           var parent;
@@ -260,75 +255,6 @@ dbkjs.loadOrganisationCapabilities = function () {
                   layertype
               );
           }
-=======
-            var index = wms_v.index || 0;
-            if (wms_v.getcapabilities === true) {
-                dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
-                var options = {
-                    url: wms_v.url,
-                    title: wms_v.name,
-                    proxy: wms_v.proxy,
-                    index: index,
-                    parent: wms_v.parent
-                };
-                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
-                    options.pl = wms_v.pl;
-                }
-                var myCapabilities = new dbkjs.Capabilities(options);
-            } else if (!wms_v.baselayer) {
-                var params = wms_v.params || {};
-                var options = wms_v.options || {};
-                var parent = wms_v.parent || null;
-                var metadata = {};
-                if (!dbkjs.util.isJsonNull(wms_v.abstract)) {
-                    metadata.abstract = wms_v.abstract;
-                }
-                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
-                    metadata.pl = wms_v.pl;
-                }
-                if (!dbkjs.util.isJsonNull(wms_v.legend)) {
-                    metadata.legend = wms_v.legend;
-                }
-                var layertype = wms_v.layertype || null;
-                var myLayer = new dbkjs.Layer(
-                    wms_v.name,
-                    wms_v.url,
-                    params,
-                    options,
-                    parent,
-                    index,
-                    metadata,
-                    layertype
-                );
-            } else {
-                var params = wms_v.params || {};
-                var options = wms_v.options || {};
-                options = OpenLayers.Util.extend({isBaseLayer: true}, options);
-                var parent = wms_v.parent || null;
-                var metadata = {};
-                if (!dbkjs.util.isJsonNull(wms_v.abstract)) {
-                    metadata.abstract = wms_v.abstract;
-                }
-                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
-                    metadata.pl = wms_v.pl;
-                }
-                if (!dbkjs.util.isJsonNull(wms_v.legend)) {
-                    metadata.legend = wms_v.legend;
-                }
-                var layertype = wms_v.layertype || null;
-                var myLayer = new dbkjs.Layer(
-                    wms_v.name,
-                    wms_v.url,
-                    params,
-                    options,
-                    parent,
-                    index,
-                    metadata,
-                    layertype
-                );
-            }
-
->>>>>>> upstream/master
         });
         if (dbkjs.loadingcapabilities === 0) {
             dbkjs.finishMap();
@@ -418,7 +344,6 @@ dbkjs.setPaths = function () {
 
 };
 
-<<<<<<< HEAD
 dbkjs.bind_dbkjs_init_complete = function() {
 
     $(dbkjs).bind('dbkjs_init_complete', function() {
@@ -452,9 +377,6 @@ dbkjs.bind_dbkjs_init_complete = function() {
     });
 };
 
-=======
-// dbkjs.js: $(document).ready
->>>>>>> upstream/master
 dbkjs.documentReady = function () {
     // Make sure i18n is initialized
     i18n.init({
@@ -560,45 +482,6 @@ dbkjs.documentReady = function () {
                 }
             }
         });
-
-<<<<<<< HEAD
         dbkjs.bind_dbkjs_init_complete();
     });
 };
-=======
-        $(dbkjs).bind('dbkjs_init_complete', function () {
-
-            if (dbkjs.viewmode !== 'fullscreen') {
-                $('#zoom_prev').click(function () {
-                    dbkjs.naviHis.previousTrigger();
-                });
-                $('#zoom_next').click(function () {
-                    dbkjs.naviHis.nextTrigger();
-                });
-            } else {
-                FastClick.attach(document.body);
-            }
-            (function () {
-                function calcMaxWidth() {
-                    // Calculate the max width for dbk title so other buttons are never pushed down when name is too long
-                    var childWidth = 0;
-                    $('.main-button-group .btn-group').each(function () {
-                        childWidth += $(this).outerWidth();
-                    });
-                    var maxWidth = $('.main-button-group').outerWidth() - childWidth;
-                    $('.dbk-title').css('max-width', (maxWidth - 25) + 'px');
-                }
-                // Listen for orientation changes
-                window.addEventListener("orientationchange", function () {
-                    calcMaxWidth();
-                }, false);
-                calcMaxWidth();
-            }());
-        });
-    });
-};
-
-$(document).ready(function () {
-    dbkjs.documentReady();
-});
->>>>>>> upstream/master
