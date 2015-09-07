@@ -56,10 +56,6 @@ dbkjs.modules.feature = {
         if (_obj.active){
             return feature;
         } else {
-<<<<<<< HEAD
-=======
-        var _obj = dbkjs.modules.feature;
->>>>>>> upstream/master
         var feature;
         var _search_field = 'identificatie';
         var _search_value;
