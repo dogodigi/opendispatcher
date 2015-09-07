@@ -1,14 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
-<<<<<<< HEAD
  *
  *  This file is part of opendispatcher/safetymapsDBK
  *
-=======
- * 
- *  This file is part of opendispatcher/safetymapsDBK
- *  
->>>>>>> upstream/master
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -87,11 +81,7 @@ dbkjs.modules.filter = {
                     }
                     $('#btn_refresh').click();
                 });
-<<<<<<< HEAD
                 $('#btn_filter_reset').click(function () {
-=======
-                $('#btn_filter_reset').click(function() {
->>>>>>> upstream/master
                     _obj.selectie = [];
                     $("#sel_oms").prop('selectedIndex', 0);
                     $("#sel_risk").prop('selectedIndex', 0);
@@ -114,11 +104,7 @@ dbkjs.modules.filter = {
             $('#filter_dialog').modal('toggle');
         });
     },
-<<<<<<< HEAD
     getFilter: function () {
-=======
-    getFilter: function() {
->>>>>>> upstream/master
         var _obj = dbkjs.modules.filter;
         var omsfilter = $("#sel_oms").val();
         var bhvfilter = $("#sel_bhv").val();
@@ -130,11 +116,7 @@ dbkjs.modules.filter = {
         var inzetfilter = $("#sel_inzet").val();
         var constructionfilter = $("#sel_construction").val();
         _obj.selectie = [];
-<<<<<<< HEAD
         $.each(dbkjs.modules.feature.features, function (fix, feat) {
-=======
-        $.each(dbkjs.modules.feature.features, function(fix, feat) {
->>>>>>> upstream/master
             var compliant = true;
             if (floorfilter === 'above' && feat.attributes.flooring !== "above") {
                 compliant = false;
@@ -143,7 +125,6 @@ dbkjs.modules.filter = {
             } else if (floorfilter === 'both' && feat.attributes.flooring !== "both") {
                 compliant = false;
             } else if (floorfilter === 'none' && (feat.attributes.flooring)) {
-<<<<<<< HEAD
                 compliant = false;
             }
             if (gevstoffilter === 'F' && feat.attributes.gevaarlijkestoffen !== 0) {
@@ -161,25 +142,6 @@ dbkjs.modules.filter = {
             } else if (inzetfilter === 'T' && dbkjs.util.isJsonNull(feat.attributes.inzetprocedure)) {
                 compliant = false;
             }
-=======
-                compliant = false;
-            }
-            if (gevstoffilter === 'F' && feat.attributes.gevaarlijkestoffen !== 0) {
-                compliant = false;
-            } else if (gevstoffilter === 'T' && feat.attributes.gevaarlijkestoffen === 0) {
-                compliant = false;
-            }
-            if (bhvfilter === 'F' && !dbkjs.util.isJsonNull(feat.attributes.BHVaanwezig)) {
-                compliant = false;
-            } else if (bhvfilter === 'T' && dbkjs.util.isJsonNull(feat.attributes.BHVaanwezig)) {
-                compliant = false;
-            }
-            if (inzetfilter === 'F' && !dbkjs.util.isJsonNull(feat.attributes.inzetprocedure)) {
-                compliant = false;
-            } else if (inzetfilter === 'T' && dbkjs.util.isJsonNull(feat.attributes.inzetprocedure)) {
-                compliant = false;
-            }
->>>>>>> upstream/master
             if (omsfilter === 'F' && !dbkjs.util.isJsonNull(feat.attributes.OMSNummer)) {
                 compliant = false;
             } else if (omsfilter === 'T' && dbkjs.util.isJsonNull(feat.attributes.OMSNummer)) {
@@ -187,7 +149,6 @@ dbkjs.modules.filter = {
             }
             if (!dbkjs.util.isJsonNull(risicofilter)) {
                 if (feat.attributes.risicoklasse !== risicofilter) {
-<<<<<<< HEAD
                     compliant = false;
                 }
             }
@@ -198,31 +159,6 @@ dbkjs.modules.filter = {
                 }
             }
 
-            if (!dbkjs.util.isJsonNull(constructionfilter) && !dbkjs.util.isJsonNull(feat.attributes.construction)) {
-                if ($.inArray(feat.attributes.construction.toLowerCase(), constructionfilter) === -1) {
-=======
->>>>>>> upstream/master
-                    compliant = false;
-                }
-            } else if (!dbkjs.util.isJsonNull(constructionfilter) && dbkjs.util.isJsonNull(feat.attributes.construction)) {
-                compliant = false;
-            }
-<<<<<<< HEAD
-            if (!dbkjs.util.isJsonNull(functiefilter) && !dbkjs.util.isJsonNull(feat.attributes.functie)) {
-                if ($.inArray(feat.attributes.functie.toLowerCase(), functiefilter) === -1) {
-=======
-            if (guidancefilter.length !== 0) {
-                var testguidance = feat.attributes.guidance || [];
-                if (_obj.diff(guidancefilter, testguidance).length !== guidancefilter.length) {
->>>>>>> upstream/master
-                    compliant = false;
-                }
-            } else if (!dbkjs.util.isJsonNull(functiefilter) && dbkjs.util.isJsonNull(feat.attributes.functie)) {
-                compliant = false;
-            }
-
-<<<<<<< HEAD
-=======
             if (!dbkjs.util.isJsonNull(constructionfilter) && !dbkjs.util.isJsonNull(feat.attributes.construction)) {
                 if ($.inArray(feat.attributes.construction.toLowerCase(), constructionfilter) === -1) {
                     compliant = false;
@@ -238,7 +174,6 @@ dbkjs.modules.filter = {
                 compliant = false;
             }
 
->>>>>>> upstream/master
             if (compliant) {
                 _obj.selectie.push(feat.attributes.identificatie);
             }
@@ -279,7 +214,6 @@ dbkjs.modules.filter = {
     getBhvFilter: function () {
         var _obj = dbkjs.modules.filter;
         var formgroup = $('<div class="form-group">');
-<<<<<<< HEAD
         formgroup.append('<label class="col-sm-4 control-label" for="sel_bhv">' + i18n.t('filter.bhv') + '</label> ');
         _obj.sel_bhv = $('<select id="sel_bhv" class="form-control"><select>');
         _obj.sel_bhv.append('<option value="" selected>' + i18n.t('filter.nofilter') + '</option>');
@@ -288,53 +222,12 @@ dbkjs.modules.filter = {
         formgroup.append($('<div class="col-sm-8"></div>').append(_obj.sel_bhv));
         $('#filter_dialog_form').append(formgroup);
         $('#sel_bhv').change(function () {
-=======
-        formgroup.append('<label class="col-sm-4 control-label" for="sel_inzet">' + i18n.t('filter.procedure') + '</label> ');
-        _obj.sel_inzet = $('<select id="sel_inzet" class="form-control"><select>');
-        _obj.sel_inzet.append('<option value="" selected>' + i18n.t('filter.nofilter') + '</option>');
-        _obj.sel_inzet.append('<option value="F">' + i18n.t('filter.without') + ' ' + i18n.t('filter.procedure').toLowerCase() + '</option>');
-        _obj.sel_inzet.append('<option value="T">' + i18n.t('filter.with') + ' ' + i18n.t('filter.procedure').toLowerCase() + '</option>');
-        formgroup.append($('<div class="col-sm-8"></div>').append(_obj.sel_inzet));
-        $('#filter_dialog_form').append(formgroup);
-        $('#sel_inzet').change(function () {
->>>>>>> upstream/master
             _obj.getFilter();
         });
     },
     getFlooringFilter: function () {
         var _obj = dbkjs.modules.filter;
         var formgroup = $('<div class="form-group">');
-<<<<<<< HEAD
-=======
-        formgroup.append('<label class="col-sm-4 control-label" for="sel_gevstof">' + i18n.t('filter.hazard') + '</label> ');
-        _obj.sel_gevstof = $('<select id="sel_gevstof" class="form-control"><select>');
-        _obj.sel_gevstof.append('<option value="" selected>' + i18n.t('filter.nofilter') + '</option>');
-        _obj.sel_gevstof.append('<option value="F">' + i18n.t('filter.without') + ' ' + i18n.t('filter.hazard').toLowerCase() + '</option>');
-        _obj.sel_gevstof.append('<option value="T">' + i18n.t('filter.with') + ' ' + i18n.t('filter.hazard').toLowerCase() + '</option>');
-        formgroup.append($('<div class="col-sm-8"></div>').append(_obj.sel_gevstof));
-        $('#filter_dialog_form').append(formgroup);
-        $('#sel_gevstof').change(function () {
-            _obj.getFilter();
-        });
-    },
-    getBhvFilter: function() {
-        var _obj = dbkjs.modules.filter;
-        var formgroup = $('<div class="form-group">');
-        formgroup.append('<label class="col-sm-4 control-label" for="sel_bhv">' + i18n.t('filter.bhv') + '</label> ');
-        _obj.sel_bhv = $('<select id="sel_bhv" class="form-control"><select>');
-        _obj.sel_bhv.append('<option value="" selected>' + i18n.t('filter.nofilter') + '</option>');
-        _obj.sel_bhv.append('<option value="F">' + i18n.t('filter.without') + ' ' + i18n.t('filter.bhv').toLowerCase() + '</option>');
-        _obj.sel_bhv.append('<option value="T">' + i18n.t('filter.with') + ' ' + i18n.t('filter.bhv').toLowerCase() + '</option>');
-        formgroup.append($('<div class="col-sm-8"></div>').append(_obj.sel_bhv));
-        $('#filter_dialog_form').append(formgroup);
-        $('#sel_bhv').change(function () {
-            _obj.getFilter();
-        });
-    },
-    getFlooringFilter: function() {
-        var _obj = dbkjs.modules.filter;
-        var formgroup = $('<div class="form-group">');
->>>>>>> upstream/master
         formgroup.append('<label class="col-sm-4 control-label" for="sel_floor">' + i18n.t('filter.flooring') + '</label> ');
         _obj.sel_floor = $('<select id="sel_floor" class="form-control"><select>');
         _obj.sel_floor.append('<option value="" selected>' + i18n.t('filter.nofilter') + '</option>');
@@ -378,7 +271,6 @@ dbkjs.modules.filter = {
             _obj.sel_risk.append('<option value="" selected>' + i18n.t('filter.nofilter') + '</option>');
             $.each(test, function (rix, risk) {
                 _obj.sel_risk.append('<option value="' + risk + '">' + risk + '</option>');
-<<<<<<< HEAD
             });
 
             formgroup.append($('<div class="col-sm-8"></div>').append(_obj.sel_risk));
@@ -414,43 +306,6 @@ dbkjs.modules.filter = {
                 _obj.getFilter();
             });
         } else {
-=======
-            });
-
-            formgroup.append($('<div class="col-sm-8"></div>').append(_obj.sel_risk));
-            $('#filter_dialog_form').append(formgroup);
-            $('#sel_risk').change(function () {
-                _obj.getFilter();
-            });
-        } else {
-            $('#filter_dialog_form').append('<div class="form-group from-group-sm"><div class="col-sm-4"></div><div class="col-sm-8">' + i18n.t('filter.norisk') + '</div></div> ');
-        }
-    },
-    getGuidanceFilter: function() {
-        var _obj = dbkjs.modules.filter;
-        var formgroup = $('<div class="form-group">');
-        var guidance = [];
-        $.each(dbkjs.modules.feature.features, function (fix, feat) {
-            if ($.isArray(feat.attributes.guidance)) {
-                guidance = guidance.concat(feat.attributes.guidance);
-            }
-        });
-        var test = guidance.unique();
-        test.sort();
-        if (test.length > 0) {
-            formgroup.append('<label class="col-sm-4 control-label" for="sel_guid">' + i18n.t('filter.guidance') + '</label> ');
-            _obj.sel_guid = $('<select id="sel_guid" size="4" class="form-control" MULTIPLE><select>');
-            $.each(test, function (rix, guid) {
-                _obj.sel_guid.append('<option value="' + guid + '">' + guid + '</option>');
-            });
-
-            formgroup.append($('<div class="col-sm-8"></div>').append(_obj.sel_guid));
-            $('#filter_dialog_form').append(formgroup);
-            $('#sel_guid').change(function () {
-                _obj.getFilter();
-            });
-        } else {
->>>>>>> upstream/master
             $('#filter_dialog_form').append('<div class="form-group from-group-sm"><div class="col-sm-4"></div><div class="col-sm-8">' + i18n.t('filter.noguidance') + '</div></div>');
         }
     },
@@ -470,7 +325,6 @@ dbkjs.modules.filter = {
             _obj.sel_func = $('<select id="sel_func" size="4" class="form-control" MULTIPLE><select>');
             $.each(test, function (rix, functie) {
                 _obj.sel_func.append('<option value="' + functie + '">' + functie + '</option>');
-<<<<<<< HEAD
             });
             formgroup.append($('<div class="col-sm-8"></div>').append(_obj.sel_func));
             $('#filter_dialog_form').append(formgroup);
@@ -511,48 +365,6 @@ dbkjs.modules.filter = {
     diff: function (source, target) {
         var difference = [];
         for (var hint in source) {
-=======
-            });
-            formgroup.append($('<div class="col-sm-8"></div>').append(_obj.sel_func));
-            $('#filter_dialog_form').append(formgroup);
-            $('#sel_func').change(function () {
-                _obj.getFilter();
-            });
-        } else {
-            $('#filter_dialog_form').append('<div class="form-group from-group-sm"><div class="col-sm-4"></div><div class="col-sm-8">' + i18n.t('filter.functions') + '</div></div>');
-        }
-    },
-    getConstructionFilter: function() {
-        var _obj = dbkjs.modules.filter;
-        var formgroup = $('<div class="form-group">');
-        var constructions = [];
-        $.each(dbkjs.modules.feature.features, function (fix, feat) {
-            if (!dbkjs.util.isJsonNull(feat.attributes.construction)) {
-                constructions.push(feat.attributes.construction.toLowerCase());
-            }
-        });
-        var test = constructions.unique();
-        test.sort();
-        if (test.length > 0) {
-            formgroup.append('<label class="col-sm-4 control-label" for="sel_construction">' + i18n.t('filter.construction') + '</label> ');
-            _obj.sel_construction = $('<select id="sel_construction" size="4" class="form-control" MULTIPLE><select>');
-            //_obj.sel_func.append('<option value="" selected>' + i18n.t('filter.nofilter') + '</option>');
-            $.each(test, function (rix, functie) {
-                _obj.sel_construction.append('<option value="' + functie + '">' + functie + '</option>');
-            });
-            formgroup.append($('<div class="col-sm-8"></div>').append(_obj.sel_construction));
-            $('#filter_dialog_form').append(formgroup);
-            $('#sel_construction').change(function () {
-                _obj.getFilter();
-            });
-        } else {
-            $('#filter_dialog_form').append('<div class="form-group from-group-sm"><div class="col-sm-4"></div><div class="col-sm-8">' + i18n.t('filter.noconstructions') + '</div></div>');
-        }
-    },
-    diff: function(source, target) {
-        var difference = [];
-        for (hint in source) {
->>>>>>> upstream/master
             if ($.inArray(source[hint], target) !== -1) {
                 difference.push(source[hint]);
             }
