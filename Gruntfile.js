@@ -33,7 +33,11 @@ module.exports = function (grunt) {
                                 src: [
                                     'jquery-1.11.0/jquery-1.11.0.min.js',
                                     'bootstrap-3.2.0-dist/js/bootstrap.min.js',
+<<<<<<< HEAD
                                     'bootstrap-slider.js',
+=======
+                                    'bootstrap-slider.js', 
+>>>>>>> upstream/master
                                     'proj4js-compressed.js',
                                     'OpenLayers-2.13.1/OpenLayers.js',
                                     'moment/moment.min.js',
@@ -49,6 +53,15 @@ module.exports = function (grunt) {
                                 expand: true
                             },
                             {
+<<<<<<< HEAD
+=======
+                                cwd: 'public/font-awesome-4.1.0/css',
+                                src: ['font-awesome.min.css'],
+                                dest: 'build/font-awesome-4.1.0/css',
+                                expand: true
+                            },
+                            {
+>>>>>>> upstream/master
                                 cwd: 'public/font-awesome-4.1.0/fonts',
                                 src: ['*'],
                                 dest: 'build/font-awesome-4.1.0/fonts',
@@ -118,8 +131,12 @@ module.exports = function (grunt) {
                         'public/js/dbkjs/gui.js',
                         'public/js/dbkjs/layers.js',
                         'public/js/dbkjs/mapcontrols.js',
+<<<<<<< HEAD
                         'public/js/dbkjs/dbkjs.js',
                         'public/js/dbkjs/docready.js'
+=======
+                        'public/js/dbkjs/dbkjs.js'
+>>>>>>> upstream/master
                     ]
                 }
             }
@@ -176,6 +193,59 @@ module.exports = function (grunt) {
                     delete json.organisation.care;
                     delete json.organisation.modules.care;
                     grunt.file.write('build/api/organisation.json', JSON.stringify(json));
+<<<<<<< HEAD
+=======
+
+                    cb();
+                } else {
+                    cb('Could not create organisation.json');
+                }
+
+            }
+        });
+    });
+    grunt.registerTask('features', 'Export features.json in build', function () {
+        var cb = this.async();
+        global.conf = require('nconf');
+        global.conf.argv().env();
+        global.conf.file({file: 'config.json'});
+        var dbURL = 'postgres://' +
+                global.conf.get('database:user') + ':' +
+                global.conf.get('database:password') + '@' +
+                global.conf.get('database:host') + ':' +
+                global.conf.get('database:port') + '/' +
+                global.conf.get('database:dbname');
+        var dbkcontroller = require('./controllers/dbk.js');
+        var anyDB = require('any-db');
+        global.pool = anyDB.createPool(dbURL, {min: 2, max: 20});
+        dbkcontroller.getFeatures({params: {id: 0}, query: {srid: 28992}}, {json: function (json) {
+                grunt.file.write('build/api/features.json', JSON.stringify(json));
+                // @todo loop through the features to grab single files and store them offline
+                    // @todo loop through media and pull offline
+                cb();
+            }
+        });
+    });
+    grunt.registerTask('index', 'Export index page to index.html in build', function () {
+        var cb = this.async();
+        var request = require('supertest');
+        var server = require('./server.js');
+        server.app.set('env', 'production');
+        request(server.app).get('/')
+                .end(function (err, res) {
+                    if (err) {
+                        console.log("Could not create index.html");
+                    } else {
+                        console.log('build/index.html created');
+                        grunt.file.write('build/index.html', res.text);
+                        cb();
+                    }
+                });
+    });
+    grunt.registerTask('default', ['cssmin:combine', 'uglify']);
+    grunt.registerTask('offline', ['clean','cssmin:mobile', 'uglify', 'organisation', 'features', 'copy', 'index']);
+};
+>>>>>>> upstream/master
 
                     cb();
                 } else {

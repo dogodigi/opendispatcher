@@ -69,11 +69,18 @@ dbkjs.Capabilities = dbkjs.Class({
                         if (!dbkjs.util.isJsonNull(options.pl)) {
                             metadata.pl = options.pl + lkey;
                         }
+<<<<<<< HEAD
                         var params = OpenLayers.Util.extend({layers: lval.name}, options.params);
                         var myLayer = new dbkjs.Layer(parent + '\\' + lval.title,
                                 _obj.url,
                                 params,
                                 options.options,
+=======
+                        var myLayer = new dbkjs.Layer(parent + '\\' + lval.title,
+                                _obj.url,
+                                {layers: lval.name},
+                                {},
+>>>>>>> upstream/master
                                 '',
                                 options.index + lkey,
                                 metadata
