@@ -341,14 +341,14 @@ dbkjs.modules.print = {
     layout: null,
     encoding: document.charset || document.characterSet || "UTF-8",
     timeout: 30000,
-    setLayout: function(layout) {
+    setLayout: function (layout) {
         this.layout = layout;
     },
-    setDpi: function(dpi) {
+    setDpi: function (dpi) {
         this.dpi = dpi;
     },
-    printdirect: function(map, pages, options) {
-        dbkjs.modules.print.loadCapabilities(function(capabilities) {
+    printdirect: function (map, pages, options) {
+        dbkjs.modules.print.loadCapabilities(function (capabilities) {
             dbkjs.modules.print.setLayout({
                 name: options.layout,
                 rotation: true,
@@ -361,7 +361,7 @@ dbkjs.modules.print = {
             dbkjs.modules.print.print(map, pages, options);
         });
     },
-    print: function(map, pages, options) {
+    print: function (map, pages, options) {
         var _obj = dbkjs.modules.print;
         pages = pages instanceof Array ? pages : [pages];
         options = options || {};
@@ -381,9 +381,9 @@ dbkjs.modules.print = {
         var layers = map.layers.concat(); //concat results in a new array
         //layers.remove(map.baseLayer);
         var a = layers.indexOf(map.baseLayer);
-        layers.splice(a,1);
+        layers.splice(a, 1);
         layers.unshift(map.baseLayer);
-        $.each(layers, function(layer_idx, layer) {
+        $.each(layers, function (layer_idx, layer) {
             if (layer.name !== null && "Feature,feature_sketch,print".indexOf(layer.name) === -1) {
                 if (
                         //layer !== pagesLayer && 
@@ -396,7 +396,7 @@ dbkjs.modules.print = {
         jsonData.layers = encodedLayers;
 
         var encodedPages = [];
-        $.each(pages, function(page_idx, page) {
+        $.each(pages, function (page_idx, page) {
             encodedPages.push(
                     $.extend(page.customParams, {
                         bbox: page.bbox,
@@ -407,7 +407,7 @@ dbkjs.modules.print = {
         jsonData.pages = encodedPages;
         var encodedOverviewLayers = [];
         if (options.overview) {
-            $.each(options.overview.layers, function(layer) {
+            $.each(options.overview.layers, function (layer) {
                 var enc = _obj.encodeLayer(layer);
                 enc && encodedOverviewLayers.push(enc);
             });
@@ -424,7 +424,7 @@ dbkjs.modules.print = {
             contentType: "application/json; charset=UTF-8",
             data: JSON.stringify(jsonData),
             dataType: "json",
-            success: function(response) {
+            success: function (response) {
                 _obj.layer.destroyFeatures();
                 _obj.printbox.destroy();
                 var url = response.getURL;
@@ -436,12 +436,12 @@ dbkjs.modules.print = {
                         i18n.t('dialogs.downloadpdf') + '</a>.', 'alert-success');
                 //_obj.download(response.getURL);
             },
-            error: function(response) {
+            error: function (response) {
                 dbkjs.util.alert('<i class="fa fa-warning"></i>', i18n.t('dialogs.printerror'), 'alert-danger');
             }
         });
     },
-    printDialog: function(parent) {
+    printDialog: function (parent) {
         var form = $('<form id="print-form" role="form"></form>');
         //form.append('<p class="bg-info">' + "Kies de juiste instellingen" + '</p>');
         var layoutgroup = $('<div class="form-group"></div>');
@@ -450,7 +450,7 @@ dbkjs.modules.print = {
         form.append(layoutgroup);
         $(parent).append(form);
     },
-    download: function(url) {
+    download: function (url) {
         var _obj = dbkjs.modules.print;
         // Er zit een bug in de manier waarop de PDF wordt aangeboden. Deze houdt geen rekening met proxies die serverside zijn ingesteld
         // De oplossing is om de bestandsnaam uit de URL te halen en de juiste relatieve URL er van te maken.
@@ -460,7 +460,7 @@ dbkjs.modules.print = {
 
         window.open("/print/pdf/" + filename);
     },
-    loadCapabilities: function(callback) {
+    loadCapabilities: function (callback) {
         var _obj = dbkjs.modules.print;
         if (!_obj.url) {
             return;
@@ -470,7 +470,7 @@ dbkjs.modules.print = {
             url: url,
             type: "GET",
             data: "",
-            success: function(response) {
+            success: function (response) {
                 _obj.capabilities = response;
                 if (callback) {
                     callback.call();
@@ -487,7 +487,7 @@ dbkjs.modules.print = {
      * @param {type} layer
      * @returns {dbkjs.modules.print.encodeLayer.encLayer|@exp;encLayer@pro;type}
      */
-    encodeLayer: function(layer) {
+    encodeLayer: function (layer) {
         var _obj = dbkjs.modules.print;
         var encLayer;
         for (var c in _obj.encoders.layers) {
@@ -502,7 +502,7 @@ dbkjs.modules.print = {
     },
     encoders: {
         "layers": {
-            "Layer": function(layer) {
+            "Layer": function (layer) {
                 var enc = {};
                 if (layer.options && layer.options.maxScale) {
                     enc.minScaleDenominator = layer.options.maxScale;
@@ -512,7 +512,7 @@ dbkjs.modules.print = {
                 }
                 return enc;
             },
-            "WMS": function(layer) {
+            "WMS": function (layer) {
                 var enc = dbkjs.modules.print.encoders.layers.HTTPRequest.call(dbkjs.modules.print, layer);
                 enc.singleTile = layer.singleTile;
                 $.extend(enc, {
@@ -535,7 +535,7 @@ dbkjs.modules.print = {
                 }
                 return enc;
             },
-            "OSM": function(layer) {
+            "OSM": function (layer) {
                 var enc = dbkjs.modules.print.encoders.layers.TileCache.call(dbkjs.modules.print, layer);
                 return $.extend(enc, {
                     type: 'OSM',
@@ -543,7 +543,7 @@ dbkjs.modules.print = {
                     extension: "png"
                 });
             },
-            "TMS": function(layer) {
+            "TMS": function (layer) {
                 var enc = dbkjs.modules.print.encoders.layers.TileCache.call(dbkjs.modules.print, layer);
                 return $.extend(enc, {
                     type: 'TMS',
@@ -551,7 +551,7 @@ dbkjs.modules.print = {
                     "tileOrigin": {"x": -285401.920, "y": 22598.080}
                 });
             },
-            "TileCache": function(layer) {
+            "TileCache": function (layer) {
                 var enc = dbkjs.modules.print.encoders.layers.HTTPRequest.call(dbkjs.modules.print, layer);
                 return $.extend(enc, {
                     type: 'TileCache',
@@ -562,7 +562,7 @@ dbkjs.modules.print = {
                     resolutions: layer.serverResolutions || layer.resolutions
                 });
             },
-            "WMTS": function(layer) {
+            "WMTS": function (layer) {
                 var enc = dbkjs.modules.print.encoders.layers.HTTPRequest.call(dbkjs.modules.print, layer);
                 enc = $.extend(enc, {
                     type: 'WMTS',
@@ -579,7 +579,7 @@ dbkjs.modules.print = {
                         enc.format = layer.format;
                     }
                     enc.matrixIds = [];
-                    $.each(layer.matrixIds, function(matrixId_idx, matrixId) {
+                    $.each(layer.matrixIds, function (matrixId_idx, matrixId) {
                         enc.matrixIds.push({
                             identifier: matrixId.identifier,
                             matrixSize: [matrixId.matrixWidth, matrixId.matrixHeight],
@@ -601,7 +601,7 @@ dbkjs.modules.print = {
                     });
                 }
             },
-            "KaMapCache": function(layer) {
+            "KaMapCache": function (layer) {
                 var enc = dbkjs.modules.print.encoders.layers.KaMap.call(dbkjs.modules.print, layer);
                 return $.extend(enc, {
                     type: 'KaMapCache',
@@ -611,7 +611,7 @@ dbkjs.modules.print = {
                     metaTileHeight: layer.params['metaTileSize']['h']
                 });
             },
-            "KaMap": function(layer) {
+            "KaMap": function (layer) {
                 var enc = dbkjs.modules.print.encoders.layers.HTTPRequest.call(dbkjs.modules.print, layer);
                 return $.extend(enc, {
                     type: 'KaMap',
@@ -624,7 +624,7 @@ dbkjs.modules.print = {
                     resolutions: layer.serverResolutions || layer.resolutions
                 });
             },
-            "HTTPRequest": function(layer) {
+            "HTTPRequest": function (layer) {
                 var enc = dbkjs.modules.print.encoders.layers.Layer.call(dbkjs.modules.print, layer);
                 return $.extend(enc, {
                     baseURL: dbkjs.modules.print.getAbsoluteUrl(layer.url instanceof Array ?
@@ -632,7 +632,7 @@ dbkjs.modules.print = {
                     opacity: (layer.opacity !== null) ? layer.opacity : 1.0
                 });
             },
-            "Image": function(layer) {
+            "Image": function (layer) {
                 var enc = dbkjs.modules.print.encoders.layers.Layer.call(dbkjs.modules.print, layer);
                 return $.extend(enc, {
                     type: 'Image',
@@ -643,7 +643,7 @@ dbkjs.modules.print = {
                     name: layer.name
                 });
             },
-            "Vector": function(layer) {
+            "Vector": function (layer) {
                 if (!layer.features.length) {
                     return;
                 }
@@ -700,7 +700,7 @@ dbkjs.modules.print = {
                     opacity: (layer.opacity !== null) ? layer.opacity : 1.0
                 });
             },
-            "Markers": function(layer) {
+            "Markers": function (layer) {
                 var features = [];
                 for (var i = 0, len = layer.markers.length; i < len; i++) {
                     var marker = layer.markers[i];
@@ -719,7 +719,7 @@ dbkjs.modules.print = {
             }
         }
     },
-    getAbsoluteUrl: function(url) {
+    getAbsoluteUrl: function (url) {
         if ($.browser.safari) {
             url = url.replace(/{/g, '%7B');
             url = url.replace(/}/g, '%7D');
@@ -739,16 +739,15 @@ dbkjs.modules.print = {
     },
     calculatePrintbox: function () {
         var size = dbkjs.map.getSize();
-        var center = {x: Math.round(size.w / 2), y: Math.round(size.h /2)};        
+        var center = {x: Math.round(size.w / 2), y: Math.round(size.h / 2)};
         var w = size.w - 200;
         var h = Math.round(w / 1.428571429);
-        if(h > size.h - 200){
+        if (h > size.h - 200) {
             h = size.h - 200;
             w = Math.round(h * 1.428571429);
         }
-        var min = dbkjs.map.getLonLatFromViewPortPx({x: center.x - Math.round(w / 2), y: center.y + Math.round(h/2)});
-        var max = dbkjs.map.getLonLatFromViewPortPx({x: center.x + Math.round(w / 2), y: center.y - Math.round(h/2)});
-        return {min: min, max:max};
-
+        var min = dbkjs.map.getLonLatFromViewPortPx({x: center.x - Math.round(w / 2), y: center.y + Math.round(h / 2)});
+        var max = dbkjs.map.getLonLatFromViewPortPx({x: center.x + Math.round(w / 2), y: center.y - Math.round(h / 2)});
+        return {min: min, max: max};
     }
 };

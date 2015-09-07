@@ -17,6 +17,8 @@
  *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+/* global OpenLayers */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.options = {
@@ -27,7 +29,7 @@ dbkjs.options = {
             numDigits: 0
         }
     },
-    zoom: 13,
+    zoom: 14,
     /**
      * PDOK settings, particular for the Netherlands national geodata services
      *

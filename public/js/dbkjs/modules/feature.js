@@ -102,7 +102,7 @@ dbkjs.modules.feature = {
         _obj.namespace = options.namespace || _obj.namespace;
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
-        _obj.layer = new OpenLayers.Layer.Vector("Feature", {
+        _obj.layer = new OpenLayers.Layer.Vector(i18n.t('app.features'), {
             rendererOptions: {
                 zIndexing: true
             },
@@ -136,6 +136,7 @@ dbkjs.modules.feature = {
             srid: dbkjs.options.projection.srid,
             timestamp: new Date().getTime()
         };
+        dbkjs.util.loadingStart(_obj.layer);
         $.getJSON(dbkjs.dataPath + 'features.json', params).done(function(data) {
             var geojson_format = new OpenLayers.Format.GeoJSON();
                 _obj.features = geojson_format.read(data);
@@ -155,6 +156,7 @@ dbkjs.modules.feature = {
                     _obj.layer.addFeatures(_obj.features);
                 }
             }
+            dbkjs.util.loadingEnd(_obj.layer);
             $('#btn_refresh > i').removeClass('fa-spin');
             _obj.search_dbk();
         }).fail(function( jqxhr, textStatus, error ) {
@@ -190,13 +192,14 @@ dbkjs.modules.feature = {
         }
         $.each(_obj.features, function(key, value) {
             dbk_naam_array.push({
-                value: value.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(value.attributes.informeleNaam) ? '' : ' (' + value.attributes.informeleNaam + ')'),
+                value: value.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(value.attributes.informeleNaam) ? '' : value.attributes.informeleNaam),
                 geometry: value.geometry,
                 id: value.attributes.identificatie,
                 attributes: value.attributes
             });
         });
         _obj.caches.dbk = dbk_naam_array;
+        console.log(dbk_naam_array);
         return _obj.caches.dbk;
     },
     getOmsSearchValues: function() {

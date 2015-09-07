@@ -186,7 +186,6 @@ dbkjs.Layer = dbkjs.Class({
                 });
             }
         } else {
-            //dbkjs.map.setLayerIndex(this.layer, 0);
             if (metadata) {
                 if (metadata.abstract) {
                     dv_panel_content.append('<p>' + metadata.abstract + '</p>');

@@ -18,7 +18,7 @@
  *
  */
 
-/* global global */
+/* global global, __dirname, exports, process */
 
 // To run in production: NODE_ENV=production
 

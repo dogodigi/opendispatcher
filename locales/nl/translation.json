@@ -1,6 +1,7 @@
 {
     "app": {
         "title": "opendispatcher",
+        "features": "DBK objecten",
         "queryAddress": "adres",
         "queryNumber": "omsnummer",
         "queryDBK": "dbk",

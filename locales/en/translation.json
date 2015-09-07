@@ -1,6 +1,7 @@
 {
     "app": {
         "title": "Opendispatcher",
+        "features": "Sites",
         "queryAddress": "Address",
         "queryNumber": "Emergency number",
         "queryDBK": "Emergency map",

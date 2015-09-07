@@ -33,19 +33,13 @@ module.exports = function (grunt) {
                                 src: [
                                     'jquery-1.11.0/jquery-1.11.0.min.js',
                                     'bootstrap-3.2.0-dist/js/bootstrap.min.js',
-                                    'bootstrap-slider.js', 
+                                    'bootstrap-slider.js',
                                     'proj4js-compressed.js',
                                     'OpenLayers-2.13.1/OpenLayers.js',
                                     'moment/moment.min.js',
                                     'moment/lang/nl.js'
                                 ],
                                 dest: 'build/js/libs',
-                                expand: true
-                            },
-                            {
-                                cwd: 'public/font-awesome-4.1.0/css',
-                                src: ['font-awesome.min.css'],
-                                dest: 'build/font-awesome-4.1.0/css',
                                 expand: true
                             },
                             {
@@ -124,7 +118,8 @@ module.exports = function (grunt) {
                         'public/js/dbkjs/gui.js',
                         'public/js/dbkjs/layers.js',
                         'public/js/dbkjs/mapcontrols.js',
-                        'public/js/dbkjs/dbkjs.js'
+                        'public/js/dbkjs/dbkjs.js',
+                        'public/js/dbkjs/docready.js'
                     ]
                 }
             }
@@ -231,4 +226,3 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['cssmin:combine', 'uglify']);
     grunt.registerTask('offline', ['clean','cssmin:mobile', 'uglify', 'organisation', 'features', 'copy', 'index']);
 };
-

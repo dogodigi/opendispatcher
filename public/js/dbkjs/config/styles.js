@@ -26,7 +26,7 @@ dbkjs.config = dbkjs.config || {};
 OpenLayers.Renderer.symbol.arrow = [0, 2, 1, 0, 2, 2, 1, 0, 0, 2];
 
 // Factor to scale styling elements with
-dbkjs.getStyleScaleFactor = function() {
+dbkjs.getStyleScaleFactor = function () {
     if (!dbkjs.options.styleScaleAdjust) {
         return 1;
     } else {
@@ -35,7 +35,7 @@ dbkjs.getStyleScaleFactor = function() {
     }
 };
 
-dbkjs.redrawScaledLayers = function() {
+dbkjs.redrawScaledLayers = function () {
     dbkjs.protocol.jsonDBK.layerBrandcompartiment.redraw();
     dbkjs.protocol.jsonDBK.layerHulplijn2.redraw();
     dbkjs.protocol.jsonDBK.layerHulplijn1.redraw();
@@ -87,7 +87,7 @@ dbkjs.config.styles = {
             labelOutlineColor: '#000000'
         }, {
             context: {
-                mydisplay: function(feature) {
+                mydisplay: function (feature) {
                     if (dbkjs.map.getResolution() > 1) {
                         // pandgeometrie not visible above resolution 1, always show feature icon
                         return "true";
@@ -125,7 +125,7 @@ dbkjs.config.styles = {
                 },
                 mygraphicheight: function (feature) {
                     if (feature.cluster) {
-                        return 56;
+                        return 65;
                     } else {
                         if (feature.attributes.typeFeature === 'Object') {
                             return 38;
@@ -135,7 +135,7 @@ dbkjs.config.styles = {
                     }
 
                 },
-                mygraphicwidth: function(feature) {
+                mygraphicwidth: function (feature) {
                     if (feature.cluster) {
                         return 85;
                     } else {
@@ -146,83 +146,83 @@ dbkjs.config.styles = {
                         }
                     }
                 },
-            myfontweight: function(feature) {
-                if (feature.cluster) {
-                    return "bold";
-                } else {
-                    return "normal";
-                }
-            },
-            myfontsize: function(feature) {
-                return "16px";
-            },
-            mylabelalign: function(feature) {
-                if (feature.cluster) {
-                    return "cc";
-                } else {
-                    return "rb";
-                }
-            },
-            mylabelxoffset: function(feature) {
-                if (feature.cluster) {
-                    return 0;
-                } else {
-                    return -16;
-                }
-            },
-            mylabelyoffset: function(feature) {
-                if (feature.cluster) {
-                    return -4;
-                } else {
-                    return -9;
-                }
-            },
-            myfontcolor: function(feature) {
-                if (feature.cluster) {
-                    return "#ffffff";
-                } else {
-                    return "#000000";
-                }
-            },
-            myicon: function(feature) {
-                if (feature.cluster) {
-                    return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + "images/jcartier_city_3.png" : imagesBase64["images/jcartier_city_3.png"];
-                } else {
-                    if (feature.attributes.typeFeature === 'Object') {
-                        var img;
-                        if(feature.attributes.verdiepingen || feature.attributes.verdiepingen !== 0) {
-                            img = "images/jcartier_building_1.png";
-                        }  else {
-                            img = "images/jcartier_building_2.png";
-                        }
-                        return typeof imagesBase64 === 'undefined'  ? dbkjs.basePath + img : imagesBase64[img];
-                    } else {
-                        return typeof imagesBase64 === 'undefined'  ? dbkjs.basePath + "images/jcartier_event_1.png" : imagesBase64["images/jcartier_event_1.png"];
-                    }
-                }
-            },
-            labeltext: function(feature) {
-                if (dbkjs.modules.feature.showlabels) {
+                myfontweight: function (feature) {
                     if (feature.cluster) {
-                        var lbl_txt, c;
-                        if (feature.cluster.length > 1) {
-                            lbl_txt = feature.cluster.length + "";
+                        return "bold";
+                    } else {
+                        return "normal";
+                    }
+                },
+                myfontsize: function (feature) {
+                    return "10.5px";
+                },
+                mylabelalign: function (feature) {
+                    if (feature.cluster) {
+                        return "cc";
+                    } else {
+                        return "rb";
+                    }
+                },
+                mylabelxoffset: function (feature) {
+                    if (feature.cluster) {
+                        return 0;
+                    } else {
+                        return -16;
+                    }
+                },
+                mylabelyoffset: function (feature) {
+                    if (feature.cluster) {
+                        return -4;
+                    } else {
+                        return -9;
+                    }
+                },
+                myfontcolor: function (feature) {
+                    if (feature.cluster) {
+                        return "#ffffff";
+                    } else {
+                        return "#000000";
+                    }
+                },
+                myicon: function (feature) {
+                    if (feature.cluster) {
+                        return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + "images/jcartier_city_3.png" : imagesBase64["images/jcartier_city_3.png"];
+                    } else {
+                        if (feature.attributes.typeFeature === 'Object') {
+                            var img;
+                            if (feature.attributes.verdiepingen || feature.attributes.verdiepingen !== 0) {
+                                img = "images/jcartier_building_1.png";
+                            } else {
+                                img = "images/jcartier_building_2.png";
+                            }
+                            return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + img : imagesBase64[img];
                         } else {
-                            //lbl_txt = feature.cluster[0].attributes.formeleNaam;
-                            lbl_txt = "";
+                            return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + "images/jcartier_event_1.png" : imagesBase64["images/jcartier_event_1.png"];
                         }
-                        return lbl_txt;
+                    }
+                },
+                labeltext: function (feature) {
+                    if (dbkjs.modules.feature.showlabels) {
+                        if (feature.cluster) {
+                            var lbl_txt, c;
+                            if (feature.cluster.length > 1) {
+                                lbl_txt = feature.cluster.length + "";
+                            } else {
+                                //lbl_txt = feature.cluster[0].attributes.formeleNaam;
+                                lbl_txt = "";
+                            }
+                            return lbl_txt;
+                        } else {
+                            return "";
+                        }
                     } else {
                         return "";
                     }
-                } else {
-                    return "";
                 }
             }
-        }
-    }),
-    "select": new OpenLayers.Style({
-        fontColor: "${myfontcolor}"
+        }),
+        "select": new OpenLayers.Style({
+            fontColor: "${myfontcolor}"
         }, {
             context: {
                 myfontcolor: function(feature) {
@@ -243,7 +243,7 @@ dbkjs.config.styles = {
             strokeWidth: 1
         }, {
             context: {
-                mycolor: function(feature) {
+                mycolor: function (feature) {
                     if (feature.attributes.type) {
                         if (feature.attributes.type === "gebied") {
                             return "#B45F04";
@@ -281,7 +281,7 @@ dbkjs.config.styles = {
             label: "${mylabel}"
         }, {
             context: {
-                mycolor: function(feature) {
+                mycolor: function (feature) {
                     switch (feature.attributes.type) {
                         case "30 minuten brandwerende scheiding":
                             return "#c1001f";
@@ -300,7 +300,7 @@ dbkjs.config.styles = {
                     }
 
                 },
-                mystrokewidth: function(feature) {
+                mystrokewidth: function (feature) {
                     switch (feature.attributes.type) {
                         case "60 minuten brandwerende scheiding":
                         case "> 60 minuten brandwerende scheiding":
@@ -311,7 +311,7 @@ dbkjs.config.styles = {
                     }
 
                 },
-                mystrokedashstyle: function(feature) {
+                mystrokedashstyle: function (feature) {
                     switch (feature.attributes.type) {
                         case "30 minuten brandwerende scheiding":
                             return dbkjs.scaleStyleValue(8) + " " + dbkjs.scaleStyleValue(4);
@@ -355,8 +355,8 @@ dbkjs.config.styles = {
             label: "${information}"
         }, {
         context: {
-            myopacity: function(feature){
-                switch(feature.attributes.type) {
+            myopacity: function (feature) {
+                switch (feature.attributes.type) {
                     case "Arrow":
                         return 0.8;
                         break;
@@ -364,15 +364,15 @@ dbkjs.config.styles = {
                         return 1;
                 }
             },
-            myrotation: function(feature) {
-                if(feature.attributes.rotation){
+            myrotation: function (feature) {
+                if (feature.attributes.rotation) {
                     return -feature.attributes.rotation;
                 } else {
                     return 0;
                 }
             },
-            mywidth: function(feature){
-                switch(feature.attributes.type) {
+            mywidth: function (feature) {
+                switch (feature.attributes.type) {
                     case "Conduit":
                     case "Gate":
                     case "Fence":
@@ -390,8 +390,8 @@ dbkjs.config.styles = {
                         return dbkjs.scaleStyleValue(2);
                }
             },
-            mydash: function(feature) {
-                switch(feature.attributes.type) {
+            mydash: function (feature) {
+                switch (feature.attributes.type) {
                     case "Cable":
                     case "Bbarrier":
                         return dbkjs.scaleStyleValue(10) + " " + dbkjs.scaleStyleValue(10);
@@ -409,8 +409,8 @@ dbkjs.config.styles = {
                         return "solid";
                 }
             },
-            mycolor: function(feature) {
-                switch(feature.attributes.type) {
+            mycolor: function (feature) {
+                switch (feature.attributes.type) {
                     //Bbarrier
                     //Gate
                     case "Bbarrier":
@@ -440,21 +440,19 @@ dbkjs.config.styles = {
                 }
 
             },
-            mygraphic: function(feature) {
-                switch(feature.attributes.type) {
+            mygraphic: function (feature) {
+                switch (feature.attributes.type) {
                     case "Arrow":
                         return "triangle";
                         break;
                     default:
                         return "";
                 }
-
             }
         }
     }),
     "temporary": new OpenLayers.Style({strokeColor: "#009FC3"}),
-    "select": new OpenLayers.Style({strokeColor: "#8F00C3"})
-    }),
+    "select": new OpenLayers.Style({strokeColor: "#8F00C3"})}),
     hulplijn1: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
@@ -462,8 +460,8 @@ dbkjs.config.styles = {
             strokeWidth: "${mywidth}"
         }, {
         context: {
-            mywidth: function(feature){
-                switch(feature.attributes.type) {
+            mywidth: function (feature) {
+                switch (feature.attributes.type) {
                     case "Cable":
                     case "Bbarrier":
                         return dbkjs.scaleStyleValue(4);
@@ -478,14 +476,14 @@ dbkjs.config.styles = {
                         return dbkjs.scaleStyleValue(2);
                 }
             },
-            mydash: function(feature) {
-                switch(feature.attributes.type) {
+            mydash: function (feature) {
+                switch (feature.attributes.type) {
                     default:
                         return "none";
                 }
             },
-            mycolor: function(feature) {
-                switch(feature.attributes.type) {
+            mycolor: function (feature) {
+                switch (feature.attributes.type) {
                     case "Conduit":
                         return "#ff00ff";
                         break;
@@ -505,8 +503,7 @@ dbkjs.config.styles = {
         }
     }),
     "temporary": new OpenLayers.Style({strokeColor: "#009FC3"}),
-    "select": new OpenLayers.Style({strokeColor: "#8F00C3"})
-    }),
+    "select": new OpenLayers.Style({strokeColor: "#8F00C3"})}),
     hulplijn2: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
@@ -514,8 +511,8 @@ dbkjs.config.styles = {
             strokeWidth: "${mywidth}"
         }, {
         context: {
-            mywidth: function(feature){
-                switch(feature.attributes.type) {
+            mywidth: function (feature) {
+                switch (feature.attributes.type) {
                      case "Gate":
                         return dbkjs.scaleStyleValue(5);
                         break;
@@ -523,8 +520,8 @@ dbkjs.config.styles = {
                         return dbkjs.scaleStyleValue(2);
                 }
             },
-            mydash: function(feature) {
-                switch(feature.attributes.type) {
+            mydash: function (feature) {
+                switch (feature.attributes.type) {
                     case "Gate":
                         return "none";
                         break;
@@ -532,8 +529,8 @@ dbkjs.config.styles = {
                         return "none";
                 }
             },
-            mycolor: function(feature) {
-                switch(feature.attributes.type) {
+            mycolor: function (feature) {
+                switch (feature.attributes.type) {
                      case "Gate":
                         return "#000000";
                         break;
@@ -544,8 +541,7 @@ dbkjs.config.styles = {
         }
     }),
     "temporary": new OpenLayers.Style({strokeColor: "#009FC3"}),
-    "select": new OpenLayers.Style({strokeColor: "#8F00C3"})
-    }),
+    "select": new OpenLayers.Style({strokeColor: "#8F00C3"})}),
     toegangterrein: new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
             strokeColor: "${mycolor}",
@@ -558,37 +554,32 @@ dbkjs.config.styles = {
         }, {
         context: {
             myrotation: function(feature) {
-                if(feature.attributes.rotation){
+                if (feature.attributes.rotation) {
                     return -feature.attributes.rotation;
                 } else {
                     return 0;
                 }
             },
-            mycolor: function(feature) {
-                switch(feature.attributes.primary) {
+            mycolor: function (feature) {
+                switch (feature.attributes.primary) {
                     case true:
                         return "#ff0000";
                         break;
                     default:
                         return "#00ff00";
                 }
-
             },
-            mygraphic: function(feature) {
+            mygraphic: function (feature) {
                 return "triangle";
-            },
-            mywidth: function(feature) {
+             },
+            mywidth: function (feature) {
                 return dbkjs.scaleStyleValue(1);
             }
         }
     }),
-        'select': new OpenLayers.Style({
-
-        }), 'temporary': new OpenLayers.Style({
-
-        })
-    }),
-    pandstylemap : new OpenLayers.StyleMap({
+    'select': new OpenLayers.Style({}),
+    'temporary': new OpenLayers.Style({})}),
+    pandstylemap: new OpenLayers.StyleMap({
         fillColor: "yellow",
         fillOpacity: 0.4,
         strokeColor: "red",
@@ -612,22 +603,22 @@ dbkjs.config.styles = {
             context: {
                 myicon: function(feature) {
                     var img = "images/" + feature.attributes.namespace.toLowerCase() + "/" + feature.attributes.type + ".png";
-                    return typeof imagesBase64 === 'undefined'  ? dbkjs.basePath + img : imagesBase64[img];
+                    return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + img : imagesBase64[img];
                 },
                 myrotation: function(feature) {
-                    if(feature.attributes.rotation){
+                    if (feature.attributes.rotation) {
                         return -feature.attributes.rotation;
                     } else {
                         return 0;
                     }
                 },
-                myradius: function(feature){
+                myradius: function(feature) {
                     return dbkjs.scaleStyleValue(12, feature.radius);
                 },
                 mydisplay: function(feature) {
-                    if(dbkjs.options.visibleCategories
-                    && feature.attributes.category
-                    && dbkjs.options.visibleCategories[feature.attributes.category] === false) {
+                    if (dbkjs.options.visibleCategories
+                            && feature.attributes.category
+                            && dbkjs.options.visibleCategories[feature.attributes.category] === false) {
                         return "none";
                     } else {
                         // any string except "none" works here
@@ -645,9 +636,9 @@ dbkjs.config.styles = {
             }
         }), 'temporary': new OpenLayers.Style({
             pointRadius: "${myradius}"
-         }, {
+        }, {
             context: {
-                myradius: function(feature){
+                myradius: function(feature) {
                     return dbkjs.scaleStyleValue(24, feature.radius, 2);
                 }
             }
@@ -659,14 +650,14 @@ dbkjs.config.styles = {
             externalGraphic: "${myicon}"
         }, {
             context: {
-                myradius: function(feature){
+                myradius: function(feature) {
                     return dbkjs.scaleStyleValue(12);
                 },
                 myicon: function(feature) {
                     var img = "images/" + feature.attributes.namespace.toLowerCase() + "/" + feature.attributes.type + ".png";
                     return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + img : imagesBase64[img];
-                    }
                 }
+            }
         }), 'select': new OpenLayers.Style({
             pointRadius: "${myradius}"
         }, {
@@ -699,8 +690,8 @@ dbkjs.config.styles = {
                 mysize: function(feature) {
                     return dbkjs.scaleStyleValue(12, feature.scale);
                 },
-                myRotation: function(feature){
-                    if(parseFloat(feature.attributes.rotation) !== 0.0){
+                myRotation: function(feature) {
+                    if (parseFloat(feature.attributes.rotation) !== 0.0) {
                         var ori = parseFloat(feature.attributes.rotation);
                         return -ori;
                     } else {

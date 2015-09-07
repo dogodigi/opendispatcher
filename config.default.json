@@ -16,7 +16,14 @@
       "port": 5432,
       "dbname": "circle_test"
     },
-    "media": { 
+    "infrastructure":{
+      "user": "ubuntu",
+      "password": "",
+      "host": "localhost",
+      "port": 5432,
+      "dbname": "circle_test"
+    },
+    "media": {
       "path" : "/real/path/to/media",
       "symbols": "/real/path/to/symbols"
     },

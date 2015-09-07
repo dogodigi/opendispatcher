@@ -161,8 +161,7 @@ dbkjs.successAuth = function () {
 
     //register modules
     $.each(dbkjs.modules, function (mod_index, module) {
-        if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1
-        || (dbkjs.options.additionalModules && $.inArray(mod_index, dbkjs.options.additionalModules) > -1) ) {
+        if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
             if (module.register) {
                 module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true, viewmode: dbkjs.viewmode});
             }
@@ -178,73 +177,84 @@ dbkjs.loadOrganisationCapabilities = function () {
     if (dbkjs.options.organisation.wms) {
         dbkjs.loadingcapabilities = 0;
         $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v) {
-            var index = wms_v.index || 0;
-            if (wms_v.getcapabilities === true) {
-                dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
-                var options = {
-                    url: wms_v.url,
-                    title: wms_v.name,
-                    proxy: wms_v.proxy,
-                    index: index,
-                    parent: wms_v.parent
-                };
-                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
-                    options.pl = wms_v.pl;
-                }
-                var myCapabilities = new dbkjs.Capabilities(options);
-            } else if (!wms_v.baselayer) {
-                var params = wms_v.params || {};
-                var options = wms_v.options || {};
-                var parent = wms_v.parent || null;
-                var metadata = {};
-                if (!dbkjs.util.isJsonNull(wms_v.abstract)) {
-                    metadata.abstract = wms_v.abstract;
-                }
-                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
-                    metadata.pl = wms_v.pl;
-                }
-                if (!dbkjs.util.isJsonNull(wms_v.legend)) {
-                    metadata.legend = wms_v.legend;
-                }
-                var layertype = wms_v.layertype || null;
-                var myLayer = new dbkjs.Layer(
-                    wms_v.name,
-                    wms_v.url,
-                    params,
-                    options,
-                    parent,
-                    index,
-                    metadata,
-                    layertype
-                );
-            } else {
-                var params = wms_v.params || {};
-                var options = wms_v.options || {};
-                options = OpenLayers.Util.extend({isBaseLayer: true}, options);
-                var parent = wms_v.parent || null;
-                var metadata = {};
-                if (!dbkjs.util.isJsonNull(wms_v.abstract)) {
-                    metadata.abstract = wms_v.abstract;
-                }
-                if (!dbkjs.util.isJsonNull(wms_v.pl)) {
-                    metadata.pl = wms_v.pl;
-                }
-                if (!dbkjs.util.isJsonNull(wms_v.legend)) {
-                    metadata.legend = wms_v.legend;
-                }
-                var layertype = wms_v.layertype || null;
-                var myLayer = new dbkjs.Layer(
-                    wms_v.name,
-                    wms_v.url,
-                    params,
-                    options,
-                    parent,
-                    index,
-                    metadata,
-                    layertype
-                );
-            }
-
+          var options;
+          var params;
+          var parent;
+          var layertype;
+          var metadata;
+          var myLayer;
+          var index = wms_v.index || 0;
+          if (wms_v.getcapabilities === true) {
+              dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
+              options = {
+                  url: wms_v.url,
+                  title: wms_v.name,
+                  proxy: wms_v.proxy,
+                  index: index,
+                  parent: wms_v.parent
+              };
+              /**
+               * Should extend options and params if they are
+               * passed from the organisation JSON (issue #413)
+               */
+              options.options = wms_v.options || {};
+              options.params = wms_v.params || {};
+              if (!dbkjs.util.isJsonNull(wms_v.pl)) {
+                  options.pl = wms_v.pl;
+              }
+              var myCapabilities = new dbkjs.Capabilities(options);
+          } else if (!wms_v.baselayer) {
+              params = wms_v.params || {};
+              options = wms_v.options || {};
+              parent = wms_v.parent || null;
+              metadata = {};
+              if (!dbkjs.util.isJsonNull(wms_v.abstract)) {
+                  metadata.abstract = wms_v.abstract;
+              }
+              if (!dbkjs.util.isJsonNull(wms_v.pl)) {
+                  metadata.pl = wms_v.pl;
+              }
+              if (!dbkjs.util.isJsonNull(wms_v.legend)) {
+                  metadata.legend = wms_v.legend;
+              }
+              layertype = wms_v.layertype || null;
+              myLayer = new dbkjs.Layer(
+                  wms_v.name,
+                  wms_v.url,
+                  params,
+                  options,
+                  parent,
+                  index,
+                  metadata,
+                  layertype
+              );
+          } else {
+              params = wms_v.params || {};
+              options = wms_v.options || {};
+              options = OpenLayers.Util.extend({isBaseLayer: true}, options);
+              parent = wms_v.parent || null;
+              metadata = {};
+              if (!dbkjs.util.isJsonNull(wms_v.abstract)) {
+                  metadata.abstract = wms_v.abstract;
+              }
+              if (!dbkjs.util.isJsonNull(wms_v.pl)) {
+                  metadata.pl = wms_v.pl;
+              }
+              if (!dbkjs.util.isJsonNull(wms_v.legend)) {
+                  metadata.legend = wms_v.legend;
+              }
+              layertype = wms_v.layertype || null;
+              myLayer = new dbkjs.Layer(
+                  wms_v.name,
+                  wms_v.url,
+                  params,
+                  options,
+                  parent,
+                  index,
+                  metadata,
+                  layertype
+              );
+          }
         });
         if (dbkjs.loadingcapabilities === 0) {
             dbkjs.finishMap();
@@ -333,7 +343,6 @@ dbkjs.setPaths = function () {
         dbkjs.mediaPath = dbkjs.basePath + 'media/';
     }
 
-
 };
 
 dbkjs.bind_dbkjs_init_complete = function() {
@@ -369,13 +378,11 @@ dbkjs.bind_dbkjs_init_complete = function() {
     });
 };
 
-
-// dbkjs.js: $(document).ready
 dbkjs.documentReady = function () {
     // Make sure i18n is initialized
     i18n.init({
         lng: dbkjsLang, debug: false, postProcess: "doReplacements"
-    }, function (t) {
+    }, function (err,t) {
         i18n.addPostProcessor("doReplacements", function (val, key, options) {
             if (dbkjs.options.i18nReplacements) {
                 var lngReplacements = dbkjs.options.i18nReplacements[i18n.lng()];
@@ -421,9 +428,9 @@ dbkjs.documentReady = function () {
                 dbkjs.util.getModalPopup(panelId).show();
             });
 
-            // Create the DBK infopanel
-            dbkjs.util.createModalPopup({name: 'wmsclickpanel'}).getView().append($('<div></div>').attr({'id': 'wmsclickpanel_b'}));
-
+        }
+        if (dbkjs.viewmode !== 'fullscreen') {
+            $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
             $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;'));
             $('body').append(dbkjs.util.createModal('printpanel', '<i class="fa fa-print"></i> ' + t("app.print"), ''));
             dbkjs.wms_panel = dbkjs.util.createTabbable();
@@ -434,11 +441,10 @@ dbkjs.documentReady = function () {
             dbkjs.util.setModalTitle('overlaypanel', i18n.t('map.overlays'));
             dbkjs.util.setModalTitle('baselayerpanel', i18n.t('map.baselayers'));
         }
-
         dbkjs.init();
 
         $('#infopanel_b').html(dbkjs.options.info);
-        $('#tb03, #c_minimap').click(function() {
+        $('#tb03, #c_minimap').click(function () {
             if (this.id === "tb03") {
                 if (dbkjs.viewmode !== 'fullscreen') {
                     $('#infopanel').toggle();
@@ -451,15 +457,15 @@ dbkjs.documentReady = function () {
         });
         // Added touchstart event to trigger click on. There was some weird behaviour combined with FastClick,
         // this seems to fix the issue
-        $('#zoom_extent').on('click touchstart', function() {
+        $('#zoom_extent').on('click touchstart', function () {
             if (dbkjs.options.organisation.modules.regio) {
                 dbkjs.modules.regio.zoomExtent();
             } else {
                 if (dbkjs.options.organisation.area.geometry.type === "Point") {
                     dbkjs.map.setCenter(
                             new OpenLayers.LonLat(
-                                    data.organisation.area.geometry.coordinates[0],
-                                    data.organisation.area.geometry.coordinates[1]
+                                    dbkjs.options.organisation.area.geometry.coordinates[0],
+                                    dbkjs.options.organisation.area.geometry.coordinates[1]
                                     ).transform(
                             new OpenLayers.Projection(dbkjs.options.projection.code),
                             dbkjs.map.getProjectionObject()

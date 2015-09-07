@@ -25,7 +25,7 @@ window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 dbkjs.modules.support = {
     id: "dbk.modules.support",
-    register: function() {
+    register: function () {
         var _obj = dbkjs.modules.support;
         _obj.layer = new OpenLayers.Layer.Vector("Support");
         dbkjs.map.addLayer(_obj.layer);

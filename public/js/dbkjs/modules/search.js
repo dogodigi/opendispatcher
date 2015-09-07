@@ -247,10 +247,10 @@ dbkjs.modules.search = {
                 dropdownIcon = dropdownText.prev();
             e.preventDefault();
             if (dropdownConfig.hasOwnProperty(searchType)) {
-                dropdownIcon.attr( "class", dropdownConfig[searchType]['icon'] );
-                dropdownText.text(dropdownConfig[searchType]['text']);
-                searchField.attr("placeholder", dropdownConfig[searchType]['placeholder']);
-                currentSearch = dropdownConfig[searchType]['search'];
+                dropdownIcon.attr( "class", dropdownConfig[searchType].icon );
+                dropdownText.text(dropdownConfig[searchType].text);
+                searchField.attr("placeholder", dropdownConfig[searchType].placeholder);
+                currentSearch = dropdownConfig[searchType].search;
                 if(currentSearch === 'coordinates' || currentSearch === 'oms') {
                     searchField.attr("type", 'number');
                 } else {
@@ -288,7 +288,7 @@ dbkjs.modules.search = {
         var _obj = dbkjs.modules.search;
         var ruwe_input = $('#search_input').val();
         var loc;
-        var coords = ruwe_input.split(/[\s,]+/);;
+        var coords = ruwe_input.split(/[\s,]+/);
         coords[0] = parseFloat(coords[0]);
         coords[1] = parseFloat(coords[1]);
         if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
@@ -312,10 +312,7 @@ dbkjs.modules.search = {
     },
     handleAddressSearch: function(searchText) {
         var _obj = dbkjs.modules.search,
-            url = (dbkjs.options.urls && dbkjs.options.urls.autocomplete
-                   ? dbkjs.options.urls.autocomplete
-                   : dbkjs.basePath + 'api/autocomplete/')
-                 + encodeURI(searchText);
+            url = (dbkjs.options.urls && dbkjs.options.urls.autocomplete ? dbkjs.options.urls.autocomplete : dbkjs.basePath + 'api/autocomplete/') + encodeURI(searchText);
         $.ajax(url, {
             dataType: 'json',
             success: function(parsedResponse) {
@@ -417,7 +414,7 @@ dbkjs.modules.search = {
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             for (var i = 0, len = dbkjs.map.layers.length; i < len; i++) {
                 //get the layer with the pl that is right for infra: ih
-                
+
                 if(dbkjs.map.layers[i].metadata.pl === "ih"){
                     //make sure it is visible and that the overlay bar is set to activated
                     dbkjs.map.layers[i].metadata.div.children('.panel-heading').addClass('active layActive');
