@@ -199,7 +199,6 @@ dbkjs.modules.feature = {
             });
         });
         _obj.caches.dbk = dbk_naam_array;
-        console.log(dbk_naam_array);
         return _obj.caches.dbk;
     },
     getOmsSearchValues: function() {
