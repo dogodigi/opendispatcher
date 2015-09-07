@@ -37,6 +37,7 @@ dbkjs.modules.vrhincidenten = {
     exclamationFlashInterval: null,
     archiefMarker: null,
     dbkLayer: null,
+    dbkLayer2: null,
     encode: function(s) {
         if(s) {
             return dbkjs.util.htmlEncode(s);
@@ -245,6 +246,10 @@ td { padding: 4px !important } ',
             }
         });
     },
+    setDbkLayersVisibility: function(visible) {
+        this.dbkLayer.setVisibility(visible);
+        this.dbkLayer2.setVisibility(visible);
+    },
     initVrhService: function() {
         var me = this;
         if(!dbkjs.options.vrhIncidentenUrl) {
@@ -259,8 +264,10 @@ td { padding: 4px !important } ',
         if(dbkjs.options.vrhDbkUrl && me.token) {
             me.dbkLayer = new OpenLayers.Layer.ArcGIS93Rest("DBK", dbkjs.options.vrhDbkUrl, { transparent: "true", layers: "hide:0,25", token: me.token }, { maxResolution: 0.42 });
             dbkjs.map.addLayer(me.dbkLayer);
+            me.dbkLayer2 = new OpenLayers.Layer.ArcGIS93Rest("DBK2", dbkjs.options.vrhDbkUrl2, { transparent: "true", token: me.token }, { maxResolution: 0.42 });
+            dbkjs.map.addLayer(me.dbkLayer2);
 
-            $("#baselayerpanel_b").append('<hr/><label><input type="checkbox" checked onclick="dbkjs.modules.vrhincidenten.dbkLayer.setVisibility(event.target.checked)">Toon DBK\'s</label>');
+            $("#baselayerpanel_b").append('<hr/><label><input type="checkbox" checked onclick="dbkjs.modules.vrhincidenten.setDbkLayersVisibility(event.target.checked)">Toon DBK\'s</label>');
         }
 
         this.layerUrls = {};
