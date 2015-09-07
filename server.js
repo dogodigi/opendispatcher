@@ -18,7 +18,11 @@
  *
  */
 
+<<<<<<< HEAD
+/* global global, __dirname, exports, process */
+=======
 /* global global */
+>>>>>>> upstream/master
 
 // To run in production: NODE_ENV=production
 

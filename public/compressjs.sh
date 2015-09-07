@@ -43,7 +43,9 @@ cat js/libs/jquery.pagination.js \
     js/dbkjs/modules/measure.js \
     js/dbkjs/modules/layertoggle.js \
     js/dbkjs/modules/gms.js \
-    js/dbkjs/dbkjs.js | node ../node_modules/uglify-js/bin/uglifyjs -o js/dbk.min.js
+    js/dbkjs/modules/onscreenkeyboard.js \
+    js/dbkjs/dbkjs.js \
+    js/dbkjs/docready.js | node ../node_modules/uglify-js/bin/uglifyjs -o js/dbk.min.js
 
 cat css/dbk.css \
     js/libs/bootstrap-3.2.0-dist/css/bootstrap.min.css \

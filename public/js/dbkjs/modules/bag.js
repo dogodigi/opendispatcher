@@ -1,8 +1,14 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
+<<<<<<< HEAD
+ *
+ *  This file is part of opendispatcher/safetymapsDBK
+ *
+=======
  * 
  *  This file is part of opendispatcher/safetymapsDBK
  *  
+>>>>>>> upstream/master
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -18,13 +24,15 @@
  *
  */
 
+/* global OpenLayers */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 
 /**
  * BAG class
- * 
+ *
  * Voor alle functionaliteit gerelateerd aan bag
  */
 dbkjs.modules.bag = {
@@ -204,10 +212,10 @@ dbkjs.modules.bag = {
             vbo_table_div.append(vbo_table);
             vbo_div.append(vbo_table_div);
             _obj.panel_group.append(vbo_div);
-            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_vbo_' + 
-                    feature.attributes.identificatie + 
-                    '">#' + 
-                    $.trim(huisnummer + ' ' + huisletter + ' ' + toevoeging) + 
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#collapse_vbo_' +
+                    feature.attributes.identificatie +
+                    '">#' +
+                    $.trim(huisnummer + ' ' + huisletter + ' ' + toevoeging) +
                 '</a></li>');
         }
     },
@@ -219,7 +227,7 @@ dbkjs.modules.bag = {
         _obj.div.append(_obj.panel_group);
         _obj.div.append(_obj.panel_tabs);
         $('#bagpanel_b').html(_obj.div);
-        
+
         if (feature) {
             var vbo_div = $('<div class="tab-pane active" id="collapse_vbo_' + feature.attributes.identificatie + '"></div>');
             var vbo_table_div = $('<div class="table-responsive"></div>');
@@ -254,10 +262,10 @@ dbkjs.modules.bag = {
             vbo_table_div.append(vbo_table);
             vbo_div.append(vbo_table_div);
             _obj.panel_group.append(vbo_div);
-            _obj.panel_tabs.append('<li class="active"><a data-toggle="tab" href="#collapse_vbo_' + 
-                    feature.attributes.identificatie + 
-                    '">#' + 
-                    $.trim(huisnummer + ' ' + huisletter + ' ' + toevoeging) + 
+            _obj.panel_tabs.append('<li class="active"><a data-toggle="tab" href="#collapse_vbo_' +
+                    feature.attributes.identificatie +
+                    '">#' +
+                    $.trim(huisnummer + ' ' + huisletter + ' ' + toevoeging) +
                 '</a></li>');
         }
     },
@@ -307,7 +315,7 @@ dbkjs.modules.bag = {
                 _obj.pandInfo(e.feature);
                 $('#bagpanel_f').html('Fouten ontdekt in de BAG? <a href="https://www.kadaster.nl/web/formulier/BAG-formulieren/BAG-terugmelding.htm">Meld het!</a>');
                 $('#bagpanel').show();
-                
+
             } else {
                 _obj.pand_layer.destroyFeatures();
                 _obj.vbo_layer.destroyFeatures();

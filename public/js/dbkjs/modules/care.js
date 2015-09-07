@@ -1,8 +1,14 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
+<<<<<<< HEAD
+ *
+ *  This file is part of opendispatcher/safetymapsDBK
+ *
+=======
  * 
  *  This file is part of opendispatcher/safetymapsDBK
  *  
+>>>>>>> upstream/master
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -146,9 +152,9 @@ dbkjs.modules.care = {
         $.getJSON('api/incidents/list/class/1').done(function (data) {
             if (data.length > 0) {
                 var myselect = $('<select id="class1Selsel" class="form-control"></select>');
-                myselect.append('<option selected>' + i18n.t('care.all') + '</option>')
+                myselect.append('<option selected>' + i18n.t('care.all') + '</option>');
                 $.each(data, function (d_index, d_item) {
-                    myselect.append('<option>' + d_item.name + '</option>')
+                    myselect.append('<option>' + d_item.name + '</option>');
                 });
                 incidentSel.append('<h5>' + i18n.t('care.class1') + '</h5>');
                 incidentSel.append(myselect);
@@ -394,7 +400,7 @@ dbkjs.modules.care = {
     panelIncident: function (response) {
         var _obj = dbkjs.modules.care;
         var geojson_format = new OpenLayers.Format.GeoJSON();
-        //todo: conflicted with the Array.prototype.where, 
+        //todo: conflicted with the Array.prototype.where,
         //removed that nasty function. Have to find another solution for that.
         var results = geojson_format.read(response.responseText);
         if (results.length > 0) {

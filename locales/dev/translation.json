@@ -1,6 +1,7 @@
 {
     "app": {
         "title": "app.title",
+        "features": "app.features",
         "queryAddress": "app.queryAddress",
         "queryNumber": "app.queryNumber",
         "queryDBK": "app.queryDBK",

@@ -1,8 +1,14 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
+<<<<<<< HEAD
+ *
+ *  This file is part of opendispatcher/safetymapsDBK
+ *
+=======
  * 
  *  This file is part of opendispatcher/safetymapsDBK
  *  
+>>>>>>> upstream/master
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -45,7 +51,7 @@ dbkjs.inherit = function(C, P) {
     var F = function() {
     };
     F.prototype = P.prototype;
-    C.prototype = new F;
+    C.prototype = new F();
     var i, l, o;
     for (i = 2, l = arguments.length; i < l; i++) {
         o = arguments[i];
@@ -67,12 +73,12 @@ dbkjs.util.extend = function(destination, source) {
             }
         }
 
-        var sourceIsEvt = typeof window.Event === "function"
-                && source instanceof window.Event;
+        var sourceIsEvt = typeof window.Event === "function" &&
+            source instanceof window.Event;
 
-        if (!sourceIsEvt
-                && source.hasOwnProperty && source.hasOwnProperty("toString")) {
-            destination.toString = source.toString;
+        if (!sourceIsEvt &&
+            source.hasOwnProperty && source.hasOwnProperty("toString")) {
+                destination.toString = source.toString;
         }
     }
     return destination;

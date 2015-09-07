@@ -29,6 +29,7 @@ dbkjs.Layer = dbkjs.Class({
     legend: null,
     initialize: function (name, url, params, options, parent, index, metadata, layertype) {
         var ly;
+        var dv_panel_content;
         var defaultparams = {
             format: 'image/png',
             transparent: true
@@ -70,7 +71,7 @@ dbkjs.Layer = dbkjs.Class({
                 if (typeof params.projection === "string") {
                     params.projection = new OpenLayers.Projection(params.projection);
                 }
-                var ly = new OpenLayers.Layer.TMS(name, url,
+                ly = new OpenLayers.Layer.TMS(name, url,
                         params,
                         options
                         );
@@ -81,9 +82,8 @@ dbkjs.Layer = dbkjs.Class({
                     dbkjs.util.loadingEnd(ly);
                 });
                 break;
-            case "WMS":
             default:
-                var ly = new OpenLayers.Layer.WMS(name, url,
+                ly = new OpenLayers.Layer.WMS(name, url,
                         params,
                         options
                         );
@@ -91,7 +91,7 @@ dbkjs.Layer = dbkjs.Class({
                 var legend = url +
                         "TRANSPARENT=true&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&EXCEPTIONS=application%2F" +
                         "vnd.ogc.se_xml&FORMAT=image%2Fpng&LAYER=" +
-                        ly.params["LAYERS"];
+                        ly.params.LAYERS;
                 ly.events.register("loadstart", ly, function () {
                     dbkjs.util.loadingStart(ly);
                 });
@@ -126,7 +126,7 @@ dbkjs.Layer = dbkjs.Class({
                     this.id + '" data-parent="' + parent + '" ><i class="fa fa-info-circle"></i></a>');
             dv_panel_heading.append(dv_panel_title);
             this.div.append(dv_panel_heading);
-            var dv_panel_content = $('<div id="collapse_' + this.id + '" class="panel-collapse collapse"></div>');
+            dv_panel_content = $('<div id="collapse_' + this.id + '" class="panel-collapse collapse"></div>');
             if (metadata) {
                 if (metadata.abstract) {
                     dv_panel_content.append('<p>' + metadata.abstract + '</p>');
@@ -186,7 +186,6 @@ dbkjs.Layer = dbkjs.Class({
                 });
             }
         } else {
-            //dbkjs.map.setLayerIndex(this.layer, 0);
             if (metadata) {
                 if (metadata.abstract) {
                     dv_panel_content.append('<p>' + metadata.abstract + '</p>');

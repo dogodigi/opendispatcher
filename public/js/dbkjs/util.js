@@ -66,6 +66,53 @@ dbkjs.argParser =
                     this.map.events.register('addlayer', this, this.configureLayers);
                     this.configureLayers();
                 }
+<<<<<<< HEAD
+                if (args.lat && args.lon) {
+                    this.center = new OpenLayers.LonLat(parseFloat(args.lon), parseFloat(args.lat));
+                    if (args.zoom) {
+                        this.zoom = parseFloat(args.zoom);
+                    }
+
+                    // when we add a new baselayer to see when we can set the center
+                    this.map.events.register('changebaselayer', this, this.setCenter);
+                    this.setCenter();
+                }
+            }
+        },
+        loadLayers: function () {
+            var args = this.getParameters();
+            if (!dbkjs.disableloadlayer) {
+                if (args.ly && args.b) {
+                    for (var i = 0, len = this.map.layers.length; i < len; i++) {
+                        if (!this.map.layers[i].isBaseLayer &&
+                                $.inArray(this.map.layers[i].metadata.pl, args.ly) !== -1) {
+                            this.map.layers[i].setVisibility(true);
+                        } else if (!this.map.layers[i].isBaseLayer &&
+                                !dbkjs.util.isJsonNull(this.map.layers[i].metadata.pl)) {
+                            this.map.layers[i].setVisibility(false);
+                        }
+                    }
+                }
+                if (args[i18n.t('app.queryDBK')] && dbkjs.modules.feature) {
+                    dbkjs.options.dbk = args[i18n.t('app.queryDBK')];
+                    var feature = dbkjs.modules.feature.getActive();
+                    if (feature) {
+                        dbkjs.protocol.jsonDBK.process(feature);
+                        if (!args.lat && !args.lon && !args.zoom) {
+                            dbkjs.modules.feature.zoomToFeature(feature);
+                        }
+                    }
+                }
+            }
+        },
+        configureLayers: function () {
+            var args = this.getParameters();
+            if (args.ly && args.b) {
+                for (var i = 0, len = this.map.layers.length; i < len; i++) {
+                    if (this.map.layers[i].isBaseLayer && args.b === this.map.layers[i].metadata.pl) {
+                        this.map.setBaseLayer(this.map.layers[i]);
+                        this.map.raiseLayer(this.map.layers[i], -1000);
+=======
                     if (args.lat && args.lon) {
                         this.center = new OpenLayers.LonLat(parseFloat(args.lon),
                                 parseFloat(args.lat));
@@ -114,12 +161,161 @@ dbkjs.argParser =
                             this.map.setBaseLayer(this.map.layers[i]);
                             this.map.raiseLayer(this.map.layers[i], -1000);
                         }
+>>>>>>> upstream/master
                     }
                 }
             },
             CLASS_NAME: "dbkjs.ArgParser"
         });
 dbkjs.Permalink =
+<<<<<<< HEAD
+    OpenLayers.Class(OpenLayers.Control.Permalink, {
+    argParserClass: dbkjs.ArgParser,
+    SELECT_ARGUMENT_KEY: "select",
+    initialize: function (options) {
+        OpenLayers.Control.Permalink.prototype.initialize.apply(this, arguments);
+    },
+    updateLink: function () {
+        var separator = this.anchor ? '#' : '?';
+        var updateLinkhref = this.base;
+        var anchor = null;
+        if (updateLinkhref.indexOf("#") !== -1 && this.anchor === false) {
+            anchor = updateLinkhref.substring(updateLinkhref.indexOf("#"), updateLinkhref.length);
+        }
+        if (updateLinkhref.indexOf(separator) !== -1) {
+            updateLinkhref = updateLinkhref.substring(0, updateLinkhref.indexOf(separator));
+        }
+        var splits = updateLinkhref.split("#");
+        updateLinkhref = splits[0] + separator + OpenLayers.Util.getParameterString(this.createParams());
+        if (anchor) {
+            updateLinkhref += anchor;
+        }
+        if (this.anchor && !this.element) {
+            window.location.href = updateLinkhref;
+        } else {
+            this.element.href = updateLinkhref;
+        }
+    },
+    createParams: function (center, zoom, layers) {
+        center = center || this.map.getCenter();
+
+        var params = OpenLayers.Util.getParameters(this.base);
+        // If there's still no center, map is not initialized yet.
+        // Break out of this function, and simply return the params from the
+        // base link.
+        if (dbkjs.options) {
+            if (dbkjs.options.dbk && dbkjs.options.dbk !== 0) {
+                params[i18n.t('app.queryDBK')] = dbkjs.options.dbk;
+            }
+        }
+        if (center) {
+            //zoom
+            params.zoom = zoom || this.map.getZoom();
+
+            //lon,lat
+            var lat = center.lat;
+            var lon = center.lon;
+
+            if (this.displayProjection) {
+                var mapPosition = OpenLayers.Projection.transform(
+                    { x: lon, y: lat },
+                    this.map.getProjectionObject(),
+                    this.displayProjection
+                );
+                lon = mapPosition.x;
+                lat = mapPosition.y;
+            }
+            params.lat = Math.round(lat * 100000) / 100000;
+            params.lon = Math.round(lon * 100000) / 100000;
+
+
+            //layers
+            layers = this.map.layers;
+            params.ly = [];
+            for (var i = 0, len = layers.length; i < len; i++) {
+                var layer = layers[i];
+                if (layer.isBaseLayer) {
+                    if (layer === this.map.baseLayer) {
+                        params.b = layer.metadata.pl;
+                    }
+                } else {
+                    if (layer.metadata.pl && layer.getVisibility()) {
+                        params.ly.push(layer.metadata.pl);
+                    }
+                }
+            }
+        }
+        return params;
+    },
+    CLASS_NAME: "dbkjs.Permalink"
+});
+
+/**
+ * Override Cluster strategy to only create clusters for features within map
+ * bounds, and thus also recluster on panning.
+ *
+ * http://acuriousanimal.com/blog/2012/10/09/improved-performance-on-the-animatedcluster-for-openlayers/
+ * http://acuriousanimal.com/blog/2013/02/08/animatedcluster-pan-related-bug-fixed/
+ */
+OpenLayers.Strategy.Cluster.prototype.cluster = function(event) {
+    if ((!event || event.zoomChanged || (event.type === "moveend" && !event.zoomChanged)) && this.features) {
+        this.resolution = this.layer.map.getResolution();
+        var clusters = [];
+        var feature, clustered, cluster;
+        var screenBounds = this.layer.map.getExtent();
+        for (var i = 0; i < this.features.length; ++i) {
+            feature = this.features[i];
+            if(feature.geometry) {
+                if(!screenBounds.intersectsBounds(feature.geometry.getBounds())) {
+                    continue;
+                }
+                clustered = false;
+                for (var j = clusters.length-1; j >= 0; --j) {
+                    cluster = clusters[j];
+                    if(this.shouldCluster(cluster, feature)) {
+                        this.addToCluster(cluster, feature);
+                        clustered = true;
+                        break;
+                    }
+                }
+                if(!clustered) {
+                    clusters.push(this.createCluster(this.features[i]));
+                }
+            }
+        }
+        this.clustering = true;
+        this.layer.removeAllFeatures();
+        this.clustering = false;
+        if(clusters.length > 0) {
+            if(this.threshold > 1) {
+                var clone = clusters.slice();
+                clusters = [];
+                var candidate;
+                for (var k = 0, len = clone.length; k < len; ++k) {
+                    candidate = clone[k];
+                    if (candidate.attributes.count < this.threshold) {
+                        Array.prototype.push.apply(clusters, candidate.cluster);
+                    } else {
+                        clusters.push(candidate);
+                    }
+                }
+            }
+            this.clustering = true;
+            // A legitimate feature addition could occur during this
+            // addFeatures call.  For clustering to behave well, features
+            // should be removed from a layer before requesting a new batch.
+            this.layer.addFeatures(clusters);
+            this.clustering = false;
+        }
+        this.clusters = clusters;
+    }
+};
+
+/**
+ * Override drawText function on openlayers SVG.js
+ */
+OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location) {
+=======
         OpenLayers.Class(OpenLayers.Control.Permalink, {
             argParserClass: dbkjs.ArgParser,
             SELECT_ARGUMENT_KEY: "select",
@@ -207,6 +403,7 @@ dbkjs.Permalink =
 
 //Override drawText function on openlayers SVG.js
 OpenLayers.Renderer.SVG.prototype.drawText = function (featureId, style, location) {
+>>>>>>> upstream/master
     var drawOutline = (!!style.labelOutlineWidth);
     // First draw text in halo color and size and overlay the
     // normal text afterwards
@@ -265,8 +462,13 @@ OpenLayers.Renderer.SVG.prototype.drawText = function (featureId, style, locatio
     }
     if (style.rotation) {
         label.setAttributeNS(null, "transform",
+<<<<<<< HEAD
+            'rotate(' + style.rotation + ',' + x + ',' + -y + ')'
+        );
+=======
                 'rotate(' + style.rotation + ',' + x + ',' + -y + ')'
                 );
+>>>>>>> upstream/master
     }
     var align = style.labelAlign || OpenLayers.Renderer.defaultSymbolizer.labelAlign;
     label.setAttributeNS(null, "text-anchor",
@@ -296,9 +498,13 @@ OpenLayers.Renderer.SVG.prototype.drawText = function (featureId, style, locatio
         tspan.setAttribute("x", x);
         if (i === 0) {
             var vfactor = OpenLayers.Renderer.SVG.LABEL_VFACTOR[align[1]];
-            // @todo: the if clause was: if(vfactor == null), this is depricatedd
+            // @todo: the if clause was: if(vfactor == null), this is deprecated
             if (!vfactor) {
+<<<<<<< HEAD
+                vfactor = -0.5;
+=======
                 vfactor = -.5;
+>>>>>>> upstream/master
             }
             tspan.setAttribute("dy", (vfactor * (numRows - 1)) + "em");
         } else {
@@ -319,7 +525,8 @@ dbkjs.util = {
     layersLoading: [],
     modalPopupStore: {},
     /**
-     * script voor updaten zichtbaarheid van overlays
+     * script to toggle overlayes on/off
+     *
      * @param {<OpenLayers.Layer>} obj
      */
     toggleOverlay: function (obj) {
@@ -344,7 +551,11 @@ dbkjs.util = {
     },
     onClick: function (e) {
         $('#wmsclickpanel').hide();
+<<<<<<< HEAD
+        //Check to see if a layer is required by a module and has getfeatureinfo set
+=======
         //controleer of de layer onderdeel is van een module en een getfeatureinfo heeft
+>>>>>>> upstream/master
         $.each(dbkjs.map.layers, function (lay_index, lay) {
             if (lay.visibility && lay.dbkjsParent && lay.dbkjsParent.getfeatureinfo) {
                 lay.dbkjsParent.getfeatureinfo(e);
@@ -405,8 +616,6 @@ dbkjs.util = {
         var result = null;
         if (typeof olGeom !== 'undefined') {
             var jstsConverter = new jsts.io.WKTReader();
-            //var olConverter = new OpenLayers.Format.WKT();
-            //var wktGeom = olConverter.write(olGeom);
             var wktGeom = olGeom.toString();
             var jstsGeom = jstsConverter.read(wktGeom);
             if (jstsGeom !== null) {
@@ -421,7 +630,6 @@ dbkjs.util = {
             var jstsConverter = new jsts.io.WKTWriter();
             var olConverter = new OpenLayers.Format.WKT();
             var wktGeom = jstsConverter.write(jstsGeom);
-            //olGeom.toString();
             var olGeom = olConverter.read(wktGeom);
             if (olGeom !== null) {
                 result = olGeom;
@@ -449,7 +657,11 @@ dbkjs.util = {
         return result;
     },
     getFeaturesForLine: function (vLayer, jstsLine, bufdist) {
+<<<<<<< HEAD
+        var result = [];
+=======
         var result = new Array();
+>>>>>>> upstream/master
         var i;
         for (i = 0; i < vLayer.features.length; i++) {
             var feat = vLayer.features[i];
@@ -572,7 +784,7 @@ dbkjs.util = {
 
         var alert = $('#systeem_meldingen');
         if (!alert[0]) {
-            var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
+            alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
             alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
             alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
             $('body').append(alert);
@@ -601,7 +813,7 @@ dbkjs.util = {
                     }
                     alert.hide();
                 } else {
-                    var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
+                    alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
                     alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
                     alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
                     $('body').append(alert);
@@ -637,7 +849,7 @@ dbkjs.util = {
         var content = '<strong>' + title + '</strong> ' + tekst;
         var alert = $('#systeem_meldingen');
         if (!alert[0]) {
-            var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable ' + type + '"></div>');
+            alert = $('<div id="systeem_meldingen" class="alert alert-dismissable ' + type + '"></div>');
             alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
             alert.append(' ' + content);
             $('body').append(alert);
@@ -658,7 +870,7 @@ dbkjs.util = {
         }
     },
     /**
-     * Verander de titel van de opgegeven panel
+     * Change the title for a panel
      *
      * @param {string} title
      * @param {string} dialogid
@@ -677,8 +889,8 @@ dbkjs.util = {
     },
     /**
      *
-     * @param {string} id (optioneel)
-     * @returns {jQuery.DOMElement} de nieuwe tabtabel
+     * @param {string} id (optional)
+     * @returns {jQuery.DOMElement} the new table element for tabular object
      */
     createTabbable: function (id) {
         if (!id) {
@@ -693,14 +905,13 @@ dbkjs.util = {
         return tabbable;
     },
     /**
-     * Retourneert de tab_content id placeholder zodat hierop
-     * kan worden ingevoerd, kan eventueel met een bestaande id worden
-     * aangeroepen.
+     * Return the tab_content id placeholder so chained functions have a
+     * reference. Can be used with an existing id to change a tab.
      *
      * @param {string} parent_id
      * @param {string} tab_title
      * @param {string} tab_content
-     * @param {boolean} active tab aan of uit.
+     * @param {boolean} active tab on/off
      * @param {string} id (optional)
      * @returns {string}
      */
@@ -712,7 +923,7 @@ dbkjs.util = {
         var ref;
         var pane;
         if (!id) {
-            var id = OpenLayers.Util.createUniqueID("dbkjs.tab_pane_");
+            id = OpenLayers.Util.createUniqueID("dbkjs.tab_pane_");
         }
 
         li = $('#' + id + '_tab');
@@ -731,7 +942,7 @@ dbkjs.util = {
         ref.html(tab_title);
         pane.html(tab_content);
         if (active) {
-            //verwijder van alle andere tabs de active state!
+            //Remove the active states from the other tabs
             parent_ul.children().removeClass('active');
             parent_tab.children().removeClass('active');
             li.addClass('active');
@@ -770,16 +981,26 @@ dbkjs.util = {
         var modal_content = $('<div class="modal-content"></div>');
         var modal_header = $('<div id="' + id + '_h" class="modal-header"><h4 class="modal-title">' + title + '</h4></div>');
         var modal_body = $('<div id="' + id + '_b" class="modal-body"></div>');
+<<<<<<< HEAD
+        var modal_footer;
+        if (dbkjs.viewmode !== 'fullscreen') {
+            modal_footer = $('<div id="' + id + '_f" class="modal-footer"></div>');
+        }
+=======
         if (dbkjs.viewmode !== 'fullscreen') {
             var modal_footer = $('<div id="' + id + '_f" class="modal-footer"></div>');
         }
         ;
+>>>>>>> upstream/master
         modal_content.append(modal_header);
         modal_content.append(modal_body);
         if (dbkjs.viewmode !== 'fullscreen') {
             modal_content.append(modal_footer);
         }
+<<<<<<< HEAD
+=======
         ;
+>>>>>>> upstream/master
         modal_wrapper.append(modal_dialog.append(modal_content));
         modal_wrapper.modal('hide');
         return modal_wrapper;
@@ -880,6 +1101,18 @@ dbkjs.util = {
                 })
                 .appendTo('body');
         $('<a></a>')
+<<<<<<< HEAD
+            .attr({
+                'class': 'modal-popup-close',
+                'href': '#'
+            })
+            .html('<i class="fa fa-arrow-left"></i> Terug')
+            .on('click', function (e) {
+                e.preventDefault();
+                hidingFunction();
+            })
+            .appendTo(popup);
+=======
                 .attr({
                     'class': 'modal-popup-close',
                     'href': '#'
@@ -890,6 +1123,7 @@ dbkjs.util = {
                     hidingFunction();
                 })
                 .appendTo(popup);
+>>>>>>> upstream/master
         $('<div></div>')
                 .addClass('modal-popup-title')
                 .html(options.title || '')
@@ -898,8 +1132,12 @@ dbkjs.util = {
                 .addClass('modal-popup-view')
                 .appendTo(popup);
 
+<<<<<<< HEAD
+        var hideCallback = function () {};
+=======
         var hideCallback = function () {
         };
+>>>>>>> upstream/master
         if (options.hideCallback) {
             hideCallback = options.hideCallback;
         }
@@ -939,12 +1177,18 @@ dbkjs.util = {
                 getView: function () {
                     return $([]);
                 },
+<<<<<<< HEAD
+                show: function () {},
+                hide: function () {},
+                setHideCallback: function () {}
+=======
                 show: function () {
                 },
                 hide: function () {
                 },
                 setHideCallback: function () {
                 }
+>>>>>>> upstream/master
             };
         }
         return this.modalPopupStore[name];
@@ -965,8 +1209,12 @@ dbkjs.util = {
                 return false;
             }
             return true;
+<<<<<<< HEAD
+        } catch (e) {}
+=======
         } catch (e) {
         }
+>>>>>>> upstream/master
         return true;
     },
     configureLayers: function () {
