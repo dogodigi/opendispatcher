@@ -414,11 +414,7 @@ dbkjs.modules.search = {
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
             for (var i = 0, len = dbkjs.map.layers.length; i < len; i++) {
                 //get the layer with the pl that is right for infra: ih
-<<<<<<< HEAD
 
-=======
-                
->>>>>>> upstream/master
                 if(dbkjs.map.layers[i].metadata.pl === "ih"){
                     //make sure it is visible and that the overlay bar is set to activated
                     dbkjs.map.layers[i].metadata.div.children('.panel-heading').addClass('active layActive');
