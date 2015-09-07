@@ -1,11 +1,7 @@
 {
   "name": "opendispatcher",
   "description": "opendispatcher - First responder HTML5 nodejs client application",
-<<<<<<< HEAD
   "version": "3.0.2",
-=======
-  "version": "3.0.0",
->>>>>>> upstream/master
   "license": "GPL-3.0+",
   "author": {
     "name": "Milo van der Linden",
