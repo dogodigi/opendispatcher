@@ -1,8 +1,8 @@
 /**
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of opendispatcher/safetymapsDBK
- *  
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -31,7 +31,7 @@ var web = require('../controllers/web.js'),
 
 function eughs (req, res) {
     res.render('eughs', {title: 'eughs', source_url: "http://stoffen-info.nl/onderwerpen/eu-ghs/kort/"});
-};
+}
 function nen1414(req, res) {
     //db query uitvoeren.
     var query_str = 'select naam, omschrijving, brandweervoorziening_symbool,lower(namespace) as namespace  from dbk.type_brandweervoorziening';
@@ -46,7 +46,7 @@ function nen1414(req, res) {
             }
     );
 
-};
+}
 
 function index(req, res) {
     var activelang;
@@ -59,23 +59,23 @@ function index(req, res) {
     if (req.headers['x-opendispatcher-dn']) {
         var arr1 = req.headers['x-opendispatcher-dn'].split('/');
         var user = {};
-        for (index = 0; index < arr1.length; ++index) {
-            var arr2 = arr1[index].split('=');
+        for (var i = 0; i < arr1.length; ++i) {
+            var arr2 = arr1[i].split('=');
             user[arr2[0]] = arr2[1];
         }
     }
     res.render('index', {mylang: activelang, mode: req.app.get('env')});
-};
+}
 
 function validate_GET(req, res) {
     var token = req.params.token;
     checkToken(token, res);
-};
+}
 
 function validate_POST(req, res) {
     var token = req.body.token;
     checkToken(token, res);
-};
+}
 
 function checkToken(token, res) {
     if (token === "be8c631496af73e302c0effec301dfda7ffd11fa1c2e08ae") {
@@ -91,7 +91,7 @@ function checkToken(token, res) {
             }
         });
     }
-};
+}
 
 function setup(app) {
     app.get('/', index);

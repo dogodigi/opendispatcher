@@ -494,8 +494,7 @@ dbkjs.modules.care = {
     },
     panelNorm: function (response) {
         var _obj = dbkjs.modules.care;
-        //verwerk de featureinformatie
-        //g = new OpenLayers.Format.GML.v3();
+        //Process feature information
         var geojson_format = new OpenLayers.Format.GeoJSON();
         var features = geojson_format.read(response.responseText);
         if (features.length > 0) {

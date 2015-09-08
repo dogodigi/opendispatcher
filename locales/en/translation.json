@@ -43,7 +43,8 @@
         "select": "Select",
         "emergencyContactExtraFunction": "Secondary function",
         "download": "Download file",
-        "hyperlink": "Open hyperlink"
+        "hyperlink": "Open hyperlink",
+        "results": "Results"
     },
     "bag":{
       "updated": "Last address update"

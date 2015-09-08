@@ -290,7 +290,7 @@ dbkjs.modules.feature = {
                         $("#dbklist").on("click", "a", _obj.handleFeatureTitleClick);
                         dbkjs.util.getModalPopup('infopanel').show();
                     } else {
-                        dbkjs.gui.infoPanelUpdateTitle('<i class="fa fa-info-circle"></i> &nbsp;Informatie');
+                        dbkjs.gui.infoPanelUpdateTitle('<i class="fa fa-info-circle"></i> ' + i18n.t('app.results'));
                         dbkjs.gui.infoPanelAddPagination();
                         dbkjs.gui.infoPanelShowFooter();
 

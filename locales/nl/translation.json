@@ -44,7 +44,8 @@
         "select": "Selecteer",
         "emergencyContactExtraFunction": "Nevenfunctie",
         "download": "Download bestand",
-        "hyperlink": "Open URL"
+        "hyperlink": "Open URL",
+        "results": "Gevonden objecten"
     },
     "bag":{
       "updated": "Mutatiedatum BAG"

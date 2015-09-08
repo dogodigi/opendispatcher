@@ -42,7 +42,8 @@
         "select": "app.select",
         "emergencyContactExtraFunction": "app.emergencyContactExtraFunction",
         "download": "app.download",
-        "hyperlink": "app.hyperlink"
+        "hyperlink": "app.hyperlink",
+        "results": "app.results"
     },
     "bag":{
       "updated": "bag.updated"
