@@ -626,8 +626,8 @@ dbkjs.protocol.jsonDBK = {
             var active_tab = _obj.active_tab === 'gevaarlijkestof' ? 'active' : '';
             var omsdetail_div = $('<div class="tab-pane" ' + active_tab + ' id="' + id + '"></div>');
             var omsdetail_table_div = $('<div class="table-responsive"></div>');
-            var omsdetail_table = $('<table class="table table-hover"></table>');
-            omsdetail_table.append('<tr><th>' +
+            var omscontact_table = $('<table class="table table-hover"></table>');
+            omscontact_table.append('<tr><th>' +
                     i18n.t('oms.contact') + '</th><th>' +
                     i18n.t('oms.telephone') + '</th><th>' +
                     i18n.t('oms.mobile') + '</th></tr>');
@@ -683,7 +683,7 @@ dbkjs.protocol.jsonDBK = {
             omscrit_table_div.append(omscrit_table);
             omsdetail_table_div.append(omscontact_table);
             omsdetail_div.append(omsinfo_table_div);
-            omsdetail_div.append(omscontact_table_div);
+            omsdetail_div.append(omsdetail_table_div);
             omsdetail_div.append(omscrit_table_div);
             _obj.panel_group.append(omsdetail_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">' + i18n.t('dbk.omsdetail') + '</a></li>');
