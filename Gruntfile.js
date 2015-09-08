@@ -23,7 +23,7 @@ module.exports = function (grunt) {
                                 cwd: 'public/js',
                                 src: [
                                     'dbk.min.js',
-                                    'dbkjs/config/options-rd.js'
+                                    'dbkjs/config/options-nl.js'
                                 ],
                                 dest: 'build/js',
                                 expand: true
