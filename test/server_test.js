@@ -4,7 +4,6 @@ var server = require('../server');
 var express = request(server.app);
 exports["Rest interfaces"] = {
     setUp: function (callback) {
-        //insert some stuff in the database?
         callback();
     },
     tearDown: function (callback) {
@@ -32,7 +31,6 @@ exports["Rest interfaces"] = {
             var result = JSON.parse(response.body);
             test.equal(response.statusCode, 200, '/api/features.json is not available');
             test.equal(!result.features, false, 'Features should be returned');
-            console.log(result);
             var testFeature = result.features[0];
             if(testFeature){
                 test.equal(typeof(testFeature), "object","Single row from Features should be an object");
