@@ -1,8 +1,8 @@
 /**
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of opendispatcher/safetymapsDBK
- *  
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -21,16 +21,16 @@
 /* global exports, global */
 
 /**
- * Get the settings for the organisation from the database based on 
+ * Get the settings for the organisation from the database based on
  * the database connection defined in config.json or config.default.json
- * 
+ *
  * @param {type} req
  * @param {type} res
  * @returns organisation settings for the application
  */
 exports.getOrganisation = function(req, res) {
     if (req.query) {
-        srid = req.query.srid;
+        var srid = req.query.srid;
         if(!srid){
             srid = 4326;
         }
@@ -49,17 +49,17 @@ exports.getOrganisation = function(req, res) {
 };
 
 /**
- * Select an object from the database by id. takes srid as parameter. 
+ * Select an object from the database by id. takes srid as parameter.
  * If srid is undefined, falls back to WGS84
- * 
+ *
  * @param {type} req
  * @param {type} res
  * @returns object
  */
 exports.getObject = function(req, res) {
     if (req.query) {
-        id = req.params.id;
-        srid = req.query.srid;
+        var id = req.params.id;
+        var srid = req.query.srid;
         if(!srid){
             srid = 4326;
         }
@@ -79,8 +79,8 @@ exports.getObject = function(req, res) {
 
 exports.getGebied = function(req, res) {
     if (req.query) {
-        id = req.params.id;
-        srid = req.query.srid;
+        var id = req.params.id;
+        var srid = req.query.srid;
         if(!srid){
             srid = 4326;
         }
@@ -100,7 +100,7 @@ exports.getGebied = function(req, res) {
 
 exports.getFeatures = function(req, res) {
     if (req.query) {
-        srid = req.query.srid;
+        var srid = req.query.srid;
         if(!srid){
             srid = 4326;
         }
@@ -112,10 +112,10 @@ exports.getFeatures = function(req, res) {
                 } else {
                     var resultset = {"type": "FeatureCollection", "features": []};
 
-                    for (index = 0; index < result.rows.length; ++index) {
-                        var item = {type: 'Feature', id: 'DBKFeature.gid--' + result.rows[index].feature.gid};
-                        item.geometry = result.rows[index].feature.geometry;
-                        item.properties = result.rows[index].feature;
+                    for (var i = 0; i < result.rows.length; ++i) {
+                        var item = {type: 'Feature', id: 'DBKFeature.gid--' + result.rows[i].feature.gid};
+                        item.geometry = result.rows[i].feature.geometry;
+                        item.properties = result.rows[i].feature;
                         delete item.properties.geometry;
                         resultset.features.push(item);
                     }
@@ -129,7 +129,7 @@ exports.getFeatures = function(req, res) {
 
 /**
  * Compact arrays with null entries; delete keys from objects with null value
- * 
+ *
  * @param {json} data
  * @returns data with nulls removed.
  */

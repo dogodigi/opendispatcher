@@ -24,7 +24,8 @@
   ],
   "private": true,
   "scripts": {
-    "start": "grunt && node index.js"
+    "start": "grunt && node index.js",
+    "test": "mocha test --timeout 30000 --reporter dot --bail --check-leaks test/"
   },
   "repository": {
     "type": "git",
@@ -51,6 +52,8 @@
     "uglify-js": "*"
   },
   "devDependencies": {
-    "supertest": "^0.15.0"
+    "mocha": "*",
+    "mocha-junit-reporter": "^1.5.0",
+    "supertest": "^1.0.1"
   }
 }
