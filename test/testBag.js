@@ -1,3 +1,22 @@
+/*!
+ *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
+ *
+ *  This file is part of opendispatcher
+ *
+ *  opendispatcher is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  parcelsplopendispatcheritter is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 var request = require('supertest');
 var assert = require('assert');
 var server = require('../server');
@@ -9,7 +28,6 @@ describe('BAG API test', function () {
                 if (err) {
                     done(err);
                 } else {
-                    console.log("RES:\n", res.header);
                     res.header.should.have.property('location', '/login');
                     done();
                 }
