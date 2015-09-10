@@ -1,6 +1,7 @@
-# CircleCi Build status
+# Build status
 
 [![Circle CI](https://circleci.com/gh/dogodigi/opendispatcher.svg?style=svg)](https://circleci.com/gh/dogodigi/opendispatcher)
+[![David](https://david-dm.org/dogodigi/opendispatcher.svg)](https://david-dm.org/dogodigi/opendispatcher)
 
 # opendispatcher
 
