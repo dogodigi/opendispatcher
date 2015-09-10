@@ -580,7 +580,7 @@ dbkjs.config.styles = {
                     }
                 },
                 myradius: function(feature) {
-                    return dbkjs.scaleStyleValue(12, feature.radius);
+                    return dbkjs.scaleStyleValue(12, feature.attributes.radius);
                 },
                 mydisplay: function(feature) {
                     if (dbkjs.options.visibleCategories && feature.attributes.category &&
@@ -597,7 +597,7 @@ dbkjs.config.styles = {
         }, {
             context: {
                 myradius: function(feature) {
-                    return dbkjs.scaleStyleValue(20, feature.radius, 1.66);
+                    return dbkjs.scaleStyleValue(20, feature.attributes.radius, 1.66);
                 }
             }
         }), 'temporary': new OpenLayers.Style({
@@ -605,7 +605,7 @@ dbkjs.config.styles = {
         }, {
             context: {
                 myradius: function(feature) {
-                    return dbkjs.scaleStyleValue(24, feature.radius, 2);
+                    return dbkjs.scaleStyleValue(24, feature.attributes.radius, 2);
                 }
             }
         })
@@ -654,7 +654,7 @@ dbkjs.config.styles = {
         }, {
             context: {
                 mysize: function(feature) {
-                    return dbkjs.scaleStyleValue(12, feature.scale);
+                    return dbkjs.scaleStyleValue(12, feature.attributes.scale);
                 },
                 myRotation: function(feature) {
                     if (parseFloat(feature.attributes.rotation) !== 0.0) {

@@ -161,7 +161,8 @@ dbkjs.successAuth = function () {
 
     //register modules
     $.each(dbkjs.modules, function (mod_index, module) {
-        if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
+        if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1
+	|| (dbkjs.options.additionalModules && $.inArray(mod_index, dbkjs.options.additionalModules) > -1)) {
             if (module.register) {
                 module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true, viewmode: dbkjs.viewmode});
             }
@@ -393,7 +394,7 @@ dbkjs.documentReady = function () {
         });
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
         OpenLayers.Lang[dbkjsLang] = OpenLayers.Util.applyDefaults(
-            {'Scale = 1 : ${scaleDenom}': t("app.scale")}
+            {'Scale = 1 : ${scaleDenom}': i18n.t("app.scale")}
         );
         OpenLayers.Lang.setCode(dbkjsLang);
         if (dbkjs.viewmode !== 'fullscreen') {
