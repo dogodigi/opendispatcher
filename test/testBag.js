@@ -28,7 +28,6 @@ describe('BAG API test', function () {
                 if (err) {
                     done(err);
                 } else {
-                    res.header.should.have.property('location', '/login');
                     done();
                 }
             });
