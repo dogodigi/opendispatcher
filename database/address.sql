@@ -1,6 +1,13 @@
 CREATE SCHEMA bag_dummy;
 CREATE SCHEMA bag_actueel;
 
+CREATE SEQUENCE bag_dummy.adres_gid_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 8601921
+  CACHE 1;
+
 CREATE TABLE bag_dummy.adres
 (
   openbareruimtenaam character varying(80),
