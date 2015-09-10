@@ -1026,6 +1026,13 @@ dbkjs.util = {
             }
         }
     },
+    /**
+     * Calculate the ratio for print
+     * 
+     * @param {type} a
+     * @param {type} b
+     * @returns {unresolved}
+     */
     gcd: function (a, b) {
         return (b === 0) ? a : dbkjs.util.gcd(b, a % b);
     }
