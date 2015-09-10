@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of opendispatcher/safetymapsDBK
- *  
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -34,7 +34,7 @@ exports.getVersion = function (req, res) {
                 if (err) {
                     res.status(400).json(err);
                 } else {
-                    for (index = 0; index < result.rows.length; ++index) {
+                    for (var i = 0; i < result.rows.length; ++i) {
                     }
                     res.json(result.rows);
                 }
@@ -60,7 +60,7 @@ exports.getAdres = function (req, res) {
                     if (err) {
                         res.status(400).json(err);
                     } else {
-                        for (index = 0; index < result.rows.length; ++index) {
+                        for (var index = 0; index < result.rows.length; ++index) {
                             var geometry = JSON.parse(result.rows[index].geopunt);
                             delete result.rows[index].geopunt;
                             result.rows[index].geometry = geometry;
@@ -124,7 +124,7 @@ exports.getPanden = function (req, res) {
                             if (err) {
                                 res.status(400).json(err);
                             } else {
-                                for (index = 0; index < result.rows.length; ++index) {
+                                for (var index = 0; index < result.rows.length; ++index) {
                                     var geometry = JSON.parse(result.rows[index].geovlak);
                                     delete result.rows[index].geovlak;
                                     result.rows[index].geometry = geometry;
