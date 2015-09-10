@@ -27,7 +27,7 @@ OpenLayers.Renderer.symbol.arrow = [0, 2, 1, 0, 2, 2, 1, 0, 0, 2];
 
 /**
  * Factor to scale styling elements with
- * 
+ *
  * @returns {Number}
  */
 dbkjs.getStyleScaleFactor = function () {
@@ -41,7 +41,7 @@ dbkjs.getStyleScaleFactor = function () {
 
 /**
  * Redraw all layers for which scaling of style applies
- * 
+ *
  */
 dbkjs.redrawScaledLayers = function () {
     dbkjs.protocol.jsonDBK.layerBrandcompartiment.redraw();
@@ -586,8 +586,8 @@ dbkjs.config.styles = {
                         return 0;
                     }
                 },
-                myradius: function (feature) {
-                    return dbkjs.scaleStyleValue(12, feature.radius);
+                myradius: function(feature) {
+                    return dbkjs.scaleStyleValue(12, feature.attributes.radius);
                 },
                 mydisplay: function (feature) {
                     if (dbkjs.options.visibleCategories
@@ -604,16 +604,16 @@ dbkjs.config.styles = {
             pointRadius: "${myradius}"
         }, {
             context: {
-                myradius: function (feature) {
-                    return dbkjs.scaleStyleValue(20, feature.radius, 1.66);
+                myradius: function(feature) {
+                    return dbkjs.scaleStyleValue(20, feature.attributes.radius, 1.66);
                 }
             }
         }), 'temporary': new OpenLayers.Style({
             pointRadius: "${myradius}"
         }, {
             context: {
-                myradius: function (feature) {
-                    return dbkjs.scaleStyleValue(24, feature.radius, 2);
+                myradius: function(feature) {
+                    return dbkjs.scaleStyleValue(24, feature.attributes.radius, 2);
                 }
             }
         })
@@ -661,8 +661,8 @@ dbkjs.config.styles = {
             labelOutlineWidth: 1
         }, {
             context: {
-                mysize: function (feature) {
-                    return dbkjs.scaleStyleValue(12, feature.scale);
+                mysize: function(feature) {
+                    return dbkjs.scaleStyleValue(12, feature.attributes.scale);
                 },
                 myRotation: function (feature) {
                     if (parseFloat(feature.attributes.rotation) !== 0.0) {
