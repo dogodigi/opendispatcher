@@ -45,8 +45,8 @@ exports.getVersion = function (req, res) {
 
 exports.getAdres = function (req, res) {
     if (req.query) {
-        id = req.params.id;
-        srid = req.query.srid;
+        var id = req.params.id;
+        var srid = req.query.srid;
         if (!srid) {
             srid = 4326;
         }
@@ -104,8 +104,8 @@ exports.getAdres = function (req, res) {
 
 exports.getPanden = function (req, res) {
     if (req.query) {
-        id = req.params.id;
-        srid = req.query.srid;
+        var id = req.params.id;
+        var srid = req.query.srid;
         if (!srid) {
             srid = 4326;
         }
@@ -156,9 +156,11 @@ exports.getPanden = function (req, res) {
 exports.autoComplete = function (req, res) {
     // @todo Check to see if the database is up. If not, fall back to nominatim!
     if (req.query) {
-        searchphrase = req.params.searchphrase;
+        var searchphrase = req.params.searchphrase || '';
+        var whereclause;
+        var finalsearch;
         if (searchphrase.length > 2) {
-            srid = req.query.srid;
+            var srid = req.query.srid;
             if (!srid) {
                 srid = 4326;
             }
