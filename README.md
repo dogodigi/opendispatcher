@@ -43,7 +43,7 @@ To start the applicatie in "development mode":
 
 To start the application in "production mode":
 
-export NODE_ENV=production && npm start
+    export NODE_ENV=production && npm start
 
 Or, using forever:
 
