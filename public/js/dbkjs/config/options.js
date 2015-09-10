@@ -17,6 +17,9 @@
  *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global OpenLayers */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.options = {

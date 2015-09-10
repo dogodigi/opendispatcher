@@ -23,9 +23,9 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
-dbkjs.modules.updateFilter = function(id) {
+dbkjs.modules.updateFilter = function (id) {
     //Is er een DBK geselecteerd of is de id leeg?
-    $.each(dbkjs.modules, function(mod_index, module) {
+    $.each(dbkjs.modules, function (mod_index, module) {
         if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
             if (module.updateFilter) {
                 module.updateFilter(id);
@@ -44,11 +44,11 @@ dbkjs.modules.search = {
     layer: null,
     searchPopup: null,
     viewmode: 'default',
-    register: function(options) {
-        if(options && options.viewmode) {
+    register: function (options) {
+        if (options && options.viewmode) {
             this.viewmode = options.viewmode;
         }
-        if(this.viewmode === 'fullscreen') {
+        if (this.viewmode === 'fullscreen') {
             this.fullscreenLayout();
         } else {
             this.inlineLayout();
@@ -56,7 +56,7 @@ dbkjs.modules.search = {
         this.layer = new OpenLayers.Layer.Vector('search');
         dbkjs.map.addLayer(this.layer);
     },
-    inlineLayout: function() {
+    inlineLayout: function () {
         var search_div = $('#btn-grp-search');
         var search_group = $('<div></div>').addClass('input-group navbar-btn');
         var search_pre = $('<span id="search-add-on" class="input-group-addon"><i class="fa fa-building"></i></span>');

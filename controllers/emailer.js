@@ -1,6 +1,6 @@
-/**
+/*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of opendispatcher/safetymapsDBK
  *  
  *  opendispatcher is free software: you can redistribute it and/or modify

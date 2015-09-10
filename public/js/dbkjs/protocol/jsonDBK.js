@@ -275,7 +275,7 @@ dbkjs.protocol.jsonDBK = {
     },
     constructAlgemeen: function (DBKObject, dbktype) {
         var _obj = dbkjs.protocol.jsonDBK;
-        /** Algemene dbk info **/
+        /** General Site Details **/
 
         if (dbkjs.viewmode === 'fullscreen') {
             // XXX niet meer nodig?

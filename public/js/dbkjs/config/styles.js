@@ -25,7 +25,11 @@ window.dbkjs = dbkjs;
 dbkjs.config = dbkjs.config || {};
 OpenLayers.Renderer.symbol.arrow = [0, 2, 1, 0, 2, 2, 1, 0, 0, 2];
 
-// Factor to scale styling elements with
+/**
+ * Factor to scale styling elements with
+ * 
+ * @returns {Number}
+ */
 dbkjs.getStyleScaleFactor = function () {
     if (!dbkjs.options.styleScaleAdjust) {
         return 1;
@@ -35,6 +39,10 @@ dbkjs.getStyleScaleFactor = function () {
     }
 };
 
+/**
+ * Redraw all layers for which scaling of style applies
+ * 
+ */
 dbkjs.redrawScaledLayers = function () {
     dbkjs.protocol.jsonDBK.layerBrandcompartiment.redraw();
     dbkjs.protocol.jsonDBK.layerHulplijn2.redraw();
@@ -208,7 +216,6 @@ dbkjs.config.styles = {
                             if (feature.cluster.length > 1) {
                                 lbl_txt = feature.cluster.length + "";
                             } else {
-                                //lbl_txt = feature.cluster[0].attributes.formeleNaam;
                                 lbl_txt = "";
                             }
                             return lbl_txt;
@@ -225,7 +232,7 @@ dbkjs.config.styles = {
             fontColor: "${myfontcolor}"
         }, {
             context: {
-                myfontcolor: function(feature) {
+                myfontcolor: function (feature) {
                     if (feature.cluster) {
                         return "#fff722";
                     } else {
@@ -568,23 +575,24 @@ dbkjs.config.styles = {
             display: "${mydisplay}"
         }, {
             context: {
-                myicon: function(feature) {
+                myicon: function (feature) {
                     var img = "images/" + feature.attributes.namespace.toLowerCase() + "/" + feature.attributes.type + ".png";
                     return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + img : imagesBase64[img];
                 },
-                myrotation: function(feature) {
+                myrotation: function (feature) {
                     if (feature.attributes.rotation) {
                         return -feature.attributes.rotation;
                     } else {
                         return 0;
                     }
                 },
-                myradius: function(feature) {
+                myradius: function (feature) {
                     return dbkjs.scaleStyleValue(12, feature.radius);
                 },
-                mydisplay: function(feature) {
-                    if (dbkjs.options.visibleCategories && feature.attributes.category &&
-                        dbkjs.options.visibleCategories[feature.attributes.category] === false) {
+                mydisplay: function (feature) {
+                    if (dbkjs.options.visibleCategories
+                            && feature.attributes.category
+                            && dbkjs.options.visibleCategories[feature.attributes.category] === false) {
                         return "none";
                     } else {
                         // any string except "none" works here
@@ -596,7 +604,7 @@ dbkjs.config.styles = {
             pointRadius: "${myradius}"
         }, {
             context: {
-                myradius: function(feature) {
+                myradius: function (feature) {
                     return dbkjs.scaleStyleValue(20, feature.radius, 1.66);
                 }
             }
@@ -604,7 +612,7 @@ dbkjs.config.styles = {
             pointRadius: "${myradius}"
         }, {
             context: {
-                myradius: function(feature) {
+                myradius: function (feature) {
                     return dbkjs.scaleStyleValue(24, feature.radius, 2);
                 }
             }
@@ -616,10 +624,10 @@ dbkjs.config.styles = {
             externalGraphic: "${myicon}"
         }, {
             context: {
-                myradius: function(feature) {
+                myradius: function (feature) {
                     return dbkjs.scaleStyleValue(12);
                 },
-                myicon: function(feature) {
+                myicon: function (feature) {
                     var img = "images/" + feature.attributes.namespace.toLowerCase() + "/" + feature.attributes.type + ".png";
                     return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + img : imagesBase64[img];
                 }
@@ -628,7 +636,7 @@ dbkjs.config.styles = {
             pointRadius: "${myradius}"
         }, {
             context: {
-                myradius: function(feature) {
+                myradius: function (feature) {
                     return dbkjs.scaleStyleValue(20);
                 }
             }
@@ -636,7 +644,7 @@ dbkjs.config.styles = {
             pointRadius: "${myradius}"
         }, {
             context: {
-                myradius: function(feature) {
+                myradius: function (feature) {
                     return dbkjs.scaleStyleValue(25);
                 }
             }
@@ -653,10 +661,10 @@ dbkjs.config.styles = {
             labelOutlineWidth: 1
         }, {
             context: {
-                mysize: function(feature) {
+                mysize: function (feature) {
                     return dbkjs.scaleStyleValue(12, feature.scale);
                 },
-                myRotation: function(feature) {
+                myRotation: function (feature) {
                     if (parseFloat(feature.attributes.rotation) !== 0.0) {
                         var ori = parseFloat(feature.attributes.rotation);
                         return -ori;

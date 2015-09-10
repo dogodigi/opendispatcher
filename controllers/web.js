@@ -1,6 +1,6 @@
-/**
+/*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of opendispatcher/safetymapsDBK
  *  
  *  opendispatcher is free software: you can redistribute it and/or modify
@@ -20,16 +20,37 @@
 
 /* global exports, require, global */
 
+/**
+ * @todo Describe function
+ * 
+ * @param {type} req
+ * @param {type} res
+ * @returns {undefined}
+ */
 exports.validate_GET = function(req, res) {
     var token = req.params.token;
     checkToken(token, res);
 };
 
+/**
+ * @todo Describe function
+ * 
+ * @param {type} req
+ * @param {type} res
+ * @returns {undefined}
+ */
 exports.validate_POST = function(req, res) {
     var token = req.body.token;
     checkToken(token, res);
 };
 
+/**
+ * @todo Describe function
+ * 
+ * @param {type} token
+ * @param {type} res
+ * @returns {undefined}
+ */
 checkToken = function(token, res) {
     if (token === "be8c631496af73e302c0effec301dfda7ffd11fa1c2e08ae") {
 
@@ -46,6 +67,14 @@ checkToken = function(token, res) {
         });
     }
 };
+
+/**
+ * @todo Describe function
+ * 
+ * @param {type} req
+ * @param {type} res
+ * @returns {undefined}
+ */
 exports.getData = function(req, res) {
     if (req.query) {
         id = req.params.id;
@@ -70,6 +99,14 @@ exports.getData = function(req, res) {
         );
     }
 };
+
+/**
+ * @todo Describe function
+ * 
+ * @param {type} req
+ * @param {type} res
+ * @returns {undefined}
+ */
 getJSON = function(req, res) {
     if (req.query) {
         id = req.params.uuid;
@@ -95,7 +132,6 @@ getJSON = function(req, res) {
                         if (!resultset[result.rows[index].name].features) {
                             delete resultset[result.rows[index].name].features;
                         }
-                        //delete resultset[result.rows[index].name].name;
                     }
                     res.json(resultset);
                 }

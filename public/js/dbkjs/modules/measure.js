@@ -18,6 +18,8 @@
  *
  */
 
+/* global OpenLayers */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
@@ -26,7 +28,7 @@ dbkjs.modules.measure = {
     id: "dbk.modules.measure",
     distance_control: null,
     area_control: null,
-    register: function() {
+    register: function () {
         var _obj = dbkjs.modules.measure;
         $('#btngrp_3').append('<a id="btn_measure_distance" class="btn btn-default navbar-btn" href="#" title="' +
                 i18n.t('map.measureDistance') + '"><i class="fa fa-arrows-v fa-rotate-45"></i></a>');
@@ -93,9 +95,9 @@ dbkjs.modules.measure = {
             "measurepartial": _obj.handleMeasurements
         });
         dbkjs.map.addControl(_obj.area_control);
-        $('#btn_measure_distance').click(function() {
+        $('#btn_measure_distance').click(function () {
             $('#measure').html('');
-            if(dbkjs.viewmode === "fullscreen") {
+            if (dbkjs.viewmode === "fullscreen") {
                 $('#measure').hide();
             }
             if ($(this).hasClass('active')) {
@@ -108,9 +110,9 @@ dbkjs.modules.measure = {
                 _obj.distance_control.activate();
             }
         });
-        $('#btn_measure_area').click(function() {
+        $('#btn_measure_area').click(function () {
             $('#measure').html('');
-            if(dbkjs.viewmode === "fullscreen") {
+            if (dbkjs.viewmode === "fullscreen") {
                 $('#measure').hide();
             }
             if ($(this).hasClass('active')) {
@@ -124,7 +126,7 @@ dbkjs.modules.measure = {
             }
         });
     },
-    handleMeasurements: function(event) {
+    handleMeasurements: function (event) {
         //var geometry = event.geometry;
         var units = event.units;
         var order = event.order;
