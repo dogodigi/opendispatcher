@@ -35,90 +35,50 @@ WITH (
   OIDS=FALSE
 );
 
--- Index: bag07jul2015.adres_adreseerbaarobject
-
--- DROP INDEX bag07jul2015.adres_adreseerbaarobject;
-
 CREATE INDEX adres_adreseerbaarobject
   ON bag_dummy.adres
   USING btree
   (adresseerbaarobject);
-
--- Index: bag07jul2015.adres_gemeentenaam_idx
-
--- DROP INDEX bag07jul2015.adres_gemeentenaam_idx;
 
 CREATE INDEX adres_gemeentenaam_idx
   ON bag_dummy.adres
   USING btree
   (gemeentenaam COLLATE pg_catalog."default");
 
--- Index: bag07jul2015.adres_geom_idx
-
--- DROP INDEX bag07jul2015.adres_geom_idx;
-
 CREATE INDEX adres_geom_idx
   ON bag_dummy.adres
   USING gist
   (geopunt);
-
--- Index: bag07jul2015.adres_nummeraanduiding
-
--- DROP INDEX bag07jul2015.adres_nummeraanduiding;
 
 CREATE INDEX adres_nummeraanduiding
   ON bag_dummy.adres
   USING btree
   (nummeraanduiding);
 
--- Index: bag07jul2015.adres_openbareruimtenaam_idx
-
--- DROP INDEX bag07jul2015.adres_openbareruimtenaam_idx;
-
 CREATE INDEX adres_openbareruimtenaam_idx
   ON bag_dummy.adres
   USING btree
   (openbareruimtenaam COLLATE pg_catalog."default" varchar_pattern_ops);
-
--- Index: bag07jul2015.adres_openbareruimtenaam_idx1
-
--- DROP INDEX bag07jul2015.adres_openbareruimtenaam_idx1;
 
 CREATE INDEX adres_openbareruimtenaam_idx1
   ON bag_dummy.adres
   USING btree
   (openbareruimtenaam COLLATE pg_catalog."default");
 
--- Index: bag07jul2015.adres_postcode_idx
-
--- DROP INDEX bag07jul2015.adres_postcode_idx;
-
 CREATE INDEX adres_postcode_idx
   ON bag_dummy.adres
   USING btree
   (postcode COLLATE pg_catalog."default");
-
--- Index: bag07jul2015.adres_provincienaam_idx
-
--- DROP INDEX bag07jul2015.adres_provincienaam_idx;
 
 CREATE INDEX adres_provincienaam_idx
   ON bag_dummy.adres
   USING btree
   (provincienaam COLLATE pg_catalog."default");
 
--- Index: bag07jul2015.adres_woonplaatsnaam_idx
-
--- DROP INDEX bag07jul2015.adres_woonplaatsnaam_idx;
-
 CREATE INDEX adres_woonplaatsnaam_idx
   ON bag_dummy.adres
   USING btree
   (woonplaatsnaam COLLATE pg_catalog."default");
-
--- Index: bag07jul2015.adresvol_idx
-
--- DROP INDEX bag07jul2015.adresvol_idx;
 
 CREATE INDEX adresvol_idx
   ON bag_dummy.adres
@@ -171,25 +131,15 @@ CREATE TABLE bag_dummy.nlx_bag_info
     OIDS=TRUE
   );
 
-  -- Index: bag07jul2015.pand_geom_idx
-
-  -- DROP INDEX bag07jul2015.pand_geom_idx;
-
-  CREATE INDEX pand_geom_idx
+CREATE INDEX pand_geom_idx
     ON bag_dummy.pand
     USING gist
     (geovlak);
 
-  -- Index: bag07jul2015.pand_key
-
-  -- DROP INDEX bag07jul2015.pand_key;
-
-  CREATE INDEX pand_key
+CREATE INDEX pand_key
     ON bag_dummy.pand
     USING btree
     (identificatie, aanduidingrecordinactief, aanduidingrecordcorrectie, begindatumtijdvakgeldigheid);
-
-
 
 CREATE OR REPLACE VIEW bag_dummy.pandactueelbestaand AS
    SELECT pand.gid,
@@ -206,8 +156,13 @@ CREATE OR REPLACE VIEW bag_dummy.pandactueelbestaand AS
       pand.einddatumtijdvakgeldigheid,
       pand.geovlak
      FROM bag_dummy.pand
-    WHERE pand.begindatumtijdvakgeldigheid <= 'now'::text::timestamp without time zone AND (pand.einddatumtijdvakgeldigheid IS NULL OR pand.einddatumtijdvakgeldigheid >= 'now'::text::timestamp without time zone) AND pand.aanduidingrecordinactief = false AND pand.geom_valid = true AND pand.pandstatus <> 'Niet gerealiseerd pand'::bag07jul2015.pandstatus AND pand.pandstatus <> 'Pand gesloopt'::bag_dummy.pandstatus AND pand.pandstatus <> 'Bouwvergunning verleend'::bag_dummy.pandstatus;
-
+    WHERE pand.begindatumtijdvakgeldigheid <= 'now'::text::timestamp without time zone AND
+      (pand.einddatumtijdvakgeldigheid IS NULL OR pand.einddatumtijdvakgeldigheid >= 'now'::text::timestamp without time zone) AND
+      pand.aanduidingrecordinactief = false AND
+      pand.geom_valid = true AND
+      pand.pandstatus <> 'Niet gerealiseerd pand'::bag_dummy.pandstatus AND
+      pand.pandstatus <> 'Pand gesloopt'::bag_dummy.pandstatus AND
+      pand.pandstatus <> 'Bouwvergunning verleend'::bag_dummy.pandstatus;
 
 CREATE TABLE bag_dummy.verblijfsobjectpand
   (
@@ -224,25 +179,15 @@ CREATE TABLE bag_dummy.verblijfsobjectpand
     OIDS=FALSE
   );
 
-  -- Index: bag07jul2015.verblijfsobjectpand_pand
-
-  -- DROP INDEX bag07jul2015.verblijfsobjectpand_pand;
-
 CREATE INDEX verblijfsobjectpand_pand
     ON bag_dummy.verblijfsobjectpand
     USING btree
     (gerelateerdpand);
 
-  -- Index: bag07jul2015.verblijfsobjectpandkey
-
-  -- DROP INDEX bag07jul2015.verblijfsobjectpandkey;
-
 CREATE INDEX verblijfsobjectpandkey
     ON bag_dummy.verblijfsobjectpand
     USING btree
     (identificatie, aanduidingrecordinactief, aanduidingrecordcorrectie, begindatumtijdvakgeldigheid, gerelateerdpand);
-
-
 
 CREATE OR REPLACE VIEW bag_actueel.adres AS
   SELECT adres.openbareruimtenaam,
