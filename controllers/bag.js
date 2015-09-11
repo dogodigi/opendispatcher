@@ -115,6 +115,7 @@ exports.getPanden = function (req, res) {
                     if (err) {
                         res.status(400).json(err);
                     } else {
+                      if (result.rows.length < 0) {
                         var geopunt = result.rows[0].geopunt;
                         var pandid = result.rows[0].pand;
                         var query_str = 'select p.identificatie, p.pandstatus, p.bouwjaar, st_asgeojson(st_force_2d(st_transform(p.geovlak,$2))) geovlak from bag_actueel.pandactueelbestaand p where (ST_Overlaps(' +
@@ -145,8 +146,9 @@ exports.getPanden = function (req, res) {
                             }
                             return;
                         });
-
-
+                      } else {
+                        res.json({"type": "FeatureCollection", "features": []});
+                      }
                     }
                     return;
                 });

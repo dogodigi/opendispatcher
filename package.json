@@ -52,10 +52,10 @@
     "pg": "*",
     "request": "*",
     "serve-favicon": "^2.3.0",
-    "uglify-js": "*"
+    "uglify-js": "2.4.24"
   },
   "devDependencies": {
-    "mocha": "2.4.24",
+    "mocha": "2.3.2",
     "mocha-junit-reporter": "^1.5.0",
     "supertest": "^1.0.1"
   }

@@ -31,7 +31,6 @@ describe('BAG API test', function () {
                     done();
                 }
             });
-            ;
         });
     });
     describe('/api/bag/adres/1', function () {
@@ -44,9 +43,9 @@ describe('BAG API test', function () {
 //            request(server.app).get('/api/bag/panden/1').expect(200, done).end(done);
 //        });
 //    });
-    describe('/api/bag/panden/1.json?iam=dummy', function () {
+    describe('/api/bag/panden/1', function () {
         it('/api/bag/panden/1 200', function (done) {
-            request(server.app).get('/api/bag/panden/1.json?iam=dummy').expect(200, done);
+            request(server.app).get('/api/bag/panden/1').expect(200, done);
         });
     });
     describe('/api/bag/autocomplete/beukenla', function () {
