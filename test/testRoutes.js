@@ -23,15 +23,15 @@ var request = require('supertest'),
 
 server.app.set('env', 'production');
 
-describe('Routes:', function() {
-  it('GET Index', function(done) {
+describe('OpenDispatcher Routes', function() {
+  it('GET /', function(done) {
     // See that we get a status 200 on retrieving the Index
     server.app.set('env', 'production');
     request(server.app).get('/')
       .expect('Content-Type', 'text/html; charset=utf-8')
       .expect(200, done);
   });
-  it('GET organisation', function(done){
+  it('GET /api/organisation.json', function(done){
     request(server.app).get('/api/organisation.json')
       .expect(200)
       .end( function (err, response){
@@ -41,7 +41,7 @@ describe('Routes:', function() {
         done();
       });
   });
-  it('GET features', function(done){
+  it('GET /api/features.json', function(done){
     request(server.app).get('/api/features.json')
       .expect(200)
       .end( function (err, response){
@@ -66,7 +66,7 @@ describe('Routes:', function() {
         }
       });
   });
-  it('Get Feature', function(done){
+  it('GET /api/object/1.json', function(done){
     request(server.app).get('/api/object/1.json')
       .expect(200)
       .end( function (err, response){
@@ -87,7 +87,7 @@ describe('Routes:', function() {
         }
       });
   });
-  it('Get Area', function(done){
+  it('GET /api/gebied/2.json', function(done){
     request(server.app).get('/api/gebied/2.json')
       .expect(200)
       .end( function (err, response){

@@ -63,13 +63,17 @@ exports.getObject = function(req, res) {
         if(!srid){
             srid = 4326;
         }
-        var query_str = 'select "DBKObject" from dbk.dbkobject_json($1,$2)';
+        var query_str = 'select "DBKObject" from dbk.dbkobject_json($1,$2) limit 1';
         global.pool.query(query_str, [id, srid],
             function(err, result){
                 if(err) {
                     res.status(400).json(err);
                 } else {
-                    res.json(removeNulls(result.rows[0]));
+                    if (result.rows.length === 1) {
+                      res.json(removeNulls(result.rows[0]));
+                    } else {
+                      res.json({});
+                    }
                 }
                 return;
             }
@@ -84,13 +88,17 @@ exports.getGebied = function(req, res) {
         if(!srid){
             srid = 4326;
         }
-        var query_str = 'select "DBKGebied" from dbk.dbkgebied_json($1,$2)';
+        var query_str = 'select "DBKGebied" from dbk.dbkgebied_json($1,$2) limit 1';
         global.pool.query(query_str, [id, srid],
             function(err, result){
                 if(err) {
                     res.status(400).json(err);
                 } else {
+                  if (result.rows.length === 1) {
                     res.json(removeNulls(result.rows[0]));
+                  } else {
+                    res.json({});
+                  }
                 }
                 return;
             }

@@ -21,8 +21,8 @@ var request = require('supertest');
 var assert = require('assert');
 var server = require('../server');
 
-describe('BAG API test', function () {
-    describe('/api/bag/info', function () {
+describe('Address and Buildings Routes', function () {
+    describe('GET /api/bag/info', function () {
         it('/api/bag/info 200', function (done) {
             request(server.app).get('/api/bag/info').expect(200).end(function (err, res) {
                 if (err) {
@@ -33,7 +33,7 @@ describe('BAG API test', function () {
             });
         });
     });
-    describe('/api/bag/adres/1', function () {
+    describe('GET /api/bag/adres/1', function () {
         it('/api/bag/adres/1 200', function (done) {
             request(server.app).get('/api/bag/adres/1').expect(200, done);
         });
@@ -43,14 +43,14 @@ describe('BAG API test', function () {
 //            request(server.app).get('/api/bag/panden/1').expect(200, done).end(done);
 //        });
 //    });
-    describe('/api/bag/panden/1', function () {
+    describe('GET /api/bag/panden/1', function () {
         it('/api/bag/panden/1 200', function (done) {
             request(server.app).get('/api/bag/panden/1').expect(200, done);
         });
     });
-    describe('/api/bag/autocomplete/beukenla', function () {
-        it('/api/bag/autocomplete/beukenla 200', function (done) {
-            request(server.app).get('/api/bag/autocomplete/beukenla').expect(200, done);
+    describe('/api/autocomplete/beukenla', function () {
+        it('/api/autocomplete/beukenla 200', function (done) {
+            request(server.app).get('/api/autocomplete/beukenla').expect(200, done);
         });
     });
 });
