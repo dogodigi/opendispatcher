@@ -323,7 +323,7 @@ td { padding: 4px !important } ',
         var me = this;
         var def = $.Deferred();
         if(!incidentIds || incidentIds.length === 0) {
-            def.resolve([]).promise();
+            return def.resolve([]).promise();
         }
         $.ajax({
             url: (archief ? me.layerUrls.inzetEenheidArchief : me.layerUrls.inzetEenheid) + "/query",
@@ -340,6 +340,7 @@ td { padding: 4px !important } ',
         .done(function(data, textStatus, jqXHR) {
             if(data.error) {
                 alert("Fout bij ophalen inzet eenheid: " + data.error.code + ": "+ data.error.message);
+                def.resolve([]);
                 return;
             }
             var f = [];
@@ -379,6 +380,7 @@ td { padding: 4px !important } ',
         .done(function(data, textStatus, jqXHR) {
             if(data.error) {
                 alert("Fout bij ophalen classificaties: " + data.error.code + ": "+ data.error.message);
+                def.resolve({});
                 return;
             }
             var classificaties = {};
