@@ -440,6 +440,8 @@ dbkjs.documentReady = function () {
             $('.btn-group').drags({handle: '.drag-handle'});
             dbkjs.util.setModalTitle('overlaypanel', i18n.t('map.overlays'));
             dbkjs.util.setModalTitle('baselayerpanel', i18n.t('map.baselayers'));
+        } else {
+            $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="icon-info-sign"></i> ' + i18n.t("dialogs.clickinfo"), 'left:0;bottom:0;margin-bottom:0px;position:fixed'));
         }
         dbkjs.init();
 
