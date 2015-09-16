@@ -57,7 +57,7 @@ exports.postAnnotation = function (req, res) {
             t("email.email") + ': ' + req.body.email + '\r\n' +
             t("email.phone") + ': ' + req.body.phone + '\r\n' +
             '-----------------------------------------------------' + '\r\n' +
-            t("email.link") + ': ' + +'\r\n' +
+            t("email.link") + ': ' + '\r\n' +
             req.body.permalink + '\r\n\r\n' +
             t("email.kindregards") + ',\r\n\r\n' +
             t("email.team");

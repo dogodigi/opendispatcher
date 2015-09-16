@@ -2,7 +2,7 @@
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  *
  *  This file is part of opendispatcher/safetymapsDBK
- *  
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -74,7 +74,7 @@ function constructFeature(row) {
 /**
  * Geocode - Pass a query to nominatim and process the result
  * see <http://wiki.openstreetmap.org/wiki/Nominatim#Search>
- * 
+ *
  * @param {type} req
  * @param {type} res
  * @returns {undefined}
@@ -83,12 +83,12 @@ exports.geocode = function (req, res) {
     var queryparams = req.query;
     queryparams['accept-language'] = req.headers["accept-language"].substring(0, 2);
     var bbox = '-180,90,180,-90';
-    queryparams['format'] = "json";
-    queryparams['bounded'] = 1;
-    queryparams['limit'] = 5;
-    queryparams['addressdetails'] = 1;
-    queryparams['viewbox'] = bbox;
-    queryparams['time'] = new Date().getTime();
+    queryparams.format = "json";
+    queryparams.bounded = 1;
+    queryparams.limit = 5;
+    queryparams.addressdetails = 1;
+    queryparams.viewbox = bbox;
+    queryparams.time = new Date().getTime();
     queryparams.email = 'nominatim@dogodigi.net';
     if (!isJsonNull(req.params.q)) {
         queryparams.q = req.params.q;
@@ -137,8 +137,8 @@ exports.geocode = function (req, res) {
 /**
  * Reverse - Pass coordinates to nominatim and process the result
  * see <http://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding_.2F_Address_lookup>
- * 
- * 
+ *
+ *
  * @param {type} req
  * @param {type} res
  * @returns {undefined}
@@ -162,7 +162,7 @@ exports.reversegeocode = function (req, res) {
         var lonlat = req.params.lonlat.split(' ');
         queryparams.lon = parseFloat(lonlat[0]);
         queryparams.lat = parseFloat(lonlat[1]);
-        queryparams['time'] = new Date().getTime();
+        queryparams.time = new Date().getTime();
 
         //http://open.mapquestapi.com/nominatim/v1/reverse?
         //http://nominatim.openstreetmap.org/reverse?
