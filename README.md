@@ -1,3 +1,8 @@
+# Registrations
+
+[![Openhub](https://www.openhub.net/p/opendispatcher)](https://www.openhub.net/p/opendispatcher)
+
+
 # Build status
 
 [![Circle CI](https://circleci.com/gh/dogodigi/opendispatcher.svg?style=svg)](https://circleci.com/gh/dogodigi/opendispatcher)
