@@ -2,7 +2,6 @@ doctype html
 html(lang=mylang)
   head
     meta(charset='utf-8')
-    meta(http-equiv='Content-Type',content='text/html;charset=utf-8')
     meta(name='robots', content='index, follow')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     meta(http-equiv='X-UA-Compatible' content='IE=edge')
@@ -10,17 +9,17 @@ html(lang=mylang)
     meta(name='description', content='opendispatcher - First responder HTML5 nodejs client application')
     meta(name='generator', content='')
     title= t('app.title')
-    -if(mode === 'development'){
+    if(mode === 'development')
       link(rel='stylesheet' href='css/dbk.css', type='text/css', media='screen')
       link(rel='stylesheet' href='js/libs/bootstrap-3.2.0-dist/css/bootstrap.min.css', type='text/css', media='screen')
       link(rel='stylesheet' href='font-awesome-4.1.0/css/font-awesome.min.css', type='text/css', media='screen')
       link(rel='stylesheet' href='css/daterangepicker-bs3.css', type='text/css', media='screen')
       link(rel='stylesheet' href='css/typeahead.js-bootstrap.css', type='text/css', media='screen')
       link(rel='stylesheet' href='css/slider.css', type='text/css', media='screen')
-    -} else {
+    else
       link(rel='stylesheet' href='font-awesome-4.1.0/css/font-awesome.min.css', type='text/css', media='screen')
       link(rel='stylesheet' href='css/dbk.min.css', type='text/css', media='screen')
-    -}
+    
   body
     div#cover
     block content

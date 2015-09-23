@@ -56,7 +56,7 @@ if(mylang!=='dev' && mylang!=='en')
 else
   script(src='js/dbkjs/config/options.js')
   script.
-    var dbkjsLang = 'en';
+    var dbkjsLang = '#{mylang}';
     var dbkjs = dbkjs || {};
     window.dbkjs = dbkjs;
     dbkjs.options = dbkjs.options || {};

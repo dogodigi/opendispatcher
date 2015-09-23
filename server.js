@@ -86,7 +86,7 @@ if (global.conf.get('infrastructure:user')) {
 }
 global.pool = anyDB.createPool(dbURL, {min: 2, max: 20});
 global.bag = anyDB.createPool(bagURL, {min: 2, max: 20});
-
+global.defaultLanguage = global.conf.get('default:language') || 'en';
 var app = express(
 //    {
 //        requestCert: true,

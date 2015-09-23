@@ -98,6 +98,26 @@ dbkjs.modules.feature = {
     register: function (options) {
         var _obj = dbkjs.modules.feature;
         dbkjs.gui.createRefreshButton(_obj);
+
+        //Add the features to the layer control under "system"
+        _obj.id = OpenLayers.Util.createUniqueID("dbkjs_layer_");
+        _obj.div = $('<div class="panel"></div>');
+        _obj.div.attr('id', 'panel_' + _obj.id);
+        var dv_panel_heading = $('<div class="panel-heading"></div>');
+        var dv_panel_title = $('<h4 class="panel-title"></div>');
+        var parent = '#overlay_tab2';
+        var name = i18n.t('app.features');
+        dv_panel_title.append(name + '&nbsp;<a class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
+                _obj.id + '" data-parent="' + parent + '" ><i class="fa fa-info-circle"></i></a>');
+        dv_panel_heading.append(dv_panel_title);
+        _obj.div.append(dv_panel_heading);
+        dv_panel_content = $('<div id="collapse_' + _obj.id + '" class="panel-collapse collapse"></div>');
+        _obj.div.append(dv_panel_content);
+        $(parent).append(_obj.div);
+        $(parent).sortable({handle: '.panel'});
+        dv_panel_heading.addClass('active');
+        dv_panel_heading.addClass('layActive');
+
         _obj.namespace = options.namespace || _obj.namespace;
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
