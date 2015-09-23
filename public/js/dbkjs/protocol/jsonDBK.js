@@ -471,15 +471,14 @@ dbkjs.protocol.jsonDBK = {
                     "fid": "comm_ft_" + idx
                 };
                 myFeature.attributes.namespace = 'other';
-                myFeature.attributes.type = 'kruis';
-                var comm_img = myFeature.attributes.type + '.png';
+                myFeature.attributes.type = 'Dekking_nOK';
                 var comm_status = i18n.t('comm.impossible');
 
                 if(myGeometry.dekking) {
+                  myFeature.attributes.type = 'Dekking_OK';
                   comm_status = i18n.t('comm.possible');
-                  comm_img = 'c2000.png';
                 }
-
+                var comm_img = myFeature.attributes.type + '.png';
                 var myrow = $('<tr id="' + idx + '">' +
                         '<td><img class="thumb" src="' + dbkjs.basePath + 'images/' + myFeature.attributes.namespace +
                           '/' + comm_img + '" alt="' + comm_status + '" title="' + comm_status + '"></td>' +
