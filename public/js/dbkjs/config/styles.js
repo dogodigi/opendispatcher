@@ -586,13 +586,13 @@ dbkjs.config.styles = {
                         return 0;
                     }
                 },
-                myradius: function(feature) {
+                myradius: function (feature) {
                     return dbkjs.scaleStyleValue(12, feature.attributes.radius);
                 },
                 mydisplay: function (feature) {
-                    if (dbkjs.options.visibleCategories
-                            && feature.attributes.category
-                            && dbkjs.options.visibleCategories[feature.attributes.category] === false) {
+                    if (dbkjs.options.visibleCategories &&
+                          feature.attributes.category &&
+                          dbkjs.options.visibleCategories[feature.attributes.category] === false) {
                         return "none";
                     } else {
                         // any string except "none" works here
@@ -604,7 +604,7 @@ dbkjs.config.styles = {
             pointRadius: "${myradius}"
         }, {
             context: {
-                myradius: function(feature) {
+                myradius: function (feature) {
                     return dbkjs.scaleStyleValue(20, feature.attributes.radius, 1.66);
                 }
             }
@@ -612,7 +612,7 @@ dbkjs.config.styles = {
             pointRadius: "${myradius}"
         }, {
             context: {
-                myradius: function(feature) {
+                myradius: function (feature) {
                     return dbkjs.scaleStyleValue(24, feature.attributes.radius, 2);
                 }
             }
@@ -650,6 +650,38 @@ dbkjs.config.styles = {
             }
         })
     }),
+    comm: new OpenLayers.StyleMap({
+        "default": new OpenLayers.Style({
+            pointRadius: "${myradius}",
+            externalGraphic: "${myicon}"
+        }, {
+            context: {
+                myradius: function (feature) {
+                    return dbkjs.scaleStyleValue(12);
+                },
+                myicon: function (feature) {
+                    var img = "images/" + feature.attributes.namespace + "/" + feature.attributes.type + ".png";
+                    return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + img : imagesBase64[img];
+                }
+            }
+        }), 'select': new OpenLayers.Style({
+            pointRadius: "${myradius}"
+        }, {
+            context: {
+                myradius: function (feature) {
+                    return dbkjs.scaleStyleValue(20);
+                }
+            }
+        }), 'temporary': new OpenLayers.Style({
+            pointRadius: "${myradius}"
+        }, {
+            context: {
+                myradius: function (feature) {
+                    return dbkjs.scaleStyleValue(25);
+                }
+            }
+        })
+    }),
     tekstobject: new OpenLayers.StyleMap({
         "default": new OpenLayers.Style({
             pointRadius: 0,
@@ -661,7 +693,7 @@ dbkjs.config.styles = {
             labelOutlineWidth: 1
         }, {
             context: {
-                mysize: function(feature) {
+                mysize: function (feature) {
                     return dbkjs.scaleStyleValue(12, feature.attributes.scale);
                 },
                 myRotation: function (feature) {

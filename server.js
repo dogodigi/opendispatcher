@@ -33,7 +33,6 @@ var express = require('express'),
         anyDB = require('any-db'),
         fs = require('fs'),
         compress = require('compression');
-;
 var env = process.env.NODE_ENV || 'development';
 
 global.conf = require('nconf');

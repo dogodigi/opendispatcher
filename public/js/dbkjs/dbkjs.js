@@ -60,7 +60,7 @@ dbkjs.init = function () {
 
     dbkjs.mapcontrols.registerMapEvents(dbkjs.layers.createBaseLayers());
 
-    dbkjs.showStatus = false;
+    dbkjs.showStatus = true;
 
 };
 
