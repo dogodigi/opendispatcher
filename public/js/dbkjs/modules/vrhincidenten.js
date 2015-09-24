@@ -90,13 +90,13 @@ dbkjs.modules.vrhincidenten = {
         this.initVrhService();
     },
     createStyle: function() {
-        var css = '#eenheden div { margin: 3px; float: left } \n\
-#eenheden div { border-left: 1px solid #ddd; padding-left: 8px; } \n\
-#eenheden span.einde { color: gray } \n\
-#kladblok { clear: both; padding-top: 10px; }\n\
-td { padding: 4px !important } ',
-            head = document.getElementsByTagName('head')[0],
-            style = document.createElement('style');
+        var css = '#eenheden div { margin: 3px; float: left } \n' +
+          '#eenheden div { border-left: 1px solid #ddd; padding-left: 8px; } \n' +
+          '#eenheden span.einde { color: gray } \n' +
+          '#kladblok { clear: both; padding-top: 10px; }\n' +
+          'td { padding: 4px !important } ';
+        var head = document.getElementsByTagName('head')[0];
+        var style = document.createElement('style');
 
         style.type = 'text/css';
         if(style.styleSheet) {
@@ -323,7 +323,7 @@ td { padding: 4px !important } ',
         var me = this;
         var def = $.Deferred();
         if(!incidentIds || incidentIds.length === 0) {
-            def.resolve([]).promise();
+            return def.resolve([]).promise();
         }
         $.ajax({
             url: (archief ? me.layerUrls.inzetEenheidArchief : me.layerUrls.inzetEenheid) + "/query",
@@ -340,6 +340,7 @@ td { padding: 4px !important } ',
         .done(function(data, textStatus, jqXHR) {
             if(data.error) {
                 alert("Fout bij ophalen inzet eenheid: " + data.error.code + ": "+ data.error.message);
+                def.resolve([]);
                 return;
             }
             var f = [];
@@ -379,6 +380,7 @@ td { padding: 4px !important } ',
         .done(function(data, textStatus, jqXHR) {
             if(data.error) {
                 alert("Fout bij ophalen classificaties: " + data.error.code + ": "+ data.error.message);
+                def.resolve({});
                 return;
             }
             var classificaties = {};
