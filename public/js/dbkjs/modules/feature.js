@@ -204,7 +204,7 @@ dbkjs.modules.feature = {
      * }
      */
     getDbkSearchValue: function(feature) {
-        return value.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(value.attributes.informeleNaam) ? '' : value.attributes.informeleNaam)
+        return feature.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(feature.attributes.informeleNaam) ? '' : feature.attributes.informeleNaam)
     },
     getDbkSearchValues: function() {
         var _obj = dbkjs.modules.feature;
