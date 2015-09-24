@@ -1,30 +1,33 @@
 /*!
- *  Copyright (c) 2014 B3Partners (info@b3partners.nl)
+ *  Copyright (c) 2014 Matthijs Laan (matthijslaan@b3partners.nl)
  *
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher/safetymapDBK
  *
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
- // IE workaround from http://stackoverflow.com/questions/2790001/fixing-javascript-array-functions-in-internet-explorer-indexof-foreach-etc
-
- if (!('filter' in Array.prototype)) {
-    Array.prototype.filter= function(filter, that /*opt*/) {
-        var other= [], v;
-        for (var i=0, n= this.length; i<n; i++)
-            if (i in this && filter.call(that, v= this[i], i, this))
+/**
+ * IE workaround 
+ *
+ * see <http://stackoverflow.com/questions/2790001/fixing-javascript-array-functions-in-internet-explorer-indexof-foreach-etc>
+ */
+if (!('filter' in Array.prototype)) {
+    Array.prototype.filter = function (filter, that /*opt*/) {
+        var other = [], v;
+        for (var i = 0, n = this.length; i < n; i++)
+            if (i in this && filter.call(that, v = this[i], i, this))
                 other.push(v);
         return other;
     };
@@ -41,32 +44,32 @@ dbkjs.modules.layertoggle = {
     availableToggles: {
         'toggleObject': {
             'label': 'Algemeen',
-            'layers': [ ],
+            'layers': [],
             'category': 'objectinformatie'
         },
         'togglePreventive': {
             'label': 'Preventie',
-            'layers': [ 'Brandcompartiment' ],
+            'layers': ['Brandcompartiment'],
             'category': 'preventief'
         },
         'togglePreparative': {
             'label': 'Preparatie',
-            'layers': [  ],
+            'layers': [],
             'category': 'preparatief'
         },
         'toggleDanger': {
             'label': 'Repressie',
-            'layers': [ 'Gevaarlijke stoffen' ],
+            'layers': ['Gevaarlijke stoffen'],
             'category': 'repressief'
         }
     },
     disabledLayers: [],
     enabled: false,
-    register: function(options) {
+    register: function (options) {
         var _obj = dbkjs.modules.layertoggle;
         _obj.enabled = true;
         var buttonGroup = $('.layertoggle-btn-group');
-        $.each(_obj.availableToggles, function(toggleKey, toggleOptions) {
+        $.each(_obj.availableToggles, function (toggleKey, toggleOptions) {
             // Create a button for the required toggle and append the button to buttongroup
             var toggle = $('<a></a>')
                 .attr({
@@ -76,7 +79,7 @@ dbkjs.modules.layertoggle = {
                     'title': i18n.t('toggle.' + toggleKey)
                 })
                 .append(toggleOptions.label)
-                .click(function(e) {
+                .click(function (e) {
                     e.preventDefault();
                     if (toggle.hasClass('active')) {
                         toggle.removeClass('active');
@@ -94,27 +97,27 @@ dbkjs.modules.layertoggle = {
             _obj.enableLayers(toggleOptions.layers);
         });
     },
-    enableLayers: function(layers) {
+    enableLayers: function (layers) {
         var _obj = dbkjs.modules.layertoggle;
         // Temp array
         var disabledLayers = [].concat(_obj.disabledLayers);
         // Filter layers
-        _obj.disabledLayers = disabledLayers.filter(function(elem, pos) {
+        _obj.disabledLayers = disabledLayers.filter(function (elem, pos) {
             return layers.indexOf(elem) === -1;
         });
     },
-    disableLayers: function(layers) {
+    disableLayers: function (layers) {
         var _obj = dbkjs.modules.layertoggle;
         // Add all layers
         var disabledLayers = _obj.disabledLayers.concat(layers);
         // Remove duplicates
-        _obj.disabledLayers = disabledLayers.filter(function(elem, pos) {
+        _obj.disabledLayers = disabledLayers.filter(function (elem, pos) {
             return disabledLayers.indexOf(elem) === pos;
         });
     },
-    isLayerEnabled: function(layerName) {
+    isLayerEnabled: function (layerName) {
         var _obj = dbkjs.modules.layertoggle;
-        if(!_obj.enabled) {
+        if (!_obj.enabled) {
             // When not used, always return true
             return true;
         }

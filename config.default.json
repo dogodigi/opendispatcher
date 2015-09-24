@@ -1,4 +1,7 @@
 {
+    "default": {
+        "language": "en"
+    },
     "http": {
         "port": 3000
     },

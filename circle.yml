@@ -3,4 +3,5 @@ test:
         - psql -d circle_test -p 5432 -f database/organisation.sql
         - psql -d circle_test -p 5432 -f database/wfs.sql
         - psql -d circle_test -p 5432 -f database/dbk.sql
+        - psql -d circle_test -p 5432 -f database/address.sql
         - psql -d circle_test -p 5432 -f database/populate.sql

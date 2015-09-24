@@ -1,6 +1,12 @@
-# CircleCi Build status
+# Registrations
+
+[![Openhub](https://www.openhub.net/p/opendispatcher)](https://www.openhub.net/p/opendispatcher)
+
+
+# Build status
 
 [![Circle CI](https://circleci.com/gh/dogodigi/opendispatcher.svg?style=svg)](https://circleci.com/gh/dogodigi/opendispatcher)
+[![David](https://david-dm.org/dogodigi/opendispatcher.svg)](https://david-dm.org/dogodigi/opendispatcher)
 
 # opendispatcher
 
@@ -42,7 +48,7 @@ To start the applicatie in "development mode":
 
 To start the application in "production mode":
 
-export NODE_ENV=production && npm start
+    export NODE_ENV=production && npm start
 
 Or, using forever:
 

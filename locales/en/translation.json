@@ -142,7 +142,8 @@
         "prevention": "Prevention",
         "chemicals": "Chemicals",
         "risk": "Risk",
-        "omsdetail": "OMS details"
+        "omsdetail": "OMS details",
+        "comm": "Communication"
     },
     "chemicals": {
         "type": "Type",
@@ -248,5 +249,12 @@
         "abstract2": "De lidstaten in de Europese Unie (EU) hebben de Europese Commissie gevraagd om de VN-afspraken om te zetten in bindende Europese regelgeving voor de indeling en etikettering voor de levering en gebruik van chemische stoffen en mengsels. Met de verordening (EU-GHS/CLP) is het VN-GHS-systeem in de Europese wetgeving verankerd. De Europese Verordening is rechtstreeks werkend in alle lidstaten.",
         "abstract3": "EU-GHS/CLP bevat ook elementen uit de Stoffenrichtlijn (67/548/EEG) en de Preparatenrichtlijn (1999/45/EC) die niet in VN-GHS zijn opgenomen. Zo zijn in de verordening ook criteria voor het gebruik van  enkele risicozinnen (R-zinnen) opgenomen als EUH-zinnen. EU-GHS/CLP vervangt na een overgangsperiode de richtlijnen over indeling en etikettering van stoffen en mengsels (Stoffenrichtlijn 67/548/EG en Preparatenrichtlijn 1999/45/EG).",
         "source": "bron:"
+    },
+    "comm":{
+      "ispossible": "Possible",
+      "possible": "Yes",
+      "impossible": "No",
+      "alternative": "Alternative",
+      "information": "Remarks"
     }
 }

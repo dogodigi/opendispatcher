@@ -1,8 +1,8 @@
-/**
+/*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of opendispatcher/safetymapsDBK
- *  
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -34,7 +34,7 @@ exports.getVersion = function (req, res) {
                 if (err) {
                     res.status(400).json(err);
                 } else {
-                    for (index = 0; index < result.rows.length; ++index) {
+                    for (var i = 0; i < result.rows.length; ++i) {
                     }
                     res.json(result.rows);
                 }
@@ -45,8 +45,8 @@ exports.getVersion = function (req, res) {
 
 exports.getAdres = function (req, res) {
     if (req.query) {
-        id = req.params.id;
-        srid = req.query.srid;
+        var id = req.params.id;
+        var srid = req.query.srid;
         if (!srid) {
             srid = 4326;
         }
@@ -60,7 +60,7 @@ exports.getAdres = function (req, res) {
                     if (err) {
                         res.status(400).json(err);
                     } else {
-                        for (index = 0; index < result.rows.length; ++index) {
+                        for (var index = 0; index < result.rows.length; ++index) {
                             var geometry = JSON.parse(result.rows[index].geopunt);
                             delete result.rows[index].geopunt;
                             result.rows[index].geometry = geometry;
@@ -104,8 +104,8 @@ exports.getAdres = function (req, res) {
 
 exports.getPanden = function (req, res) {
     if (req.query) {
-        id = req.params.id;
-        srid = req.query.srid;
+        var id = req.params.id;
+        var srid = req.query.srid;
         if (!srid) {
             srid = 4326;
         }
@@ -115,6 +115,7 @@ exports.getPanden = function (req, res) {
                     if (err) {
                         res.status(400).json(err);
                     } else {
+                      if (result.rows.length < 0) {
                         var geopunt = result.rows[0].geopunt;
                         var pandid = result.rows[0].pand;
                         var query_str = 'select p.identificatie, p.pandstatus, p.bouwjaar, st_asgeojson(st_force_2d(st_transform(p.geovlak,$2))) geovlak from bag_actueel.pandactueelbestaand p where (ST_Overlaps(' +
@@ -124,7 +125,7 @@ exports.getPanden = function (req, res) {
                             if (err) {
                                 res.status(400).json(err);
                             } else {
-                                for (index = 0; index < result.rows.length; ++index) {
+                                for (var index = 0; index < result.rows.length; ++index) {
                                     var geometry = JSON.parse(result.rows[index].geovlak);
                                     delete result.rows[index].geovlak;
                                     result.rows[index].geometry = geometry;
@@ -145,8 +146,9 @@ exports.getPanden = function (req, res) {
                             }
                             return;
                         });
-
-
+                      } else {
+                        res.json({"type": "FeatureCollection", "features": []});
+                      }
                     }
                     return;
                 });
@@ -156,9 +158,11 @@ exports.getPanden = function (req, res) {
 exports.autoComplete = function (req, res) {
     // @todo Check to see if the database is up. If not, fall back to nominatim!
     if (req.query) {
-        searchphrase = req.params.searchphrase;
+        var searchphrase = req.params.searchphrase || '';
+        var whereclause;
+        var finalsearch;
         if (searchphrase.length > 2) {
-            srid = req.query.srid;
+            var srid = req.query.srid;
             if (!srid) {
                 srid = 4326;
             }

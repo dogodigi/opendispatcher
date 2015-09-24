@@ -63,6 +63,9 @@ dbkjs.protocol.jsonDBK = {
         _obj.layerBrandweervoorziening = new OpenLayers.Layer.Vector("Brandweervoorziening", {
             styleMap: dbkjs.config.styles.brandweervoorziening
         });
+        _obj.layerComm = new OpenLayers.Layer.Vector(i18n.t('dbk.comm'), {
+            styleMap: dbkjs.config.styles.comm
+        });
         _obj.layerGevaarlijkestof = new OpenLayers.Layer.Vector("Gevaarlijke stoffen", {
             styleMap: dbkjs.config.styles.gevaarlijkestof
         });
@@ -77,12 +80,14 @@ dbkjs.protocol.jsonDBK = {
             _obj.layerHulplijn,
             _obj.layerToegangterrein,
             _obj.layerBrandweervoorziening,
+            _obj.layerComm,
             _obj.layerGevaarlijkestof,
             _obj.layerTekstobject
         ];
         _obj.selectlayers = [];
         _obj.hoverlayers = [
             _obj.layerBrandweervoorziening,
+            _obj.layerComm,
             _obj.layerBrandcompartiment,
             _obj.layerGevaarlijkestof,
             _obj.layerHulplijn,
@@ -131,11 +136,15 @@ dbkjs.protocol.jsonDBK = {
         html = '<div style:"width: 100%" class="table-responsive">';
         html += '<table class="table table-hover">';
         for (var j in e.feature.attributes) {
-            //if ($.inArray(j, ['Omschrijving', 'GEVIcode', 'UNnr', 'Hoeveelheid', 'NaamStof']) > -1) {
-            if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
-                html += '<tr><td><span>' + j + "</span>: </td><td>" + e.feature.attributes[j] + "</td></tr>";
+          if ($.inArray(j, ['No', 'Latitude', 'Longitude','namespace','fid', 'rotation']) === -1) {
+            //if a field has the suffix _hidden, hide it.
+            var hidden = '_hidden';
+            if(j.indexOf(hidden, j.length - hidden.length) === -1) {
+              if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
+                html += '<tr><td>' + j + '</td><td>' + dbkjs.util.renderHTML(e.feature.attributes[j]) + '</td></tr>';
+              }
             }
-            //}
+          }
         }
         html += '</table>';
         html += '</div>';
@@ -220,6 +229,7 @@ dbkjs.protocol.jsonDBK = {
                 _obj.constructMedia(dbkjs.options.feature);
                 _obj.constructFloors(dbkjs.options.feature);
                 _obj.constructBrandweervoorziening(dbkjs.options.feature);
+                _obj.constructAfwijkendebinnendekking(dbkjs.options.feature);
                 _obj.constructGevaarlijkestof(dbkjs.options.feature);
                 div.append(_obj.panel_group);
                 div.append(_obj.panel_tabs);
@@ -275,7 +285,9 @@ dbkjs.protocol.jsonDBK = {
     },
     constructAlgemeen: function (DBKObject, dbktype) {
         var _obj = dbkjs.protocol.jsonDBK;
-        /** Algemene dbk info **/
+        var status = dbkjs.util.isJsonNull(DBKObject.status) ? '<span class="label label-warning">' +
+                    i18n.t('dbk.unknown') + '</span>' : DBKObject.status;
+        /** General Site Details **/
 
         if (dbkjs.viewmode === 'fullscreen') {
             // XXX niet meer nodig?
@@ -344,8 +356,6 @@ dbkjs.protocol.jsonDBK = {
             algemeen_table.append(_obj.constructRow(informelenaam, i18n.t('dbk.alternativeName')));
             algemeen_table.append(_obj.constructRow(controledatum, i18n.t('dbk.dateChecked')));
             if (dbkjs.showStatus) {
-              var status = dbkjs.util.isJsonNull(DBKObject.status) ? '<span class="label label-warning">' +
-                      i18n.t('dbk.unknown') + '</span>' : DBKObject.status;
                 algemeen_table.append(_obj.constructRow(status, i18n.t('dbk.status')));
             }
             algemeen_table.append(_obj.constructRow(bhvaanwezig, i18n.t('dbk.emergencyResponse')));
@@ -440,6 +450,33 @@ dbkjs.protocol.jsonDBK = {
         }
         _obj.panel_tabs.html();
         return true;
+    },
+    constructAfwijkendebinnendekking: function (feature) {
+        var _obj = dbkjs.protocol.jsonDBK;
+        if (feature.afwijkendebinnendekking) {
+            var features = [];
+            $.each(feature.afwijkendebinnendekking, function (idx, myGeometry) {
+                var information = myGeometry.aanvullendeInformatie || '';
+                var alternative = myGeometry.alternatieveCommInfrastructuur || '';
+                var comm_status = i18n.t('comm.impossible');
+                var comm_img = 'Dekking_nOK';
+                var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                myFeature.attributes = {};
+                if(myGeometry.dekking) {
+                  comm_img = 'Dekking_OK';
+                  comm_status = i18n.t('comm.possible');
+                }
+
+                myFeature.attributes[i18n.t('comm.ispossible')] = comm_status;
+                myFeature.attributes[i18n.t('comm.alternative')] = alternative;
+                myFeature.attributes[i18n.t('comm.information')] = information;
+                myFeature.attributes.namespace_hidden = 'other';
+                myFeature.attributes.type_hidden = comm_img;
+                features.push(myFeature);
+            });
+            _obj.layerComm.addFeatures(features);
+            _obj.activateSelect(_obj.layerComm);
+        }
     },
     constructBrandweervoorziening: function (feature) {
         var _obj = dbkjs.protocol.jsonDBK;

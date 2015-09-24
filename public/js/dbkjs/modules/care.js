@@ -18,6 +18,8 @@
  *
  */
 
+/* global OpenLayers, moment */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
@@ -50,9 +52,6 @@ dbkjs.modules.care = {
         _obj.namespace = options.namespace || _obj.namespace;
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
-        //current year, current month, current day
-        // moment.js, wat een mooie javascript bibliotheek
-
         _obj.layerIncident = new OpenLayers.Layer.WMS(
                 i18n.t('care.incidents'),
                 _obj.url + 'dbk/wms', {
@@ -503,7 +502,7 @@ dbkjs.modules.care = {
             var ft_div = $('<div class="table-responsive"></div>');
             var ft_tbl = $('<table id="incidenten_export" class="table table-hover table-condensed"></table>');
 
-            for (var feat = 0;feat < features.length; feat++) {
+            for (var feat = 0; feat < features.length; feat++) {
                 ft_tbl.append('<tr><td colspan="2">' + dbkjs.util.createAddress(
                         features[feat].attributes.addresscity,
                         features[feat].attributes.addressmunicipality,

@@ -90,13 +90,13 @@ dbkjs.modules.vrhincidenten = {
         this.initVrhService();
     },
     createStyle: function() {
-        var css = '#eenheden div { margin: 3px; float: left } \n\
-#eenheden div { border-left: 1px solid #ddd; padding-left: 8px; } \n\
-#eenheden span.einde { color: gray } \n\
-#kladblok { clear: both; padding-top: 10px; }\n\
-td { padding: 4px !important } ',
-            head = document.getElementsByTagName('head')[0],
-            style = document.createElement('style');
+        var css = '#eenheden div { margin: 3px; float: left } \n' +
+          '#eenheden div { border-left: 1px solid #ddd; padding-left: 8px; } \n' +
+          '#eenheden span.einde { color: gray } \n' +
+          '#kladblok { clear: both; padding-top: 10px; }\n' +
+          'td { padding: 4px !important } ';
+        var head = document.getElementsByTagName('head')[0];
+        var style = document.createElement('style');
 
         style.type = 'text/css';
         if(style.styleSheet) {

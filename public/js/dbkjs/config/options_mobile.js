@@ -17,6 +17,9 @@
  *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global OpenLayers */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 
@@ -43,6 +46,9 @@ dbkjs.options = {
     REMARKS: "",
     INFO: "",
     zoom: 13,
+
+    // If false labels are shown on select and temporary render intents
+    alwaysShowInformationLabels: false,
 
     // Set to true to enable style scaling according to map scale
     styleScaleAdjust: true,

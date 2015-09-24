@@ -212,25 +212,27 @@ OpenLayers.Strategy.Cluster.prototype.cluster = function(event) {
         var clusters = [];
         var feature, clustered, cluster;
         var screenBounds = this.layer.map.getExtent();
-        for (var i = 0; i < this.features.length; ++i) {
+        if (screenBounds) {
+          for (var i = 0; i < this.features.length; ++i) {
             feature = this.features[i];
             if(feature.geometry) {
-                if(!screenBounds.intersectsBounds(feature.geometry.getBounds())) {
-                    continue;
+              if(!screenBounds.intersectsBounds(feature.geometry.getBounds())) {
+                continue;
+              }
+              clustered = false;
+              for (var j = clusters.length-1; j >= 0; --j) {
+                cluster = clusters[j];
+                if(this.shouldCluster(cluster, feature)) {
+                  this.addToCluster(cluster, feature);
+                  clustered = true;
+                  break;
                 }
-                clustered = false;
-                for (var j = clusters.length-1; j >= 0; --j) {
-                    cluster = clusters[j];
-                    if(this.shouldCluster(cluster, feature)) {
-                        this.addToCluster(cluster, feature);
-                        clustered = true;
-                        break;
-                    }
-                }
-                if(!clustered) {
-                    clusters.push(this.createCluster(this.features[i]));
-                }
+              }
+              if(!clustered) {
+                clusters.push(this.createCluster(this.features[i]));
+              }
             }
+          }
         }
         this.clustering = true;
         this.layer.removeAllFeatures();
@@ -1026,6 +1028,13 @@ dbkjs.util = {
             }
         }
     },
+    /**
+     * Calculate the ratio for print
+     *
+     * @param {type} a
+     * @param {type} b
+     * @returns {unresolved}
+     */
     gcd: function (a, b) {
         return (b === 0) ? a : dbkjs.util.gcd(b, a % b);
     }

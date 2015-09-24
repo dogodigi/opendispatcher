@@ -18,6 +18,8 @@
  *
  */
 
+/* global OpenLayers */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
@@ -37,31 +39,33 @@ dbkjs.modules.geolocate = {
      *
      * @param {<OpenLayers.Feature>} feature
      */
-    pulsate: function(feature) {
+    pulsate: function (feature) {
         var _obj = dbkjs.modules.geolocate;
         var point = feature.geometry.getCentroid(),
             bounds = feature.geometry.getBounds(),
-            radius = Math.abs((bounds.right - bounds.left)/2),
+            radius = Math.abs((bounds.right - bounds.left) / 2),
             count = 0,
             grow = 'up';
 
-        var resize = function(){
-            if (count>16) {
+        var resize = function () {
+            if (count > 16) {
                 clearInterval(window.resizeInterval);
             }
             var interval = radius * 0.03;
-            var ratio = interval/radius;
-            switch(count) {
+            var ratio = interval / radius;
+            switch (count) {
                 case 4:
                 case 12:
-                    grow = 'down'; break;
+                    grow = 'down';
+                    break;
                 case 8:
-                    grow = 'up'; break;
+                    grow = 'up';
+                    break;
             }
-            if (grow!=='up') {
-                ratio = - Math.abs(ratio);
+            if (grow !== 'up') {
+                ratio = -Math.abs(ratio);
             }
-            feature.geometry.resize(1+ratio, point);
+            feature.geometry.resize(1 + ratio, point);
             _obj.layer.drawFeature(feature);
             count++;
         };
@@ -76,10 +80,10 @@ dbkjs.modules.geolocate = {
             timeout: 7000
         }
     }),
-    register: function(){
+    register: function () {
         var _obj = dbkjs.modules.geolocate;
         $('#btngrp_3').append('<a id="btn_geolocate" class="btn btn-default navbar-btn" href="#" title="' + i18n.t('map.zoomLocation') + '"><i class="fa fa-crosshairs"></i></a>');
-        $('#btn_geolocate').click(function(){
+        $('#btn_geolocate').click(function () {
             if ($(this).hasClass('active')) {
                 _obj.layer.removeAllFeatures();
                 _obj.control.deactivate();
@@ -91,12 +95,12 @@ dbkjs.modules.geolocate = {
         });
         dbkjs.map.addControl(_obj.control);
         dbkjs.map.addLayers([_obj.layer]);
-        _obj.control.events.register("locationupdated",_obj.control,function(e) {
+        _obj.control.events.register("locationupdated", _obj.control, function (e) {
             _obj.layer.removeAllFeatures();
             var circle = new OpenLayers.Feature.Vector(
                 OpenLayers.Geometry.Polygon.createRegularPolygon(
                     new OpenLayers.Geometry.Point(e.point.x, e.point.y),
-                    e.position.coords.accuracy/2,
+                    e.position.coords.accuracy / 2,
                     40,
                     0
                 ),

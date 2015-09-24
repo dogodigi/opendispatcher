@@ -60,7 +60,7 @@ dbkjs.init = function () {
 
     dbkjs.mapcontrols.registerMapEvents(dbkjs.layers.createBaseLayers());
 
-    dbkjs.showStatus = false;
+    dbkjs.showStatus = true;
 
 };
 
@@ -161,8 +161,8 @@ dbkjs.successAuth = function () {
 
     //register modules
     $.each(dbkjs.modules, function (mod_index, module) {
-        if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1
-	|| (dbkjs.options.additionalModules && $.inArray(mod_index, dbkjs.options.additionalModules) > -1)) {
+        if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1 ||
+	        (dbkjs.options.additionalModules && $.inArray(mod_index, dbkjs.options.additionalModules) > -1)) {
             if (module.register) {
                 module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true, viewmode: dbkjs.viewmode});
             }

@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of opendispatcher/safetymapsDBK
- *  
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -73,7 +73,7 @@ dbkjs.layout = {
         var _relapp = 'Opendispatcher';
         var _reldate = 'N/A';
         var _relremarks = 'The app is running in development mode';
-        
+
         if (window.dbkjsbuildinfo) {
             _relversion = dbkjsbuildinfo.VERSION || 'Development';
             _relapp = dbkjsbuildinfo.APPLICATION || 'Opendispatcher';
@@ -143,4 +143,3 @@ dbkjs.layout = {
         });
     }
 };
-

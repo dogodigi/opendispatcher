@@ -1,22 +1,24 @@
 /*!
- *  Copyright (c) 2014 B3Partners (info@b3partners.nl)
+ *  Copyright (c) 2014 Matthijs Laan (matthijslaan@b3partners.nl)
  *
- *  This file is part of safetymapDBK
+ *  This file is part of opendispatcher/safetymapsDBK
  *
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global OpenLayers */
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
@@ -27,9 +29,9 @@ dbkjs.modules.connectionmonitor = {
     debug: null,
     okTimer: null,
     connectionCheckTimer: null,
-    register: function(options) {
+    register: function (options) {
 
-        if(dbkjs.viewmode !== "fullscreen") {
+        if (dbkjs.viewmode !== "fullscreen") {
             return;
         }
 
@@ -42,8 +44,8 @@ dbkjs.modules.connectionmonitor = {
             "<i id=\"connectionicon\" class=\"fa fa-signal\" style=\"color: green\"></i></a>"));
 
         var me = this;
-        $("#connection").click(function() {
-            if(!me.connected) {
+        $("#connection").click(function () {
+            if (!me.connected) {
                 dbkjs.util.alert("Fout", "Geen verbinding", "alert-danger");
             } else {
                 window.location.reload();
@@ -52,37 +54,37 @@ dbkjs.modules.connectionmonitor = {
 
         OpenLayers.IMAGE_RELOAD_ATTEMPTS = 10;
 
-        OpenLayers.Util.onImageLoadError = function() {
+        OpenLayers.Util.onImageLoadError = function () {
             dbkjs.modules.connectionmonitor.onConnectionError();
         };
 
-        me.connectionCheckTimer = setTimeout(function() {
+        me.connectionCheckTimer = setTimeout(function () {
             me.checkConnectivity();
         }, 5000);
     },
-    onConnectionError: function() {
+    onConnectionError: function () {
         this.connected = false;
 
         $("#connectionicon").attr("class", "fa fa-exclamation");
         $("#connectionicon").attr("style", "color: red");
 
-        if(this.okTimer !== null) {
+        if (this.okTimer !== null) {
             clearTimeout(this.okTimer);
             this.okTimer = null;
         }
     },
-    onConnectionOK: function() {
-        if(this.connected) {
+    onConnectionOK: function () {
+        if (this.connected) {
             return;
         }
 
         this.connected = true;
 
         var me = this;
-        if(me.okTimer === null) {
+        if (me.okTimer === null) {
             $("#connectionicon").attr("class", "fa fa-signal");
             $("#connectionicon").attr("style", "color: gray");
-            me.okTimer = setTimeout(function() {
+            me.okTimer = setTimeout(function () {
                 $("#connectionicon").attr("style", "color: green");
                 $("#connectionicon").attr("class", "fa fa-signal");
                 clearTimeout(me.okTimer);
@@ -93,26 +95,26 @@ dbkjs.modules.connectionmonitor = {
     // Call when other module (gms or ealgps) does regular Ajax requests and
     // calls onConnectionError() or onConnectionOK() so this module does not
     // have to do it
-    cancelConnectivityCheck: function() {
-        if(this.connectionCheckTimer !== null) {
+    cancelConnectivityCheck: function () {
+        if (this.connectionCheckTimer !== null) {
             clearTimeout(this.connectionCheckTimer);
             this.connectionCheckTimer = null;
         }
     },
-    checkConnectivity: function() {
+    checkConnectivity: function () {
         var me = this;
         $.ajax("api/organisation.json", {
             dataType: "json",
             cache: false,
             ifModified: true,
-            complete: function(jqXHR, textStatus) {
-                if(textStatus === "success" || textStatus === "notmodified") {
+            complete: function (jqXHR, textStatus) {
+                if (textStatus === "success" || textStatus === "notmodified") {
                     me.onConnectionOK();
                 } else {
                     me.onConnectionError();
                 }
 
-                me.connectionCheckTimer = setTimeout(function() {
+                me.connectionCheckTimer = setTimeout(function () {
                     me.checkConnectivity();
                 }, 5000);
             }

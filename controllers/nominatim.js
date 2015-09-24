@@ -1,22 +1,24 @@
-/**
+/*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
- *  This file is part of safetymapDBK
- *  
- *  safetymapDBK is free software: you can redistribute it and/or modify
+ *
+ *  This file is part of opendispatcher/safetymapsDBK
+ *
+ *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
+ *  opendispatcher is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
+ *  along with opendispatcher. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/* global exports, global */
 
 var http = require('http');
 var querystring = require('querystring');
@@ -52,9 +54,9 @@ function constructFeature(row) {
         }
         if (!isJsonNull(row.osm_id)) {
             result.properties.source.id = row.osm_id;
-        };
-        if(!isJsonNull(row.licence)){
-                        result.properties.license = row.licence;
+        }
+        if (!isJsonNull(row.licence)) {
+            result.properties.license = row.licence;
         } else {
             result.properties.license = 'Data © OpenStreetMap contributors, ODbL 1.0. http://www.openstreetmap.org/copyright';
         }
@@ -64,43 +66,29 @@ function constructFeature(row) {
         if (!isJsonNull(row.type)) {
             result.properties.source.type = row.type;
         }
-        
     }
     result.name.trim();
     return result;
 }
-/* global exports, global */
 
 /**
- *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
- *  This file is part of safetymapDBK
- *  
- *  safetymapDBK is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * Geocode - Pass a query to nominatim and process the result
+ * see <http://wiki.openstreetmap.org/wiki/Nominatim#Search>
  *
- *  safetymapDBK is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
- *
+ * @param {type} req
+ * @param {type} res
+ * @returns {undefined}
  */
-
-exports.geocode = function(req, res) {
+exports.geocode = function (req, res) {
     var queryparams = req.query;
     queryparams['accept-language'] = req.headers["accept-language"].substring(0, 2);
     var bbox = '-180,90,180,-90';
-    queryparams['format'] = "json";
-    queryparams['bounded'] = 1;
-    queryparams['limit'] = 5;
-    queryparams['addressdetails'] = 1;
-    queryparams['viewbox'] = bbox;
-    queryparams['time'] = new Date().getTime();
+    queryparams.format = "json";
+    queryparams.bounded = 1;
+    queryparams.limit = 5;
+    queryparams.addressdetails = 1;
+    queryparams.viewbox = bbox;
+    queryparams.time = new Date().getTime();
     queryparams.email = 'nominatim@dogodigi.net';
     if (!isJsonNull(req.params.q)) {
         queryparams.q = req.params.q;
@@ -110,20 +98,22 @@ exports.geocode = function(req, res) {
     //http://open.mapquestapi.com/nominatim/v1/search?
     //http://nominatim.openstreetmap.org/search?
     var options = {
+        //host: 'nominatim.openstreetmap.org',
         host: 'open.mapquestapi.com',
         port: 80,
+        //path: '/search?' + querystring.stringify(queryparams)
         path: '/nominatim/v1/search?' + querystring.stringify(queryparams)
     };
     console.log(options.path);
-    http.get(options, function(remote_res) {
+    http.get (options, function (remote_res) {
         var mybuf = '';
-        remote_res.on('error', function(e) {
+        remote_res.on('error', function (e) {
             throw e;
         });
-        remote_res.on('data', function(chunk) {
+        remote_res.on('data', function (chunk) {
             mybuf += chunk;
         });
-        remote_res.on('end', function() {
+        remote_res.on('end', function () {
             if (remote_res.headers['content-type'].indexOf('json') > -1) {
                 myResult = JSON.parse(mybuf);
                 if (myResult.length > 0) {
@@ -144,7 +134,16 @@ exports.geocode = function(req, res) {
     });
 };
 
-exports.reversegeocode = function(req, res) {
+/**
+ * Reverse - Pass coordinates to nominatim and process the result
+ * see <http://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding_.2F_Address_lookup>
+ *
+ *
+ * @param {type} req
+ * @param {type} res
+ * @returns {undefined}
+ */
+exports.reversegeocode = function (req, res) {
     if (isJsonNull(req.params.lonlat)) {
         res.send([]);
     } else {
@@ -163,25 +162,27 @@ exports.reversegeocode = function(req, res) {
         var lonlat = req.params.lonlat.split(' ');
         queryparams.lon = parseFloat(lonlat[0]);
         queryparams.lat = parseFloat(lonlat[1]);
-        queryparams['time'] = new Date().getTime();
+        queryparams.time = new Date().getTime();
 
         //http://open.mapquestapi.com/nominatim/v1/reverse?
         //http://nominatim.openstreetmap.org/reverse?
         var options = {
+            //host: 'nominatim.openstreetmap.org',
             host: 'open.mapquestapi.com',
             port: 80,
+            //path: '/reverse?' + querystring.stringify(queryparams)
             path: '/nominatim/v1/reverse?' + querystring.stringify(queryparams)
         };
         //console.log(options.path);
-        http.get(options, function(remote_res) {
+        http.get(options, function (remote_res) {
             var mybuf = '';
-            remote_res.on('error', function(e) {
+            remote_res.on('error', function (e) {
                 throw e;
             });
-            remote_res.on('data', function(chunk) {
+            remote_res.on('data', function (chunk) {
                 mybuf += chunk;
             });
-            remote_res.on('end', function() {
+            remote_res.on('end', function () {
                 if (remote_res.headers['content-type'].indexOf('json') > -1) {
                     myResult = JSON.parse(mybuf);
                     var Feature = constructFeature(myResult);
