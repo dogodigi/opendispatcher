@@ -660,7 +660,7 @@ dbkjs.config.styles = {
                     return dbkjs.scaleStyleValue(12);
                 },
                 myicon: function (feature) {
-                    var img = "images/" + feature.attributes.namespace + "/" + feature.attributes.type + ".png";
+                    var img = "images/" + feature.attributes.namespace_hidden + "/" + feature.attributes.type_hidden + ".png";
                     return typeof imagesBase64 === 'undefined' ? dbkjs.basePath + img : imagesBase64[img];
                 }
             }

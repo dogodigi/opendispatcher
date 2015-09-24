@@ -54,15 +54,6 @@ global.conf.defaults({
     }
 });
 
-i18n.init({
-    lng: 'nl',
-    detectLngQS: 'l',
-    saveMissing: true,
-    useCookie: false,
-    debug: false,
-    fallbackLng: 'nl'
-});
-
 var dbURL = 'postgres://' +
         global.conf.get('database:user') + ':' +
         global.conf.get('database:password') + '@' +
@@ -87,6 +78,16 @@ if (global.conf.get('infrastructure:user')) {
 global.pool = anyDB.createPool(dbURL, {min: 2, max: 20});
 global.bag = anyDB.createPool(bagURL, {min: 2, max: 20});
 global.defaultLanguage = global.conf.get('default:language') || 'en';
+
+i18n.init({
+    lngWhitelist: ['nl', 'en', 'dev'],
+    detectLngQS: 'l',
+    saveMissing: true,
+    useCookie: false,
+    debug: false,
+    fallbackLng: global.defaultLanguage
+});
+
 var app = express(
 //    {
 //        requestCert: true,
@@ -111,7 +112,6 @@ app.use(i18n.handle);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.locals.pretty = true;
-//app.use(favicon(__dirname + '/public/images/favicon.ico', {maxAge: 25920000000}));
 app.use(bodyParser.urlencoded({
   extended: true
 }));

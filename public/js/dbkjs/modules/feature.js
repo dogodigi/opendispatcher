@@ -108,7 +108,7 @@ dbkjs.modules.feature = {
         var parent = '#overlay_tab2';
         var name = i18n.t('app.features');
         dv_panel_title.append(name + '&nbsp;<a class="accordion-toggle" data-toggle="collapse" href="#collapse_' +
-                _obj.id + '" data-parent="' + parent + '" ><i class="fa fa-info-circle"></i></a>');
+                _obj.id + '" data-parent="' + parent + '" ></a>');
         dv_panel_heading.append(dv_panel_title);
         _obj.div.append(dv_panel_heading);
         dv_panel_content = $('<div id="collapse_' + _obj.id + '" class="panel-collapse collapse"></div>');
@@ -143,7 +143,20 @@ dbkjs.modules.feature = {
             "featuresadded": function () {},
             "featureunselected": function (e) {}
         });
-
+        dv_panel_heading.click(function (e) {
+            dbkjs.disableloadlayer = true;
+            if (!dv_panel_heading.hasClass('active')) {
+                _obj.layer.setVisibility(true);
+                dv_panel_heading.addClass('active');
+                dv_panel_heading.addClass('layActive');
+                $('#tb01').removeClass('btn-warning');
+            } else {
+                _obj.layer.setVisibility(false);
+                dv_panel_heading.removeClass('active');
+                dv_panel_heading.removeClass('layActive');
+                $('#tb01').addClass('btn-warning');
+            }
+        });
         _obj.get();
     },
     get: function () {
@@ -224,7 +237,7 @@ dbkjs.modules.feature = {
      * }
      */
     getDbkSearchValue: function (feature) {
-        return value.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(value.attributes.informeleNaam) ? '' : value.attributes.informeleNaam)
+        return feature.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(feature.attributes.informeleNaam) ? '' : feature.attributes.informeleNaam)
     },
     getDbkSearchValues: function () {
         var _obj = dbkjs.modules.feature;

@@ -63,7 +63,7 @@ dbkjs.protocol.jsonDBK = {
         _obj.layerBrandweervoorziening = new OpenLayers.Layer.Vector("Brandweervoorziening", {
             styleMap: dbkjs.config.styles.brandweervoorziening
         });
-        _obj.layerComm = new OpenLayers.Layer.Vector("Comm", {
+        _obj.layerComm = new OpenLayers.Layer.Vector(i18n.t('dbk.comm'), {
             styleMap: dbkjs.config.styles.comm
         });
         _obj.layerGevaarlijkestof = new OpenLayers.Layer.Vector("Gevaarlijke stoffen", {
@@ -136,11 +136,15 @@ dbkjs.protocol.jsonDBK = {
         html = '<div style:"width: 100%" class="table-responsive">';
         html += '<table class="table table-hover">';
         for (var j in e.feature.attributes) {
-            //if ($.inArray(j, ['Omschrijving', 'GEVIcode', 'UNnr', 'Hoeveelheid', 'NaamStof']) > -1) {
-            if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
-                html += '<tr><td><span>' + j + "</span>: </td><td>" + e.feature.attributes[j] + "</td></tr>";
+          if ($.inArray(j, ['No', 'Latitude', 'Longitude','namespace','fid', 'rotation']) === -1) {
+            //if a field has the suffix _hidden, hide it.
+            var hidden = '_hidden';
+            if(j.indexOf(hidden, j.length - hidden.length) === -1) {
+              if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
+                html += '<tr><td>' + j + '</td><td>' + dbkjs.util.renderHTML(e.feature.attributes[j]) + '</td></tr>';
+              }
             }
-            //}
+          }
         }
         html += '</table>';
         html += '</div>';
@@ -450,54 +454,28 @@ dbkjs.protocol.jsonDBK = {
     constructAfwijkendebinnendekking: function (feature) {
         var _obj = dbkjs.protocol.jsonDBK;
         if (feature.afwijkendebinnendekking) {
-            var id = 'collapse_comm_' + feature.identificatie;
-            var comm_div = $('<div class="tab-pane" id="' + id + '"></div>');
-            var comm_table_div = $('<div class="table-responsive"></div>');
-            var comm_table = $('<table id="commlist" class="table table-hover"></table>');
-            comm_table.append('<tr><th>#</th><th>' +
-                    i18n.t('comm.ispossible') + '</th><th>' +
-                    i18n.t('comm.alternative') + '</th><th>' +
-                    i18n.t('comm.information') + '</th></tr>');
-
             var features = [];
             $.each(feature.afwijkendebinnendekking, function (idx, myGeometry) {
                 var information = myGeometry.aanvullendeInformatie || '';
                 var alternative = myGeometry.alternatieveCommInfrastructuur || '';
-                var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                myFeature.attributes = {
-                    "possible": myGeometry.dekking,
-                    "alternative": alternative,
-                    "information": information,
-                    "fid": "comm_ft_" + idx
-                };
-                myFeature.attributes.namespace = 'other';
-                myFeature.attributes.type = 'Dekking_nOK';
                 var comm_status = i18n.t('comm.impossible');
-
+                var comm_img = 'Dekking_nOK';
+                var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
+                myFeature.attributes = {};
                 if(myGeometry.dekking) {
-                  myFeature.attributes.type = 'Dekking_OK';
+                  comm_img = 'Dekking_OK';
                   comm_status = i18n.t('comm.possible');
                 }
-                var comm_img = myFeature.attributes.type + '.png';
-                var myrow = $('<tr id="' + idx + '">' +
-                        '<td><img class="thumb" src="' + dbkjs.basePath + 'images/' + myFeature.attributes.namespace +
-                          '/' + comm_img + '" alt="' + comm_status + '" title="' + comm_status + '"></td>' +
-                        '<td>' + comm_status + '</td>' +
-                        '<td>' + myFeature.attributes.alternative + '</td>' +
-                        '<td>' + myFeature.attributes.information + '</td>' +
-                        '</tr>');
-                //@@ Toekennen van callback verplaatst naar info().
-                comm_table.append(myrow);
-                features.push(myFeature);
 
+                myFeature.attributes[i18n.t('comm.ispossible')] = comm_status;
+                myFeature.attributes[i18n.t('comm.alternative')] = alternative;
+                myFeature.attributes[i18n.t('comm.information')] = information;
+                myFeature.attributes.namespace_hidden = 'other';
+                myFeature.attributes.type_hidden = comm_img;
+                features.push(myFeature);
             });
             _obj.layerComm.addFeatures(features);
             _obj.activateSelect(_obj.layerComm);
-            comm_table_div.append(comm_table);
-            comm_div.append(comm_table_div);
-            _obj.panel_group.append(comm_div);
-            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">' + i18n.t('dbk.comm') + '</a></li>');
-
         }
     },
     constructBrandweervoorziening: function (feature) {
