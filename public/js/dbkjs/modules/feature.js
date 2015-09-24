@@ -183,6 +183,29 @@ dbkjs.modules.feature = {
         var oms_naam_array = _obj.getOmsSearchValues();
         dbkjs.gui.updateSearchInput(_obj, 'oms', oms_naam_array);
     },
+    /* Override this function to customize the search (and display) string of DBK's,
+     * for example to include address:
+     *
+     * dbkjs.modules.feature.getDbkSearchValue = function(feature) {
+     *     var t = feature.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(feature.attributes.informeleNaam) ? '' : feature.attributes.informeleNaam);
+     *     if(feature.attributes.adres && feature.attributes.adres.length > 0) {
+     *         var a = feature.attributes.adres[0];
+     *         t += ", " + a.openbareRuimteNaam;
+     *         t += !dbkjs.util.isJsonNull(a.huisnummer) ? " " + a.huisnummer : "";
+     *         t += !dbkjs.util.isJsonNull(a.huisletter) ? a.huisletter : "";
+     *         t += !dbkjs.util.isJsonNull(a.huisnummertoevoeging) ? " " + a.huisnummertoevoeging : "";
+     *         if(!dbkjs.util.isJsonNull(a.postcode) || !dbkjs.util.isJsonNull(a.woonplaatsNaam)) {
+     *             t += ", ";
+     *         }
+     *         t += !dbkjs.util.isJsonNull(a.postcode) ? a.postcode : "";
+     *         t += !dbkjs.util.isJsonNull(a.woonplaatsNaam) ? " " + a.woonplaatsNaam : "";
+     *     }
+     *     return t;
+     * }
+     */
+    getDbkSearchValue: function(feature) {
+        return value.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(value.attributes.informeleNaam) ? '' : value.attributes.informeleNaam)
+    },
     getDbkSearchValues: function() {
         var _obj = dbkjs.modules.feature;
         var dbk_naam_array = [];
@@ -191,7 +214,7 @@ dbkjs.modules.feature = {
         }
         $.each(_obj.features, function(key, value) {
             dbk_naam_array.push({
-                value: value.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(value.attributes.informeleNaam) ? '' : value.attributes.informeleNaam),
+                value: _obj.getDbkSearchValue(value),
                 geometry: value.geometry,
                 id: value.attributes.identificatie,
                 attributes: value.attributes
