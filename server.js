@@ -98,10 +98,12 @@ var app = express(
         );
 if ('development' == env) {
     app.use(errorhandler({dumpExceptions: true, showStack: true}));
+    app.locals.pretty = true;
 }
 
 if ('production' == env) {
     app.use(errorhandler());
+    app.locals.pretty = false;
 }
 
 // Configuration
@@ -111,7 +113,6 @@ app.enable('trust proxy');
 app.use(i18n.handle);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-app.locals.pretty = true;
 app.use(bodyParser.urlencoded({
   extended: true
 }));

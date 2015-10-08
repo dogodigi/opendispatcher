@@ -34,7 +34,7 @@ From a console or terminal:
     git clone git@github.com:dogodigi/opendispatcher.git
     cd opendispatcher
     npm install .
-    
+
 *Note:* Check that `npm install .` doesn't generate errors. The installation
  process will tell you what components are missing (f.i. postgresql)
 
