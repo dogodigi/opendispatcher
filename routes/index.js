@@ -103,7 +103,7 @@ function setup(app) {
     app.get('/api/incidents/list/class/1', incidents.getGroupByClass1);
     app.get('/api/incidents/list/class/2', incidents.getGroupByClass2);
     app.get('/api/incidents/list/class/2/:c1', incidents.getGroupByClass2);
-    app.get('/api/incidents/list/class/3', incidents.getGroupByClass2);
+    app.get('/api/incidents/list/class/3', incidents.getGroupByClass3);
     app.get('/api/incidents/list/class/3/:c2', incidents.getGroupByClass3);
     app.get('/api/incidents/list/class/3/:c1/:c2', incidents.getGroupByClass3);
     app.get('/api/incidents/list/priorities', incidents.getGroupByPriority);
