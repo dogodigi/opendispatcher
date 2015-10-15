@@ -1,6 +1,7 @@
 {
     "default": {
-        "language": "en"
+        "language": "en",
+        "fullscreen": false
     },
     "http": {
         "port": 3000

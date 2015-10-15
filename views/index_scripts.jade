@@ -1,10 +1,16 @@
 if(mode === 'development')
+  if(fullscreen === true)
+    script(src='js/libs/modernizr.custom.12819.js')
+
   script(src='js/libs/jquery-1.11.0/jquery-1.11.0.min.js')
   script(src='js/libs/bootstrap-3.2.0-dist/js/bootstrap.min.js')
   script(src='js/libs/bootstrap-slider.js')
   script(src='js/libs/proj4js-compressed.js')
   script(src='js/libs/OpenLayers-2.13.1/OpenLayers.js')
   script(src='js/libs/moment/moment.min.js')
+  if(fullscreen === true)
+    script(src='js/libs/fastclick.min.js')
+
   script(src='i18next/i18next.js')
   script(src='js/libs/jquery.pagination.js')
   script(src='js/libs/jquery.drags.js')
@@ -21,18 +27,38 @@ if(mode === 'development')
   script(src='js/dbkjs/protocol/jsonDBK.js')
   script(src='js/dbkjs/modules/search.js')
   script(src='js/dbkjs/modules/support.js')
-  script(src='js/dbkjs/modules/print.js')
-  script(src='js/dbkjs/modules/care.js')
-  script(src='js/dbkjs/modules/filter.js')
-  script(src='js/dbkjs/modules/bag.js')
+  if (fullscreen === false)
+    
+    script(src='js/dbkjs/modules/print.js')
+    script(src='js/dbkjs/modules/care.js')
+    script(src='js/dbkjs/modules/filter.js')
+    script(src='js/dbkjs/modules/bag.js')
+
   script(src='js/dbkjs/modules/feature.js')
   script(src='js/dbkjs/modules/measure.js')
   script(src='js/dbkjs/modules/layertoggle.js')
   script(src='js/dbkjs/modules/gms.js')
+  if(fullscreen === true)
+    script(src='js/dbkjs/modules/ealgps.js')
+    script(src='js/dbkjs/modules/connectionmonitor.js')
+    script(src='js/dbkjs/modules/livep2000.js')
+    script(src='js/dbkjs/modules/onscreenkeyboard.js')
+    script(src='js/dbkjs/modules/vrhincidenten.js')
+    script(src='js/dbkjs/images_base64.js')
+
   script(src='js/dbkjs/gui.js')
   script(src='js/dbkjs/layers.js')
   script(src='js/dbkjs/mapcontrols.js')
   script(src='js/dbkjs/dbkjs.js')
+  if(fullscreen === true)
+    script(src='js/overrides/dbkjs.js')
+    script(src='js/overrides/feature.js')
+    script(src='js/overrides/gui.js')
+    script(src='js/overrides/jsonDBK.js')
+    script(src='js/overrides/layout.js')
+    script(src='js/overrides/mapcontrols.js')
+    script(src='js/overrides/search.js')
+
   script(src='js/dbkjs/docready.js')
 else
   script(src='js/libs/jquery-1.11.0/jquery-1.11.0.min.js')
@@ -43,17 +69,20 @@ else
   script(src='js/libs/moment/moment.min.js')
   script(src='i18next/i18next.js')
   script(src='js/dbk.min.js')
-
-if(mylang!=='dev' && mylang!=='en')
+  
+if(mylang!=='dev' && mylang!=='en')  
   script(src='js/libs/moment/lang/#{mylang}.js')
+
+if(mylang!=='dev' && mylang!=='en' && fullscreen === false)
   script(src='js/dbkjs/config/options-#{mylang}.js')
   script.
     var dbkjsLang = '#{mylang}';
     var dbkjs = dbkjs || {};
     window.dbkjs = dbkjs;
     dbkjs.options = dbkjs.options || {};
+    
     dbkjs.options.alwaysShowDbkFeature = true;
-else
+else if (fullscreen === false)
   script(src='js/dbkjs/config/options.js')
   script.
     var dbkjsLang = '#{mylang}';
@@ -61,3 +90,5 @@ else
     window.dbkjs = dbkjs;
     dbkjs.options = dbkjs.options || {};
     dbkjs.options.alwaysShowDbkFeature = true;
+else
+  script(src='js/dbkjs/config/options_mobile.js')

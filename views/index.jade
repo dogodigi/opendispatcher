@@ -1,48 +1,86 @@
 extends index_header
 block content
+  if (fullscreen === true)
+    div.main-button-group
+      div#btngrp_navigation.btn-group.pull-right
+        a.btn.navbar-btn.btn-default.drag-handle(href='#')
+          i.fa.fa-ellipsis-v
+        a#zoom_prev.btn.navbar-btn.btn-default.disabled(href='#', title=t('map.prev'))
+          i.fa.fa-reply
+        a#zoom_next.btn.navbar-btn.btn-default.disabled(href='#', title=t('map.next'))
+          i.fa.fa-share-alt
+        a#zoom_in.btn.navbar-btn.btn-default(href='#', title=t('map.zoomIn'))
+          i.fa.fa-search-plus
+        a#zoom_out.btn.navbar-btn.btn-default(href='#', title=t('map.zoomOut'))
+          i.fa.fa-search-minus
+        a#zoom_extent.btn.navbar-btn.btn-default.needsclick(href='#', title=t('map.zoomExtent'))
+          i.fa.fa-arrows-alt
+        a#permalink.btn.navbar-btn.btn-default(title=t('map.permalink'))
+          i.fa.fa-link
+      div#btngrp_3.btn-group.pull-right
+          a.btn.navbar-btn.btn-default.drag-handle(href='#')
+            i.fa.fa-ellipsis-v
+          a#c_minimap.btn.navbar-btn.btn-default(href='#', title=t('map.mini'))
+            i.fa.fa-image
+          a#c_settings.btn.navbar-btn.btn-default(href='#settingspanel', data-toggle='modal', title=t('map.settings'))
+            i.fa.fa-cogs
+          a#tb01.btn.navbar-btn.btn-default(href='#overlaypanel', data-toggle='modal', title=t('map.overlays'))
+            i.fa.fa-map-marker
+          a#tb02.btn.navbar-btn.btn-default(href='#baselayerpanel', data-toggle='modal', title=t('map.baselayers'))
+            i.fa.fa-globe
+        div.btn-group.pull-right.layertoggle-btn-group
+          a#tb03.btn.navbar-btn.btn-default(href='#', title=t('map.info'))
+            i.fa.fa-info-circle
+        div#btn-grp-search.btn-group.pull-right(style='display:none;')
+  else
+    div#btngrp_navigation.btn-group.pull-right
+      a.btn.navbar-btn.btn-default.drag-handle(href='#')
+        i.fa.fa-ellipsis-v
+      a#zoom_prev.btn.navbar-btn.btn-default.disabled(href='#', title=t('map.prev'))
+        i.fa.fa-backward
+      a#zoom_next.btn.navbar-btn.btn-default.disabled(href='#', title=t('map.next'))
+        i.fa.fa-forward
+      a#zoom_in.btn.navbar-btn.btn-default(href='#', title=t('map.zoomIn'))
+        i.fa.fa-search-plus
+      a#zoom_out.btn.navbar-btn.btn-default(href='#', title=t('map.zoomOut'))
+        i.fa.fa-search-minus
+      a#zoom_extent.btn.navbar-btn.btn-default(href='#', title=t('map.zoomExtent'))
+        i.fa.fa-arrows-alt
+      a#permalink.btn.navbar-btn.btn-default(title=t('map.permalink'))
+        i.fa.fa-link
+    div#btngrp_3.btn-group.pull-right
+      a.btn.navbar-btn.btn-default.drag-handle(href='#')
+        i.fa.fa-ellipsis-v
+      a#c_minimap.btn.navbar-btn.btn-default(href='#', title=t('map.mini'))
+        i.fa.fa-picture-o
+      a#c_settings.btn.navbar-btn.btn-default(href='#settingspanel', data-toggle='modal', title=t('map.settings'))
+        i.fa.fa-cogs
+      a#tb01.btn.navbar-btn.btn-default(href='#overlaypanel', data-toggle='modal', title=t('map.overlays'))
+        i.fa.fa-map-marker
+      a#tb02.btn.navbar-btn.btn-default(href='#baselayerpanel', data-toggle='modal', title=t('map.baselayers'))
+        i.fa.fa-globe
+      a#tb03.btn.navbar-btn.btn-default(href='#', title=t('map.info'))
+        i.fa.fa-info-circle
+    div#btn-grp-search.btn-group.pull-right(style='display:none;')
 
-  div#btngrp_navigation.btn-group.pull-right
-    a.btn.navbar-btn.btn-default.drag-handle(href='#')
-      i.fa.fa-ellipsis-v
-    a#zoom_prev.btn.navbar-btn.btn-default.disabled(href='#', title=t('map.prev'))
-      i.fa.fa-backward
-    a#zoom_next.btn.navbar-btn.btn-default.disabled(href='#', title=t('map.next'))
-      i.fa.fa-forward
-    a#zoom_in.btn.navbar-btn.btn-default(href='#', title=t('map.zoomIn'))
-      i.fa.fa-search-plus
-    a#zoom_out.btn.navbar-btn.btn-default(href='#', title=t('map.zoomOut'))
-      i.fa.fa-search-minus
-    a#zoom_extent.btn.navbar-btn.btn-default(href='#', title=t('map.zoomExtent'))
-      i.fa.fa-arrows-alt
-    a#permalink.btn.navbar-btn.btn-default(title=t('map.permalink'))
-      i.fa.fa-link
-
-  div#btngrp_3.btn-group.pull-right
-    a.btn.navbar-btn.btn-default.drag-handle(href='#')
-      i.fa.fa-ellipsis-v
-    a#c_minimap.btn.navbar-btn.btn-default(href='#', title=t('map.mini'))
-      i.fa.fa-picture-o
-    a#c_settings.btn.navbar-btn.btn-default(href='#settingspanel', data-toggle='modal', title=t('map.settings'))
-      i.fa.fa-cogs
-    a#tb01.btn.navbar-btn.btn-default(href='#overlaypanel', data-toggle='modal', title=t('map.overlays'))
-      i.fa.fa-map-marker
-    a#tb02.btn.navbar-btn.btn-default(href='#baselayerpanel', data-toggle='modal', title=t('map.baselayers'))
-      i.fa.fa-globe
-    a#tb03.btn.navbar-btn.btn-default(href='#', title=t('map.info'))
-      i.fa.fa-info-circle
-
-  div#btn-grp-search.btn-group.pull-right(style='display:none;')
   div#mapc1map1
     div#noordpijl(title=t('map.northarrow'),style='cursor:pointer;')
       i.fa.fa-long-arrow-up(style='font-size:40px;')
         span(style='font-size:20px') N
 
-  div#logo
-  div#footer
-    span#measure
-    span#coords
-    span#scale
-    span#attribution
+  if (fullscreen === true)
+    a.btn.btn-default.dbk-title
+    div#logo
+    div#footer
+      span#measure.btn.btn-default.navbar-btn(style='display:none;')
+  else
+    div#logo
+    div#footer
+      span#measure
+      span#coords
+      span#scale
+      span#attribution
+
   div#settingspanel.modal.fade
    div.modal-dialog
       div.modal-content
@@ -62,13 +100,24 @@ block content
         div.modal-body
           div.tabbable
             ul#overlaypanel_ul.nav.nav-tabs
-              li.active
-                a(data-toggle='tab', href='#overlay_tab1')= t('map.emergencyOverlays')
-              li
-                a(data-toggle='tab', href='#overlay_tab2')= t('map.systemOverlays')
-            div#overlaypanel_div.tab-content
-              div#overlay_tab1.tab-pane.active
-                div#overlaypanel_b1.panel-group
-              div#overlay_tab2.tab-pane
-                div#overlaypanel_b2.panel-group
+              if (fullscreen === true)
+                li.active
+                  a(data-toggle='tab', href='#overlay_tab2')= t('map.systemOverlays')
+              else
+                li.active
+                  a(data-toggle='tab', href='#overlay_tab1')= t('map.emergencyOverlays')
+                li
+                  a(data-toggle='tab', href='#overlay_tab2')= t('map.systemOverlays')
+            if (fullscreen === true)
+              div#overlaypanel_div.tab-content
+                div#overlay_tab2.tab-pane.active
+                  div#overlaypanel_b2.panel-group
+
+            else
+              div#overlaypanel_div.tab-content
+                div#overlay_tab1.tab-pane.active
+                  div#overlaypanel_b1.panel-group
+                div#overlay_tab2.tab-pane
+                  div#overlaypanel_b2.panel-group
+
   include index_scripts

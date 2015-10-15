@@ -58,7 +58,7 @@ function index(req, res) {
             user[arr2[0]] = arr2[1];
         }
     }
-    res.render('index', {mylang: activelang, mode: req.app.get('env')});
+    res.render('index', {mylang: activelang, mode: req.app.get('env'), fullscreen: global.conf.get('default:fullscreen')});
 }
 
 function validate_GET(req, res) {
