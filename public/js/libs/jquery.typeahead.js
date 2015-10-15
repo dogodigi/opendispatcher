@@ -15,7 +15,7 @@
             return !str || /^\s*$/.test(str);
         },
         escapeRegExChars: function(str) {
-            return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            return str.replace(/[\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
         },
         isString: function(obj) {
             return typeof obj === "string";
@@ -127,7 +127,7 @@
             return $.trim(str).toLowerCase().split(/[\s]+/);
         },
         tokenizeText: function(str) {
-            return $.trim(str).toLowerCase().split(/[\s\-_]+/);
+            return $.trim(str).toLowerCase().split(/[\s_]+/);
         },
         getProtocol: function() {
             return location.protocol;
@@ -496,6 +496,7 @@
                 }
                 utils.each(shortestList, function(i, id) {
                     var item = that.itemHash[id], isCandidate, isMatch;
+
                     isCandidate = utils.every(lists, function(list) {
                         return ~utils.indexOf(list, id);
                     });
@@ -506,6 +507,7 @@
                     });
                     isMatch && suggestions.push(item);
                 });
+                console.log("suggestions.length" + suggestions.length);
                 return suggestions;
             },
             initialize: function() {
