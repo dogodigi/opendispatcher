@@ -58,7 +58,9 @@ function index(req, res) {
             user[arr2[0]] = arr2[1];
         }
     }
-    res.render('index', {mylang: activelang, mode: req.app.get('env'), fullscreen: global.conf.get('default:fullscreen')});
+    var useFullscreen = global.conf.get('default:fullscreen') || false;
+    var useBase64 = global.conf.get('default:base64') || false;
+    res.render('index', {mylang: activelang, mode: req.app.get('env'), fullscreen: useFullscreen, "base64": useBase64 });
 }
 
 function validate_GET(req, res) {
