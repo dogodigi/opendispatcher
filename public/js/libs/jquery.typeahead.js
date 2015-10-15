@@ -496,7 +496,6 @@
                 }
                 utils.each(shortestList, function(i, id) {
                     var item = that.itemHash[id], isCandidate, isMatch;
-
                     isCandidate = utils.every(lists, function(list) {
                         return ~utils.indexOf(list, id);
                     });
@@ -507,7 +506,6 @@
                     });
                     isMatch && suggestions.push(item);
                 });
-                console.log("suggestions.length" + suggestions.length);
                 return suggestions;
             },
             initialize: function() {
