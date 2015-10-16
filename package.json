@@ -52,6 +52,7 @@
     "less-middleware": "2.0.1",
     "nconf": "*",
     "nodemailer": "1.4.0",
+    "pace": "0.0.4",
     "pg": "*",
     "request": "*",
     "serve-favicon": "^2.3.0",
