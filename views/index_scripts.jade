@@ -28,7 +28,6 @@ if(mode === 'development')
   script(src='js/dbkjs/modules/search.js')
   script(src='js/dbkjs/modules/support.js')
   if (fullscreen === false)
-    
     script(src='js/dbkjs/modules/print.js')
     script(src='js/dbkjs/modules/care.js')
     script(src='js/dbkjs/modules/filter.js')
@@ -63,12 +62,18 @@ if(mode === 'development')
 
   script(src='js/dbkjs/docready.js')
 else
+  if(fullscreen === true)
+    script(src='js/libs/modernizr.custom.12819.js')
+
   script(src='js/libs/jquery-1.11.0/jquery-1.11.0.min.js')
   script(src='js/libs/bootstrap-3.2.0-dist/js/bootstrap.min.js')
   script(src='js/libs/bootstrap-slider.js')
   script(src='js/libs/proj4js-compressed.js')
   script(src='js/libs/OpenLayers-2.13.1/OpenLayers.js')
   script(src='js/libs/moment/moment.min.js')
+  if(fullscreen === true)
+    script(src='js/libs/fastclick.min.js')
+
   script(src='i18next/i18next.js')
   script(src='js/dbk.min.js')
   
