@@ -131,19 +131,21 @@ dbkjs.protocol.jsonDBK.constructOmsdetail = function(feature) {
 };
 
 dbkjs.protocol.jsonDBK.getfeatureinfo = function(e){
+  var html;
+  var table;
     $('#vectorclickpanel_h').html('<span class="h4"><i class="fa fa-info-circle">&nbsp;' + e.feature.layer.name + '</span>');
     if(e.feature.layer.name === 'Gevaarlijke stoffen' || e.feature.layer.name === 'Brandweervoorziening') {
-        var html = $('<div class="table-responsive"></div>'),
-            table = '';
+        html = $('<div class="table-responsive"></div>');
+        table = '';
         if(e.feature.layer.name === 'Gevaarlijke stoffen') {
             table = dbkjs.protocol.jsonDBK.constructGevaarlijkestofHeader();
             table.append(dbkjs.protocol.jsonDBK.constructGevaarlijkestofRow(e.feature.attributes));
             html.append(table);
-        };
+        }
         if(e.feature.layer.name === 'Brandweervoorziening') {
             table = dbkjs.protocol.jsonDBK.constructBrandweervoorzieningHeader();
             table.append(dbkjs.protocol.jsonDBK.constructBrandweervoorzieningRow(e.feature.attributes));
-        };
+        }
         html.append(table);
         $('#vectorclickpanel_b').html('').append(html);
         if(dbkjs.viewmode === 'fullscreen') {
@@ -160,7 +162,7 @@ dbkjs.protocol.jsonDBK.getfeatureinfo = function(e){
             if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
                 html += '<tr><td><span>' + j + "</span>: </td><td>" + e.feature.attributes[j] + "</td></tr>";
             }
-        };
+        }
         html += "</table>";
         html += '</div>';
         $('#vectorclickpanel_b').html(html);
@@ -172,7 +174,7 @@ dbkjs.protocol.jsonDBK.getGebied = function(feature, activetab, onSuccess) {
     var _obj = dbkjs.protocol.jsonDBK;
     if(activetab){
         _obj.active_tab = activetab;
-    };
+    }
     var params = {
         srid: dbkjs.options.projection.srid,
         timestamp: new Date().getTime()
@@ -183,7 +185,7 @@ dbkjs.protocol.jsonDBK.getGebied = function(feature, activetab, onSuccess) {
     } else {
         //the function is not recieving a feature, but a string
         fid = feature;
-    };
+    }
     $.getJSON(dbkjs.dataPath + 'gebied/' + fid + '.json', params).done(function(data) {
         //clear all layers first!
         $.each(_obj.layers, function(idx, lyr){
@@ -204,7 +206,7 @@ dbkjs.protocol.jsonDBK.getObject = function(feature, activetab, noZoom, onSucces
     var _obj = dbkjs.protocol.jsonDBK;
     if(activetab){
      _obj.active_tab = activetab;
-    };
+    }
     var params = {
         srid: dbkjs.options.projection.srid,
         timestamp: new Date().getTime()
@@ -215,7 +217,7 @@ dbkjs.protocol.jsonDBK.getObject = function(feature, activetab, noZoom, onSucces
     } else {
         //the function is not recieving a feature, but a string
         fid = feature;
-    };
+    }
     $.getJSON(dbkjs.dataPath + 'object/' + fid + '.json', params).done(function(data) {
         //clear all layers first!
         $.each(_obj.layers, function(idx, lyr){
@@ -223,7 +225,7 @@ dbkjs.protocol.jsonDBK.getObject = function(feature, activetab, noZoom, onSucces
         });
         if(onSuccess) {
             onSuccess();
-        };
+        }
         dbkjs.protocol.jsonDBK.info(data, noZoom);
     }).fail(function( jqxhr, textStatus, error ) {
         dbkjs.options.feature = null;
@@ -248,10 +250,10 @@ dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess) {
 
         if(onSuccess) {
             onSuccess();
-        };
+        }
 
         return;
-    };
+    }
 
     var mySuccess = function() {
         $('#infopanel_f').html('');
@@ -289,7 +291,7 @@ dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess) {
                 dbkjs.util.getModalPopup('dbkinfopanel').hide();
             } else {
                 $('#infopanel').hide();
-            };
+            }
             dbkjs.protocol.jsonDBK.processing = true;
             dbkjs.util.alert('<i class="fa fa-spinner fa-spin"></i>', i18n.t('dialogs.running'), 'alert-info');
             if(feature.attributes.typeFeature === 'Object'){
@@ -312,4 +314,3 @@ dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess) {
         }
     }
 };
-

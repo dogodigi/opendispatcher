@@ -50,6 +50,7 @@ function nen1414(req, res) {
 
 function index(req, res) {
     var activelang = req.i18n.language();
+    var useFullscreen = false;
     if (req.headers['x-opendispatcher-dn']) {
         var arr1 = req.headers['x-opendispatcher-dn'].split('/');
         var user = {};
@@ -58,7 +59,11 @@ function index(req, res) {
             user[arr2[0]] = arr2[1];
         }
     }
-    var useFullscreen = global.conf.get('default:fullscreen') || false;
+    if (req.query && (req.query.mobile || req.query.mobile === '')) {
+        console.log('generating mobile index.html');
+        useFullscreen = true;
+    }
+    useFullscreen = global.conf.get('default:fullscreen') || useFullscreen;
     var useBase64 = global.conf.get('default:base64') || false;
     res.render('index', {mylang: activelang, mode: req.app.get('env'), fullscreen: useFullscreen, "base64": useBase64 });
 }

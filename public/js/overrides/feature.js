@@ -66,7 +66,7 @@ dbkjs.modules.feature.zoomToFeature = function(feature) {
         } else {
             this.zoomToPandgeometrie();
         }
-    };
+    }
     // getActive() changed, hide it
     this.layer.redraw();
 };
