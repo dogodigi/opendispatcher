@@ -98,6 +98,7 @@ var app = express(
         );
 if ('development' == env) {
     app.use(errorhandler({dumpExceptions: true, showStack: true}));
+    app.use('/build', express.static(__dirname + '/build'));
     app.locals.pretty = true;
 }
 
@@ -117,7 +118,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
-
+app.use('/build', express.static(__dirname + '/build'));
 app.use('/locales', express.static(__dirname + '/locales'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/media', express.static(global.conf.get('media:path')));
