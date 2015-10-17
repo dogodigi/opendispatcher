@@ -1,8 +1,53 @@
 /* global global, module */
+global.conf = require('nconf');
+global.conf.argv().env();
+global.conf.file({
+  file: 'config.json'
+});
+var mediaPath = global.conf.get('media:path') + '/**';
+var symbolPath = global.conf.get('media:symbols' + '/**');
+var dbURL = 'postgres://' +
+  global.conf.get('database:user') + ':' +
+  global.conf.get('database:password') + '@' +
+  global.conf.get('database:host') + ':' +
+  global.conf.get('database:port') + '/' +
+  global.conf.get('database:dbname');
+var dbkcontroller = require('./controllers/dbk.js');
+var anyDB = require('any-db');
+global.pool = anyDB.createPool(dbURL, {
+  min: 2,
+  max: 20
+});
 
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    sync: {
+      desktop: {
+        files: [
+          {
+            src: [mediaPath],
+            dest: 'build/desktop/media/'
+          },
+          {
+            src: [symbolPath],
+            dest: 'build/desktop/symbols/'
+          }
+        ]
+      },
+      mobile: {
+        files: [
+          {
+            src: [mediaPath],
+            dest: 'build/mobile/media/'
+          },
+          {
+            src: [symbolPath],
+            dest: 'build/mobile/symbols/'
+          }
+        ]
+      }
+    },
     copy: {
       desktop: {
         files: [{
@@ -260,28 +305,12 @@ module.exports = function(grunt) {
     }
   });
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-sync');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.registerTask('organisation:mobile', 'Export organisation settings to organisation.json in build', function() {
     var cb = this.async();
-    global.conf = require('nconf');
-    global.conf.argv().env();
-    global.conf.file({
-      file: 'config.json'
-    });
-    var dbURL = 'postgres://' +
-      global.conf.get('database:user') + ':' +
-      global.conf.get('database:password') + '@' +
-      global.conf.get('database:host') + ':' +
-      global.conf.get('database:port') + '/' +
-      global.conf.get('database:dbname');
-    var dbkcontroller = require('./controllers/dbk.js');
-    var anyDB = require('any-db');
-    global.pool = anyDB.createPool(dbURL, {
-      min: 2,
-      max: 20
-    });
+
     dbkcontroller.getOrganisation({
       params: {
         id: 0
@@ -310,23 +339,6 @@ module.exports = function(grunt) {
   grunt.registerTask('features:mobile', 'Export features.json in build', function() {
     var cb = this.async();
     var srid = 28992;
-    global.conf = require('nconf');
-    global.conf.argv().env();
-    global.conf.file({
-      file: 'config.json'
-    });
-    var dbURL = 'postgres://' +
-      global.conf.get('database:user') + ':' +
-      global.conf.get('database:password') + '@' +
-      global.conf.get('database:host') + ':' +
-      global.conf.get('database:port') + '/' +
-      global.conf.get('database:dbname');
-    var dbkcontroller = require('./controllers/dbk.js');
-    var anyDB = require('any-db');
-    global.pool = anyDB.createPool(dbURL, {
-      min: 2,
-      max: 20
-    });
     dbkcontroller.getFeatures({
       params: {
         id: 0

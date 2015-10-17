@@ -20,6 +20,36 @@
 
 /* global OpenLayers, Proj4js */
 
+/**
+ * Grabbing information from the p2000 paging monitor.
+ * Particular for the Netherlands
+ *
+ * The standard url for feeds is http://feeds.livep2000.nl
+ * The feed can be accessed with a GET and can be complemented with the
+ * parameters 'r' and 'd', like ?r=1,2&d=2
+ * @param r region
+ *   available regions:
+ *     1: Groningen                    2: Friesland
+ *     3: Drenthe                      4: IJsselland
+ *     5: Twente                       6: Noord en Oost Gelderland
+ *     7: Gelderland Midden            8: Gelderland Zuid
+ *     9: Utrecht                     10: Noord Holland Noord
+ *    11: Zaanstreek-Waterland        12: Kennemerland
+ *    13: Amsterdam-Amstelland        14: Gooi en Vechtstreek
+ *    15: Haaglanden                  16: Hollands Midden
+ *    17: Rotterdam Rijnmond          18: Zuid-Holland Zuid
+ *    19: Zeeland                     20: Midden- en West-Brabant
+ *    21: Brabant Noord               22: Brabant Zuid en Oost
+ *    23: Limburg Noord               24: Limburg Zuid
+ *    25: Flevoland
+ *
+ * @param d discipline
+ *   available disciplines:
+ *     1: Brandweer     2: Ambulance
+ *     3: Politie       4: KRNM
+ *
+ */
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
