@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of opendispatcher/safetymapsDBK
- *  
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -406,4 +406,13 @@ input[type="checkbox"] {
     opacity: 0.40;
     font-size: 1px;
     filter: alpha(opacity=40);
+}
+#P2000 {
+  max-width: 350px;
+}
+#P2000_b {
+  overflow: auto;
+}
+.melding {
+  font-size: 10.5px;
 }
