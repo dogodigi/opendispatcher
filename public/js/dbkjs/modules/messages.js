@@ -30,24 +30,68 @@ dbkjs.modules.messages = {
   feeds: {},
   items: [],
   register: function(options) {
-    console.log('register messages');
+    var _obj = this;
+    var stop = false;
     $('<a></a>')
-        .attr({
-            'id': 'btn_openlivep2000',
-            'class': 'btn btn-default navbar-btn',
-            'href': '#',
-            'title': i18n.t('app.messages')
-        })
-        .append('<i class="fa fa-bell"></i>')
-        .click(function (e) {
-            e.preventDefault();
-            if (me.marker) {
-                me.markerLayer.removeMarker(me.marker);
-                $('#info_livep2000').hide();
-            }
-            me.popup.show();
-        })
-        .appendTo('#btngrp_3');
+      .attr({
+        'id': 'btn_feed',
+        'class': 'btn btn-default navbar-btn',
+        'href': '#',
+        'title': i18n.t('app.messages')
+      })
+      .append('<i class="fa fa-bell"></i>')
+      .click(function(e) {
+        e.preventDefault();
+        if ($(this).hasClass('btn-warning')) {
+          $(this).removeClass('btn-warning');
+          stop = true;
+        } else {
+          $(this).addClass('btn-warning');
+          stop = false;
+        }
+
+        $.each(_obj.feeds, function(index, feed) {
+          // turn on
+          if (!stop) {
+            feed.start();
+          } else {
+            // or turn off
+            feed.stop();
+            _obj.items = _obj.purge(feed.name);
+          }
+        });
+      })
+      .appendTo('#btngrp_3');
+
+    /**
+     * Grabbing information from a rss, xml or json information source.
+     * This example can be used to create derivatives.
+     *
+     * The standard url for feeds is http://feeds.livep2000.nl
+     * The feed can be accessed with a GET and can be complemented with the
+     * parameters 'r' and 'd', like ?r=1,2&d=2
+     * @param r region
+     *   available regions:
+     *     1: Groningen                    2: Friesland
+     *     3: Drenthe                      4: IJsselland
+     *     5: Twente                       6: Noord en Oost Gelderland
+     *     7: Gelderland Midden            8: Gelderland Zuid
+     *     9: Utrecht                     10: Noord Holland Noord
+     *    11: Zaanstreek-Waterland        12: Kennemerland
+     *    13: Amsterdam-Amstelland        14: Gooi en Vechtstreek
+     *    15: Haaglanden                  16: Hollands Midden
+     *    17: Rotterdam Rijnmond          18: Zuid-Holland Zuid
+     *    19: Zeeland                     20: Midden- en West-Brabant
+     *    21: Brabant Noord               22: Brabant Zuid en Oost
+     *    23: Limburg Noord               24: Limburg Zuid
+     *    25: Flevoland
+     *
+     * @param d discipline
+     *   available disciplines:
+     *     1: Brandweer     2: Ambulance
+     *     3: Politie       4: KRNM
+     *
+     */
     this.feeds.p2000 = new dbkjs.Feed('p2000', 'http://feeds.livep2000.nl/', {
       data: {
         d: 1, //Firebrigade
@@ -55,6 +99,7 @@ dbkjs.modules.messages = {
       },
       dataType: 'xml'
     }, dbkjs.modules.messages.callback);
+
     this.feeds.traffic = new dbkjs.Feed('wegwerk', 'http://www.wegwerkmeldingen.nl/GetWegObjecten.php', {
       data: {
         layout: 5,
@@ -68,7 +113,7 @@ dbkjs.modules.messages = {
     this.layer = new OpenLayers.Layer.Markers("messages");
     dbkjs.map.addLayer(this.layer);
   },
-  popup: function(item){
+  popup: function(item) {
     var div = $('<div class="feed_' + item.type + ' alert"></div>');
     div.append('<b>' + item.title + '</b><br />');
     div.append('<p>' + item.description + '</p><br />');
@@ -77,30 +122,40 @@ dbkjs.modules.messages = {
     return item;
   },
   marker: function(item) {
+    var symbol = item.symbol || {
+      image: "images/other/marker-gray.png",
+      height: 25,
+      width: 21
+    };
     var _obj = this;
-    var size = new OpenLayers.Size(24, 24);
+    var size = new OpenLayers.Size(symbol.width, symbol.height);
     var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-    var symbol = item.symbol || "images/marker-red.png";
-    var marker = new OpenLayers.Marker(item.geometry, new OpenLayers.Icon(symbol, size, offset));
+    var marker = new OpenLayers.Marker(item.geometry, new OpenLayers.Icon(symbol.image, size, offset));
     _obj.layer.addMarker(marker);
     item.marker = marker;
     return item;
   },
   purge: function(type) {
     var _obj = this;
-    for (var i = 0; i < dbkjs.modules.messages.items.length; i++) {
-      if (dbkjs.modules.messages.items[i].type === type) {
-        if(dbkjs.modules.messages.items[i].marker){
-          _obj.layer.removeMarker(dbkjs.modules.messages.items[i].marker);
+    var i;
+    var finalArray = [];
+    for (i = 0; i < dbkjs.modules.messages.items.length; i++) {
+      var item = dbkjs.modules.messages.items[i];
+      if (item.type === type) {
+        if (item.marker) {
+          _obj.layer.removeMarker(item.marker);
         }
-        dbkjs.modules.messages.items.splice(i);
-
+        //dbkjs.modules.messages.items.splice(i);
+        //i--;
+      } else {
+        finalArray.push(item);
       }
     }
+    return finalArray;
   },
   callback: function(type, result) {
     var _obj = dbkjs.modules.messages;
-    _obj.purge(type);
+    _obj.items = _obj.purge(type);
     if (type === 'p2000') {
       $.each(result.rss.channel, function(index, value) {
         var feedItem = {};
@@ -121,7 +176,7 @@ dbkjs.modules.messages = {
               feedItem = _obj.marker(feedItem);
             }
             feedItem = _obj.popup(feedItem);
-            dbkjs.modules.messages.items.push(feedItem);
+            _obj.items.push(feedItem);
           }
 
         }
@@ -136,7 +191,11 @@ dbkjs.modules.messages = {
           if (now.isBefore(eindDateTime) && now.isAfter(beginDateTime) ||
             (now.isSame(beginDateTime) || now.isSame(eindDateTime))) {
             feedItem.type = type;
-            feedItem.symbol = 'images/other/roadwork.png';
+            feedItem.symbol = {
+              image: 'images/other/roadwork.png',
+              height: 25,
+              width: 28
+            };
             feedItem.time = decodeURIComponent(value.Werk.Wanneer); //eindDateTime.format("dddd, D-M-YYYY") + " (" + eindDateTime.fromNow() + ")";
             feedItem.title = decodeURIComponent(value.Werk.Titel);
             feedItem.description = '';
@@ -151,7 +210,7 @@ dbkjs.modules.messages = {
               feedItem = _obj.marker(feedItem);
             }
             feedItem = _obj.popup(feedItem);
-            dbkjs.modules.messages.items.push(feedItem);
+            _obj.items.push(feedItem);
           }
 
         }
@@ -159,35 +218,3 @@ dbkjs.modules.messages = {
     }
   }
 };
-
-
-
-/**
- * Grabbing information from a traffic information source.
- * This example can be used to create derivatives.
- *
- * The standard url for feeds is http://feeds.livep2000.nl
- * The feed can be accessed with a GET and can be complemented with the
- * parameters 'r' and 'd', like ?r=1,2&d=2
- * @param r region
- *   available regions:
- *     1: Groningen                    2: Friesland
- *     3: Drenthe                      4: IJsselland
- *     5: Twente                       6: Noord en Oost Gelderland
- *     7: Gelderland Midden            8: Gelderland Zuid
- *     9: Utrecht                     10: Noord Holland Noord
- *    11: Zaanstreek-Waterland        12: Kennemerland
- *    13: Amsterdam-Amstelland        14: Gooi en Vechtstreek
- *    15: Haaglanden                  16: Hollands Midden
- *    17: Rotterdam Rijnmond          18: Zuid-Holland Zuid
- *    19: Zeeland                     20: Midden- en West-Brabant
- *    21: Brabant Noord               22: Brabant Zuid en Oost
- *    23: Limburg Noord               24: Limburg Zuid
- *    25: Flevoland
- *
- * @param d discipline
- *   available disciplines:
- *     1: Brandweer     2: Ambulance
- *     3: Politie       4: KRNM
- *
- */

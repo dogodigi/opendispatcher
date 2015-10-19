@@ -40,7 +40,18 @@ dbkjs.Feed = dbkjs.Class({
     this.name = name;
     this.url = url;
     this.callback = callback;
-    this.load();
+  },
+  start: function(milliseconds){
+    var _obj = this;
+    milliseconds = milliseconds || _obj.reload;
+    _obj.reload = milliseconds;
+    _obj.load();
+  },
+  stop: function(){
+    var _obj = this;
+    if(_obj.timeout){
+      clearTimeout(_obj.timeout);
+    }
   },
   triggerTimeout: function(){
     var _obj = this;
