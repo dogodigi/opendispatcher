@@ -107,7 +107,7 @@ dbkjs.modules.care = {
         dbkjs.map.addLayers([_obj.layerIncident, _obj.layerNorm]);
 
         //Care heeft zijn eigen panel:
-        _obj.dialog = dbkjs.util.createDialog('care_dialog', '<i class="fa fa-fire"></i> ' + i18n.t('care.incidentsAndCoverage'));
+        _obj.dialog = dbkjs.util.createDialog('care_dialog', '<i class="fa fa-fire"></i> ' + i18n.t('care.incidentsAndCoverage'),'top:50px;left:0;');
         $('body').append(_obj.dialog);
         _obj.sel_care = $('<input id="sel_care" name="sel_care" type="text" class="form-control" placeholder="' +
                 i18n.t('care.selectPeriod') + '">');
