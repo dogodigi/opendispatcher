@@ -32,6 +32,13 @@ dbkjs.modules.messages = {
   register: function(options) {
     var _obj = this;
     var stop = false;
+    _obj.panel = dbkjs.util.createDialog(
+      'messagespanel',
+      '<i class="fa fa-bell"></i> ' + i18n.t('app.messages'),
+      'display:none;right:0;bottom:0;'
+    );
+    $('body').append(_obj.panel);
+
     $('<a></a>')
       .attr({
         'id': 'btn_feed',
@@ -42,6 +49,7 @@ dbkjs.modules.messages = {
       .append('<i class="fa fa-bell"></i>')
       .click(function(e) {
         e.preventDefault();
+        $('#messagespanel').toggle();
         if ($(this).hasClass('btn-warning')) {
           $(this).removeClass('btn-warning');
           stop = true;
@@ -114,11 +122,12 @@ dbkjs.modules.messages = {
     dbkjs.map.addLayer(this.layer);
   },
   popup: function(item) {
-    var div = $('<div class="feed_' + item.type + ' alert"></div>');
-    div.append('<b>' + item.title + '</b><br />');
-    div.append('<p>' + item.description + '</p><br />');
-    div.append('<p>' + item.time + '</p>');
-    //todo, where to append? $(document.body).append(div);
+    var div = $('<div class="feed-item feed-' + item.type + ' alert alert-info"></div>');
+    div.append('<div class="feed-title">' + item.title + '</div>');
+    div.append('<div class="feed-description">' + item.description + '</div>');
+    div.append('<div class="feed-time">' + item.time + '</div>');
+    $('#messagespanel_b').append(div);
+    item.div = div;
     return item;
   },
   marker: function(item) {
