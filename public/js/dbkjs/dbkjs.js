@@ -103,6 +103,7 @@ dbkjs.challengeAuth = function () {
             dbkjs.options.organisation = data.organisation;
             if (dbkjs.options.organisation.title) {
                 document.title = dbkjs.options.organisation.title;
+                $('#title').html(dbkjs.options.organisation.title);
             }
             dbkjs.successAuth();
         } else {
