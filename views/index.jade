@@ -33,40 +33,50 @@ block content
             i.fa.fa-info-circle
         div#btn-grp-search.btn-group.pull-right(style='display:none;')
   else
-    div#btngrp_navigation.btn-group.pull-right
-      a.btn.navbar-btn.btn-default.drag-handle(href='#')
-        i.fa.fa-ellipsis-v
-      a#zoom_prev.btn.navbar-btn.btn-default.disabled(href='#', title=t('map.prev'))
-        i.fa.fa-backward
-      a#zoom_next.btn.navbar-btn.btn-default.disabled(href='#', title=t('map.next'))
-        i.fa.fa-forward
-      a#zoom_in.btn.navbar-btn.btn-default(href='#', title=t('map.zoomIn'))
-        i.fa.fa-search-plus
-      a#zoom_out.btn.navbar-btn.btn-default(href='#', title=t('map.zoomOut'))
-        i.fa.fa-search-minus
-      a#zoom_extent.btn.navbar-btn.btn-default(href='#', title=t('map.zoomExtent'))
-        i.fa.fa-arrows-alt
-      a#permalink.btn.navbar-btn.btn-default(title=t('map.permalink'))
-        i.fa.fa-link
-    div#btngrp_3.btn-group.pull-right
-      a.btn.navbar-btn.btn-default.drag-handle(href='#')
-        i.fa.fa-ellipsis-v
-      a#c_minimap.btn.navbar-btn.btn-default(href='#', title=t('map.mini'))
-        i.fa.fa-picture-o
-      a#c_settings.btn.navbar-btn.btn-default(href='#settingspanel', data-toggle='modal', title=t('map.settings'))
-        i.fa.fa-cogs
-      a#tb01.btn.navbar-btn.btn-default(href='#overlaypanel', data-toggle='modal', title=t('map.overlays'))
-        i.fa.fa-map-marker
-      a#tb02.btn.navbar-btn.btn-default(href='#baselayerpanel', data-toggle='modal', title=t('map.baselayers'))
-        i.fa.fa-globe
-      a#tb03.btn.navbar-btn.btn-default(href='#', title=t('map.info'))
-        i.fa.fa-info-circle
-    div#btn-grp-search.btn-group.pull-right(style='display:none;')
+    nav.navbar.navbar-default.navbar-fixed-top(role='navigation')
+      div.container-fluid
+        div.navbar-header
+          button.navbar-toggle.collapsed(type='button', data-toggle='collapse' data-target='#od-navbar', aria-expanded='false')
+            span.sr-only(data-i18n='nav.toggle') Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a#title.navbar-brand(href='#', data-i18n='app.name') Opendispatcher
+        div#od-navbar.collapse.navbar-collapse.pull-right
+          div#btn-grp-search.btn-group(style='display:none;')
+          div#btngrp_3.btn-group
+            a#c_minimap.btn.navbar-btn.btn-default(href='#', title=t('map.mini'))
+              i.fa.fa-picture-o
+            a#c_settings.btn.navbar-btn.btn-default(href='#settingspanel', data-toggle='modal', title=t('map.settings'))
+              i.fa.fa-cogs
+            a#tb01.btn.navbar-btn.btn-default(href='#overlaypanel', data-toggle='modal', title=t('map.overlays'))
+              i.fa.fa-map-marker
+            a#tb02.btn.navbar-btn.btn-default(href='#baselayerpanel', data-toggle='modal', title=t('map.baselayers'))
+              i.fa.fa-globe
+            a#tb03.btn.navbar-btn.btn-default(href='#', title=t('map.info'))
+              i.fa.fa-info-circle
+          div#btngrp_navigation.btn-group
+            a#zoom_prev.btn.navbar-btn.btn-default.disabled(href='#', title=t('map.prev'))
+              i.fa.fa-backward
+            a#zoom_next.btn.navbar-btn.btn-default.disabled(href='#', title=t('map.next'))
+              i.fa.fa-forward
+            a#zoom_in.btn.navbar-btn.btn-default(href='#', title=t('map.zoomIn'))
+              i.fa.fa-search-plus
+            a#zoom_out.btn.navbar-btn.btn-default(href='#', title=t('map.zoomOut'))
+              i.fa.fa-search-minus
+            a#zoom_extent.btn.navbar-btn.btn-default(href='#', title=t('map.zoomExtent'))
+              i.fa.fa-arrows-alt
+            a#permalink.btn.navbar-btn.btn-default(title=t('map.permalink'))
+              i.fa.fa-link
 
-  div#mapc1map1
-    div#noordpijl(title=t('map.northarrow'),style='cursor:pointer;')
-      i.fa.fa-long-arrow-up(style='font-size:40px;')
-        span(style='font-size:20px') N
+  if(fullscreen === true)
+    div#mapc1map1
+  else
+    div.container-fluid.fill
+      div#mapc1map1
+        div#noordpijl(title=t('map.northarrow'),style='cursor:pointer;')
+          i.fa.fa-long-arrow-up(style='font-size:40px;')
+            span(style='font-size:20px') N
 
   if (fullscreen === true)
     a.btn.btn-default.dbk-title
