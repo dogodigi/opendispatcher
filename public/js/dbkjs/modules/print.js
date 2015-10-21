@@ -81,7 +81,7 @@ dbkjs.modules.print = {
     });
     dbkjs.map.addControl(_obj.printcontrol);
     $('#btngrp_3').append(
-      '<a id="btn_print" class="btn btn-default" href="#" title="' +
+      '<a id="btn_print" class="btn navbar-btn btn-default" href="#" title="' +
       i18n.t('app.print') +
       '"><i class="fa fa-print"></i></a>'
     );
