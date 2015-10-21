@@ -1,30 +1,40 @@
-<header class="inner">
-  <a id="forkme_banner" href="{% if site.codeurl %}{{ site.codeurl }}{% else %}{{ site.baseurl }}{% endif %}">View on GitHub</a>
-  <h1 id="project_title">{{ site.title }}</h1>
-  {% if site.subtitle %}<h2 id="project_tagline">{{ site.subtitle }}</h2>{% endif %}
-    <section id="downloads">
-      <a class="zip_download_link" href="{% if site.codeurl %}{{ site.codeurl }}{% else %}{{ site.baseurl }}{% endif %}/zipball/master">Download this project as a .zip file</a>
-      <a class="tar_download_link" href="{% if site.codeurl %}{{ site.codeurl }}{% else %}{{ site.baseurl }}{% endif %}/tarball/master">Download this project as a tar.gz file</a>
-    </section>
-</header>
 {% assign url_parts = page.url | split: '/' %}
 {% assign url_parts_size = url_parts | size %}
 {% assign rm = url_parts | last %}
 {% assign base_url = page.url | replace: rm %}
-
-<ul>
-{% for node in site.pages %}
-  {% if node.url contains base_url %}
-    {% assign node_url_parts = node.url | split: '/' %}
-    {% assign node_url_parts_size = node_url_parts | size %}
-    {% assign filename = node_url_parts | last %}
-    {% if url_parts_size == node_url_parts_size and filename != 'index.html' %}
-      {% if node.title == page.title %}
-      <li class="active"><a href='{{node.url}}'>{{node.title}}</a></li>
-      {% else %}
-      <li><a href='{{node.url}}'>{{node.title}}</a></li>
-      {% end if%}
-    {% endif %}
-  {% endif %}
-{% endfor %}
-</ul>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">{{ site.title }}</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        {% for node in site.posts %}
+          {% if node.url contains base_url %}
+            {% assign node_url_parts = node.url | split: '/' %}
+            {% assign node_url_parts_size = node_url_parts | size %}
+            {% assign filename = node_url_parts | last %}
+            {% if url_parts_size == node_url_parts_size and filename != 'index.html' %}
+              {% if node.title == page.title %}
+                <li class="active"><a href='{{node.url}}'>{{node.title}}</a></li>
+              {% else %}
+                <li><a href='{{node.url}}'>{{node.title}}</a></li>
+              {% endif%}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{% if site.codeurl %}{{ site.codeurl }}{% else %}{{ site.baseurl }}{% endif %}/zipball/master"><i class="fa fa-download"></i> zip</a></li>
+        <li><a href="{% if site.codeurl %}{{ site.codeurl }}{% else %}{{ site.baseurl }}{% endif %}/tarball/master"><i class="fa fa-download"></i> tar.gz</a></a></li>
+        <li><a href="{% if site.codeurl %}{{ site.codeurl }}{% else %}{{ site.baseurl }}{% endif %}"><i class="fa fa-github"></i> github</a></li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container-fluid -->
+</nav>
