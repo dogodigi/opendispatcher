@@ -15,10 +15,8 @@
       <!-- HEADER -->
      {% include header.html %}
       <!-- MAIN CONTENT -->
-      <div id="main_content_wrap" class="outer">
-        <section id="main_content" class="inner">
+      <div class="container">
           {{ content }}
-        </section>
       </div>
      {% include footer.html %}
      {% if page.disqus == 1 %}
@@ -30,4 +28,6 @@
         {% include google_analytics.html %}
       {% endif %}
     </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </html>
