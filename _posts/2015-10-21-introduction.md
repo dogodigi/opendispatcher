@@ -3,8 +3,6 @@ layout: post
 title: "Introduction"
 ---
 
-### Introduction
-
 OpenDispatcher is meant to provide all layers of your organisation with
 operational intelligence. This ranges from a simple map to Site specific
 information showing Hazards, Elevators, Sprinkler Systems, Alarms and Entrances.
