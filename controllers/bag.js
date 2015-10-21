@@ -18,91 +18,10 @@
  *
  */
 
-/* global exports, global */
+ var express = require('express');
+ var router = express.Router();
 
-String.prototype.toProperCase = function () {
-    return this.replace(/\w\S*/g, function (txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-};
-
-exports.getVersion = function (req, res) {
-    //var query_str = 'select * from "dbk"."DBKObject_Feature" d JOIN (select * from "dbk"."type_aanwezigheidsgroep") t   ;';
-    var query_str = 'select waarde as bag_update from bag_actueel.nlx_bag_info where sleutel=$1';
-    global.bag.query(query_str, ['schema_creatie'],
-            function (err, result) {
-                if (err) {
-                    res.status(400).json(err);
-                } else {
-                    for (var i = 0; i < result.rows.length; ++i) {
-                    }
-                    res.json(result.rows);
-                }
-                return;
-            }
-    );
-};
-
-exports.getAdres = function (req, res) {
-    if (req.query) {
-        var id = req.params.id;
-        var srid = req.query.srid;
-        if (!srid) {
-            srid = 4326;
-        }
-        var query_str = 'select a.openbareruimtenaam, a.huisnummer, a.huisletter, a.huisnummertoevoeging, a.postcode, a.woonplaatsnaam, ' +
-                'a.gemeentenaam, a.provincienaam, a.typeadresseerbaarobject, a.adresseerbaarobject, a.nummeraanduiding, a.nevenadres, ' +
-                'st_asgeojson(st_force2d(st_transform(a.geopunt,$2))) geopunt, vp.gerelateerdpand as pand ' +
-                'from bag_actueel.adres a left join bag_actueel.verblijfsobjectpand vp on a.adresseerbaarobject = vp.identificatie ' +
-                'where a.adresseerbaarobject = $1';
-        global.bag.query(query_str, [id, srid],
-                function (err, result) {
-                    if (err) {
-                        res.status(400).json(err);
-                    } else {
-                        for (var index = 0; index < result.rows.length; ++index) {
-                            var geometry = JSON.parse(result.rows[index].geopunt);
-                            delete result.rows[index].geopunt;
-                            result.rows[index].geometry = geometry;
-                            result.rows[index].type = "Feature";
-                            result.rows[index].properties = {};
-                            result.rows[index].properties.gid = result.rows[index].nummeraanduiding;
-                            result.rows[index].properties.nummeraanduiding = result.rows[index].nummeraanduiding;
-                            delete result.rows[index].nummeraanduiding;
-                            result.rows[index].properties.openbareruimtenaam = result.rows[index].openbareruimtenaam;
-                            delete result.rows[index].openbareruimtenaam;
-                            result.rows[index].properties.pand = result.rows[index].pand;
-                            delete result.rows[index].pand;
-                            result.rows[index].properties.huisnummer = result.rows[index].huisnummer;
-                            delete result.rows[index].huisnummer;
-                            result.rows[index].properties.huisletter = result.rows[index].huisletter;
-                            delete result.rows[index].huisletter;
-                            result.rows[index].properties.huisnummertoevoeging = result.rows[index].huisnummertoevoeging;
-                            delete result.rows[index].huisnummertoevoeging;
-                            result.rows[index].properties.postcode = result.rows[index].postcode;
-                            delete result.rows[index].postcode;
-                            result.rows[index].properties.woonplaatsnaam = result.rows[index].woonplaatsnaam;
-                            delete result.rows[index].woonplaatsnaam;
-                            result.rows[index].properties.gemeentenaam = result.rows[index].gemeentenaam;
-                            delete result.rows[index].gemeentenaam;
-                            result.rows[index].properties.provincienaam = result.rows[index].provincienaam;
-                            delete result.rows[index].provincienaam;
-                            result.rows[index].properties.typeadresseerbaarobject = result.rows[index].typeadresseerbaarobject;
-                            delete result.rows[index].typeadresseerbaarobject;
-                            result.rows[index].properties.adresseerbaarobject = result.rows[index].adresseerbaarobject;
-                            delete result.rows[index].adresseerbaarobject;
-                            result.rows[index].properties.nevenadres = result.rows[index].nevenadres;
-                            delete result.rows[index].nevenadres;
-                        }
-                        res.json({"type": "FeatureCollection", "features": result.rows});
-                    }
-                    return;
-                }
-        );
-    }
-};
-
-exports.getPanden = function (req, res) {
+ var getPanden = function (req, res) {
     if (req.query) {
         var id = req.params.id;
         var srid = req.query.srid;
@@ -153,74 +72,156 @@ exports.getPanden = function (req, res) {
                     return;
                 });
     }
-};
+  };
 
-exports.autoComplete = function (req, res) {
+router.route('/api/bag/info')
+  .get( function (req, res) {
+    //var query_str = 'select * from "dbk"."DBKObject_Feature" d JOIN (select * from "dbk"."type_aanwezigheidsgroep") t   ;';
+    var query_str = 'select waarde as bag_update from bag_actueel.nlx_bag_info where sleutel=$1';
+    global.bag.query(query_str, ['schema_creatie'],
+      function (err, result) {
+        if (err) {
+          res.status(400).json(err);
+        } else {
+          res.json(result.rows);
+        }
+        return;
+      }
+    );
+});
+
+router.route('/api/bag/adres/:id')
+  .get(function (req, res) {
+    if (req.query) {
+      var id = req.params.id;
+      var srid = req.query.srid;
+      if (!srid) {
+        srid = 4326;
+      }
+      var query_str = 'select a.openbareruimtenaam, a.huisnummer, a.huisletter, a.huisnummertoevoeging, a.postcode, a.woonplaatsnaam, ' +
+        'a.gemeentenaam, a.provincienaam, a.typeadresseerbaarobject, a.adresseerbaarobject, a.nummeraanduiding, a.nevenadres, ' +
+        'st_asgeojson(st_force2d(st_transform(a.geopunt,$2))) geopunt, vp.gerelateerdpand as pand ' +
+        'from bag_actueel.adres a left join bag_actueel.verblijfsobjectpand vp on a.adresseerbaarobject = vp.identificatie ' +
+        'where a.adresseerbaarobject = $1';
+      global.bag.query(query_str, [id, srid],
+        function (err, result) {
+          if (err) {
+            res.status(400).json(err);
+          } else {
+            for (var index = 0; index < result.rows.length; ++index) {
+              var geometry = JSON.parse(result.rows[index].geopunt);
+              delete result.rows[index].geopunt;
+              result.rows[index].geometry = geometry;
+              result.rows[index].type = "Feature";
+              result.rows[index].properties = {};
+              result.rows[index].properties.gid = result.rows[index].nummeraanduiding;
+              result.rows[index].properties.nummeraanduiding = result.rows[index].nummeraanduiding;
+              delete result.rows[index].nummeraanduiding;
+              result.rows[index].properties.openbareruimtenaam = result.rows[index].openbareruimtenaam;
+              delete result.rows[index].openbareruimtenaam;
+              result.rows[index].properties.pand = result.rows[index].pand;
+              delete result.rows[index].pand;
+              result.rows[index].properties.huisnummer = result.rows[index].huisnummer;
+              delete result.rows[index].huisnummer;
+              result.rows[index].properties.huisletter = result.rows[index].huisletter;
+              delete result.rows[index].huisletter;
+              result.rows[index].properties.huisnummertoevoeging = result.rows[index].huisnummertoevoeging;
+              delete result.rows[index].huisnummertoevoeging;
+              result.rows[index].properties.postcode = result.rows[index].postcode;
+              delete result.rows[index].postcode;
+              result.rows[index].properties.woonplaatsnaam = result.rows[index].woonplaatsnaam;
+              delete result.rows[index].woonplaatsnaam;
+              result.rows[index].properties.gemeentenaam = result.rows[index].gemeentenaam;
+              delete result.rows[index].gemeentenaam;
+              result.rows[index].properties.provincienaam = result.rows[index].provincienaam;
+              delete result.rows[index].provincienaam;
+              result.rows[index].properties.typeadresseerbaarobject = result.rows[index].typeadresseerbaarobject;
+              delete result.rows[index].typeadresseerbaarobject;
+              result.rows[index].properties.adresseerbaarobject = result.rows[index].adresseerbaarobject;
+              delete result.rows[index].adresseerbaarobject;
+              result.rows[index].properties.nevenadres = result.rows[index].nevenadres;
+              delete result.rows[index].nevenadres;
+            }
+            res.json({"type": "FeatureCollection", "features": result.rows});
+          }
+          return;
+        }
+      );
+    }
+  });
+
+router.route('/api/bag/panden/:id')
+  .get(getPanden);
+
+router.route('/api/bag/panden/:id.json')
+  .get(getPanden);
+
+router.route('/api/autocomplete/:searchphrase')
+  .get(function (req, res) {
     // @todo Check to see if the database is up. If not, fall back to nominatim!
     if (req.query) {
-        var searchphrase = req.params.searchphrase || '';
-        var whereclause;
-        var finalsearch;
-        if (searchphrase.length > 2) {
-            var srid = req.query.srid;
-            if (!srid) {
-                srid = 4326;
-            }
-
-            // Are there any spaces in the searchphrase? use to_tsquery!
-            if (searchphrase.trim().indexOf(' ') >= 0) {
-                whereclause = "(textsearchable_adres @@ to_tsquery('dutch',$1)) ";
-                finalsearch = searchphrase.trim().toProperCase().replace(/ /g, "&");
-
-            } else {
-                whereclause = "openbareruimtenaam like $1 ";
-                finalsearch = searchphrase.trim().toProperCase() + '%';
-            }
-
-            var query_str = "select openbareruimtenaam || ' ' || " +
-                    "CASE WHEN lower(woonplaatsnaam) = lower(gemeentenaam) THEN woonplaatsnaam " +
-                    "ELSE woonplaatsnaam || ', ' || gemeentenaam END as display_name, " +
-                    "st_x(st_transform(st_centroid(st_collect(geopunt)),$2)) as lon, " +
-                    "st_y(st_transform(st_centroid(st_collect(geopunt)),$2)) as lat " +
-                    "from bag_actueel.adres where " +
-                    whereclause +
-                    "group by woonplaatsnaam, gemeentenaam, openbareruimtenaam limit 10";
-            global.bag.query(query_str, [finalsearch, srid],
-                    function (err, result) {
-                        if (err) {
-                            res.status(400).json(err);
-                        } else {
-                            //If the result is only one record, rerun it to get more details!
-                            if (result.rows.length === 1) {
-                                var query_str = "select openbareruimtenaam || ' ' || " +
-                                        "COALESCE(CAST(huisnummer as varchar) || ' ','') || " +
-                                        "COALESCE(CAST(huisletter as varchar) || ' ','') || " +
-                                        "COALESCE(CAST(huisnummertoevoeging as varchar) || ' ','') || " +
-                                        "COALESCE(CAST(postcode as varchar) || ' ','') || " +
-                                        "CASE WHEN lower(woonplaatsnaam) = lower(gemeentenaam) THEN woonplaatsnaam " +
-                                        "ELSE woonplaatsnaam || ', ' || gemeentenaam END as display_name, " +
-                                        "st_x(st_transform(st_centroid(st_collect(geopunt)),$2)) as lon, " +
-                                        "st_y(st_transform(st_centroid(st_collect(geopunt)),$2)) as lat " +
-                                        "from bag_actueel.adres where " +
-                                        whereclause +
-                                        "group by woonplaatsnaam, gemeentenaam, openbareruimtenaam, huisnummer, huisletter, huisnummertoevoeging, postcode limit 10";
-                                global.bag.query(query_str, [finalsearch, srid],
-                                        function (err, result) {
-                                            if (err) {
-                                                res.status(400).json(err);
-                                            } else {
-                                                res.json(result.rows);
-                                            }
-                                            return;
-                                        });
-                            } else {
-                                res.json(result.rows);
-                            }
-                        }
-                        return;
-                    });
+      var searchphrase = req.params.searchphrase || '';
+      var whereclause;
+      var finalsearch;
+      if (searchphrase.length > 2) {
+        var srid = req.query.srid;
+        if (!srid) {
+          srid = 4326;
+        }
+        // Are there any spaces in the searchphrase? use to_tsquery!
+        if (searchphrase.trim().indexOf(' ') >= 0) {
+          whereclause = "(textsearchable_adres @@ to_tsquery('dutch',$1)) ";
+          finalsearch = searchphrase.trim().toProperCase().replace(/ /g, "&");
         } else {
-            return res.json([]);
+          whereclause = "openbareruimtenaam like $1 ";
+          finalsearch = searchphrase.trim().toProperCase() + '%';
+        }
+        var query_str = "select openbareruimtenaam || ' ' || " +
+          "CASE WHEN lower(woonplaatsnaam) = lower(gemeentenaam) THEN woonplaatsnaam " +
+          "ELSE woonplaatsnaam || ', ' || gemeentenaam END as display_name, " +
+          "st_x(st_transform(st_centroid(st_collect(geopunt)),$2)) as lon, " +
+          "st_y(st_transform(st_centroid(st_collect(geopunt)),$2)) as lat " +
+          "from bag_actueel.adres where " +
+          whereclause +
+          "group by woonplaatsnaam, gemeentenaam, openbareruimtenaam limit 10";
+        global.bag.query(query_str, [finalsearch, srid],
+          function (err, result) {
+            if (err) {
+              res.status(400).json(err);
+            } else {
+              //If the result is only one record, rerun it to get more details!
+              if (result.rows.length === 1) {
+                var query_str = "select openbareruimtenaam || ' ' || " +
+                  "COALESCE(CAST(huisnummer as varchar) || ' ','') || " +
+                  "COALESCE(CAST(huisletter as varchar) || ' ','') || " +
+                  "COALESCE(CAST(huisnummertoevoeging as varchar) || ' ','') || " +
+                  "COALESCE(CAST(postcode as varchar) || ' ','') || " +
+                  "CASE WHEN lower(woonplaatsnaam) = lower(gemeentenaam) THEN woonplaatsnaam " +
+                  "ELSE woonplaatsnaam || ', ' || gemeentenaam END as display_name, " +
+                  "st_x(st_transform(st_centroid(st_collect(geopunt)),$2)) as lon, " +
+                  "st_y(st_transform(st_centroid(st_collect(geopunt)),$2)) as lat " +
+                  "from bag_actueel.adres where " +
+                  whereclause +
+                  "group by woonplaatsnaam, gemeentenaam, openbareruimtenaam, huisnummer, huisletter, huisnummertoevoeging, postcode limit 10";
+                global.bag.query(query_str, [finalsearch, srid],
+                  function (err, result) {
+                    if (err) {
+                      res.status(400).json(err);
+                    } else {
+                      res.json(result.rows);
+                    }
+                    return;
+                 });
+               } else {
+                 res.json(result.rows);
+               }
+            }
+            return;
+          });
+        } else {
+          return res.json([]);
         }
     }
-};
+  });
+
+module.exports = router;

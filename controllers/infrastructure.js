@@ -2,7 +2,7 @@
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  *
  *  This file is part of opendispatcher
- *  
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -19,14 +19,11 @@
  */
 
 /* global exports, global */
+var express = require('express');
+var router = express.Router();
 
-String.prototype.toProperCase = function () {
-    return this.replace(/\w\S*/g, function (txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-};
-
-exports.getVersion = function (req, res) {
+router.route('/api/infra/info')
+  .get( function (req, res) {
     if (global.infra) {
         var query_str = 'select updated from current.update_info where dataset=$1';
         global.infra.query(query_str, ['nwb'],
@@ -44,13 +41,13 @@ exports.getVersion = function (req, res) {
     }else {
         res.status(400).json({"err": -1, "message": "infrastructure is not implemented"});
     }
-};
+});
 
-exports.autoComplete = function (req, res) {
+router.route('/api/autocomplete/:searchtype/:searchphrase')
+  .get( function (req, res) {
     // @todo Check to see if the database is up. If not, fall back to nominatim!
     if (global.infra) {
         if (req.query) {
-            console.log('infrastructure.autocomplete');
             searchtype = req.params.searchtype.toLowerCase();
             if (searchtype !== 'autoweg' &&
                     searchtype !== 'spoorweg' &&
@@ -89,4 +86,6 @@ exports.autoComplete = function (req, res) {
     } else {
         res.status(400).json({"err": -1, "message": "infrastructure is not implemented"});
     }
-};
+});
+
+module.exports = router;

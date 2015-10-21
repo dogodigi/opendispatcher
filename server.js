@@ -23,7 +23,6 @@
 // To run in production: NODE_ENV=production
 
 var express = require('express'),
-        routes = require('./routes'),
         errorhandler = require('errorhandler'),
         //favicon = require('serve-favicon'),
         bodyParser = require('body-parser'),
@@ -118,7 +117,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
-app.use('/build', express.static(__dirname + '/build'));
+
 app.use('/locales', express.static(__dirname + '/locales'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/media', express.static(global.conf.get('media:path')));
@@ -138,7 +137,7 @@ i18n.registerAppHelper(app);
 i18n.serveClientScript(app)
         .serveDynamicResources(app)
         .serveMissingKeyRoute(app);
-routes.setup(app);
+app.use(require('./controllers'));
 function start() {
     app.listen(app.get('port'), function () {
         console.log("Express server listening on port %d in %s mode", app.get('port'), app.settings.env);

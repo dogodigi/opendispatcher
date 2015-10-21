@@ -19,6 +19,8 @@
  */
 
 /* global exports, global */
+var express = require('express');
+var router = express.Router();
 
 /**
  * Get the settings for the organisation from the database based on
@@ -28,7 +30,8 @@
  * @param {type} res
  * @returns organisation settings for the application
  */
-exports.getOrganisation = function(req, res) {
+router.route('/api/organisation.json')
+  .get( function (req, res) {
     if (req.query) {
         var srid = req.query.srid;
         if(!srid){
@@ -46,7 +49,7 @@ exports.getOrganisation = function(req, res) {
             }
         );
     }
-};
+});
 
 /**
  * Select an object from the database by id. takes srid as parameter.
@@ -56,7 +59,7 @@ exports.getOrganisation = function(req, res) {
  * @param {type} res
  * @returns object
  */
-exports.getObject = function(req, res) {
+router.route('/api/object/:id.json').get( function (req, res) {
     if (req.query) {
         var id = req.params.id;
         var srid = req.query.srid;
@@ -79,9 +82,10 @@ exports.getObject = function(req, res) {
             }
         );
     }
-};
+});
 
-exports.getGebied = function(req, res) {
+router.route('/api/gebied/:id.json')
+  .get( function(req, res) {
     if (req.query) {
         var id = req.params.id;
         var srid = req.query.srid;
@@ -104,9 +108,11 @@ exports.getGebied = function(req, res) {
             }
         );
     }
-};
+});
 
-exports.getFeatures = function(req, res) {
+
+router.route('/api/features.json')
+  .get( function(req, res) {
     if (req.query) {
         var srid = req.query.srid;
         if(!srid){
@@ -133,7 +139,7 @@ exports.getFeatures = function(req, res) {
             }
         );
     }
-};
+});
 
 /**
  * Compact arrays with null entries; delete keys from objects with null value
@@ -152,3 +158,4 @@ var removeNulls = function(data){
   }
   return data;
 };
+module.exports = router;

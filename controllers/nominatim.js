@@ -19,9 +19,22 @@
  */
 
 /* global exports, global */
-
+var express = require('express');
+var router = express.Router();
 var http = require('http');
 var querystring = require('querystring');
+
+router.route('/nominatim')
+  .all( function (req, res) {
+    if (req.query) {
+        var request = require('request');
+        var x = request({url: 'http://nominatim.openstreetmap.org/search', qs: req.query});
+        req.pipe(x);
+        x.pipe(res);
+    } else {
+        res.json({"booh": "Nah, nah, nah! You didn't say the magic words!"});
+    }
+  });
 
 function isJsonNull(val) {
     if (val === "null" || val === null || val === "" || typeof(val) === "undefined") {
@@ -79,7 +92,7 @@ function constructFeature(row) {
  * @param {type} res
  * @returns {undefined}
  */
-exports.geocode = function (req, res) {
+function geocode (req, res) {
     var queryparams = req.query;
     queryparams['accept-language'] = req.headers["accept-language"].substring(0, 2);
     var bbox = '-180,90,180,-90';
@@ -132,7 +145,7 @@ exports.geocode = function (req, res) {
         });
         return;
     });
-};
+}
 
 /**
  * Reverse - Pass coordinates to nominatim and process the result
@@ -143,7 +156,7 @@ exports.geocode = function (req, res) {
  * @param {type} res
  * @returns {undefined}
  */
-exports.reversegeocode = function (req, res) {
+function reversegeocode (req, res) {
     if (isJsonNull(req.params.lonlat)) {
         res.send([]);
     } else {
@@ -194,4 +207,5 @@ exports.reversegeocode = function (req, res) {
             return;
         });
     }
-};
+}
+module.exports = router;
