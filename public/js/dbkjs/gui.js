@@ -56,7 +56,9 @@ dbkjs.gui = {
     },
     // jsonDBK.js
     infoPanelUpdateTitle: function (text) {
+      if (dbkjs.viewmode !== 'fullscreen') {
         dbkjs.util.changeDialogTitle(text);
+      }
     },
     // feature.js
     infoPanelUpdateHtml: function (html) {
