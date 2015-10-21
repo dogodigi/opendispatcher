@@ -22,32 +22,6 @@ global.pool = anyDB.createPool(dbURL, {
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    sync: {
-      desktop: {
-        files: [
-          {
-            src: [mediaPath],
-            dest: 'build/desktop/media/'
-          },
-          {
-            src: [symbolPath],
-            dest: 'build/desktop/symbols/'
-          }
-        ]
-      },
-      mobile: {
-        files: [
-          {
-            src: [mediaPath],
-            dest: 'build/mobile/media/'
-          },
-          {
-            src: [symbolPath],
-            dest: 'build/mobile/symbols/'
-          }
-        ]
-      }
-    },
     copy: {
       desktop: {
         files: [{
@@ -303,7 +277,6 @@ module.exports = function(grunt) {
     }
   });
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-sync');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.registerTask('organisation:mobile', 'Export organisation settings to organisation.json in build', function() {
