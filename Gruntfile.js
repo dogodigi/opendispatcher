@@ -243,7 +243,6 @@ module.exports = function(grunt) {
             'public/js/dbkjs/dbkjs.js',
             'public/js/overrides/jsonDBK.js',
             'public/js/overrides/layout.js',
-            'public/js/overrides/mapcontrols.js',
             'public/js/overrides/search.js',
             'public/js/dbkjs/docready.js'
           ]
