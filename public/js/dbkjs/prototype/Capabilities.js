@@ -22,6 +22,13 @@
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
+
+/**
+ * @module dbkjs
+ * @submodule prototype
+ * @class Capabilities
+ * @extends Class
+ */
 dbkjs.Capabilities = dbkjs.Class({
     wmsCapabilitiesFormat: new OpenLayers.Format.WMSCapabilities(),
     url: 'gs2/custom_21/wms?',

@@ -1,0 +1,49 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">API</a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="btn-group navbar-left" role="group" aria-label="...">
+        <a href="#api-classes" type="button" class="btn navbar-btn btn-default">Classes</a>
+        {{#if elements}}
+        <a href="#api-elements" type="button" class="btn navbar-btn btn-default">Elements</a>
+        {{/if}}
+        <a href="#api-modules" type="button" class="btn navbar-btn btn-default">Modules</a>
+      </div>
+      <form class="navbar-form navbar-left" role="search">
+      <div class="form-group">
+        <input type="search" class="form-control" id="api-filter" placeholder="Type to filter API">
+      </div>
+    </div>
+  </div>
+</div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            {{#classes}}
+                <li><a href="{{../projectRoot}}classes/{{name}}.html">{{displayName}}</a></li>
+            {{/classes}}
+            </ul>
+
+            {{#if elements}}
+                <ul id="api-elements" class="apis elements">
+                {{#elements}}
+                    <li><a href="{{../projectRoot}}elements/{{name}}.html">{{displayName}}</a></li>
+                {{/elements}}
+                </ul>
+            {{/if}}
+
+            <ul id="api-modules" class="apis modules">
+            {{#allModules}}
+                <li><a href="{{../projectRoot}}modules/{{name}}.html">{{displayName}}</a></li>
+            {{/allModules}}
+            </ul>
+        </div>
+    </div>

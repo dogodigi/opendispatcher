@@ -21,6 +21,12 @@
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
+/**
+* A collection of functions to manipulate the visual representation in the
+* application
+*
+* @submodule gui
+*/
 dbkjs.gui = {
     // dbkjs.js: successAuth
     setLogo: function () {

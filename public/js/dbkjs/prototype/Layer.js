@@ -22,11 +22,36 @@
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
+
+/**
+ * @submodule prototype
+ * @class Layer
+ * @extends Class
+ */
 dbkjs.Layer = dbkjs.Class({
+    /**
+     * @property id
+     * @type String
+     */
     id: null,
+    /**
+     * @property layer
+     * @type OpenLayers.layer
+     */
     layer: null,
+    /**
+     * @property div
+     * @type DOM element
+     */
     div: null,
+    /**
+     * @property legend
+     * @type DOM element
+     */
     legend: null,
+    /**
+     * @method initialize
+     */
     initialize: function (name, url, params, options, parent, index, metadata, layertype) {
         var ly;
         var dv_panel_content;

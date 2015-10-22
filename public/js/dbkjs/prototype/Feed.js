@@ -22,6 +22,13 @@
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
+
+/**
+ * @module dbkjs
+ * @submodule prototype
+ * @class Feed
+ * @extends Class
+ */
 dbkjs.Feed = dbkjs.Class({
   events: null,
   data: null,

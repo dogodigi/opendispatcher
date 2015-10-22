@@ -22,6 +22,7 @@
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
+
 dbkjs.protocol = dbkjs.protocol || {};
 dbkjs.options = dbkjs.options || {};
 dbkjs.options.feature = null;

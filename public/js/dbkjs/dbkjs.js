@@ -24,6 +24,11 @@ OpenLayers.ProxyHost = "proxy/?q=";
 OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <>";
 
+/**
+* dbkjs is the namespace for the opendispatcher application
+*
+* @module dbkjs
+*/
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || [];
@@ -35,6 +40,12 @@ dbkjs.basePath = dbkjs.basePath || null;
 
 dbkjs.viewmode = 'default';
 
+/**
+ * Initialize the application
+ *
+ * @method dbkjs.init
+ * @constructor
+ */
 dbkjs.init = function() {
 
   dbkjs.setPaths();
@@ -65,7 +76,10 @@ dbkjs.init = function() {
 };
 
 /**
+ *
  * Function to update the visibility for baseLayers
+ *
+ * @method dbkjs.toggelBaseLayer
  * @param {integer} nr
  */
 dbkjs.toggleBaseLayer = function(nr) {

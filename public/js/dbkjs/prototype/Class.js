@@ -20,6 +20,12 @@
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
+
+/**
+ * @module dbkjs
+ * @submodule prototype
+ * @class Class
+ */
 dbkjs.Util = dbkjs.Util || {};
 dbkjs.Util.extend = function(destination, source) {
     destination = destination || {};
