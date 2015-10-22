@@ -22,20 +22,6 @@ global.pool = anyDB.createPool(dbURL, {
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    yuidoc: {
-      compile: {
-        name: '<%= pkg.name %>',
-        description: '<%= pkg.description %>',
-        version: '<%= pkg.version %>',
-        url: '<%= pkg.homepage %>',
-        options: {
-          paths: ['public/js/dbkjs/'],
-          themedir: 'assets/yuitheme/',
-          helpers:['assets/yuitheme/helpers.js'],
-          outdir: '../../opendispatcher/gh-pages/apidoc/'
-        }
-      }
-    },
     copy: {
       desktop: {
         files: [{
@@ -291,7 +277,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
-  grunt.loadNpmTasks('grunt-contrib-yuidoc');
   grunt.registerTask('organisation:mobile', 'Export organisation settings to organisation.json in build', function() {
     var cb = this.async();
 
