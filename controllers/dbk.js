@@ -179,10 +179,10 @@ var getTerrain = function(req, res) {
   }
 };
 
-router.route('/api/site/:id').get(getSite);
 router.route('/api/site/:id.json').get(getSite);
-router.route('/api/object/:id').get(getSite);
+router.route('/api/site/:id').get(getSite);
 router.route('/api/object/:id.json').get(getSite);
+router.route('/api/object/:id').get(getSite);
 router.route('/api/gebied/:id').get(getTerrain);
 router.route('/api/gebied/:id.json').get(getTerrain);
 router.route('/api/terrain/:id').get(getTerrain);
