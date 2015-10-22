@@ -4,18 +4,15 @@
   },
   "plugins": ["plugins/markdown"],
   "templates": {
+    "default": {
+      "outputSourceFiles": false,
+      "outputSourcePath": false
+    },
     "logoFile": "",
     "cleverLinks": false,
     "monospaceLinks": false,
     "dateFormat": "ddd MMM Do YYYY",
-    "outputSourceFiles": false,
-    "outputSourcePath": false,
-    "systemName": "DocStrap",
-    "footer": "",
-    "copyright": "DocStrap Copyright © 2012-2014 The contributors to the JSDoc3 and DocStrap projects.",
-    "navType": "vertical",
-    "theme": "yeti",
-    "linenums": true,
+    "copyright": "Copyright © 2013-2015 contributors to opendispatcher",
     "collapseSymbols": false,
     "inverseNav": true,
     "highlightTutorialCode": true,
