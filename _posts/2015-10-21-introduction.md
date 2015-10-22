@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Introduction"
+section: doc
 ---
 
 OpenDispatcher is meant to provide all layers of your organisation with

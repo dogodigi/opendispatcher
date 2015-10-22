@@ -15,19 +15,34 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        {% for node in site.posts %}
-          {% if node.url contains base_url %}
-            {% assign node_url_parts = node.url | split: '/' %}
-            {% assign node_url_parts_size = node_url_parts | size %}
-            {% assign filename = node_url_parts | last %}
-            {% if url_parts_size == node_url_parts_size and filename != 'index.html' %}
-              {% if node.title == page.title %}
-                <li class="active"><a href='{{node.url}}'>{{node.title}}</a></li>
-              {% else %}
-                <li><a href='{{node.url}}'>{{node.title}}</a></li>
-              {% endif%}
-            {% endif %}
-          {% endif %}
+        {% for section in site.sections %}
+          {% assign attr = section[0] %}
+          {% assign label = section[1] %}
+          {% if page.section == label %}
+            <li class="active dropdown">
+          {% else %}
+            <li class="dropdown">
+          {% endif%}
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{label}} <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            {% for node in site.posts %}
+              {% if node.url contains base_url %}
+                {% if node.section == attr %}
+                  {% assign node_url_parts = node.url | split: '/' %}
+                  {% assign node_url_parts_size = node_url_parts | size %}
+                  {% assign filename = node_url_parts | last %}
+                  {% if url_parts_size == node_url_parts_size and filename != 'index.html' %}
+                    {% if node.title == page.title %}
+                      <li class="active"><a href='{{node.url}}'>{{node.title}}</a></li>
+                    {% else %}
+                      <li><a href='{{node.url}}'>{{node.title}}</a></li>
+                    {% endif%}
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </li>
         {% endfor %}
       </ul>
       <ul class="nav navbar-nav navbar-right">

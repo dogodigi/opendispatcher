@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Installation"
+section: doc
 ---
 
 ## Requirements

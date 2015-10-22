@@ -22,8 +22,7 @@ sections: [
     ['doc', 'Documentation'],
     ['tut', 'Tutorial'],
     ['ref', 'Reference'],
-    ['dev', 'Developers'],
-    ['post', 'Posts']
+    ['dev', 'Developers']
   ]
 
 collections:
