@@ -35,3 +35,18 @@ body > .container {
 code {
   font-size: 80%;
 }
+.ghs {
+  max-width: 300px;
+  min-height: 300px;
+  margin: 10px;
+}
+.custom {
+  max-width: 300px;
+  min-height: 300px;
+  margin: 10px;
+}
+.nen1414 {
+  max-width: 300px;
+  min-height: 300px;
+  margin: 10px;
+}

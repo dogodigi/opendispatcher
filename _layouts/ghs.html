@@ -1,0 +1,23 @@
+---
+layout: default
+---
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>{{ page.title }}</h1>
+    {% if page.subtitle %}<p>{{ page.subtitle }}</p>{% endif %}
+    <p>{{ content }}</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    {% for ghs in site.ghs %}
+    <div class="col-md-4 well ghs">
+      <img src="{{ site.baseurl }}{{ ghs.image.url }}" alt="{{ ghs.image.alt }}" title="{{ ghs.image.title }}">
+      <h2>{{ ghs.title }}</h2>
+      <p>{{ ghs.content }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>

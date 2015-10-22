@@ -1,0 +1,23 @@
+---
+layout: default
+---
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>{{ page.title }}</h1>
+    {% if page.subtitle %}<p>{{ page.subtitle }}</p>{% endif %}
+    <p>{{ content }}</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    {% for custom in site.custom %}
+    <div class="col-md-4 well custom">
+      <img src="{{ site.baseurl }}{{ custom.image.url }}" alt="{{ custom.image.alt }}" title="{{ custom.image.title }}">
+      <h2>{{ custom.title }}</h2>
+      <p>{{ custom.content }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>

@@ -1,0 +1,28 @@
+---
+layout: default
+---
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>{{ page.title }}</h1>
+    {% if page.subtitle %}<p>{{ page.subtitle }}</p>{% endif %}
+    <p>{{ content }}</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    {% for nen1414 in site.nen1414 %}
+    <div class="col-md-4 well nen1414">
+      <img src="{{ site.baseurl }}{{ nen1414.image.url }}" alt="{{ nen1414.image.alt }}" title="{{ nen1414.image.title }}">
+      <h2>{{ nen1414.title }}</h2>
+      <b>Reference</b>
+      <p>{{ nen1414.description }}</p>
+      {% if nen1414.instruction %}
+      <b>Instruction</b>
+      <p>{{ nen1414.instruction }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
