@@ -22,6 +22,15 @@ global.pool = anyDB.createPool(dbURL, {
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    jsdoc: {
+      dist: {
+        src: ['controllers/*.js'],
+        options: {
+          destination: 'doc/api/controllers/',
+          configure: './config/jsdoc.json'
+        }
+      }
+    },
     copy: {
       desktop: {
         files: [{
@@ -277,6 +286,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-jsdoc');
   grunt.registerTask('organisation:mobile', 'Export organisation settings to organisation.json in build', function() {
     var cb = this.async();
 
@@ -431,4 +441,5 @@ module.exports = function(grunt) {
 
   grunt.registerTask('desktop', ['cssmin:desktop', 'uglify:desktop', 'copy:desktop', 'index:desktop']);
   grunt.registerTask('mobile', ['cssmin:mobile', 'uglify:mobile', 'organisation:mobile', 'features:mobile', 'copy:mobile', 'index:mobile']);
+  grunt.registerTask("doc", "jsdoc");
 };
