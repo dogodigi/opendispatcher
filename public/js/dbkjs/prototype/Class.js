@@ -22,8 +22,7 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 
 /**
- * @module dbkjs
- * @submodule prototype
+ * @module dbkjs.prototype
  * @class Class
  */
 dbkjs.Util = dbkjs.Util || {};

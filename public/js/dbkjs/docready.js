@@ -21,6 +21,15 @@
 
 /* global dbkjs */
 
+/**
+ * The application is started when the document/page
+ * has finished loading (including all assets)
+ * to prevent unwanted behaviour. Depends on jQuery
+ * @class document
+ * @method ready
+ * @module dbkjs
+ * @main
+ */
 $(document).ready(function () {
     dbkjs.documentReady();
 });

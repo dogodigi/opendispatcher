@@ -24,7 +24,7 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 
 /**
- * @submodule prototype
+ * @module dbkjs.prototype
  * @class Layer
  * @extends Class
  */

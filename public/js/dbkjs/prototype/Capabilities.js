@@ -24,8 +24,7 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 
 /**
- * @module dbkjs
- * @submodule prototype
+ * @module dbkjs.prototype
  * @class Capabilities
  * @extends Class
  */
@@ -41,6 +40,7 @@ dbkjs.Capabilities = dbkjs.Class({
         /* Display error message, etc */
         //alert(e);
     },
+
     initialize: function (options) {
         this.options = OpenLayers.Util.extend({}, options);
         OpenLayers.Util.extend(this, options);

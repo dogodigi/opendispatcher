@@ -26,8 +26,8 @@ Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.387
 
 /**
 * dbkjs is the namespace for the opendispatcher application
-*
 * @module dbkjs
+* @class initialize
 */
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
@@ -42,8 +42,7 @@ dbkjs.viewmode = 'default';
 
 /**
  * Initialize the application
- *
- * @method dbkjs.init
+ * @method init
  * @constructor
  */
 dbkjs.init = function() {
@@ -76,11 +75,10 @@ dbkjs.init = function() {
 };
 
 /**
+ * Update the visibility for baseLayers
  *
- * Function to update the visibility for baseLayers
- *
- * @method dbkjs.toggelBaseLayer
- * @param {integer} nr
+ * @method toggelBaseLayer
+ * @param {number} integer
  */
 dbkjs.toggleBaseLayer = function(nr) {
   var layerbuttons = $(".bl");
@@ -97,6 +95,14 @@ dbkjs.toggleBaseLayer = function(nr) {
   }
 };
 
+/**
+ * Toggle object visibility on the map
+ * depending on category
+ *
+ * @method setDbkCategoryVisibility
+ * @param {category to work with} string
+ * @param {visible yes/no} boolean
+ */
 dbkjs.setDbkCategoryVisibility = function(category, visible) {
   if (!dbkjs.options.visibleCategories) {
     dbkjs.options.visibleCategories = {};
@@ -105,11 +111,21 @@ dbkjs.setDbkCategoryVisibility = function(category, visible) {
   dbkjs.protocol.jsonDBK.layerBrandweervoorziening.redraw();
 };
 
+/**
+ * Register Click and Touchend events on the map
+ *
+ * @method activateClick
+ */
 dbkjs.activateClick = function() {
   dbkjs.map.events.register('click', dbkjs.map, dbkjs.util.onClick);
   dbkjs.map.events.register('touchend', dbkjs.map, dbkjs.util.onClick);
 };
 
+/**
+ * Retrieve organisation configuration from the REST API
+ *
+ * @method challengeAuth
+ */
 dbkjs.challengeAuth = function() {
   var params = {
     srid: dbkjs.options.projection.srid,
@@ -148,6 +164,11 @@ dbkjs.challengeAuth = function() {
   });
 };
 
+/**
+ * Render the Application
+ *
+ * @method successAuth
+ */
 dbkjs.successAuth = function() {
   dbkjs.hoverControl = new OpenLayers.Control.SelectFeature(
     [], {
@@ -175,7 +196,6 @@ dbkjs.successAuth = function() {
 
   dbkjs.gui.setLogo();
 
-  //register modules
   $.each(dbkjs.modules, function(mod_index, module) {
     if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1 ||
       (dbkjs.options.additionalModules && $.inArray(mod_index, dbkjs.options.additionalModules) > -1)) {
@@ -194,7 +214,13 @@ dbkjs.successAuth = function() {
   $(dbkjs).trigger('dbkjs_init_complete');
 };
 
-//@TODO: Deze goed controleren, er was een haakjes conflict na de resolve
+/**
+ * Parse WMS capabilities document from the
+ * OGC WMS interface and add the layers to the
+ * dialogs
+ *
+ * @method loadOrganisationCapabilities
+ */
 dbkjs.loadOrganisationCapabilities = function() {
   if (dbkjs.options.organisation.wms) {
     dbkjs.loadingcapabilities = 0;
@@ -290,6 +316,11 @@ dbkjs.loadOrganisationCapabilities = function() {
   }
 };
 
+/**
+ * Draw the map
+ *
+ * @method finishMap
+ */
 dbkjs.finishMap = function() {
   //find the div that contains the baseLayer.name
   var listItems = $("#baselayerpanel_ul li");
@@ -346,6 +377,12 @@ dbkjs.finishMap = function() {
   //get dbk!
 };
 
+/**
+ * Configure paths to be used by the application
+ * for retrieving assets
+ *
+ * @method setPaths
+ */
 dbkjs.setPaths = function() {
   if (!dbkjs.basePath) {
     dbkjs.basePath = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
@@ -368,6 +405,13 @@ dbkjs.setPaths = function() {
 
 };
 
+/**
+ * When the application has rendered, enable and disable
+ * controls depending on the display being optimized for
+ * mobile devices or not.
+ *
+ * @method bind_dbkjs_init_complete
+ */
 dbkjs.bind_dbkjs_init_complete = function() {
 
   $(dbkjs).bind('dbkjs_init_complete', function() {
@@ -425,6 +469,11 @@ dbkjs.bind_dbkjs_init_complete = function() {
   });
 };
 
+/**
+ * Initialize all dependencies and the application components
+ *
+ * @method documentReady
+ */
 dbkjs.documentReady = function() {
   // Make sure i18n is initialized
   i18n.init({
