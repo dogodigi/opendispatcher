@@ -266,7 +266,7 @@ router.route('/api/bag/address/:id').get(getAddress);
 router.route('/api/autocomplete/:searchphrase').get(getAutocomplete);
 router.route('/api/bag/info').get(getBagInfo);
 router.route('/api/bag/buildings/:id.json').get(getBuilding);
-router.route('/api/bag/buildings/:id').get(getBuilding);
 router.route('/api/bag/panden/:id.json').get(getBuilding);
+router.route('/api/bag/buildings/:id').get(getBuilding);
 router.route('/api/bag/panden/:id').get(getBuilding);
 module.exports = router;
