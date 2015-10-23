@@ -22,7 +22,14 @@
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
+/**
+ * @memberof dbkjs
+ * @namespace
+ */
 dbkjs.mapcontrols = {
+  /**
+   * Create the controls
+   */
   createMapControls: function() {
     if (dbkjs.viewmode !== 'fullscreen') {
       var mousePos = new OpenLayers.Control.MousePosition({
@@ -71,7 +78,9 @@ dbkjs.mapcontrols = {
       }
     }
   },
-  //dbkjs.js: init
+  /**
+   * Register events for the map
+   */
   registerMapEvents: function(baselayer_ul) {
     if (dbkjs.viewmode !== 'fullscreen') {
       $('#baselayerpanel_b').append(baselayer_ul);

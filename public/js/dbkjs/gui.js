@@ -24,14 +24,12 @@ window.dbkjs = dbkjs;
 /**
  * A collection of functions to manipulate the visual representation in the
  * application
- *
- * @module dbkjs
- * @class gui
+ * @namespace
+ * @memberof dbkjs
  */
 dbkjs.gui = {
   /**
    * Set the logo to be displayed in the application. Overrides the default logo
-   * @method setLogo
    */
   setLogo: function() {
     if (dbkjs.options.organisation.logo) {
@@ -41,8 +39,7 @@ dbkjs.gui = {
 
   /**
    * Create a button that gives users the possibility to refresh the map
-   *
-   * @method createRefreshButton
+   * @param {Object} obj
    */
   createRefreshButton: function(obj) {
     $('#btngrp_navigation').append(
@@ -60,8 +57,6 @@ dbkjs.gui = {
   /**
    * Changes the dataset for the typeahead function and binds it
    * to an object
-   *
-   * @method updateSearchInput
    * @param obj {Object} Object to bind to
    * @param name {String}
    * @param dbk_naam_array {Array} array with searchable objects
@@ -81,8 +76,6 @@ dbkjs.gui = {
 
   /**
    * Update the title for the Information panel
-   *
-   * @method infoPanelUpdateTitle
    * @param text {String} Plain text or HTML formatted String
    */
   infoPanelUpdateTitle: function(text) {
@@ -94,7 +87,6 @@ dbkjs.gui = {
   /**
    * Update the content for the Information panel
    *
-   * @method infoPanelUpdateHtml
    * @param html {String} HTML formatted String
    */
   infoPanelUpdateHtml: function(html) {
@@ -103,8 +95,6 @@ dbkjs.gui = {
 
   /**
    * Update the footer for the Information panel
-   *
-   * @method infoPanelUpdateFooterHtml
    * @param html {String} HTML formatted String
    */
   infoPanelUpdateFooterHtml: function(html) {
@@ -113,8 +103,6 @@ dbkjs.gui = {
 
   /**
    * Add pagination to the Information panel
-   *
-   * @method infoPanelAddPagination
    */
   infoPanelAddPagination: function() {
     $('#infopanel_f').append('<ul id="Pagination" class="pagination"></ul>');
@@ -122,8 +110,6 @@ dbkjs.gui = {
 
   /**
    * Show the Information panel
-   *
-   * @method infoPanelShow
    */
   infoPanelShow: function() {
     $('#infopanel').show();
@@ -131,8 +117,6 @@ dbkjs.gui = {
 
   /**
    * Show the Information panel footer
-   *
-   * @method infoPanelShowFooter
    */
   infoPanelShowFooter: function() {
     $('#infopanel_f').show();
@@ -141,8 +125,6 @@ dbkjs.gui = {
   /**
    * Add DOM elements to the body of the
    * Information panel
-   *
-   * @method infoPanelAddItems
    * @param html {String} HTML formatted String
    */
   infoPanelAddItems: function(html) {
@@ -151,8 +133,6 @@ dbkjs.gui = {
 
   /**
    * Add a click Event to a DOM element
-   *
-   * @method infoPanelAddItemClickEvent
    * @param obj {Object} DOM element
    * @deprecated not used
    */
@@ -162,8 +142,6 @@ dbkjs.gui = {
 
   /**
    * Hide the Information panel
-   *
-   * @method infoPanelHide
    */
   infoPanelHide: function() {
     $('#infopanel').hide();
@@ -172,9 +150,7 @@ dbkjs.gui = {
   /**
    * Renders an error messag in the application
    * alert dialog
-   *
    * @uses dbkjs.util.alert
-   * @method showError
    * @param errMsg {String} Plain or HTML formatted String
    */
   showError: function(errMsg) {
@@ -183,8 +159,6 @@ dbkjs.gui = {
 
   /**
    * Update the title for the Details panel
-   *
-   * @method detailsPanelUpdateTitle
    * @param text {String} Plain or HTML formatted String
    */
   detailsPanelUpdateTitle: function(text) {
@@ -193,8 +167,6 @@ dbkjs.gui = {
 
   /**
    * Update the content for the Details panel
-   *
-   * @method detailsPanelUpdateHtml
    * @param html {String} HTML formatted String
    */
   detailsPanelUpdateHtml: function(html) {
@@ -203,8 +175,6 @@ dbkjs.gui = {
 
   /**
    * Show the Details panel
-   *
-   * @method detailsPanelShow
    */
   detailsPanelShow: function() {
     $('#vectorclickpanel').show();
@@ -212,8 +182,6 @@ dbkjs.gui = {
 
   /**
    * Hide the Details panel
-   *
-   * @method detailsPanelHide
    */
   detailsPanelHide: function() {
     $('#vectorclickpanel').hide();

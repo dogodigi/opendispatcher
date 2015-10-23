@@ -22,12 +22,23 @@
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
+/**
+ * @memberof dbkjs
+ * @namespace
+ */
 dbkjs.layout = {
     id: 'dbk.layout',
+    /**
+     * Activate the layout
+     */
     activate: function () {
         var _obj = dbkjs.layout;
         _obj.settingsDialog('#settingspanel_b');
     },
+    /**
+     * Create a dialog for settings
+     * @param {Object} parent - DOM element to connect the dialog to
+     */
     settingsDialog: function (parent) {
         $(parent).append('<h4>' + i18n.t('app.contrast') + '</h4><p>' + i18n.t('app.selectContrast') + '</p>');
         $(parent).append('<p><div class="row"><div class="col-xs-6">' +

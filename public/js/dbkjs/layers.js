@@ -23,16 +23,14 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 /**
  * A collection of functions to manipulate map layers and dialogs related to map layers
- *
- * @module dbkjs
- * @class layers
+ * @memberof dbkjs
+ * @namespace
  */
 dbkjs.layers = {
   /**
    * Create the dialog for Base layers on the map that gives a user the
    * option to toggle layers on and off. Will also add event listeners
    * to the loadstart and loadend events to display layer loading progress
-   * @method createBaseLayers
    */
   createBaseLayers: function() {
     var baselayer_ul = $('<ul id="baselayerpanel_ul" class="nav nav-pills nav-stacked">');

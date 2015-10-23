@@ -23,10 +23,17 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     jsdoc: {
-      dist: {
+      controllers: {
         src: ['controllers/*.js'],
         options: {
           destination: 'doc/api/controllers/',
+          configure: './config/jsdoc.json'
+        }
+      },
+      application: {
+        src: ['public/js/dbkjs/*.js'],
+        options: {
+          destination: 'doc/app/',
           configure: './config/jsdoc.json'
         }
       }
@@ -441,5 +448,5 @@ module.exports = function(grunt) {
 
   grunt.registerTask('desktop', ['cssmin:desktop', 'uglify:desktop', 'copy:desktop', 'index:desktop']);
   grunt.registerTask('mobile', ['cssmin:mobile', 'uglify:mobile', 'organisation:mobile', 'features:mobile', 'copy:mobile', 'index:mobile']);
-  grunt.registerTask("doc", "jsdoc");
+  grunt.registerTask("doc", ["jsdoc:controllers", "jsdoc:application"]);
 };

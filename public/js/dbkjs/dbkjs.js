@@ -19,16 +19,25 @@
  */
 
 /* global OpenLayers, i18n, Proj4js, dbkjsLang */
-
+/**
+ * @external OpenLayers
+ * @property {string} ProxyHost
+ */
 OpenLayers.ProxyHost = "proxy/?q=";
+/**
+ * @external OpenLayers
+ * @property {string} IMAGE_RELOAD_ATTEMPTS
+ */
 OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
-Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <>";
 
 /**
-* dbkjs is the namespace for the opendispatcher application
-* @module dbkjs
-* @class initialize
-*/
+ * @external Proj4js
+ * @property {string} EPSG:28992
+ */
+Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <>";
+/**
+ * @namespace dbkjs
+ */
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || [];
@@ -42,8 +51,8 @@ dbkjs.viewmode = 'default';
 
 /**
  * Initialize the application
- * @method init
- * @constructor
+ * @memberof dbkjs
+ * @function init
  */
 dbkjs.init = function() {
 
@@ -76,9 +85,9 @@ dbkjs.init = function() {
 
 /**
  * Update the visibility for baseLayers
- *
- * @method toggelBaseLayer
- * @param {number} integer
+ * @memberof dbkjs
+ * @function toggleBaseLayer
+ * @param {integer} number - the id for the baseLayer to toggle
  */
 dbkjs.toggleBaseLayer = function(nr) {
   var layerbuttons = $(".bl");
@@ -98,23 +107,24 @@ dbkjs.toggleBaseLayer = function(nr) {
 /**
  * Toggle object visibility on the map
  * depending on category
- *
- * @method setDbkCategoryVisibility
- * @param {category to work with} string
- * @param {visible yes/no} boolean
+ * @memberof dbkjs
+ * @function setDbkCategoryVisibility
+ * @param {string} category - the name for the category to toggle
+ * @param {boolean} [visible=false] - true for on, false for off
  */
 dbkjs.setDbkCategoryVisibility = function(category, visible) {
+
   if (!dbkjs.options.visibleCategories) {
     dbkjs.options.visibleCategories = {};
   }
-  dbkjs.options.visibleCategories[category] = visible;
+  dbkjs.options.visibleCategories[category] = visible || false;
   dbkjs.protocol.jsonDBK.layerBrandweervoorziening.redraw();
 };
 
 /**
  * Register Click and Touchend events on the map
- *
- * @method activateClick
+ * @memberof dbkjs
+ * @function activateClick
  */
 dbkjs.activateClick = function() {
   dbkjs.map.events.register('click', dbkjs.map, dbkjs.util.onClick);
@@ -123,8 +133,8 @@ dbkjs.activateClick = function() {
 
 /**
  * Retrieve organisation configuration from the REST API
- *
- * @method challengeAuth
+ * @memberof dbkjs
+ * @function challengeAuth
  */
 dbkjs.challengeAuth = function() {
   var params = {
@@ -166,7 +176,7 @@ dbkjs.challengeAuth = function() {
 
 /**
  * Render the Application
- *
+ * @memberof dbkjs
  * @method successAuth
  */
 dbkjs.successAuth = function() {
@@ -218,7 +228,7 @@ dbkjs.successAuth = function() {
  * Parse WMS capabilities document from the
  * OGC WMS interface and add the layers to the
  * dialogs
- *
+ * @memberof dbkjs
  * @method loadOrganisationCapabilities
  */
 dbkjs.loadOrganisationCapabilities = function() {
@@ -318,7 +328,7 @@ dbkjs.loadOrganisationCapabilities = function() {
 
 /**
  * Draw the map
- *
+ * @memberof dbkjs
  * @method finishMap
  */
 dbkjs.finishMap = function() {
@@ -380,7 +390,7 @@ dbkjs.finishMap = function() {
 /**
  * Configure paths to be used by the application
  * for retrieving assets
- *
+ * @memberof dbkjs
  * @method setPaths
  */
 dbkjs.setPaths = function() {
@@ -409,7 +419,7 @@ dbkjs.setPaths = function() {
  * When the application has rendered, enable and disable
  * controls depending on the display being optimized for
  * mobile devices or not.
- *
+ * @memberof dbkjs
  * @method bind_dbkjs_init_complete
  */
 dbkjs.bind_dbkjs_init_complete = function() {
@@ -471,7 +481,7 @@ dbkjs.bind_dbkjs_init_complete = function() {
 
 /**
  * Initialize all dependencies and the application components
- *
+ * @memberof dbkjs
  * @method documentReady
  */
 dbkjs.documentReady = function() {
