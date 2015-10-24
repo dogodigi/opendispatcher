@@ -41,8 +41,8 @@ dbkjs.Feed = dbkjs.Class({
   i: 0,
   initialize: function(name, url, options, callback) {
     var _obj = this;
-    this.options = dbkjs.Util.extend({}, options);
-    dbkjs.Util.extend(this, options);
+    this.options = dbkjs.util.extend({}, options);
+    dbkjs.util.extend(this, options);
     this.name = name;
     this.url = url;
     this.callback = callback;

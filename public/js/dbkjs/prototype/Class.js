@@ -21,18 +21,14 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 
-/**
- * @namespace Util
- * @memberof dbkjs
- */
-dbkjs.Util = dbkjs.Util || {};
+dbkjs.util = dbkjs.util || {};
 /**
  * @method extend
- * @memberof dbkjs.Util
+ * @memberof dbkjs.util
  * @param destination
  * @param source
  */
-dbkjs.Util.extend = function(destination, source) {
+dbkjs.util.extend = function(destination, source) {
   destination = destination || {};
   if (source) {
     for (var property in source) {
@@ -53,11 +49,11 @@ dbkjs.Util.extend = function(destination, source) {
 };
 /**
  * @method inherit
- * @memberof dbkjs.Util
+ * @memberof dbkjs.util
  * @param C
  * @param P
  */
-dbkjs.Util.inherit = function(C, P) {
+dbkjs.util.inherit = function(C, P) {
   var F = function() {};
   F.prototype = P.prototype;
   C.prototype = new F();
@@ -67,7 +63,7 @@ dbkjs.Util.inherit = function(C, P) {
     if (typeof o === "function") {
       o = o.prototype;
     }
-    dbkjs.Util.extend(C.prototype, o);
+    dbkjs.util.extend(C.prototype, o);
   }
 };
 /**
@@ -88,7 +84,7 @@ dbkjs.Class = function() {
   if (len > 1) {
     var newArgs = [C, P].concat(
       Array.prototype.slice.call(arguments).slice(1, len - 1), F);
-    dbkjs.Util.inherit.apply(null, newArgs);
+    dbkjs.util.inherit.apply(null, newArgs);
   } else {
     C.prototype = F;
   }
