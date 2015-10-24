@@ -31,7 +31,7 @@ module.exports = function(grunt) {
         }
       },
       application: {
-        src: ['public/js/dbkjs/*.js'],
+        src: ['public/js/dbkjs/**/*.js'],
         options: {
           destination: 'doc/app/',
           configure: './config/jsdoc.json'

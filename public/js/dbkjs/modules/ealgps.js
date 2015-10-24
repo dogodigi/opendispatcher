@@ -23,6 +23,10 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
+/**
+* @memberof dbkjs.modules
+* @exports ealgps
+*/
 dbkjs.modules.ealgps = {
     id: "dbk.module.ealgps",
     gps: null,

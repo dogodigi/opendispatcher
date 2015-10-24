@@ -23,6 +23,10 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
+/**
+* @memberof dbkjs.modules
+* @exports care
+*/
 dbkjs.modules.care = {
     id: "dbk.modules.care",
     visibility: false,

@@ -25,10 +25,9 @@ window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 
 /**
- * BAG class
- *
- * Voor alle functionaliteit gerelateerd aan bag
- */
+* @memberof dbkjs.modules
+* @exports bag
+*/
 dbkjs.modules.bag = {
     id: "dbk.modules.bag",
     namespace: "bag",

@@ -24,9 +24,9 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 
 /**
- * @module dbkjs.prototype
  * @class Feed
- * @extends Class
+ * @memberof dbkjs
+ * @extends dbkjs.Class
  */
 dbkjs.Feed = dbkjs.Class({
   events: null,
@@ -47,27 +47,27 @@ dbkjs.Feed = dbkjs.Class({
     this.url = url;
     this.callback = callback;
   },
-  start: function(milliseconds){
+  start: function(milliseconds) {
     var _obj = this;
     milliseconds = milliseconds || _obj.reload;
     _obj.reload = milliseconds;
     _obj.load();
   },
-  stop: function(){
+  stop: function() {
     var _obj = this;
-    if(_obj.timeout){
+    if (_obj.timeout) {
       clearTimeout(_obj.timeout);
     }
   },
-  triggerTimeout: function(){
+  triggerTimeout: function() {
     var _obj = this;
-    this.timeout = setTimeout(function () {
-        _obj.load();
+    this.timeout = setTimeout(function() {
+      _obj.load();
     }, _obj.reload);
   },
   load: function() {
     var _obj = this;
-    if(_obj.timeout){
+    if (_obj.timeout) {
       clearTimeout(_obj.timeout);
     }
     _obj.error = false;
@@ -84,16 +84,16 @@ dbkjs.Feed = dbkjs.Class({
         dataType: this.dataType
       }).done(function(response) {
         //check the datatype of the response. If it is xml, convert to JSON
-        if(_obj.dataType === 'xml'){
+        if (_obj.dataType === 'xml') {
           _obj.triggerTimeout();
           _obj.callback(_obj.name, JSON.parse(xml2json(response, " ")));
-        } else if (_obj.dataType === 'json'){
+        } else if (_obj.dataType === 'json') {
           _obj.triggerTimeout();
           _obj.callback(_obj.name, response);
         }
       })
       .fail(function() {
-        _obj.callback(_obj.name,{});
+        _obj.callback(_obj.name, {});
       });
   },
   CLASS_NAME: "dbkjs.Feed"

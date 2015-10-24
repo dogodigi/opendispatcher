@@ -24,32 +24,35 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 
 /**
- * @module dbkjs.prototype
  * @class Layer
- * @extends Class
+ * @memberof dbkjs
+ * @extends dbkjs.Class
  */
 dbkjs.Layer = dbkjs.Class({
     /**
+     * @memberof dbkjs.Layer
      * @property id
-     * @type String
+     * @type {string}
      */
     id: null,
     /**
+     * @memberof dbkjs.Layer
      * @property layer
-     * @type OpenLayers.layer
+     * @type {OpenLayers.layer}
      */
     layer: null,
     /**
+     * @memberof dbkjs.Layer
      * @property div
-     * @type DOM element
      */
     div: null,
     /**
+     * @memberof dbkjs.Layer
      * @property legend
-     * @type DOM element
      */
     legend: null,
     /**
+     * @memberof dbkjs.Layer
      * @method initialize
      */
     initialize: function (name, url, params, options, parent, index, metadata, layertype) {

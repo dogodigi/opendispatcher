@@ -23,7 +23,10 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
-
+/**
+* @memberof dbkjs.modules
+* @exports geolocate
+*/
 dbkjs.modules.geolocate = {
     id: 'dbk.modules.geolocate',
     style: {
@@ -32,12 +35,17 @@ dbkjs.modules.geolocate = {
         strokeWidth: 1,
         fillOpacity: 0.1
     },
+    /**
+     * @property {Object} layer - OpenLayers.Layer
+     */
     layer: new OpenLayers.Layer.Vector('GPS location'),
+    /**
+     * @property {boolean} firstGeolocation - true or false
+     */
     firstGeolocation: true,
 
     /**
-     *
-     * @param {<OpenLayers.Feature>} feature
+     * @param {Object} feature - <OpenLayers.Feature>
      */
     pulsate: function (feature) {
         var _obj = dbkjs.modules.geolocate;
@@ -80,6 +88,9 @@ dbkjs.modules.geolocate = {
             timeout: 7000
         }
     }),
+    /**
+     * @method register
+     */
     register: function () {
         var _obj = dbkjs.modules.geolocate;
         $('#btngrp_3').append('<a id="btn_geolocate" class="btn btn-default navbar-btn" href="#" title="' + i18n.t('map.zoomLocation') + '"><i class="fa fa-crosshairs"></i></a>');

@@ -24,83 +24,89 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 
 /**
- * @module dbkjs.prototype
  * @class Capabilities
- * @extends Class
+ * @memberof dbkjs
+ * @extends dbkjs.Class
  */
 dbkjs.Capabilities = dbkjs.Class({
-    wmsCapabilitiesFormat: new OpenLayers.Format.WMSCapabilities(),
-    url: 'gs2/custom_21/wms?',
-    prefix: '',
-    SERVICE: 'WMS',
-    VERSION: '1.1.1',
-    REQUEST: 'GetCapabilities',
-    title: 'WMS lagen',
-    onLayerLoadError: function (e) {
-        /* Display error message, etc */
-        //alert(e);
-    },
+  wmsCapabilitiesFormat: new OpenLayers.Format.WMSCapabilities(),
+  url: 'gs2/custom_21/wms?',
+  prefix: '',
+  SERVICE: 'WMS',
+  VERSION: '1.1.1',
+  REQUEST: 'GetCapabilities',
+  title: 'WMS lagen',
+  /**
+   * @memberof dbkjs.Capabilities
+   * @param {Object} e - Event
+   */
+  onLayerLoadError: function(e) {
+    /* Display error message, etc */
+    //alert(e);
+  },
 
-    initialize: function (options) {
-        this.options = OpenLayers.Util.extend({}, options);
-        OpenLayers.Util.extend(this, options);
-        var _obj = this;
-        OpenLayers.Request.GET({
-            url: this.url,
-            params: {
-                SERVICE: this.SERVICE,
-                VERSION: this.VERSION, // For example, '1.1.1'
-                REQUEST: this.REQUEST
-            },
-            success: function (r) {
-                var doc = r.responseXML;
-                if (!doc || !doc.documentElement) {
-                    doc = r.responseText;
-                }
-                var c = _obj.wmsCapabilitiesFormat.read(doc);
-                if (!c || !c.capability) {
-                    dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
-                    if (dbkjs.loadingcapabilities === 0) {
-                        dbkjs.finishMap();
-                    }
-                    _obj.onLayerLoadError(c);
-                    return;
-                } else {
-                    var parent = options.title;
+  initialize: function(options) {
+    this.options = OpenLayers.Util.extend({}, options);
+    OpenLayers.Util.extend(this, options);
+    var _obj = this;
+    OpenLayers.Request.GET({
+      url: this.url,
+      params: {
+        SERVICE: this.SERVICE,
+        VERSION: this.VERSION, // For example, '1.1.1'
+        REQUEST: this.REQUEST
+      },
+      success: function(r) {
+        var doc = r.responseXML;
+        if (!doc || !doc.documentElement) {
+          doc = r.responseText;
+        }
+        var c = _obj.wmsCapabilitiesFormat.read(doc);
+        if (!c || !c.capability) {
+          dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
+          if (dbkjs.loadingcapabilities === 0) {
+            dbkjs.finishMap();
+          }
+          _obj.onLayerLoadError(c);
+          return;
+        } else {
+          var parent = options.title;
 
-                    $.each(c.capability.layers, function (lkey, lval) {
-                        var metadata = {};
-                        if (!dbkjs.util.isJsonNull(lval.abstract)) {
-                            metadata.abstract = lval.abstract;
-                        }
-                        if (!dbkjs.util.isJsonNull(options.pl)) {
-                            metadata.pl = options.pl + lkey;
-                        }
-                        var params = OpenLayers.Util.extend({layers: lval.name}, options.params);
-                        var myLayer = new dbkjs.Layer(parent + '\\' + lval.title,
-                                _obj.url,
-                                params,
-                                options.options,
-                                '',
-                                options.index + lkey,
-                                metadata
-                                );
-                    });
-                    dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
-                    if (dbkjs.loadingcapabilities === 0) {
-                        dbkjs.finishMap();
-                    }
-                    return;
-                }
-            },
-            failure: function (r) {
-                dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
-                if (dbkjs.loadingcapabilities === 0) {
-                    dbkjs.finishMap();
-                }
-                _obj.onLayerLoadError(r);
-                return;
+          $.each(c.capability.layers, function(lkey, lval) {
+            var metadata = {};
+            if (!dbkjs.util.isJsonNull(lval.abstract)) {
+              metadata.abstract = lval.abstract;
             }
-        });
-    }
+            if (!dbkjs.util.isJsonNull(options.pl)) {
+              metadata.pl = options.pl + lkey;
+            }
+            var params = OpenLayers.Util.extend({
+              layers: lval.name
+            }, options.params);
+            var myLayer = new dbkjs.Layer(parent + '\\' + lval.title,
+              _obj.url,
+              params,
+              options.options,
+              '',
+              options.index + lkey,
+              metadata
+            );
+          });
+          dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
+          if (dbkjs.loadingcapabilities === 0) {
+            dbkjs.finishMap();
+          }
+          return;
+        }
+      },
+      failure: function(r) {
+        dbkjs.loadingcapabilities = dbkjs.loadingcapabilities - 1;
+        if (dbkjs.loadingcapabilities === 0) {
+          dbkjs.finishMap();
+        }
+        _obj.onLayerLoadError(r);
+        return;
+      }
+    });
+  }
 });

@@ -23,6 +23,10 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
+/**
+* @memberof dbkjs.modules
+* @exports connectionmonitor
+*/
 dbkjs.modules.connectionmonitor = {
     id: "dbk.module.connectionmonitor",
     connected: null,

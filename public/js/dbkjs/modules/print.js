@@ -23,12 +23,19 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 
+/**
+* @memberof dbkjs.modules
+* @exports print
+*/
 dbkjs.modules.print = {
   id: 'dbk.modules.print',
   rotation: 0,
   scale: 1,
   printbox: null,
   active: false,
+  /**
+   * @method register
+   */
   register: function(options) {
     var _obj = dbkjs.modules.print;
     _obj.printDialog('#printpanel_b');
@@ -128,6 +135,9 @@ dbkjs.modules.print = {
       }
     });
   },
+  /**
+   * @method clear
+   */
   clear: function() {
     var _obj = dbkjs.modules.print;
     _obj.printcontrol.deactivate();
@@ -135,16 +145,26 @@ dbkjs.modules.print = {
     _obj.printbox.destroy();
     _obj.active = false;
   },
+  /**
+   * @method transform
+   * @param {event} evt
+   */
   transform: function(evt) {
     var _obj = dbkjs.modules.print;
     if (evt.rotation) {
       _obj.rotation -= evt.rotation;
     }
   },
+  /**
+   * @event transformComplete
+   */
   transformComplete: function(evt) {
     var _obj = dbkjs.modules.print;
     _obj.printbox = evt.feature;
   },
+  /**
+   * @method doPrint
+   */
   doPrint: function() {
     var _obj = dbkjs.modules.print;
     var adr_str = '';
@@ -504,8 +524,8 @@ dbkjs.modules.print = {
   },
   /**
    *
-   * @param {type} layer
-   * @returns {dbkjs.modules.print.encodeLayer.encLayer|@exp;encLayer@pro;type}
+   * @param {object} layer - OpenLayers.Layer
+   * @returns {object} EncodedLayer - Layer JSON object for print
    */
   encodeLayer: function(layer) {
     var _obj = dbkjs.modules.print;
