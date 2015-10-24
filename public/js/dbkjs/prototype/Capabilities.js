@@ -29,12 +29,34 @@ window.dbkjs = dbkjs;
  * @extends dbkjs.Class
  */
 dbkjs.Capabilities = dbkjs.Class({
+  /**
+   * @memberof dbkjs.Capabilities
+   * @type OpenLayers.Format.WMSCapabilities
+   */
   wmsCapabilitiesFormat: new OpenLayers.Format.WMSCapabilities(),
+  /**
+   * @memberof dbkjs.Capabilities
+   */
   url: 'gs2/custom_21/wms?',
+  /**
+   * @memberof dbkjs.Capabilities
+   */
   prefix: '',
+  /**
+   * @memberof dbkjs.Capabilities
+   */
   SERVICE: 'WMS',
+  /**
+   * @memberof dbkjs.Capabilities
+   */
   VERSION: '1.1.1',
+  /**
+   * @memberof dbkjs.Capabilities
+   */
   REQUEST: 'GetCapabilities',
+  /**
+   * @memberof dbkjs.Capabilities
+   */
   title: 'WMS lagen',
   /**
    * @memberof dbkjs.Capabilities
@@ -44,7 +66,10 @@ dbkjs.Capabilities = dbkjs.Class({
     /* Display error message, etc */
     //alert(e);
   },
-
+  /**
+   * @memberof dbkjs.Capabilities
+   * @param {Object} options
+   */
   initialize: function(options) {
     this.options = OpenLayers.Util.extend({}, options);
     OpenLayers.Util.extend(this, options);

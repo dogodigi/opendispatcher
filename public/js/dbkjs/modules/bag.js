@@ -27,19 +27,20 @@ dbkjs.modules = dbkjs.modules || {};
 /**
  * @memberof dbkjs.modules
  * @exports bag
+ * @extends dbkjs.Module
  * @todo Complete documentation.
  */
 dbkjs.modules.bag = {
   /**
-   *
+   * @type dbkjs.Module.id
    */
   id: "dbk.modules.bag",
   /**
-   *
+   * @type dbkjs.Module.namespace
    */
   namespace: "bag",
   /**
-   *
+   * @type dbkjs.Module.layer
    */
   layer: null,
   /**

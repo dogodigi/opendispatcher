@@ -29,6 +29,8 @@ dbkjs.Util = dbkjs.Util || {};
 /**
  * @method extend
  * @memberof dbkjs.Util
+ * @param destination
+ * @param source
  */
 dbkjs.Util.extend = function(destination, source) {
   destination = destination || {};
@@ -48,6 +50,25 @@ dbkjs.Util.extend = function(destination, source) {
     }
   }
   return destination;
+};
+/**
+ * @method inherit
+ * @memberof dbkjs.Util
+ * @param C
+ * @param P
+ */
+dbkjs.Util.inherit = function(C, P) {
+  var F = function() {};
+  F.prototype = P.prototype;
+  C.prototype = new F();
+  var i, l, o;
+  for (i = 2, l = arguments.length; i < l; i++) {
+    o = arguments[i];
+    if (typeof o === "function") {
+      o = o.prototype;
+    }
+    dbkjs.Util.extend(C.prototype, o);
+  }
 };
 /**
  * @class Class
@@ -72,21 +93,4 @@ dbkjs.Class = function() {
     C.prototype = F;
   }
   return C;
-};
-/**
- * @method inherit
- * @memberof dbkjs.Util
- */
-dbkjs.Util.inherit = function(C, P) {
-  var F = function() {};
-  F.prototype = P.prototype;
-  C.prototype = new F();
-  var i, l, o;
-  for (i = 2, l = arguments.length; i < l; i++) {
-    o = arguments[i];
-    if (typeof o === "function") {
-      o = o.prototype;
-    }
-    dbkjs.Util.extend(C.prototype, o);
-  }
 };
