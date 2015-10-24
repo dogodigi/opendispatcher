@@ -432,8 +432,8 @@ dbkjs.util = {
   },
   /**
    * Set the title of the modal
-   * @param {string} modal_id - id for the DOM element to fetch
-   * @param {string} title - Title to apply
+   * @param {String} modal_id - id for the DOM element to fetch
+   * @param {String} title - Title to apply
    */
   setModalTitle: function(modal_id, title) {
     if (title instanceof $) {
@@ -445,7 +445,7 @@ dbkjs.util = {
   },
   /**
    * Handle click events
-   * @param {object} e - the event
+   * @param {Object} e - the event
    */
   onClick: function(e) {
     $('#wmsclickpanel').hide();
@@ -458,7 +458,7 @@ dbkjs.util = {
   },
   /**
    * Handle various forms of values that should all evaluate to false
-   * @param {object} val - the object to check for null values
+   * @param {Object} val - the object to check for null values
    */
   isJsonNull: function(val) {
     if (val === "null" || val === null || val === "" || typeof(val) === "undefined" || val === "undefined") {
@@ -471,7 +471,7 @@ dbkjs.util = {
    * Apply padding to a number
    * @param {integer} num - the number to pad
    * @param {integer} size - the length of the resulting padded string
-   * @return {string} s - padded number as string
+   * @return {String} s - padded number as string
    */
   pad: function(num, size) {
     var s = num + "";
@@ -482,7 +482,7 @@ dbkjs.util = {
   /**
    * Reformat a display time when adding seconds
    * @param {integer} duration - the number of seconds to add
-   * @return {string} displayTime - the formatted time to display
+   * @return {String} displayTime - the formatted time to display
    */
   parseSeconds: function(duration) {
     //duration is a momentjs object
@@ -610,7 +610,7 @@ dbkjs.util = {
   },
   /**
    * Check to see if touch is enabled
-   * @return {boolean} enabled - true/false
+   * @return {Boolean} enabled - true/false
    */
   touchEnabled: function() {
     if ("ontouchstart" in document.documentElement) {
@@ -623,7 +623,7 @@ dbkjs.util = {
    * Process an error when a media object cannot be retrieved and return if there
    * is an error or not
    * @param {event} e
-   * @return {boolean} error - true or false
+   * @return {Boolean} error - true or false
    */
   mediaError: function(e) {
     var msg = $($(e).parent().find('p')[0]);
@@ -811,8 +811,8 @@ dbkjs.util = {
   /**
    * Change the title for a panel
    *
-   * @param {string} title - Title to set
-   * @param {string} dialogid - Dialog to apply the title to
+   * @param {String} title - Title to set
+   * @param {String} dialogid - Dialog to apply the title to
    */
   changeDialogTitle: function(title, dialogid) {
     var dialog;
@@ -828,7 +828,7 @@ dbkjs.util = {
   },
   /**
    *
-   * @param {string} id (optional)
+   * @param {String} id (optional)
    * @returns {jQuery.DOMElement} the new table element for tabular object
    */
   createTabbable: function(id) {
@@ -847,13 +847,13 @@ dbkjs.util = {
    * Return the tab_content id placeholder so chained functions have a
    * reference. Can be used with an existing id to change a tab.
    *
-   * @param {string} parent_id - id for the parent DOM element
-   * @param {string} tab_title - Title to apply
-   * @param {string} tab_content - Content to apply
-   * @param {boolean} active  - tab on/off
-   * @param {string} [id] - id to set to the tab. If not set it will be
+   * @param {String} parent_id - id for the parent DOM element
+   * @param {String} tab_title - Title to apply
+   * @param {String} tab_content - Content to apply
+   * @param {Boolean} active  - tab on/off
+   * @param {String} [id] - id to set to the tab. If not set it will be
    * generated
-   * @returns {string} id - the id of the created tab
+   * @returns {String} id - the id of the created tab
    */
   appendTab: function(parent_id, tab_title, tab_content, active, id) {
     var parent_ul = $('#' + parent_id + ' ul').first();

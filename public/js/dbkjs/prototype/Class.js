@@ -27,6 +27,7 @@ dbkjs.util = dbkjs.util || {};
  * @memberof dbkjs.util
  * @param destination
  * @param source
+ * @return {Object} destination
  */
 dbkjs.util.extend = function(destination, source) {
   destination = destination || {};

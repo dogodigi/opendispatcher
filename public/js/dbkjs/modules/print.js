@@ -524,8 +524,8 @@ dbkjs.modules.print = {
   },
   /**
    *
-   * @param {object} layer - OpenLayers.Layer
-   * @returns {object} EncodedLayer - Layer JSON object for print
+   * @param {Object} layer - OpenLayers.Layer
+   * @returns {Object} EncodedLayer - Layer JSON object for print
    */
   encodeLayer: function(layer) {
     var _obj = dbkjs.modules.print;

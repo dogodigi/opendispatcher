@@ -26,7 +26,7 @@
 
 /**
  * @memberof external:OpenLayers
- * @property {string} ProxyHost - proxy/?q=
+ * @property {String} ProxyHost - proxy/?q=
  */
 OpenLayers.ProxyHost = "proxy/?q=";
 /**
@@ -42,7 +42,7 @@ OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 
  /**
  * @memberof external:Proj4js
- * @property {string} EPSG:28992 - <code>+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <></code>
+ * @property {String} EPSG:28992 - <code>+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <></code>
  */
 Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <>";
 /**
@@ -120,8 +120,8 @@ dbkjs.toggleBaseLayer = function(nr) {
  * depending on category
  * @memberof dbkjs
  * @function setDbkCategoryVisibility
- * @param {string} category - the name for the category to toggle
- * @param {boolean} [visible=false] - true for on, false for off
+ * @param {String} category - the name for the category to toggle
+ * @param {Boolean} [visible=false] - true for on, false for off
  */
 dbkjs.setDbkCategoryVisibility = function(category, visible) {
 

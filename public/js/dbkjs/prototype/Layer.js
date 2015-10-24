@@ -32,7 +32,7 @@ dbkjs.Layer = dbkjs.Class({
     /**
      * @memberof dbkjs.Layer
      * @property id
-     * @type {string}
+     * @type {String}
      */
     id: null,
     /**

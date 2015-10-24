@@ -87,7 +87,7 @@ dbkjs.modules.livep2000 = {
   marker: null,
   /**
    * @method encode
-   * @param {string} s
+   * @param {String} s
    */
   encode: function(s) {
     if (s) {
@@ -97,14 +97,14 @@ dbkjs.modules.livep2000 = {
   },
   /**
    * @method encodeIfNotEmpty
-   * @param {string} s
+   * @param {String} s
    */
   encodeIfNotEmpty: function(s) {
     return s === null ? "" : this.encode(s);
   },
   /**
    * @method register
-   * @param {object} options
+   * @param {Object} options
    */
   register: function(options) {
     var me = this;
@@ -252,7 +252,7 @@ dbkjs.modules.livep2000 = {
   },
   /**
    * @method setMarker
-   * @param {object} lonlat
+   * @param {Object} lonlat
    */
   setMarker: function(lonlat) {
     if (this.marker) {

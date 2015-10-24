@@ -60,7 +60,8 @@ dbkjs.modules.gms = {
    */
   zoomedPos: null,
   /**
-   *
+   * @param {String} s
+   * @return {String} s - HTML encoded String
    */
   encode: function(s) {
     if (s) {
@@ -69,14 +70,14 @@ dbkjs.modules.gms = {
     return null;
   },
   /**
-   *
+   * @param {String} s
    */
   encodeIfNotEmpty: function(s) {
     s = this.encode(s);
     return s === null ? "" : s;
   },
   /**
-   *
+   * @param {Object} options
    */
   register: function(options) {
     var _obj = dbkjs.modules.gms;

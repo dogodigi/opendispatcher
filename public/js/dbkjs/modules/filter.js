@@ -32,19 +32,19 @@ dbkjs.modules.filter = {
    */
   id: "dbk.modules.filter",
   /**
-   * @type {object}
+   * @type {Object}
    */
   filter: {},
   /**
-   * @type {array}
+   * @type {Array}
    */
   selectie: [],
   /**
-   * @type {boolean}
+   * @type {Boolean}
    */
   activated: false,
   /**
-   *
+   * @param {Object} options
    */
   register: function(options) {
     var _obj = dbkjs.modules.filter;
@@ -413,7 +413,9 @@ dbkjs.modules.filter = {
     }
   },
   /**
-   *
+   * @param {Array} source
+   * @param {String} target
+   * @return {Array} differences
    */
   diff: function(source, target) {
     var difference = [];

@@ -34,7 +34,7 @@ dbkjs.modules.geolocate = {
    */
   id: 'dbk.modules.geolocate',
   /**
-   *
+   * @property {Object} style
    */
   style: {
     strokeColor: '#CCCC00',
@@ -47,7 +47,7 @@ dbkjs.modules.geolocate = {
    */
   layer: new OpenLayers.Layer.Vector('GPS location'),
   /**
-   * @property {boolean} firstGeolocation - true or false
+   * @property {Boolean} firstGeolocation - true or false
    */
   firstGeolocation: true,
   /**
