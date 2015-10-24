@@ -30,7 +30,9 @@ dbkjs.modules = dbkjs.modules || {};
  */
 dbkjs.modules.measure = {
   /**
-   *
+   * @constant
+   * @type dbkjs.Module.id
+   * @default
    */
   id: "dbk.modules.measure",
   /**

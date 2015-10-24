@@ -28,6 +28,11 @@ window.dbkjs = dbkjs;
 * @exports print
 */
 dbkjs.modules.print = {
+  /**
+   * @constant
+   * @type dbkjs.Module.id
+   * @default
+   */
   id: 'dbk.modules.print',
   rotation: 0,
   scale: 1,

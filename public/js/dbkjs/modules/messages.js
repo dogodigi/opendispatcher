@@ -30,7 +30,9 @@ dbkjs.modules = dbkjs.modules || {};
  */
 dbkjs.modules.messages = {
   /**
-   *
+   * @constant
+   * @type dbkjs.Module.id
+   * @default
    */
   id: "dbk.module.messages",
   /**

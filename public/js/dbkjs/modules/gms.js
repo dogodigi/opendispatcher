@@ -28,7 +28,9 @@ dbkjs.modules = dbkjs.modules || {};
  */
 dbkjs.modules.gms = {
   /**
-   *
+   * @constant
+   * @type dbkjs.Module.id
+   * @default
    */
   id: "dbk.module.gms",
   /**

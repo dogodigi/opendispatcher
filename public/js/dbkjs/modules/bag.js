@@ -35,7 +35,9 @@ dbkjs.modules = dbkjs.modules || {};
  */
 dbkjs.modules.bag = {
   /**
+   * @constant
    * @type dbkjs.Module.id
+   * @default
    */
   id: "dbk.modules.bag",
   /**

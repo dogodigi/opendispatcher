@@ -45,7 +45,9 @@ dbkjs.modules.updateFilter = function(id) {
  */
 dbkjs.modules.search = {
   /**
-   *
+   * @constant
+   * @type dbkjs.Module.id
+   * @default
    */
   id: "dbk.modules.search",
   /**

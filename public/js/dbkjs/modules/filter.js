@@ -28,7 +28,9 @@ dbkjs.modules = dbkjs.modules || {};
  */
 dbkjs.modules.filter = {
   /**
-   *
+   * @constant
+   * @type dbkjs.Module.id
+   * @default
    */
   id: "dbk.modules.filter",
   /**

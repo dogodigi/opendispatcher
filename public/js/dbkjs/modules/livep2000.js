@@ -79,6 +79,11 @@ dbkjs.modules = dbkjs.modules || {};
  * @param {integer} d - discipline
  */
 dbkjs.modules.livep2000 = {
+  /**
+   * @constant
+   * @type dbkjs.Module.id
+   * @default
+   */
   id: "dbk.module.livep2000",
   popup: null,
   dataXml: null,

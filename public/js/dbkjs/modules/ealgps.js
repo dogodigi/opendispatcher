@@ -30,7 +30,9 @@ dbkjs.modules = dbkjs.modules || {};
  */
 dbkjs.modules.ealgps = {
   /**
-   *
+   * @constant
+   * @type dbkjs.Module.id
+   * @default
    */
   id: "dbk.module.ealgps",
   /**

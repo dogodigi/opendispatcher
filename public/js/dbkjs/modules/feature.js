@@ -29,6 +29,11 @@ dbkjs.modules = dbkjs.modules || {};
  * @todo Complete documentation.
  */
 dbkjs.modules.feature = {
+  /**
+   * @constant
+   * @type dbkjs.Module.id
+   * @default
+   */
   id: "dbk.modules.feature",
   /**
    * URL naar een statisch boringen bestand in gml formaat

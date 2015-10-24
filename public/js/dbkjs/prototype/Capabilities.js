@@ -36,6 +36,7 @@ dbkjs.Capabilities = dbkjs.Class({
   wmsCapabilitiesFormat: new OpenLayers.Format.WMSCapabilities(),
   /**
    * @memberof dbkjs.Capabilities
+   * @default
    */
   url: 'gs2/custom_21/wms?',
   /**
@@ -44,18 +45,22 @@ dbkjs.Capabilities = dbkjs.Class({
   prefix: '',
   /**
    * @memberof dbkjs.Capabilities
+   * @default
    */
   SERVICE: 'WMS',
   /**
    * @memberof dbkjs.Capabilities
+   * @default
    */
   VERSION: '1.1.1',
   /**
    * @memberof dbkjs.Capabilities
+   * @default
    */
   REQUEST: 'GetCapabilities',
   /**
    * @memberof dbkjs.Capabilities
+   * @default
    */
   title: 'WMS lagen',
   /**
