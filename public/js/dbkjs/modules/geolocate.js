@@ -26,9 +26,16 @@ dbkjs.modules = dbkjs.modules || {};
 /**
  * @memberof dbkjs.modules
  * @exports geolocate
+ * @todo Complete documentation.
  */
 dbkjs.modules.geolocate = {
+  /**
+   *
+   */
   id: 'dbk.modules.geolocate',
+  /**
+   *
+   */
   style: {
     strokeColor: '#CCCC00',
     fillColor: '#CCCC00',
@@ -43,7 +50,6 @@ dbkjs.modules.geolocate = {
    * @property {boolean} firstGeolocation - true or false
    */
   firstGeolocation: true,
-
   /**
    * @param {Object} feature - <OpenLayers.Feature>
    */

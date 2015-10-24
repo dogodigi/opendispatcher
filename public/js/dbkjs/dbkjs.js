@@ -50,6 +50,9 @@ Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.387
  */
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
+/**
+ * @namespace dbkjs.modules
+ */
 dbkjs.modules = dbkjs.modules || [];
 dbkjs.overlays = dbkjs.overlays || [];
 dbkjs.map = dbkjs.map || null;

@@ -24,16 +24,30 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 /**
-* @memberof dbkjs.modules
-* @exports messages
-* @todo Write the documentation.
-*/
+ * @memberof dbkjs.modules
+ * @exports messages
+ * @todo Write the documentation.
+ */
 dbkjs.modules.messages = {
+  /**
+   *
+   */
   id: "dbk.module.messages",
-
+  /**
+   *
+   */
   layer: null,
+  /**
+   *
+   */
   feeds: {},
+  /**
+   *
+   */
   items: [],
+  /**
+   *
+   */
   register: function(options) {
     var _obj = this;
     var stop = false;
@@ -126,6 +140,9 @@ dbkjs.modules.messages = {
     this.layer = new OpenLayers.Layer.Markers("messages");
     dbkjs.map.addLayer(this.layer);
   },
+  /**
+   *
+   */
   popup: function(item) {
     var div = $('<div class="feed-item feed-' + item.type + ' alert alert-info"></div>');
     div.append('<div class="feed-title">' + item.title + '</div>');
@@ -135,6 +152,9 @@ dbkjs.modules.messages = {
     item.div = div;
     return item;
   },
+  /**
+   *
+   */
   marker: function(item) {
     var symbol = item.symbol || {
       image: "images/other/marker-gray.png",
@@ -149,6 +169,9 @@ dbkjs.modules.messages = {
     item.marker = marker;
     return item;
   },
+  /**
+   *
+   */
   purge: function(type) {
     var _obj = this;
     var i;
@@ -167,6 +190,9 @@ dbkjs.modules.messages = {
     }
     return finalArray;
   },
+  /**
+   *
+   */
   callback: function(type, result) {
     var _obj = dbkjs.modules.messages;
     _obj.items = _obj.purge(type);

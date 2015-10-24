@@ -39,7 +39,7 @@ dbkjs.modules = dbkjs.modules || {};
 /**
 * @memberof dbkjs.modules
 * @exports layertoggle
-* @todo Write the documentation.
+* @todo Complete documentation.
 */
 dbkjs.modules.layertoggle = {
     id: "dbk.module.layertoggle",

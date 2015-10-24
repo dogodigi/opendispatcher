@@ -24,10 +24,10 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 /**
-* @memberof dbkjs.modules
-* @exports feature
-* @todo Write the documentation.
-*/
+ * @memberof dbkjs.modules
+ * @exports feature
+ * @todo Complete documentation.
+ */
 dbkjs.modules.feature = {
   id: "dbk.modules.feature",
   /**
@@ -38,24 +38,33 @@ dbkjs.modules.feature = {
    * Laag. Wordt geiniteerd met de functie dbkobject.show() kan worden overruled
    */
   highlightlayer: null,
+  /**
+   *
+   */
   timer: null,
+  /**
+   *
+   */
   showlabels: true,
+  /**
+   *
+   */
   layer: null,
+  /**
+   *
+   */
   currentCluster: [],
+  /**
+   *
+   */
   selection: null,
   /**
-   * The layer that will hold the incidents
+   *
    */
-
-  /**
-   * The layer that will hold the incident sketches such as catchement areas and route
-   */
-  //    sketch: new OpenLayers.Layer.Vector("Feature_sketch", {
-  //        rendererOptions: {
-  //            zIndexing: true
-  //        }
-  //    }),
   caches: {},
+  /**
+   *
+   */
   getActive: function() {
     var _obj = dbkjs.modules.feature;
     if (_obj.active) {
@@ -100,6 +109,9 @@ dbkjs.modules.feature = {
       }
     }
   },
+  /**
+   *
+   */
   register: function(options) {
     var _obj = dbkjs.modules.feature;
     dbkjs.gui.createRefreshButton(_obj);
@@ -166,6 +178,9 @@ dbkjs.modules.feature = {
     });
     _obj.get();
   },
+  /**
+   *
+   */
   get: function() {
     var _obj = dbkjs.modules.feature;
     if (_obj.layer) {
@@ -204,6 +219,9 @@ dbkjs.modules.feature = {
       dbkjs.gui.showError(" " + i18n.t('app.errorfeatures'));
     });
   },
+  /**
+   *
+   */
   featureInfohtml: function(feature) {
     var _obj = dbkjs.modules.feature;
     var ret_title = $('<li></li>');
@@ -225,6 +243,9 @@ dbkjs.modules.feature = {
     }
     return ret_title;
   },
+  /**
+   *
+   */
   search_dbk: function() {
     var _obj = dbkjs.modules.feature;
     var dbk_naam_array = _obj.getDbkSearchValues();
@@ -243,6 +264,9 @@ dbkjs.modules.feature = {
       });
     }
   },
+  /**
+   *
+   */
   search_oms: function() {
     var _obj = dbkjs.modules.feature;
     var oms_naam_array = _obj.getOmsSearchValues();
@@ -261,29 +285,38 @@ dbkjs.modules.feature = {
       });
     }
   },
-  /* Override this function to customize the search (and display) string of DBK's,
+  /**
+   * Override this function to customize the search (and display) string of DBK's,
    * for example to include address:
-   *
-   * dbkjs.modules.feature.getDbkSearchValue = function(feature) {
-   *     var t = feature.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(feature.attributes.informeleNaam) ? '' : feature.attributes.informeleNaam);
-   *     if(feature.attributes.adres && feature.attributes.adres.length > 0) {
+   * @example
+   *     dbkjs.modules.feature.getDbkSearchValue = function(feature) {
+   *       var t = feature.attributes.formeleNaam + ' ' +
+   *         (dbkjs.util.isJsonNull(feature.attributes.informeleNaam) ?
+   *           '' :
+   *           feature.attributes.informeleNaam);
+   *       if(feature.attributes.adres && feature.attributes.adres.length > 0) {
    *         var a = feature.attributes.adres[0];
    *         t += ", " + a.openbareRuimteNaam;
    *         t += !dbkjs.util.isJsonNull(a.huisnummer) ? " " + a.huisnummer : "";
    *         t += !dbkjs.util.isJsonNull(a.huisletter) ? a.huisletter : "";
-   *         t += !dbkjs.util.isJsonNull(a.huisnummertoevoeging) ? " " + a.huisnummertoevoeging : "";
+   *         t += !dbkjs.util.isJsonNull(a.huisnummertoevoeging) ? " " +
+   *           a.huisnummertoevoeging : "";
    *         if(!dbkjs.util.isJsonNull(a.postcode) || !dbkjs.util.isJsonNull(a.woonplaatsNaam)) {
    *             t += ", ";
    *         }
    *         t += !dbkjs.util.isJsonNull(a.postcode) ? a.postcode : "";
    *         t += !dbkjs.util.isJsonNull(a.woonplaatsNaam) ? " " + a.woonplaatsNaam : "";
+   *       }
+   *       return t;
    *     }
-   *     return t;
-   * }
    */
+
   getDbkSearchValue: function(feature) {
     return feature.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(feature.attributes.informeleNaam) ? '' : feature.attributes.informeleNaam);
   },
+  /**
+   *
+   */
   getDbkSearchValues: function() {
     var _obj = dbkjs.modules.feature;
     var dbk_naam_array = [];
@@ -301,6 +334,9 @@ dbkjs.modules.feature = {
     _obj.caches.dbk = dbk_naam_array;
     return _obj.caches.dbk;
   },
+  /**
+   *
+   */
   getOmsSearchValues: function() {
     var _obj = dbkjs.modules.feature,
       oms_naam_array = [];
@@ -318,6 +354,9 @@ dbkjs.modules.feature = {
     _obj.caches.oms = oms_naam_array;
     return _obj.caches.oms;
   },
+  /**
+   *
+   */
   handleDbkOmsSearch: function(object) {
     var _obj = dbkjs.modules.feature;
     if (dbkjs.viewmode !== 'fullscreen') {
@@ -330,6 +369,9 @@ dbkjs.modules.feature = {
       });
     }
   },
+  /**
+   *
+   */
   zoomToFeature: function(feature) {
     dbkjs.options.dbk = feature === null ? null : feature.attributes.identificatie;
     dbkjs.modules.updateFilter(dbkjs.options.dbk);
@@ -346,6 +388,9 @@ dbkjs.modules.feature = {
       this.layer.redraw();
     }
   },
+  /**
+   *
+   */
   zoomToPandgeometrie: function() {
     // Pandgeometrie layer must be loaded
 
@@ -362,6 +407,9 @@ dbkjs.modules.feature = {
       dbkjs.map.zoomToExtent(extendedBounds);
     }
   },
+  /**
+   *
+   */
   getfeatureinfo: function(e) {
     var _obj = dbkjs.modules.feature;
     if (typeof(e.feature) !== "undefined") {
@@ -421,6 +469,9 @@ dbkjs.modules.feature = {
       }
     }
   },
+  /**
+   *
+   */
   showFeatureInfo: function(feature) {
     var _obj = dbkjs.modules.feature;
     dbkjs.protocol.jsonDBK.process(feature);
@@ -431,6 +482,9 @@ dbkjs.modules.feature = {
       dbkjs.gui.infoPanelHide();
     }
   },
+  /**
+   * @event
+   */
   handleFeatureTitleClick: function(e) {
     var _obj = dbkjs.modules.feature;
     e.preventDefault();
