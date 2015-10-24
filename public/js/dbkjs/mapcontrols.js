@@ -69,12 +69,34 @@ dbkjs.mapcontrols = {
       }));
 
       if (dbkjs.options.showZoomButtons) {
-        $("#zoom_in").show();
-        $("#zoom_out").show();
-        dbkjs.map.addControl(new OpenLayers.Control.Zoom({
-          zoomInId: "zoom_in",
-          zoomOutId: "zoom_out"
-        }));
+        if (dbkjs.viewmode !== 'fullscreen') {
+          $("#zoom_in").show();
+          $("#zoom_out").show();
+          dbkjs.map.addControl(new OpenLayers.Control.Zoom({
+            zoomInId: "zoom_in",
+            zoomOutId: "zoom_out"
+          }));
+        } else {
+          var zoomContainer = $("<div/>").css({
+            "position": "absolute",
+            "left": "20px",
+            "bottom": "100px",
+            "z-index": "3000"
+          });
+          zoomContainer.appendTo("#mapc1map1");
+          $("#zoom_in").css({
+            "display": "block",
+            "font-size": "24px"
+          }).removeClass("navbar-btn").appendTo(zoomContainer).show();
+          $("#zoom_out").css({
+            "display": "block",
+            "font-size": "24px"
+          }).removeClass("navbar-btn").appendTo(zoomContainer).show();
+          dbkjs.map.addControl(new OpenLayers.Control.Zoom({
+            zoomInId: "zoom_in",
+            zoomOutId: "zoom_out"
+          }));
+        }
       }
     }
   },
