@@ -18,7 +18,7 @@
         {% for section in site.sections %}
           {% assign attr = section[0] %}
           {% assign label = section[1] %}
-          {% if page.section == label %}
+          {% if page.section == attr %}
             <li class="active dropdown">
           {% else %}
             <li class="dropdown">
@@ -41,6 +41,11 @@
                 {% endif %}
               {% endif %}
             {% endfor %}
+            {% if attr == 'dev' %}
+              <li role="separator" class="divider"></li>
+              <li><a href="/doc/app/">Application source documentation</a></li>
+              <li><a href="/doc/api/controllers/">API controllers documentation</a></li>
+            {% endif %}
           </ul>
         </li>
         {% endfor %}
