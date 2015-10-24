@@ -21,6 +21,11 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
+/**
+* @memberof dbkjs.modules
+* @exports filter
+* @todo Write the documentation.
+*/
 dbkjs.modules.filter = {
     id: "dbk.modules.filter",
     filter: {},

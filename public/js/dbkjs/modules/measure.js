@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of opendispatcher/safetymapsDBK
- *  
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -23,7 +23,11 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
-
+/**
+* @memberof dbkjs.modules
+* @exports measure
+* @todo Write the documentation.
+*/
 dbkjs.modules.measure = {
     id: "dbk.modules.measure",
     distance_control: null,

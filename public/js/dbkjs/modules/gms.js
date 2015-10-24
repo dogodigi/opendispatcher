@@ -21,6 +21,11 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
+/**
+* @memberof dbkjs.modules
+* @exports gms
+* @todo Write the documentation.
+*/
 dbkjs.modules.gms = {
     id: "dbk.module.gms",
     gmsPopup: null,

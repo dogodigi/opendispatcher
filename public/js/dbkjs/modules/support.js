@@ -23,6 +23,11 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
+/**
+* @memberof dbkjs.modules
+* @exports support
+* @todo Write the documentation.
+*/
 dbkjs.modules.support = {
     id: "dbk.modules.support",
     register: function () {

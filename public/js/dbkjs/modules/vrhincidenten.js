@@ -21,6 +21,11 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
+/**
+* @memberof dbkjs.modules
+* @exports vrhincidenten
+* @todo Write the documentation.
+*/
 dbkjs.modules.vrhincidenten = {
     id: "dbk.module.vrhincidenten",
     layerUrls: null,

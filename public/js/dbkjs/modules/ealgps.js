@@ -26,6 +26,7 @@ dbkjs.modules = dbkjs.modules || {};
 /**
 * @memberof dbkjs.modules
 * @exports ealgps
+* @todo Write the documentation.
 */
 dbkjs.modules.ealgps = {
     id: "dbk.module.ealgps",

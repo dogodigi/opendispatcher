@@ -35,6 +35,11 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
+/**
+* @memberof dbkjs.modules
+* @exports onscreenkeyboard
+* @todo Write the documentation.
+*/
 dbkjs.modules.onscreenkeyboard = {
     id: "dbk.module.onscreenkeyboard",
     register: function(options) {

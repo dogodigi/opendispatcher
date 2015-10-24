@@ -23,6 +23,11 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
+/**
+* @memberof dbkjs.modules
+* @exports updatefilter
+* @todo Write the documentation.
+*/
 dbkjs.modules.updateFilter = function (id) {
     //Is er een DBK geselecteerd of is de id leeg?
     $.each(dbkjs.modules, function (mod_index, module) {

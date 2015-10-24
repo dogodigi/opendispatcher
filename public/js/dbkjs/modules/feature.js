@@ -23,6 +23,11 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
+/**
+* @memberof dbkjs.modules
+* @exports feature
+* @todo Write the documentation.
+*/
 dbkjs.modules.feature = {
   id: "dbk.modules.feature",
   /**

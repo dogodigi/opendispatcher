@@ -19,7 +19,7 @@
  */
 
 /**
- * IE workaround 
+ * IE workaround
  *
  * see <http://stackoverflow.com/questions/2790001/fixing-javascript-array-functions-in-internet-explorer-indexof-foreach-etc>
  */
@@ -36,6 +36,11 @@ if (!('filter' in Array.prototype)) {
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
+/**
+* @memberof dbkjs.modules
+* @exports layertoggle
+* @todo Write the documentation.
+*/
 dbkjs.modules.layertoggle = {
     id: "dbk.module.layertoggle",
     /**
@@ -63,8 +68,17 @@ dbkjs.modules.layertoggle = {
             'category': 'repressief'
         }
     },
+    /**
+     *
+     */
     disabledLayers: [],
+    /**
+     *
+     */
     enabled: false,
+    /**
+     *
+     */
     register: function (options) {
         var _obj = dbkjs.modules.layertoggle;
         _obj.enabled = true;
@@ -97,6 +111,9 @@ dbkjs.modules.layertoggle = {
             _obj.enableLayers(toggleOptions.layers);
         });
     },
+    /**
+     *
+     */
     enableLayers: function (layers) {
         var _obj = dbkjs.modules.layertoggle;
         // Temp array
@@ -106,6 +123,9 @@ dbkjs.modules.layertoggle = {
             return layers.indexOf(elem) === -1;
         });
     },
+    /**
+     *
+     */
     disableLayers: function (layers) {
         var _obj = dbkjs.modules.layertoggle;
         // Add all layers
@@ -115,6 +135,9 @@ dbkjs.modules.layertoggle = {
             return disabledLayers.indexOf(elem) === pos;
         });
     },
+    /**
+     *
+     */
     isLayerEnabled: function (layerName) {
         var _obj = dbkjs.modules.layertoggle;
         if (!_obj.enabled) {
