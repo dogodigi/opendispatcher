@@ -69,7 +69,8 @@ dbkjs.modules.layertoggle = {
         }
     },
     /**
-     *
+     * Collection of disabled layers
+     * @type {Array}
      */
     disabledLayers: [],
     /**
@@ -112,7 +113,7 @@ dbkjs.modules.layertoggle = {
         });
     },
     /**
-     *
+     * @param {Array} layers - Array of OpenLayers.Layer
      */
     enableLayers: function (layers) {
         var _obj = dbkjs.modules.layertoggle;
@@ -124,7 +125,7 @@ dbkjs.modules.layertoggle = {
         });
     },
     /**
-     *
+     * @param {Array} layers - Array of OpenLayers.Layer
      */
     disableLayers: function (layers) {
         var _obj = dbkjs.modules.layertoggle;
@@ -136,7 +137,9 @@ dbkjs.modules.layertoggle = {
         });
     },
     /**
-     *
+     * Check to see if a layer is enabled by parsing the name
+     * @param {String} layerName - Name
+     * @return {Boolean} enabled - true or false
      */
     isLayerEnabled: function (layerName) {
         var _obj = dbkjs.modules.layertoggle;

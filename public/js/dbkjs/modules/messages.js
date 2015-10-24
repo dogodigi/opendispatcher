@@ -91,33 +91,59 @@ dbkjs.modules.messages = {
       .appendTo('#btngrp_3');
 
     /**
-     * Grabbing information from a rss, xml or json information source.
-     * This example can be used to create derivatives.
+     * Grabbing information from the p2000 paging monitor.
+     * Particular for the Netherlands
      *
-     * The standard url for feeds is http://feeds.livep2000.nl
+     * The standard url for feeds is [http://feeds.livep2000.nl](http://feeds.livep2000.nl)
      * The feed can be accessed with a GET and can be complemented with the
-     * parameters 'r' and 'd', like ?r=1,2&d=2
-     * @param r region
-     *   available regions:
-     *     1: Groningen                    2: Friesland
-     *     3: Drenthe                      4: IJsselland
-     *     5: Twente                       6: Noord en Oost Gelderland
-     *     7: Gelderland Midden            8: Gelderland Zuid
-     *     9: Utrecht                     10: Noord Holland Noord
-     *    11: Zaanstreek-Waterland        12: Kennemerland
-     *    13: Amsterdam-Amstelland        14: Gooi en Vechtstreek
-     *    15: Haaglanden                  16: Hollands Midden
-     *    17: Rotterdam Rijnmond          18: Zuid-Holland Zuid
-     *    19: Zeeland                     20: Midden- en West-Brabant
-     *    21: Brabant Noord               22: Brabant Zuid en Oost
-     *    23: Limburg Noord               24: Limburg Zuid
-     *    25: Flevoland
+     * parameters 'r' and 'd', like
      *
-     * @param d discipline
-     *   available disciplines:
-     *     1: Brandweer     2: Ambulance
-     *     3: Politie       4: KRNM
+     *     ?r=1,2&d=2
      *
+     * ** Parameter r:**
+     *
+     * | code |region|
+     * |------|:----------|
+     * |1     |Groningen |
+     * |2     |Friesland|
+     * |3     |Drenthe|
+     * |4     |IJsselland|
+     * |5     |Twente|
+     * |6     |Noord en Oost Gelderland|
+     * |7     |Gelderland Midden|
+     * |8     |Gelderland Zuid|
+     * |9     |Utrecht|
+     * |10    |Noord Holland Noord|
+     * |11    |Zaanstreek-Waterland|
+     * |12    |Kennemerland|
+     * |13    |Amsterdam-Amstelland|
+     * |14    |Gooi en Vechtstreek|
+     * |15    |Haaglanden|
+     * |16    |Hollands Midden|
+     * |17    |Rotterdam Rijnmond|
+     * |18    |Zuid-Holland Zuid|
+     * |19    |Zeeland|
+     * |20    |Midden- en West-Brabant|
+     * |21    |Brabant Noord|
+     * |22    |Brabant Zuid en Oost|
+     * |23    |Limburg Noord|
+     * |24    |Limburg Zuid|
+     * |25    |Flevoland|
+     *
+     *
+     * ** Parameter d:**
+     *
+     * |code|discipline|
+     * |--|:----------|
+     * |1|Brandweer|
+     * |2|Ambulance|
+     * |3|Politie|
+     * |4|KRNM|
+     *
+     * @memberof dbkjs.messages.feeds
+     * @type dbkjs.Feed
+     * @param {integer} r - region
+     * @param {integer} d - discipline
      */
     this.feeds.p2000 = new dbkjs.Feed('p2000', 'http://feeds.livep2000.nl/', {
       data: {
@@ -126,7 +152,13 @@ dbkjs.modules.messages = {
       },
       dataType: 'xml'
     }, dbkjs.modules.messages.callback);
-
+    /**
+     * @memberof dbkjs.messages.feeds
+     * @type dbkjs.Feed
+     * @param {integer} layout
+     * @param {integer} regio
+     * @param {integer} alleenRegio
+     */
     this.feeds.traffic = new dbkjs.Feed('wegwerk', 'http://www.wegwerkmeldingen.nl/GetWegObjecten.php', {
       data: {
         layout: 5,
@@ -191,7 +223,9 @@ dbkjs.modules.messages = {
     return finalArray;
   },
   /**
-   *
+   * @callback
+   * @param {String} type
+   * @param {Object} result
    */
   callback: function(type, result) {
     var _obj = dbkjs.modules.messages;

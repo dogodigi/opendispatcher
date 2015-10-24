@@ -29,16 +29,46 @@ window.dbkjs = dbkjs;
  * @extends dbkjs.Class
  */
 dbkjs.Feed = dbkjs.Class({
+  /**
+   * @memberof dbkjs.Feed
+   */
   events: null,
+  /**
+   * @memberof dbkjs.Feed
+   */
   data: null,
+  /**
+   * @memberof dbkjs.Feed
+   */
   projection: "EPSG:4326",
+  /**
+   * @memberof dbkjs.Feed
+   */
   url: 'http://www.google.nl',
+  /**
+   * @memberof dbkjs.Feed
+   */
   reload: 200000,
+  /**
+   * @memberof dbkjs.Feed
+   */
   crossDomain: true,
+  /**
+   * @memberof dbkjs.Feed
+   */
   dataType: 'xml',
+  /**
+   * @memberof dbkjs.Feed
+   */
   error: false,
+  /**
+   * @memberof dbkjs.Feed
+   */
   timeout: null,
   i: 0,
+  /**
+   * @memberof dbkjs.Feed
+   */
   initialize: function(name, url, options, callback) {
     var _obj = this;
     this.options = dbkjs.util.extend({}, options);
@@ -47,24 +77,36 @@ dbkjs.Feed = dbkjs.Class({
     this.url = url;
     this.callback = callback;
   },
+  /**
+   * @memberof dbkjs.Feed
+   */
   start: function(milliseconds) {
     var _obj = this;
     milliseconds = milliseconds || _obj.reload;
     _obj.reload = milliseconds;
     _obj.load();
   },
+  /**
+   * @memberof dbkjs.Feed
+   */
   stop: function() {
     var _obj = this;
     if (_obj.timeout) {
       clearTimeout(_obj.timeout);
     }
   },
+  /**
+   * @memberof dbkjs.Feed
+   */
   triggerTimeout: function() {
     var _obj = this;
     this.timeout = setTimeout(function() {
       _obj.load();
     }, _obj.reload);
   },
+  /**
+   * @memberof dbkjs.Feed
+   */
   load: function() {
     var _obj = this;
     if (_obj.timeout) {

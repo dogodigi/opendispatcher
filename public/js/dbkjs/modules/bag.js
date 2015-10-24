@@ -25,10 +25,13 @@ window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
 
 /**
+ * BAG is a component of the Dutch Open Data Programme and contains Buildings
+ * and contours for mobile homes and living boats.
+ * This BAG module makes it possible to retrieve and show BAG objects from the
+ * database
  * @memberof dbkjs.modules
  * @exports bag
  * @extends dbkjs.Module
- * @todo Complete documentation.
  */
 dbkjs.modules.bag = {
   /**
