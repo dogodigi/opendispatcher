@@ -117,6 +117,7 @@ dbkjs.Feed = dbkjs.Class({
     $.ajaxPrefilter(function(options) {
       if (options.crossDomain) {
         options.url = 'proxy/?q=' + encodeURIComponent(options.url + '?' + options.data.toString());
+        //reset crossDomain so it will not be used for other $.ajax calls
         options.crossDomain = false;
       }
     });

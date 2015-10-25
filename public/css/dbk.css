@@ -97,7 +97,7 @@ div.olMap {
     position: absolute;
     left: 20px;
     bottom: 40px;
-    z-index: 791;
+    z-index: 3000;
 }
 .fa-rotate-45 {
     filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
