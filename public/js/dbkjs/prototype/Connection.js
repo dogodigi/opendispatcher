@@ -26,44 +26,24 @@ window.dbkjs = dbkjs;
  * @memberof dbkjs
  * @extends dbkjs.Class
  */
-dbkjs.Capabilities = dbkjs.Class({
+dbkjs.Connection = dbkjs.Class({
+  url: null,
+  method: 'get',
+  cache: false,
+  data: {},
+  dataType: 'json',
+  timer: null,
+  ifModified: true,
+  callback: null,
   /**
    * @memberof dbkjs.Connection
-   * @event
    */
-  onConnectionError: function() {
-    this.connected = false;
-
-    $("#connectionicon").attr("class", "fa fa-exclamation");
-    $("#connectionicon").attr("style", "color: red");
-
-    if (this.okTimer !== null) {
-      clearTimeout(this.okTimer);
-      this.okTimer = null;
-    }
-  },
-  /**
-   * @memberof dbkjs.Connection
-   * @event
-   */
-  onConnectionOK: function() {
-    if (this.connected) {
-      return;
-    }
-
-    this.connected = true;
-
-    var me = this;
-    if (me.okTimer === null) {
-      $("#connectionicon").attr("class", "fa fa-signal");
-      $("#connectionicon").attr("style", "color: gray");
-      me.okTimer = setTimeout(function() {
-        $("#connectionicon").attr("style", "color: green");
-        $("#connectionicon").attr("class", "fa fa-signal");
-        clearTimeout(me.okTimer);
-        me.okTimer = null;
-      }, 8000);
-    }
+  initialize: function(url, options, callback) {
+    var _obj = this;
+    this.options = dbkjs.util.extend({}, options);
+    dbkjs.util.extend(this, options);
+    this.url = url;
+    this.callback = callback;
   },
   /**
    * Call when other module (gms or ealgps) does regular Ajax requests and
@@ -71,32 +51,36 @@ dbkjs.Capabilities = dbkjs.Class({
    * have to do it
    * @memberof dbkjs.Connection
    */
-  cancelConnectivityCheck: function() {
-    if (this.connectionCheckTimer !== null) {
-      clearTimeout(this.connectionCheckTimer);
-      this.connectionCheckTimer = null;
+  stop: function() {
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
     }
   },
   /**
+   * Starts a timer that will poll a connection to see if it is available
    * @memberof dbkjs.Connection
    */
-  checkConnectivity: function() {
-    var me = this;
-    $.ajax("api/organisation.json", {
-      dataType: "json",
-      cache: false,
-      ifModified: true,
-      complete: function(jqXHR, textStatus) {
-        if (textStatus === "success" || textStatus === "notmodified") {
-          me.onConnectionOK();
-        } else {
-          me.onConnectionError();
-        }
-
-        me.connectionCheckTimer = setTimeout(function() {
-          me.checkConnectivity();
+  start: function() {
+    var _obj = this;
+    $.ajax(_obj.url, {
+        method: _obj.method,
+        dataType: _obj.dataType,
+        data: _obj.data,
+        cache: _obj.cache,
+        ifModified: _obj.ifModified
+      })
+      .done(function() {
+        _obj.available = true;
+      })
+      .fail(function() {
+        _obj.available = false;
+      })
+      .always(function() {
+        _obj.timer = setTimeout(function() {
+          _obj.start();
         }, 5000);
-      }
-    });
+        _obj.callback(_obj.available);
+      });
   }
 });
