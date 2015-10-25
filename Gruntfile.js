@@ -142,14 +142,14 @@ module.exports = function(grunt) {
           dest: 'build/mobile/js/libs',
           expand: true
         }, {
-          cwd: 'public/font-awesome-4.1.0/css',
+          cwd: 'public/font-awesome-4.4.0/css',
           src: ['font-awesome.min.css'],
-          dest: 'build/mobile/font-awesome-4.1.0/css',
+          dest: 'build/mobile/font-awesome-4.4.0/css',
           expand: true
         }, {
-          cwd: 'public/font-awesome-4.1.0/fonts',
+          cwd: 'public/font-awesome-4.4.0/fonts',
           src: ['*'],
-          dest: 'build/mobile/font-awesome-4.1.0/fonts',
+          dest: 'build/mobile/font-awesome-4.4.0/fonts',
           expand: true
         }, {
           cwd: 'public/css',

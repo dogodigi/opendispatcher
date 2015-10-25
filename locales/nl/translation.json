@@ -83,6 +83,7 @@
         "layerNotFound": "Laag niet gevonden (of meer dan 1)",
         "infoNotFound": "Kon geen informatie ophalen",
         "running": "Objectinformatie wordt opgehaald...",
+        "noinfo": "Geen extra informatie beschikbaar",
         "selectarea": "Selecteer het gewenste afdrukgebied.",
         "print": "Afdruk wordt voorbereid...",
         "printready": "Afdruk gereed voor",
