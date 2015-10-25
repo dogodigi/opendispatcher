@@ -45,7 +45,7 @@ dbkjs.modules.bag = {
    */
   namespace: "bag",
   /**
-   * @type dbkjs.Module.layer
+   * @type OpenLayers.Layer.WMS
    */
   layer: null,
   /**

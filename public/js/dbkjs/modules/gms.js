@@ -379,7 +379,7 @@ dbkjs.modules.gms = {
     $("#gms").replaceWith(table_div);
   },
   /**
-   *
+   * Try to locate a Site by comparing the GMS address with the address for the Site as registered in the database
    */
   selectDbk: function() {
     if (this.gms && this.gms.Gms && this.gms.Gms.IncidentAdres && this.gms.Gms.IncidentAdres.Adres) {
