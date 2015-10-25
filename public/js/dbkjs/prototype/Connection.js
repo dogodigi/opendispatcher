@@ -33,6 +33,7 @@ dbkjs.Connection = dbkjs.Class({
   data: {},
   dataType: 'json',
   timer: null,
+  timeout: 5000,
   ifModified: true,
   callback: null,
   /**
@@ -70,17 +71,19 @@ dbkjs.Connection = dbkjs.Class({
         cache: _obj.cache,
         ifModified: _obj.ifModified
       })
-      .done(function() {
-        _obj.available = true;
+      .done(function(response) {
+        _obj.available = "connected";
+        _obj.result = response;
       })
-      .fail(function() {
-        _obj.available = false;
+      .fail(function(jqXHR, textStatus) {
+        _obj.available = "disconnected";
+        _obj.result = textStatus;
       })
       .always(function() {
         _obj.timer = setTimeout(function() {
           _obj.start();
-        }, 5000);
-        _obj.callback(_obj.available);
+        }, _obj.timeout);
+        _obj.callback(_obj.available, _obj.result);
       });
   }
 });
