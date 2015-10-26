@@ -136,7 +136,7 @@ ModalWindow.prototype.getTitleElement = function() {
  */
 function SplitScreenWindow(name) {
     ModalWindow.call(this, name);
-    this.splitScreen = true;
+    this.splitScreen = dbkjs.options.splitScreenChecked;
 
     // XXX always, also fixes cannot click map next to buttons
     $(".main-button-group").css({paddingRight: "10px", width: "auto", float: "right", right: "0%"});
