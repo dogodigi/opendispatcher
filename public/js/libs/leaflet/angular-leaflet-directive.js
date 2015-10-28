@@ -359,7 +359,6 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', ["$rootScop
                 return true;
             },
             createControl: function(params) {
-                console.log('minimap createControl');
                 var layer = createLayer(params.layer);
 
                 if (!isDefined(layer)) {
@@ -368,22 +367,6 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', ["$rootScop
                 }
 
                 return new L.Control.MiniMap(layer, params);
-            }
-        },
-        history: {
-            isPluginLoaded: function() {
-                if (!angular.isDefined(L.HistoryControl)) {
-                    $log.error(errorHeader + ' History plugin is not loaded.');
-                    return false;
-                }
-
-                return true;
-            },
-            checkValidParams: function(/* params */) {
-                return true;
-            },
-            createControl: function(params) {
-                return new L.HistoryControl(params);
             }
         }
     };

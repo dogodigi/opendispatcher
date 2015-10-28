@@ -37,7 +37,7 @@ block content
             a#permalink.btn.navbar-btn.btn-default(title=t('map.permalink'))
               i.fa.fa-link
     div.container-fluid.fill
-      leaflet#map(defaults='defaults', geojson='geojson', controls="controls")
+      leaflet#map(defaults='defaults', geojson='geojson', controls="controls", layers="layers")
 
     if (fullscreen === true)
       a.btn.btn-default.dbk-title

@@ -21,7 +21,7 @@
 
 	var MiniMap = L.Control.extend({
 		options: {
-			position: 'bottomright',
+			position: 'bottomleft',
 			toggleDisplay: false,
 			zoomLevelOffset: -5,
 			zoomLevelFixed: false,
@@ -29,8 +29,8 @@
 			autoToggleDisplay: false,
 			width: 150,
 			height: 150,
-			collapsedWidth: 19,
-			collapsedHeight: 19,
+			collapsedWidth: 0,
+			collapsedHeight: 0,
 			aimingRectOptions: {color: "#ff7800", weight: 1, clickable: false},
 			shadowRectOptions: {color: "#000000", weight: 1, clickable: false, opacity:0, fillOpacity:0},
 			strings: {hideText: 'Hide MiniMap', showText: 'Show MiniMap'}
