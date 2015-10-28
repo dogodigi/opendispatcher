@@ -82,20 +82,22 @@ opendispatcher.controller('organisationController', function($scope, $uibModalIn
 opendispatcher.controller('odIndexController', ['$scope', '$uibModal', 'organisationService', 'leafletData',
   function($scope, $uibModal, organisationService, leafletData) {
     var myBaseLayer = {
-      name: 'OpenStreetMap (XYZ)',
+      name: 'MapQuest',
       url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
       type: 'xyz',
       layerOptions: {
         subdomains: '1234',
+        showLegend: false,
+        showOnSelector: false,
         attribution: "&copy; <a href='http://www.openstreetmap.org/'>OpenStreetMap</a> and contributors, under an <a href='http://www.openstreetmap.org/copyright' title='ODbL'>open license</a>. Tiles Courtesy of <a href='http://www.mapquest.com/'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png'>"
       }
     };
     angular.extend($scope, {
       //override defaults
       defaults: {
-        zoomControl: true
+        zoomControl: false,
+        layersControl: false
       },
-      controls: {},
       layers: {
         baselayers: {
           xyz: myBaseLayer
@@ -117,13 +119,13 @@ opendispatcher.controller('odIndexController', ['$scope', '$uibModal', 'organisa
       });
     };
     leafletData.getMap('map').then(function(map) {
-      angular.extend($scope.controls, {
-        minimap: {
-          type: 'minimap',
-          layer: myBaseLayer,
-          toggleDisplay: true
-        }
-      });
+      //angular.extend($scope.controls, {
+      //  minimap: {
+      //    type: 'minimap',
+      //    layer: myBaseLayer,
+      //    toggleDisplay: true
+      //  }
+      //});
       var mapHistory = new L.HistoryControl({
         useExternalControls: true
       }).addTo(map);

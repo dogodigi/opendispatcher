@@ -72,51 +72,110 @@ var allProxy = function(req, res) {
   }
 };
 
+var allOGC = function(req, res) {
+  if (req.query) {
+    //set method from req
+    var options = {
+      method: req.method,
+      url: req.query.q,
+      headers: {
+        'User-Agent': 'opendispatcher'
+      },
+      timeout: 6000 //6 seconds
+    };
+    var request = require('request');
+    x = request(options);
+    x.on('response', function(response) {
+      var data = [];
+      response.on('data', function(chunk) {
+        data.push(chunk);
+      });
+      response.on('end', function() {
+        var finaldata = data.join('');
+        var xml2js = require('xml2js');
+        var parser = new xml2js.Parser({
+          explicitArray: false,
+          mergeAttrs: true,
+          stripPrefix: true
+        });
+        parser.parseString(finaldata, function(err, result) {
+          if (err) {
+            res.status(400).json({
+              "error": err
+            });
+          } else {
+            res.json(result);
+          }
+        });
+      });
+    });
+    x.on('error', function(err) {
+      res.status(400).json({
+        "error": "Timeout on proxy"
+      });
+    });
+  } else {
+    res.status(400).json({
+      "error": "wrong use of proxy"
+    });
+  }
+};
 var manager = function(req, res) {
-    var activelang;
-    activelang = req.i18n.language();
-    if (req.headers['x-opendispatcher-dn']) {
-        var arr1 = req.headers['x-opendispatcher-dn'].split('/');
-        var user = {};
-        for (var i = 0; i < arr1.length; ++i) {
-            var arr2 = arr1[i].split('=');
-            user[arr2[0]] = arr2[1];
-        }
+  var activelang;
+  activelang = req.i18n.language();
+  if (req.headers['x-opendispatcher-dn']) {
+    var arr1 = req.headers['x-opendispatcher-dn'].split('/');
+    var user = {};
+    for (var i = 0; i < arr1.length; ++i) {
+      var arr2 = arr1[i].split('=');
+      user[arr2[0]] = arr2[1];
     }
-    res.render('manager/index', {mylang: activelang, mode: req.app.get('env')});
+  }
+  res.render('manager/index', {
+    mylang: activelang,
+    mode: req.app.get('env')
+  });
 };
 
-var template = function(req,res){
-    var activelang;
-    activelang = req.i18n.language();
-    if (req.headers['x-opendispatcher-dn']) {
-        var arr1 = req.headers['x-opendispatcher-dn'].split('/');
-        var user = {};
-        for (var i = 0; i < arr1.length; ++i) {
-            var arr2 = arr1[i].split('=');
-            user[arr2[0]] = arr2[1];
-        }
+var template = function(req, res) {
+  var activelang;
+  activelang = req.i18n.language();
+  if (req.headers['x-opendispatcher-dn']) {
+    var arr1 = req.headers['x-opendispatcher-dn'].split('/');
+    var user = {};
+    for (var i = 0; i < arr1.length; ++i) {
+      var arr2 = arr1[i].split('=');
+      user[arr2[0]] = arr2[1];
     }
-    res.render(req.params.environment + '/templates/' + req.params.name, {mylang: activelang, mode: req.app.get('env')});
-  };
+  }
+  res.render(req.params.environment + '/templates/' + req.params.name, {
+    mylang: activelang,
+    mode: req.app.get('env')
+  });
+};
 
-var templateFunction = function(req,res){
-    var activelang;
-    activelang = req.i18n.language();
-    if (req.headers['x-opendispatcher-dn']) {
-        var arr1 = req.headers['x-opendispatcher-dn'].split('/');
-        var user = {};
-        for (var i = 0; i < arr1.length; ++i) {
-            var arr2 = arr1[i].split('=');
-            user[arr2[0]] = arr2[1];
-        }
+var templateFunction = function(req, res) {
+  var activelang;
+  activelang = req.i18n.language();
+  if (req.headers['x-opendispatcher-dn']) {
+    var arr1 = req.headers['x-opendispatcher-dn'].split('/');
+    var user = {};
+    for (var i = 0; i < arr1.length; ++i) {
+      var arr2 = arr1[i].split('=');
+      user[arr2[0]] = arr2[1];
     }
-    res.render(req.params.environment + '/templates/' + req.params.name, {functiontype: req.params.function, mylang: activelang, mode: req.app.get('env')});
-  };
+  }
+  res.render(req.params.environment + '/templates/' + req.params.name, {
+    functiontype: req.params.function,
+    mylang: activelang,
+    mode: req.app.get('env')
+  });
+};
 
 router.route('/').get(getIndex);
 router.route('/index.html').get(getIndex);
 router.route('/proxy/').all(allProxy);
+router.route('/ogc/').all(allOGC);
 router.route('/manager').get(manager);
 router.route('/templates/:environment/:name').get(template);
 router.route('/templates/:environment/:name/:function').get(templateFunction);
