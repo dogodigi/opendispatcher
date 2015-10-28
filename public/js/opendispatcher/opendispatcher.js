@@ -1,7 +1,7 @@
 /**
  * Module
  */
-var opendispatcher = angular.module('opendispatcher', ['openlayers-directive', 'ui.bootstrap']);
+var opendispatcher = angular.module('opendispatcher', ['leaflet-directive', 'ui.bootstrap']);
 
 /**
  * Services
@@ -14,21 +14,19 @@ opendispatcher.service('organisationService', function($http, $httpParamSerializ
   this.load = function() {
     return $http.get("api/organisation.json").then(function(response) {
       var data = response.data;
-      myPoly = new ol.format.GeoJSON().readFeature({
+      myPoly = L.geoJson({
         "type": "Feature",
         "properties": {},
         "geometry": data.organisation.area.geometry
       });
       data.organisation.feature = myPoly;
-      //transform will alter the geometry!
-      myPoly.getGeometry().transform('EPSG:4326', 'EPSG:3857');
       organisation = data.organisation;
       organisation.layers = [];
 
       angular.forEach(organisation.wms, function(v, k) {
         if (v.getcapabilities) {
           var deferCapabilities = $q.defer();
-          var parser = new ol.format.WMSCapabilities();
+          //var parser = new ol.format.WMSCapabilities();
           var params = $httpParamSerializer(
             angular.extend({
               SERVICE: 'WMS',
@@ -37,17 +35,16 @@ opendispatcher.service('organisationService', function($http, $httpParamSerializ
             }, v.params));
           $http.get(
             "/proxy/?q=" + encodeURIComponent('http://geo04.safetymaps.nl' + v.url + params), {
-              transformResponse: function(data) {
-                result = parser.read(data);
-                return result.Capability.Layer;
-              }
+              //transformResponse: function(data) {
+                //result = parser.read(data);
+                //return result.Capability.Layer;
+              //}
             }).then(function(response) {
             layers.push({
               name: v.name,
               status: response.status,
               data: response.data
             });
-            //organisation.layers.push({name: v.name, status: response.status, data: response.data});
             deferCapabilities.resolve();
           });
           promises.push(deferCapabilities.promise);
@@ -82,18 +79,12 @@ opendispatcher.controller('organisationController', function($scope, $uibModalIn
   $scope.organisation = organisation;
 });
 
-opendispatcher.controller('odIndexController', ['$scope', '$uibModal', 'organisationService', 'olData',
-  function($scope, $uibModal, organisationService, olData) {
+opendispatcher.controller('odIndexController', ['$scope', '$uibModal', 'organisationService', 'leafletData',
+  function($scope, $uibModal, organisationService, leafletData) {
     angular.extend($scope, {
       //override defaults
       defaults: {
-        controls: {
-          zoom: false,
-          rotate: true
-        },
-        interactions: {
-          mouseWheelZoom: true
-        }
+          zoomControl: true
       },
       previousDisabled: true,
       nextDisabled: true
@@ -110,51 +101,6 @@ opendispatcher.controller('odIndexController', ['$scope', '$uibModal', 'organisa
         }
       });
     };
-    var history = new historyControl();
-    history.on('change:backDisabled', function() {
-      console.log('change:backDisabled');
-      console.log($scope);
-      $scope.previousDisabled = history.get('backDisabled');
-    });
-    history.on('change:forwardDisabled', function() {
-      $scope.nextDisabled = history.get('forwardDisabled');
-    });
-
-    olData.getMap('map').then(function(olMap){
-      var map = olMap.getView();
-
-      organisationService.load().then(function() {
-        $scope.organisation = organisationService.data();
-        console.log($scope.organisation.layers);
-        history.setMap(olMap);
-        map.fit($scope.organisation.feature.getGeometry(), olMap.getSize());
-      });
-      angular.extend($scope, {
-        zoomIn: function() {
-          map.setZoom(map.getZoom() + 1);
-        },
-        zoomOut: function() {
-          map.setZoom(map.getZoom() - 1);
-        },
-        historyPrevious: function() {
-          history.goBack();
-        },
-        historyNext: function() {
-          history.goForward();
-        },
-        //@todo work in progress
-        toggleMiniMap: function() {
-          console.log('toggleMiniMap');
-        },
-        permaLink: function() {
-          console.log('permaLink');
-        },
-        zoomExtent: function() {
-          map.fit($scope.organisation.feature.getGeometry(), olMap.getSize());
-        }
-      });
-    });
-    /*
     leafletData.getMap('map').then(function(map) {
       var mapHistory = new L.HistoryControl({
         useExternalControls: true
@@ -177,6 +123,7 @@ opendispatcher.controller('odIndexController', ['$scope', '$uibModal', 'organisa
         map.fitBounds($scope.organisation.feature.getBounds());
         mapHistory.clearHistory();
       });
+
       angular.extend($scope, {
         zoomIn: function() {
           map.setZoom(map.getZoom() + 1);
@@ -201,6 +148,6 @@ opendispatcher.controller('odIndexController', ['$scope', '$uibModal', 'organisa
           map.fitBounds(myPoly.getBounds());
         }
       });
-    });*/
+    });
   }
 ]);
