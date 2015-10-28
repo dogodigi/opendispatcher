@@ -1,0 +1,11 @@
+div.modal-header
+  h3.modal-title Overlays
+
+div.modal-body
+  h3 {{organisation.gid}}: {{organisation.id}}({{organisation.workspace}})
+  h4 {{organisation.title}}
+  h5 Overlays:
+  ul
+    li(ng-if="layer.baselayer === false", ng-repeat="layer in organisation.wms") {{ layer.name }}
+
+div.modal-footer

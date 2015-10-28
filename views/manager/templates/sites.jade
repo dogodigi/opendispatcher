@@ -1,0 +1,50 @@
+div.container
+  h1= t('app.features')
+  div.input-group
+    input.form-control(ng-model="searchText", placeholder!=t('app.search'), type="search", ng-change="search()")
+    span.input-group-addon
+      span.glyphicon.glyphicon-search
+  div.table-responsive
+    table.table.table-condensed
+      thead
+        tr
+          th
+            a(href="#",ng-click="order('id')")
+              span.glyphicon.glyphicon-fire
+              span.glyphicon.glyphicon-chevron-down(ng-show="sortType == 'id' && !reverse")
+              span.glyphicon.glyphicon-chevron-up(ng-show="sortType == 'id' && reverse")
+          th
+            a(href="#",ng-click="order('name')")
+              = t('site.name')
+              span.glyphicon.glyphicon-chevron-down(ng-show="sortType == 'name' && !reverse")
+              span.glyphicon.glyphicon-chevron-up(ng-show="sortType == 'name' && reverse")
+          th
+            a(href="#",ng-click="order('title')")
+              = t('site.title')
+              span.glyphicon.glyphicon-chevron-down(ng-show="sortType == 'title' && !reverse")
+              span.glyphicon.glyphicon-chevron-up(ng-show="sortType == 'title' && reverse")
+          th
+            a(href="#",ng-click="order('levels')")
+              = t('site.levels')
+              span.glyphicon.glyphicon-chevron-down(ng-show="sortType == 'levels' && !reverse")
+              span.glyphicon.glyphicon-chevron-up(ng-show="sortType == 'levels' && reverse")
+          th
+        tbody
+          tr(ng-repeat="site in filteredSites.slice(((currentPage-1)*itemsPerPage), ((currentPage)*itemsPerPage)) | orderBy:sortType:sortReverse | filter:searchText")
+            td {{ site.id }}
+            td {{ site.name }}
+            td {{ site.title }}
+            td {{ site.levels }}
+            td
+              div.btn-group.btn-group-sm(role="group")
+                button.btn.btn-default(type="button", ui-sref="editSite({id: site.id})", title!=t('app.edit'))
+                  span.glyphicon.glyphicon-pencil
+                button.btn.btn-default(type="button", ng-click="deleteSite(site)" title!=t('app.delete'))
+                  span.glyphicon.glyphicon-trash
+                  div
+    pre.ng-binding {{totalItems}} of {{allItems}}
+  div.container
+    div.col-md-3
+      a.btn.btn-small.btn-primary(ui-sref="newSite")= t('site.new')
+    div.col-md-9
+      pagination(ng-model="currentPage", total-items="totalItems", max-size="maxSize",boundary-links="true", items-per-page="itemsPerPage", ng-change="pageChanged()", rotate="false", num-pages="numPages")

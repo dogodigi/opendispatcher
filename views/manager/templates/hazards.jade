@@ -1,0 +1,36 @@
+div.container
+  h1= t('app.hazards')
+  div.table-responsive
+    table.table.table-condensed
+      thead
+        tr
+          th
+            span.glyphicon.glyphicon-fire
+          th= t('hazard.name')
+          th= t('hazard.symbol')
+          th= t('hazard.placard')
+          th= t('hazard.quantity')
+          th= t('hazard.radius')
+          th= t('app.building')
+          th= t('app.floor')
+          th
+        tbody
+          tr(ng-repeat="hazard in hazards")
+            td {{ hazard.id }}
+            td {{ hazard.name }} <small>{{ hazard.description}}</small>
+            td 
+              img.img-responsive.img-hazard(ng-src="/images/{{ hazard.HazardType.namespace + '/' + hazard.HazardType.symbol }}.png" title="{{hazard.HazardType.name_nl}}")
+            td
+              div.hin {{ hazard.hin }} 
+              div.un {{ hazard.un }}
+            td {{ hazard.quantity }} <small>{{hazard.Unit.name_nl}}</small>
+            td {{ hazard.radius}}
+            td {{ hazard.Floor.Building.id }}
+            td {{ hazard.Floor.name }}
+            td
+              div.btn-group.btn-group-sm(role="group")
+                button.btn.btn-default(type="button", ui-sref="editHazard({id: hazard.id})", title!=t('app.edit'))
+                  span.glyphicon.glyphicon-pencil
+                button.btn.btn-default(type="button", ng-click="deleteHazard(site)" title!=t('app.delete'))
+                  span.glyphicon.glyphicon-trash
+  a.btn.btn-small.btn-primary(ui-sref="createHazard")= t('app.Hazard')

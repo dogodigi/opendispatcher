@@ -1,4 +1,4 @@
-/**
+/*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
  *
  *  This file is part of opendispatcher/safetymapsDBK
@@ -20,17 +20,41 @@
 
 /* global global, __dirname, exports, process */
 
+// Error handlers
+function logErrors(err, req, res, next) {
+  console.error(err.stack);
+  next(err);
+}
+
+function clientErrorHandler(err, req, res, next) {
+    console.log('handling error');
+    var errobj = {};
+    errobj.url = req.protocol + "://" + req.get('host') + req.url;
+    errobj.body = req.body;
+    errobj.query = req.query;
+    errobj.params = req.params;
+    res.status(500);
+    res.render('shared/error', {title: 'error', request: JSON.stringify(errobj), error: err});
+}
+
+function errorHandler(err, req, res, next) {
+  res.status(500);
+  res.render('error', { error: err });
+}
+
 // To run in production: NODE_ENV=production
 
 var express = require('express'),
-        routes = require('./routes'),
+        errorhandler = require('errorhandler'),
+        //favicon = require('serve-favicon'),
+        bodyParser = require('body-parser'),
         http = require('http'),
         path = require('path'),
         i18n = require('i18next'),
         anyDB = require('any-db'),
         fs = require('fs'),
         compress = require('compression');
-;
+var env = process.env.NODE_ENV || 'development';
 
 global.conf = require('nconf');
 // First consider commandline arguments and environment variables, respectively.
@@ -49,15 +73,6 @@ global.conf.defaults({
     'http': {
         'port': 9999
     }
-});
-
-i18n.init({
-    lng: 'nl',
-    detectLngQS: 'l',
-    saveMissing: true,
-    useCookie: false,
-    debug: false,
-    fallbackLng: 'nl'
 });
 
 var dbURL = 'postgres://' +
@@ -83,6 +98,16 @@ if (global.conf.get('infrastructure:user')) {
 }
 global.pool = anyDB.createPool(dbURL, {min: 2, max: 20});
 global.bag = anyDB.createPool(bagURL, {min: 2, max: 20});
+global.defaultLanguage = global.conf.get('default:language') || 'en';
+
+i18n.init({
+    lngWhitelist: ['nl', 'en', 'dev'],
+    detectLngQS: 'l',
+    saveMissing: true,
+    useCookie: false,
+    debug: false,
+    fallbackLng: global.defaultLanguage
+});
 
 var app = express(
 //    {
@@ -91,49 +116,54 @@ var app = express(
 //        // will make it to the route specified.
 //        rejectUnauthorized: true
 //    }
-        );
-app.configure('development', function () {
-    app.use(express.logger('dev'));
-    app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
-});
-app.configure('production', function () {
-    app.use(express.logger({stream: expressLogFile}));
-    app.use(express.errorHandler());
-});
+);
+
 // Configuration
-app.configure(function () {
-    app.set('port', process.env.PORT || global.conf.get('http:port'));
-    app.use(compress());
-    app.enable('trust proxy');
-    app.use(i18n.handle);
-    app.set('views', __dirname + '/views');
-    app.set('view engine', 'jade');
-    app.locals.pretty = true;
-    app.use(express.favicon(__dirname + '/public/images/favicon.ico', {maxAge: 25920000000}));
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.use('/locales', express.static(__dirname + '/locales'));
-    app.use(express.static(path.join(__dirname, 'public')));
-    app.use('/media', express.static(global.conf.get('media:path')));
-    app.use('/symbols', express.static(global.conf.get('media:symbols')));
-    app.use('/web', express.static(__dirname + '/web'));
-    app.use(app.router);
-    app.use(function (err, req, res, next) {
-        var errobj = {};
-        errobj.url = req.protocol + "://" + req.get('host') + req.url;
-        errobj.body = req.body;
-        errobj.query = req.query;
-        errobj.params = req.params;
-        res.status(500);
-        res.render('error', {title: 'error', request: JSON.stringify(errobj), error: err});
-    });
-});
+app.set('port', process.env.PORT || global.conf.get('http:port'));
+app.use(compress());
+app.enable('trust proxy');
+app.use(i18n.handle);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(bodyParser.json());
+
+app.use('/locales', express.static(__dirname + '/locales'));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/media', express.static(global.conf.get('media:path')));
+app.use('/symbols', express.static(global.conf.get('media:symbols')));
+app.use('/web', express.static(__dirname + '/web'));
 
 i18n.registerAppHelper(app);
 i18n.serveClientScript(app)
         .serveDynamicResources(app)
         .serveMissingKeyRoute(app);
-routes.setup(app);
+app.use(require('./controllers'));
+app.use(logErrors);
+app.use(clientErrorHandler);
+app.use(errorHandler);
+if ('development' == env) {
+    //app.use(errorhandler({dumpExceptions: true, showStack: true}));
+    app.use('/build', express.static(__dirname + '/build'));
+    app.locals.pretty = true;
+}
+
+if ('production' == env) {
+    //app.use(errorhandler());
+    app.locals.pretty = false;
+}
+
+app.use(function(req, res, next) {
+  var errobj = {};
+  errobj.url = req.protocol + "://" + req.get('host') + req.url;
+  errobj.body = req.body;
+  errobj.query = req.query;
+  errobj.params = req.params;
+  res.status(404);
+  res.render('shared/404', {title: '404 - Page Not found', mode: req.app.get('env'), request: JSON.stringify(errobj)});
+});
 function start() {
     app.listen(app.get('port'), function () {
         console.log("Express server listening on port %d in %s mode", app.get('port'), app.settings.env);

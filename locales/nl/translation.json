@@ -5,9 +5,20 @@
         "queryAddress": "adres",
         "queryNumber": "omsnummer",
         "queryDBK": "dbk",
-        "organisation": "regio",
+        "organisation": "Omgeving",
         "error": "Fout",
         "errorfeatures": "Features konden niet worden ingelezen",
+        "settings": "Instellingen",
+        "createSite": "Nieuw DBK Object maken",
+        "editSite": "DBK Object bewerken",
+        "update": "Opslaan",
+        "user": "Gebruiker",
+        "create": "Opslaan",
+        "search": "Zoeken",
+        "toggleNavigation": "Navigatie tonen/verbergen",
+        "organizations": "Omgevingen",
+        "edit": "Bewerken",
+        "delete": "Verwijderen",
         "fail": "Mislukt",
         "loggedinAs": "U bent ingelogd als:",
         "firstName": "Voornaam",
@@ -45,13 +56,16 @@
         "emergencyContactExtraFunction": "Nevenfunctie",
         "download": "Download bestand",
         "hyperlink": "Open URL",
-        "results": "Gevonden objecten"
+        "results": "Gevonden objecten",
+        "cancel": "Annuleren",
+        "close": "Sluiten",
+        "today": "Vandaag"
     },
-    "bag":{
-      "updated": "Mutatiedatum BAG"
+    "bag": {
+        "updated": "Mutatiedatum BAG"
     },
-    "infra":{
-      "updated": "Mutatiedatum NWB"
+    "infra": {
+        "updated": "Mutatiedatum NWB"
     },
     "map": {
         "prev": "Vorige",
@@ -83,10 +97,12 @@
         "layerNotFound": "Laag niet gevonden (of meer dan 1)",
         "infoNotFound": "Kon geen informatie ophalen",
         "running": "Objectinformatie wordt opgehaald...",
+        "noinfo": "Geen extra informatie beschikbaar",
         "selectarea": "Selecteer het gewenste afdrukgebied.",
         "print": "Afdruk wordt voorbereid...",
         "printready": "Afdruk gereed voor",
         "downloadpdf": "download",
+        "feed": "Internet meldingen",
         "printerror": "Afdruk mislukt",
         "printtimeout": "Kan niet verbinden met de afdruk service",
         "bagbuildings": "Panden",
@@ -146,7 +162,8 @@
         "prevention": "Brandweervoorziening",
         "chemicals": "Gevaarlijke stoffen",
         "risk": "Risicoklasse",
-        "omsdetail": "OMS"
+        "omsdetail": "OMS",
+        "comm": "Dekking"
     },
     "chemicals": {
         "type": "Soort",
@@ -191,8 +208,8 @@
         "reset": "Reset",
         "filter": "Filter",
         "button": "Filter toepassen",
-        "oms":"OMS",
-        "bhv":"BHV",
+        "oms": "OMS",
+        "bhv": "BHV",
         "adjust": "Filter aanpassen",
         "set": "Filter instellen",
         "selected": "geselecteerd",
@@ -207,7 +224,7 @@
         "nofunctions": "Er zijn geen functies",
         "guidance": "Brandweer voorziening",
         "noguidance": "Er zijn geen brandweervoorzieningen",
-        "notset":"niet ingesteld",
+        "notset": "niet ingesteld",
         "flooring": "Bouwlagen",
         "below": "volledig ondergronds",
         "above": "volledig bovengronds",
@@ -228,10 +245,10 @@
         "infrastructure": "Hectometer",
         "infraplaceholder": "Naam en hectometer"
     },
-    "gms":{
+    "gms": {
         "gms": "Melding"
     },
-    "toggle":{
+    "toggle": {
         "toggleObject": "Toon/verberg Algemeen",
         "togglePreventive": "Toon/verberg Preventie",
         "togglePreparative": "Toon/verberg Preparatie",
@@ -248,15 +265,15 @@
         "remarks": "Opmerking",
         "sender": "Afzender",
         "send": "Verstuur",
-        "sent":"Melding is verstuurd.",
-        "error":"Er is iets fout gegaan.",
+        "sent": "Melding is verstuurd.",
+        "error": "Er is iets fout gegaan.",
         "email": "E-mail",
         "link": "Link naar de melding",
         "phone": "Telefoon",
         "kindregards": "Met vriendelijke groet",
         "team": "de opendispatcher applicatie",
         "help": "Versleep eventueel het symbool op de kaart om aan te geven waar de fout is geconstateerd of waar de melding over gaat.",
-        "generalmessage":"Algemene melding",
+        "generalmessage": "Algemene melding",
         "construction": "Gebouw constructie"
     },
     "eughs": {
@@ -267,5 +284,38 @@
         "abstract2": "De lidstaten in de Europese Unie (EU) hebben de Europese Commissie gevraagd om de VN-afspraken om te zetten in bindende Europese regelgeving voor de indeling en etikettering voor de levering en gebruik van chemische stoffen en mengsels. Met de verordening (EU-GHS/CLP) is het VN-GHS-systeem in de Europese wetgeving verankerd. De Europese Verordening is rechtstreeks werkend in alle lidstaten.",
         "abstract3": "EU-GHS/CLP bevat ook elementen uit de Stoffenrichtlijn (67/548/EEG) en de Preparatenrichtlijn (1999/45/EC) die niet in VN-GHS zijn opgenomen. Zo zijn in de verordening ook criteria voor het gebruik van  enkele risicozinnen (R-zinnen) opgenomen als EUH-zinnen. EU-GHS/CLP vervangt na een overgangsperiode de richtlijnen over indeling en etikettering van stoffen en mengsels (Stoffenrichtlijn 67/548/EG en Preparatenrichtlijn 1999/45/EG).",
         "source": "bron:"
+    },
+    "comm":{
+      "ispossible": "Dekking",
+      "possible": "Beperkt",
+      "impossible": "Geen",
+      "alternative": "Alternatief",
+      "information": "Opmerkingen"
+    },
+    "organization": {
+        "name": "Organisatie",
+        "abbreviation": "Afkorting",
+        "title": "Applicatie",
+        "logo": "Logo",
+        "namespace": "Naamruimte",
+        "new": "Nieuwe organisatie",
+        "workspace": "Werkruimte",
+        "region": "Geografisch gebied"
+    },
+    "site": {
+        "new": "Nieuwe DBK",
+        "edit": "DBK wijzigen",
+        "name": "Formele naam",
+        "title": "Informele naam",
+        "levels": "Niveau's"
+    },
+    "hazard": {
+        "name": "Naam",
+        "hin": "Identificatie nummer",
+        "un": "UN nummer",
+        "quantity": "Hoeveelheid",
+        "placard": "Placard",
+        "symbol": "Symbool",
+        "radius": "Effectgebied"
     }
 }

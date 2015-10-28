@@ -1,0 +1,29 @@
+div.container
+  h1= t('app.organizations')
+  div.table-responsive
+    table.table.table-condensed
+      thead
+        tr
+          th
+            span.glyphicon.glyphicon-fire
+          th= t('organization.name')
+          th= t('organization.abbreviation')
+          th= t('organization.title')
+          th= t('organization.logo')
+          th= t('organization.workspace')
+          th
+        tbody
+          tr(ng-repeat="organization in organizations")
+            td {{ organization.id }}
+            td {{ organization.name }}
+            td {{ organization.abbreviation }}
+            td {{ organization.title }}
+            td {{ organization.logo }}
+            td {{ organization.workspace }}
+            td
+              div.btn-group.btn-group-sm(role="group")
+                button.btn.btn-default(type="button", ui-sref="editOrganization({id: organization.id})", title!=t('app.edit'))
+                  span.glyphicon.glyphicon-pencil
+                button.btn.btn-default(type="button", ng-click="deleteOrganization(organization)" title!=t('app.delete'))
+                  span.glyphicon.glyphicon-trash
+  a.btn.btn-small.btn-primary(ui-sref="newOrganization")= t('organization.new')

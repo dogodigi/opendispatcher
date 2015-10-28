@@ -44,13 +44,21 @@
         "emergencyContactExtraFunction": "Secondary function",
         "download": "Download file",
         "hyperlink": "Open hyperlink",
-        "results": "Results"
+        "results": "Results",
+        "edit": "Edit",
+        "delete": "Delete",
+        "createSite": "Create Site",
+        "newSite": "New Site",
+        "home": "Home",
+        "sites": "Sites",
+        "settings": "Settings",
+        "user": "User"
     },
-    "bag":{
-      "updated": "Last address update"
+    "bag": {
+        "updated": "Last address update"
     },
-    "infra":{
-      "updated": "Last roadnetwork update"
+    "infra": {
+        "updated": "Last roadnetwork update"
     },
     "map": {
         "prev": "Previous",
@@ -142,7 +150,9 @@
         "prevention": "Prevention",
         "chemicals": "Chemicals",
         "risk": "Risk",
-        "omsdetail": "OMS details"
+        "omsdetail": "OMS details",
+        "formalName": "Site Name"
+        "comm": "Communication"
     },
     "chemicals": {
         "type": "Type",
@@ -184,8 +194,8 @@
         "reset": "Reset",
         "filter": "Filter",
         "button": "Apply filter",
-        "oms":"Emergency number",
-        "bhv":"BHV",
+        "oms": "Emergency number",
+        "bhv": "BHV",
         "adjust": "Adjust filter",
         "set": "Set filter",
         "selected": "selected",
@@ -200,7 +210,7 @@
         "nofunctions": "No functions set",
         "guidance": "Guidance",
         "noguidance": "No guidance set",
-        "notset":"not set",
+        "notset": "not set",
         "flooring": "Above ground",
         "below": "under ground",
         "above": "above ground",
@@ -229,15 +239,15 @@
         "remarks": "Remarks",
         "sender": "Sender",
         "send": "Send",
-        "sent":"Report sent.",
-        "error":"An error occured.",
+        "sent": "Report sent.",
+        "error": "An error occured.",
         "email": "email",
         "link": "Hyperlink to report",
         "phone": "Phone",
         "kindregards": "Kind regards",
         "team": "The Safetymaps team",
         "help": "Drag the symbol to provide the location.",
-        "generalmessage":"General",
+        "generalmessage": "General",
         "construction": "Construction"
     },
     "eughs": {
@@ -248,5 +258,35 @@
         "abstract2": "De lidstaten in de Europese Unie (EU) hebben de Europese Commissie gevraagd om de VN-afspraken om te zetten in bindende Europese regelgeving voor de indeling en etikettering voor de levering en gebruik van chemische stoffen en mengsels. Met de verordening (EU-GHS/CLP) is het VN-GHS-systeem in de Europese wetgeving verankerd. De Europese Verordening is rechtstreeks werkend in alle lidstaten.",
         "abstract3": "EU-GHS/CLP bevat ook elementen uit de Stoffenrichtlijn (67/548/EEG) en de Preparatenrichtlijn (1999/45/EC) die niet in VN-GHS zijn opgenomen. Zo zijn in de verordening ook criteria voor het gebruik van  enkele risicozinnen (R-zinnen) opgenomen als EUH-zinnen. EU-GHS/CLP vervangt na een overgangsperiode de richtlijnen over indeling en etikettering van stoffen en mengsels (Stoffenrichtlijn 67/548/EG en Preparatenrichtlijn 1999/45/EG).",
         "source": "bron:"
+    },
+    "comm":{
+      "ispossible": "Possible",
+      "possible": "Yes",
+      "impossible": "No",
+      "alternative": "Alternative",
+      "information": "Remarks"
+    }
+    "organization": {
+        "name": "Name",
+        "abbreviation": "Abbreviation",
+        "title": "Title",
+        "logo": "Logo",
+        "namespace": "Namespace",
+        "new": "New Organization",
+        "workspace": "Workspace",
+        "region": "Region"
+    },
+    "site": {
+        "new": "New Site",
+        "edit": "Edit Site"
+    },
+    "hazard": {
+        "name": "Name",
+        "hin": "Hazard Identification Number",
+        "un": "UN Number",
+        "quantity": "Quantity",
+        "symbol": "Symbol",
+        "placard": "Placard",
+        "radius": "Radius"
     }
 }

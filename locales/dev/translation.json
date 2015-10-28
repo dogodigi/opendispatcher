@@ -43,13 +43,34 @@
         "emergencyContactExtraFunction": "app.emergencyContactExtraFunction",
         "download": "app.download",
         "hyperlink": "app.hyperlink",
-        "results": "app.results"
+        "results": "app.results",
+        "toggleNavigation": "app.toggleNavigation",
+        "settings": "app.settings",
+        "user": "app.user",
+        "edit": "app.edit",
+        "delete": "app.delete",
+        "createSite": "app.createSite",
+        "today": "app.today",
+        "close": "app.close",
+        "cancel": "app.cancel",
+        "create": "app.create",
+        "home": "app.home",
+        "update": "app.update",
+        "editSite": "app.editSite",
+        "newSite": "app.newSite",
+        "organizations": "app.organizations",
+        "organization": "app.organization",
+        "Hazard": "app.Hazard",
+        "hazards": "app.hazards",
+        "building": "app.building",
+        "floor": "app.floor",
+        "search": "app.search"
     },
-    "bag":{
-      "updated": "bag.updated"
+    "bag": {
+        "updated": "bag.updated"
     },
-    "infra":{
-      "updated": "infra.updated"
+    "infra": {
+        "updated": "infra.updated"
     },
     "map": {
         "prev": "map.prev",
@@ -139,7 +160,10 @@
         "prevention": "dbk.prevention",
         "chemicals": "dbk.chemicals",
         "risk": "dbk.risk",
-        "omsdetail": "dbk.omsdetail"
+        "omsdetail": "dbk.omsdetail",
+        "InformalName": "dbk.InformalName",
+        "AlternativeName": "dbk.AlternativeName",
+        "comm": "dbk.comm"
     },
     "chemicals": {
         "type": "chemicals.type",
@@ -179,7 +203,7 @@
         "coordinates": "search.coordinates",
         "coordplaceholder": "search.coordplaceholder"
     },
-    "gms":{
+    "gms": {
         "gms": "gms.gms"
     },
     "email": {
@@ -210,5 +234,38 @@
         "abstract2": "De lidstaten in de Europese Unie (EU) hebben de Europese Commissie gevraagd om de VN-afspraken om te zetten in bindende Europese regelgeving voor de indeling en etikettering voor de levering en gebruik van chemische stoffen en mengsels. Met de verordening (EU-GHS/CLP) is het VN-GHS-systeem in de Europese wetgeving verankerd. De Europese Verordening is rechtstreeks werkend in alle lidstaten.",
         "abstract3": "EU-GHS/CLP bevat ook elementen uit de Stoffenrichtlijn (67/548/EEG) en de Preparatenrichtlijn (1999/45/EC) die niet in VN-GHS zijn opgenomen. Zo zijn in de verordening ook criteria voor het gebruik van  enkele risicozinnen (R-zinnen) opgenomen als EUH-zinnen. EU-GHS/CLP vervangt na een overgangsperiode de richtlijnen over indeling en etikettering van stoffen en mengsels (Stoffenrichtlijn 67/548/EG en Preparatenrichtlijn 1999/45/EG).",
         "source": "bron:"
+    },
+    "comm":{
+      "ispossible": "comm.ispossible",
+      "possible": "comm.possible",
+      "impossible": "comm.impossible",
+      "alternative": "comm.alternative",
+      "information": "comm.information"
+    },
+    "organization": {
+        "name": "organization.name",
+        "abbreviation": "organization.abbreviation",
+        "title": "organization.title",
+        "logo": "organization.logo",
+        "namespace": "organization.namespace",
+        "new": "organization.new",
+        "workspace": "organization.workspace",
+        "region": "organization.region"
+    },
+    "site": {
+        "new": "site.new",
+        "edit": "site.edit"
+    },
+    "hazard": {
+        "name": "hazard.name",
+        "hin": "hazard.hin",
+        "un": "hazard.un",
+        "quantity": "hazard.quantity",
+        "symbol": "hazard.symbol",
+        "placard": "hazard.placard",
+        "radius": "hazard.radius"
+    },
+    "setorganizationting": {
+        "logo": "setorganizationting.logo"
     }
 }

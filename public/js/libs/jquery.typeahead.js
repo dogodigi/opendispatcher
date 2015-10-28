@@ -15,7 +15,7 @@
             return !str || /^\s*$/.test(str);
         },
         escapeRegExChars: function(str) {
-            return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            return str.replace(/[\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
         },
         isString: function(obj) {
             return typeof obj === "string";
@@ -127,7 +127,7 @@
             return $.trim(str).toLowerCase().split(/[\s]+/);
         },
         tokenizeText: function(str) {
-            return $.trim(str).toLowerCase().split(/[\s\-_]+/);
+            return $.trim(str).toLowerCase().split(/[\s_]+/);
         },
         getProtocol: function() {
             return location.protocol;

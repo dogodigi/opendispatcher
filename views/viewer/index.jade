@@ -1,0 +1,97 @@
+extends ../shared/header
+block content
+  body(ng-controller='odIndexController')
+    nav.navbar.navbar-default.navbar-fixed-top(role='navigation')
+      div.container-fluid
+        div.navbar-header
+          button.navbar-toggle.collapsed(type='button', data-toggle='collapse' data-target='#od-navbar', aria-expanded='false')
+            span.sr-only(data-i18n='nav.toggle') Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a#title.navbar-brand(href='#', data-i18n='app.name') Opendispatcher
+        div#od-navbar.collapse.navbar-collapse.pull-right
+          div#btn-grp-search.btn-group(style='display:none;')
+          div#btngrp_3.btn-group
+            a#c_minimap.btn.navbar-btn.btn-default(ng-click='toggleMiniMap()', title=t('map.mini'))
+              i.fa.fa-picture-o
+            a#c_settings.btn.navbar-btn.btn-default(ng-click="open('settings')", data-toggle='modal', title=t('map.settings'))
+              i.fa.fa-cogs
+            a#tb01.btn.navbar-btn.btn-default(ng-click="open('overlays')", data-toggle='modal', title=t('map.overlays'))
+              i.fa.fa-map-marker
+            a#tb02.btn.navbar-btn.btn-default(ng-click="open('baselayers')", data-toggle='modal', title=t('map.baselayers'))
+              i.fa.fa-globe
+            a#tb03.btn.navbar-btn.btn-default(href='#', title=t('map.info'))
+              i.fa.fa-info-circle
+          div#btngrp_navigation.btn-group
+            a#zoom_prev.btn.navbar-btn.btn-default(ng-disabled='previousDisabled', ng-click='historyPrevious()', title=t('map.prev'))
+              i.fa.fa-backward
+            a#zoom_next.btn.navbar-btn.btn-default(ng-disabled='nextDisabled', ng-click='historyNext()', title=t('map.next'))
+              i.fa.fa-forward
+            a#zoom_in.btn.navbar-btn.btn-default(ng-click='zoomIn()', title=t('map.zoomIn'))
+              i.fa.fa-search-plus
+            a#zoom_out.btn.navbar-btn.btn-default(ng-click='zoomOut()', title=t('map.zoomOut'))
+              i.fa.fa-search-minus
+            a#zoom_extent.btn.navbar-btn.btn-default(ng-click='zoomExtent()', title=t('map.zoomExtent'))
+              i.fa.fa-arrows-alt
+            a#permalink.btn.navbar-btn.btn-default(title=t('map.permalink'))
+              i.fa.fa-link
+    div.container-fluid.fill
+      openlayers#map(ol-defaults='defaults', controls="controls")
+
+    if (fullscreen === true)
+      a.btn.btn-default.dbk-title
+      div#logo
+      div#footer
+       span#measure.btn.btn-default.navbar-btn(style='display:none;')
+    else
+      div#logo
+      div#footer
+        span#measure
+        span#coords
+        span#scale
+        span#attribution
+
+    div#settingspanel.modal.fade
+     div.modal-dialog
+        div.modal-content
+          div.modal-header
+            h4.modal-title= t('map.settings')
+          div#settingspanel_b.modal-body
+    div#baselayerpanel.modal.fade
+      div.modal-dialog
+        div.modal-content
+          div.modal-header
+          div#baselayerpanel_b.modal-body
+
+    div#overlaypanel.modal.fade
+      div.modal-dialog
+        div.modal-content
+          div.modal-header
+          div.modal-body
+            div.tabbable
+              ul#overlaypanel_ul.nav.nav-tabs
+                if (fullscreen === true)
+                  li.active
+                    a(data-toggle='tab', href='#overlay_tab2')= t('map.systemOverlays')
+                else
+                  li.active
+                    a(data-toggle='tab', href='#overlay_tab1')= t('map.emergencyOverlays')
+                  li
+                    a(data-toggle='tab', href='#overlay_tab2')= t('map.systemOverlays')
+              if (fullscreen === true)
+                div#overlaypanel_div.tab-content
+                  div#overlay_tab2.tab-pane.active
+                    div#overlaypanel_b2.panel-group
+
+              else
+                div#overlaypanel_div.tab-content
+                  div#overlay_tab1.tab-pane.active
+                    div#overlaypanel_b1.panel-group
+                  div#overlay_tab2.tab-pane
+                    div#overlaypanel_b2.panel-group
+
+    include ../shared/scripts
+  
+    // opendispatcher
+    script(src='/js/opendispatcher/opendispatcher.js')

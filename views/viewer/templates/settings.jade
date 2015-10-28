@@ -1,0 +1,11 @@
+div.modal-header
+  h3.modal-title Overlays
+
+div.modal-body
+  h3 {{organisation.gid}}: {{organisation.id}}({{organisation.workspace}})
+  h4 {{organisation.title}}
+  h5 Loaded modules:
+  ul
+    li(ng-repeat="module in organisation.modules") {{ module }}
+
+div.modal-footer

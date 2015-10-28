@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of opendispatcher/safetymapsDBK
- *  
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -35,6 +35,26 @@ html,
 body {
     width: 100%;
     height: 100%;
+    margin: 0;
+    position: absolute;
+}
+.navbar-fixed-top {
+  position: absolute !important;
+}
+div.olMap {
+  z-index: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  cursor: default;
+}
+
+.fill {
+  min-height: 100%;
+  padding-top: 50px;
+  height: 100%;
+  box-sizing: border-box;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 .thumb {
     width: 33%;
@@ -181,16 +201,16 @@ h6 {
 .btn-group {
     z-index: 1001;
 }
+
 #header {
     position: absolute;
     right: 1em;
 }
 #search_input {
     background-color: #ffffff !important;
-    max-width: 180px !important;
 }
 .dialog {
-    z-index: 300;
+    z-index: 1002 !important;
     position: absolute;
 }
 .h4 {
@@ -201,7 +221,26 @@ input[type="checkbox"] {
     line-height: normal;
     margin: 0 1em 0 0 !important;
 }
+.feed-item {
+  max-width: 300px;
+}
+.feed-title{
+  font-size: 10.5px;
+}
+.feed-description{
+  display:none;
+}
+.feed-time{
 
+}
+#messagespanel {
+  height:400px;
+}
+#messagespanel_b {
+  max-width: 500px;
+  max-height: 500px;
+  overflow: auto;
+}
 #infopanel_b {
     width: 500px;
     overflow: auto;
@@ -234,6 +273,7 @@ input[type="checkbox"] {
     text-align: right;
     width: 100%;
     padding-right: 1em;
+    z-index:1000;
 }
 #footer span {
     padding-left: 1.4em;
@@ -302,13 +342,11 @@ input[type="checkbox"] {
         border-bottom: 1px solid #cc9933 !important;
     }
     #mapc1map1 {
-        position: absolute;
-        top: 0;
-        left: 0;
-        margin: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      display: block;
+      z-index: 0;
     }
     .infofieldtitle {
         color: #cc9933;
@@ -340,7 +378,7 @@ input[type="checkbox"] {
         text-align: center;
     }
     .panel {
-        z-index: 302;
+        z-index: 790;
     }
 }
 @media screen and (max-width: 600px) {
@@ -406,4 +444,13 @@ input[type="checkbox"] {
     opacity: 0.40;
     font-size: 1px;
     filter: alpha(opacity=40);
+}
+#P2000 {
+  max-width: 350px;
+}
+#P2000_b {
+  overflow: auto;
+}
+.melding {
+  font-size: 10.5px;
 }

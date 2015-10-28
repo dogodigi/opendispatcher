@@ -67,9 +67,9 @@ fsutil.copyRecursiveSync(symbolPath, outDir + '/symbols', copyOptions);
 console.log("Copy public...");
 fsutil.copyRecursiveSync('./public', outDir, copyOptions);
 
-console.log("Copy overrides...");
-fs.mkdirSync(outDir + '/js/overrides');
-fsutil.copyRecursiveSync('./nodeless/overrides/public', outDir + '/js/overrides', copyOptions);
+//console.log("Copy overrides...");
+//fs.mkdirSync(outDir + '/js/overrides');
+//fsutil.copyRecursiveSync('./nodeless/overrides/public', outDir + '/js/overrides', copyOptions);
 
 // TODO: do what compressjs.sh does (in JS code?)
 fs.unlink(outDir + '/compressjs.sh');

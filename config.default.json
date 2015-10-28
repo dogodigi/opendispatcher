@@ -1,4 +1,7 @@
 {
+    "default": {
+        "language": "en"
+    },
     "http": {
         "port": 3000
     },
@@ -35,6 +38,9 @@
             "host": "smtphost",
             "secureConnection": true,
             "port": 465,
+            "tls": {
+              "rejectUnauthorized": false
+            },
             "auth": {
                 "user": "username",
                 "pass": "password"

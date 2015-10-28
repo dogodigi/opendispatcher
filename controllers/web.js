@@ -1,8 +1,8 @@
-/**
+/*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of opendispatcher/safetymapsDBK
- *  
+ *
  *  opendispatcher is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -19,18 +19,17 @@
  */
 
 /* global exports, require, global */
+var express = require('express');
+var router = express.Router();
 
-exports.validate_GET = function(req, res) {
-    var token = req.params.token;
-    checkToken(token, res);
-};
-
-exports.validate_POST = function(req, res) {
-    var token = req.body.token;
-    checkToken(token, res);
-};
-
-checkToken = function(token, res) {
+/**
+ * @todo Describe function
+ *
+ * @param {type} token
+ * @param {type} res
+ * @returns {undefined}
+ */
+function checkToken (token, res) {
     if (token === "be8c631496af73e302c0effec301dfda7ffd11fa1c2e08ae") {
 
         res.render('error', {title: 'Welkom!', error: 'Hallo Milo!'});
@@ -45,8 +44,43 @@ checkToken = function(token, res) {
             }
         });
     }
-};
-exports.getData = function(req, res) {
+}
+
+/**
+ * @todo Describe function
+ *
+ * @param {type} req
+ * @param {type} res
+ * @returns {undefined}
+ */
+router.route('/web/api/validate/:token')
+  .get(function(req, res) {
+    var token = req.params.token;
+    checkToken(token, res);
+  });
+
+/**
+ * @todo Describe function
+ *
+ * @param {type} req
+ * @param {type} res
+ * @returns {undefined}
+ */
+router.route('/web/api/validate')
+  .post( function(req, res) {
+    var token = req.body.token;
+    checkToken(token, res);
+  });
+
+/**
+ * @todo Describe function
+ *
+ * @param {type} req
+ * @param {type} res
+ * @returns {undefined}
+ */
+router.route('/web/api/:id')
+  .get( function(req, res) {
     if (req.query) {
         id = req.params.id;
         var query_str = 'select gid from web.user where uuid = $1';
@@ -65,11 +99,18 @@ exports.getData = function(req, res) {
                         res.json({"Unauthorized": "No corresponding user found"});
                     }
                 }
-                return;
             }
         );
     }
-};
+});
+
+/**
+ * @todo Describe function
+ *
+ * @param {type} req
+ * @param {type} res
+ * @returns {undefined}
+ */
 getJSON = function(req, res) {
     if (req.query) {
         id = req.params.uuid;
@@ -95,7 +136,6 @@ getJSON = function(req, res) {
                         if (!resultset[result.rows[index].name].features) {
                             delete resultset[result.rows[index].name].features;
                         }
-                        //delete resultset[result.rows[index].name].name;
                     }
                     res.json(resultset);
                 }
@@ -104,3 +144,5 @@ getJSON = function(req, res) {
         );
     }
 };
+
+module.exports = router;

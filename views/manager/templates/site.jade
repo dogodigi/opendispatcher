@@ -1,0 +1,48 @@
+div.container
+  if(functiontype === 'new')
+    h1= t('site.new')
+  else
+    h1= t('site.edit')
+
+  form(role="form", ng-submit="addSite()")
+    div.form-group
+      label(for="inputName")= t('dbk.formalName')
+      input#inputName.form-control(type="text", ng-model="site.name", placeholder!=t('dbk.formalName'))
+    div.form-group
+      label(for="inputTitle")= t('dbk.alternativeName')
+      input#inputTitle.form-control(type="text", ng-model="site.title", placeholder!=t('dbk.alternativeName'))
+    div.form-group(ng-controller="GeocoderController")
+      label(for="inputAddress")= t('search.address')
+      p.input-group
+        span.input-group-addon
+          i.glyphicon.glyphicon-home(ng-hide="noResults", ng-class="{'glyphicon-remove': noResults, 'glyphicon-refresh': loadingLocations}")
+          i.glyphicon.glyphicon-remove(ng-show="noResults")
+        input#inputAddress.form-control(type="text", ng-model="site.address", placeholder!=t('search.address'), typeahead="address for address in getLocation($viewValue)", typeahead-loading="loadingLocations", typeahead-no-results="noResults")
+    div.form-group(ng-controller="SelectDateController")
+      label= t('dbk.dateChecked')
+      p.input-group
+        span.input-group-btn
+          button.btn.btn-default(type="button", ng-click="open($event)")
+            i.glyphicon.glyphicon-calendar
+        input#inputChecked.form-control(type="text", 
+          datepicker-popup="{{format}}", 
+          ng-model="dt", is-open="status.opened", 
+          min-date="minDate", max-date="maxDate", datepicker-options="dateOptions", 
+          date-disabled="disabled(date, mode)", ng-required="true", 
+          today-text=t('app.today'),
+          close-text=t('app.close'))
+    div.form-group
+      label= t('dbk.emergencyResponsePresent')
+      p.input-group
+        div.btn-group.btn-group-sm(role="group")
+          button.btn(type="button", ng-model="site.assistance", ng-class="{'btn-success': boolAssistanceClass}", title=t('app.yes'), btn-radio="true", ng-click="updateAssistance(true)")
+            span.glyphicon.glyphicon-ok
+          button.btn(type="button", ng-model="site.assistance", ng-class="{'btn-danger': !boolAssistanceClass}", title=t('app.no'), btn-radio="false", ng-click="updateAssistance(false)")
+            span.glyphicon.glyphicon-remove
+    div.form-group
+      if(functiontype === 'new')
+        button.btn.btn-small(type="button", ng-click="cancel()")= t('app.cancel')
+        button.btn.btn-small.btn-primary(type="button", ng-click="addSite()")= t('app.create')
+      else
+        button.btn.btn-small(type="button", ng-click="cancel()")= t('app.cancel')
+        button.btn.btn-small.btn-primary(type="button",ng-click="updateSite()")= t('app.update')

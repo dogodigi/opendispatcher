@@ -22,11 +22,39 @@
 
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
+
+/**
+ * @class Layer
+ * @memberof dbkjs
+ * @extends dbkjs.Class
+ */
 dbkjs.Layer = dbkjs.Class({
+    /**
+     * @memberof dbkjs.Layer
+     * @property id
+     * @type {String}
+     */
     id: null,
+    /**
+     * @memberof dbkjs.Layer
+     * @property layer
+     * @type {OpenLayers.layer}
+     */
     layer: null,
+    /**
+     * @memberof dbkjs.Layer
+     * @property div
+     */
     div: null,
+    /**
+     * @memberof dbkjs.Layer
+     * @property legend
+     */
     legend: null,
+    /**
+     * @memberof dbkjs.Layer
+     * @method initialize
+     */
     initialize: function (name, url, params, options, parent, index, metadata, layertype) {
         var ly;
         var dv_panel_content;
@@ -252,10 +280,14 @@ dbkjs.Layer = dbkjs.Class({
             html = '<div class="table-responsive"><table class="table table-hover">';
             for (var feat in features) {
                 for (var j in features[feat].attributes) {
-                    if ($.inArray(j, ['Name', 'No', 'Latitude', 'Longitude']) === -1) {
-                        if (typeof (features[feat].attributes[j]) !== "undefined" && features[feat].attributes[j] !== "") {
-                            html += '<tr><td>' + j + '</td><td>' + dbkjs.util.renderHTML(features[feat].attributes[j]) + '</td></tr>';
+                    if ($.inArray(j, ['No', 'Latitude', 'Longitude','namespace','fid', 'rotation']) === -1) {
+                      //if a field has the suffix _hidden, hide it.
+                      var hidden = '_hidden';
+                      if(j.indexOf(hidden, j.length - hidden.length) === -1) {
+                        if (!dbkjs.util.isJsonNull(features[feat].attributes[j])) {
+                          html += '<tr><td>' + j + '</td><td>' + dbkjs.util.renderHTML(features[feat].attributes[j]) + '</td></tr>';
                         }
+                      }
                     }
                 }
             }

@@ -1,0 +1,24 @@
+div.container
+  form
+    h1= t('app.organization')
+    div.form-group
+      label(for="inputName")= t('organization.name')
+      input.form-control(type="text", id="inputName", ng-model="organization.name", placeholder=t('organization.name'))
+    div.form-group
+      label(for="inputTitle")= t('organization.title')
+      input.form-control(type="text", id="inputTitle", ng-model="organization.title", placeholder=t('organization.title'))
+    div.form-group
+      label(for="inputAbbreviation")= t('organization.abbreviation')
+      input.form-control(type="text", id="inputAbbreviation", ng-model="organization.abbreviation", placeholder=t('organization.abbreviation'))
+    div.form-group
+      label(for="inputLogo")= t('organization.logo')
+      input.form-control(type="text", id="inputLogo", ng-model="organization.logo", placeholder=t('organization.logo'))
+    div.form-group
+      label(for="inputWorkspace")= t('organization.workspace')
+      input.form-control(type="text", id="inputWorkspace", ng-model="organization.logo", placeholder=t('organization.workspace'))
+    div.form-group
+      label(for="inputTitle")= t('organization.region')
+      leaflet(width="100%",height="480px",geojson="organization.Region")
+    div.form-group
+      button.btn.btn-small(type="button", ng-click="cancel()")= t('app.cancel')
+      button.btn.btn-small.btn-primary(type="button", ng-click="updateOrganization()")= t('app.update')

@@ -35,32 +35,51 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || {};
+/**
+ * @memberof dbkjs.modules
+ * @exports onscreenkeyboard
+ * @todo Complete documentation.
+ */
 dbkjs.modules.onscreenkeyboard = {
-    id: "dbk.module.onscreenkeyboard",
-    register: function(options) {
+  /**
+   * @constant
+   * @type dbkjs.Module.id
+   * @default
+   */
+  id: "dbk.module.onscreenkeyboard",
+  /**
+   *
+   */
+  register: function(options) {
 
-        var opt;
-        if(dbkjs.options.onscreenkeyboard) {
-            opt = dbkjs.options.onscreenkeyboard;
+    var opt;
+    if (dbkjs.options.onscreenkeyboard) {
+      opt = dbkjs.options.onscreenkeyboard;
 
-            if(opt.enableFunction) {
-                if(!opt.enableFunction()) {
-                    return;
-                }
-            }
+      if (opt.enableFunction) {
+        if (!opt.enableFunction()) {
+          return;
         }
-        $('<div/>', { id: 'jsKeyboard'}).appendTo('body');
-
-        $('<link/>', { rel: 'stylesheet', href: 'js/libs/jskeyboard/jsKeyboard.css',
-            type: 'text/css', media: 'screen'})
-                .appendTo('head');
-
-        $.getScript("js/libs/jskeyboard/jsKeyboard.js", function() {
-
-            if(opt && opt.debug) {
-                jsKeyboard.debug = true;
-            }
-            jsKeyboard.init("jsKeyboard");
-        });
+      }
     }
+    $('<div/>', {
+      id: 'jsKeyboard'
+    }).appendTo('body');
+
+    $('<link/>', {
+        rel: 'stylesheet',
+        href: 'js/libs/jskeyboard/jsKeyboard.css',
+        type: 'text/css',
+        media: 'screen'
+      })
+      .appendTo('head');
+
+    $.getScript("js/libs/jskeyboard/jsKeyboard.js", function() {
+
+      if (opt && opt.debug) {
+        jsKeyboard.debug = true;
+      }
+      jsKeyboard.init("jsKeyboard");
+    });
+  }
 };

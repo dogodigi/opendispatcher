@@ -1,0 +1,38 @@
+extends ../shared/header
+body
+  block content
+    nav.navbar-default(role="navigation")
+      div.container-fluid
+        div.navbar-header
+          button.navbar-toggle(ng-init="navCollapsed = true", ng-click="navCollapsed = !navCollapsed")
+            span.sr-only= t('app.toggleNavigation')
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href="#")
+            span.glyphicon.glyphicon-fire &nbsp;
+            span Opendispatcher
+
+        div#navbar.collaps.navbar-collapse(collapse="navCollapsed", ng-controller="HeaderController")
+          ul.nav.navbar-nav
+            li(ng-class="{ active: isActive('/sites')}")
+              a(ui-sref="sites")= t('app.features')
+            li(ng-class="{ active: isActive('/organizations')}")
+              a(ui-sref="organizations")= t('app.organizations')
+            li(ng-class="{ active: isActive('/user')}")
+              a(ui-sref="user")= t('app.user')
+            
+    div.container
+      div(ncy-breadcrumb)
+  
+    div.container(ui-view)
+    
+    footer.footer
+      div.container
+
+    include ../shared/scripts
+  
+    // opendispatcher
+    script(src='/js/opendispatcher/app.js')
+    script(src='/js/opendispatcher/controllers.js')
+    script(src='/js/opendispatcher/services.js')
