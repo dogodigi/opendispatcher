@@ -153,7 +153,7 @@ SplitScreenWindow.prototype.constructor = SplitScreenWindow;
 
 SplitScreenWindow.prototype.createElements = function(title) {
     ModalWindow.prototype.createElements.call(this, title);
-    $(this.popup).find("a").html('<i class="fa fa-arrow-left"/> Kaart');
+    $(this.popup).find("a.modal-popup-close").html('<i class="fa fa-arrow-left"/> Kaart');
 };
 
 SplitScreenWindow.prototype.isSplitScreen = function() {
@@ -172,7 +172,7 @@ SplitScreenWindow.prototype.setSplitScreen = function(splitScreen) {
     if(wasVisible) {
         this.show();
     }
-    $(this.popup).find("a").html('<i class="fa fa-arrow-left"/> ' + (splitScreen ? 'Kaart' : 'Terug'));
+    $(this.popup).find("a.modal-popup-close").html('<i class="fa fa-arrow-left"/> ' + (splitScreen ? 'Kaart' : 'Terug'));
 
     $(this).triggerHandler('splitScreenChange', splitScreen, this.visible);
 };
