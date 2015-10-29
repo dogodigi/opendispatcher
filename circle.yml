@@ -5,3 +5,5 @@ test:
         - psql -d circle_test -p 5432 -f migrations/dbk.sql
         - psql -d circle_test -p 5432 -f migrations/address.sql
         - psql -d circle_test -p 5432 -f migrations/populate.sql
+        - npm run migrate
+        - npm run seed
