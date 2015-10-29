@@ -1,50 +1,65 @@
 {
-    "default": {
-        "language": "en"
-    },
-    "http": {
-        "port": 3000
-    },
-    "database": {
-      "user": "ubuntu",
-      "password": "",
-      "host": "localhost",
-      "port": 5432,
-      "dbname": "circle_test"
-    },
-    "bag":{
-      "user": "ubuntu",
-      "password": "",
-      "host": "localhost",
-      "port": 5432,
-      "dbname": "circle_test"
-    },
-    "infrastructure":{
-      "user": "ubuntu",
-      "password": "",
-      "host": "localhost",
-      "port": 5432,
-      "dbname": "circle_test"
-    },
-    "media": {
-      "path" : "/real/path/to/media",
-      "symbols": "/real/path/to/symbols"
-    },
-    "support": {
-        "sendto": "support@opendispatcher.org",
-        "from": "noreply@opendispatcher.org",
-        "ccsender": true,
-        "smtp":{
-            "host": "smtphost",
-            "secureConnection": true,
-            "port": 465,
-            "tls": {
-              "rejectUnauthorized": false
-            },
-            "auth": {
-                "user": "username",
-                "pass": "password"
-            }
-        }
+  "development": {
+    "dialect": "postgres",
+    "host": "localhost",
+    "database": "circle_test",
+    "username": "ubuntu",
+    "password": ""
+  },
+  "test": {
+    "dialect": "sqlite",
+    "storage": "./db.test.sqlite"
+  },
+  "production": {
+    "dialect": "sqlite",
+    "storage": "./db.production.sqlite"
+  },
+  "default": {
+    "language": "en"
+  },
+  "http": {
+    "port": 3000
+  },
+  "database": {
+    "user": "ubuntu",
+    "password": "",
+    "host": "localhost",
+    "port": 5432,
+    "dbname": "circle_test"
+  },
+  "bag": {
+    "user": "ubuntu",
+    "password": "",
+    "host": "localhost",
+    "port": 5432,
+    "dbname": "circle_test"
+  },
+  "infrastructure": {
+    "user": "ubuntu",
+    "password": "",
+    "host": "localhost",
+    "port": 5432,
+    "dbname": "circle_test"
+  },
+  "media": {
+    "path": "/real/path/to/media",
+    "symbols": "/real/path/to/symbols"
+  },
+  "support": {
+    "sendto": "support@opendispatcher.org",
+    "from": "noreply@opendispatcher.org",
+    "ccsender": true,
+    "smtp": {
+      "host": "smtphost",
+      "secureConnection": true,
+      "port": 465,
+      "tls": {
+        "rejectUnauthorized": false
+      },
+      "auth": {
+        "user": "username",
+        "pass": "password"
+      }
     }
+  }
 }
