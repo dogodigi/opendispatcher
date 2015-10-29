@@ -25,7 +25,7 @@
   "private": true,
   "scripts": {
     "start": "grunt desktop && node index.js",
-    "test": "mocha test/testSites.js --timeout 30000 --reporter dot --bail --check-leaks test/testSites.js",
+    "test": "mocha test/ --timeout 30000 --reporter dot --bail --check-leaks test/",
     "mobile": "grunt mobile",
     "desktop": "grunt desktop",
     "doc": "grunt doc",
