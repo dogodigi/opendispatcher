@@ -7,5 +7,7 @@ div.modal-body
   h5 Loaded modules:
   ul
     li(ng-repeat="module in organisation.modules") {{ module }}
-
+  h3 Single Slider Example
+  p Value: {{items[0].value}}
+  div(data-range-slider, data-floor='0', data-ceiling='100', data-highlight="left", data-step='1', data-ng-model='items[0].value')
 div.modal-footer
