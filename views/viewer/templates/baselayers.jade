@@ -2,10 +2,8 @@ div.modal-header
   h3.modal-title Baselayers
 
 div.modal-body
-  h3 {{organisation.gid}}: {{organisation.id}}({{organisation.workspace}})
-  h4 {{organisation.title}}
-  h5 Baselayers:
-  ul
-    li(ng-if="layer.baselayer === true", ng-repeat="layer in organisation.wms") {{ layer.name }}
+  ul.nav.nav-pills.nav-stacked
+    li
+      a(ng-click='toggleBaselayer(layer);',ng-repeat="layer in baselayers", ng-class="{'btn-primary' : layer.visible}") {{ layer.name }}
 
 div.modal-footer

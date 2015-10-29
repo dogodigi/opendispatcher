@@ -29,8 +29,8 @@
 			autoToggleDisplay: false,
 			width: 150,
 			height: 150,
-			collapsedWidth: 0,
-			collapsedHeight: 0,
+			collapsedWidth: 10,
+			collapsedHeight: 10,
 			aimingRectOptions: {color: "#ff7800", weight: 1, clickable: false},
 			shadowRectOptions: {color: "#000000", weight: 1, clickable: false, opacity:0, fillOpacity:0},
 			strings: {hideText: 'Hide MiniMap', showText: 'Show MiniMap'}
@@ -120,8 +120,8 @@
 
 		_addToggleButton: function () {
 			this._toggleDisplayButton = this.options.toggleDisplay ? this._createButton(
-					'', this.options.strings.hideText, ('leaflet-control-minimap-toggle-display leaflet-control-minimap-toggle-display-'
-					+ this.options.position), this._container, this._toggleDisplayButtonClicked, this) : undefined;
+					'', this.options.strings.hideText, ('leaflet-control-minimap-toggle-display leaflet-control-minimap-toggle-display-' +
+					this.options.position), this._container, this._toggleDisplayButtonClicked, this) : undefined;
 
 			this._toggleDisplayButton.style.width = this.options.collapsedWidth + 'px';
 			this._toggleDisplayButton.style.height = this.options.collapsedHeight + 'px';

@@ -2,10 +2,14 @@ div.modal-header
   h3.modal-title Overlays
 
 div.modal-body
-  h3 {{organisation.gid}}: {{organisation.id}}({{organisation.workspace}})
-  h4 {{organisation.title}}
-  h5 Overlays:
-  ul
-    li(ng-if="layer.baselayer === false", ng-repeat="layer in organisation.wms") {{ layer.name }}
+  uib-tabset
+    uib-tab(heading='{{key}}',ng-repeat="(key, value) in overlays | groupBy: 'group'")
+      uib-accordion(close-others="false")
+        uib-accordion-group(ng-repeat="overlay in value" ng-class="{'panel-primary' : overlay.visible}")
+          uib-accordion-heading
+            span.title(ng-click="$event.stopPropagation();$event.preventDefault();toggleOverlay(overlay);") {{overlay.title}}
+            span.pull-right
+              i.fa.fa-info-circle
+          p some text here for testing
 
 div.modal-footer

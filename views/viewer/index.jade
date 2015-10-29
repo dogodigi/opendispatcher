@@ -37,7 +37,9 @@ block content
             a#permalink.btn.navbar-btn.btn-default(title=t('map.permalink'))
               i.fa.fa-link
     div.container-fluid.fill
-      leaflet#map(defaults='defaults', geojson='geojson', layers="layers")
+      div.loadscreen(ng-hide="!loading")
+
+      leaflet#map(ng-hide="loading", defaults='defaults', geojson='geojson', layers="layers", controls="controls")
 
     if (fullscreen === true)
       a.btn.btn-default.dbk-title
@@ -51,45 +53,6 @@ block content
         span#coords
         span#scale
         span#attribution
-
-    div#settingspanel.modal.fade
-     div.modal-dialog
-        div.modal-content
-          div.modal-header
-            h4.modal-title= t('map.settings')
-          div#settingspanel_b.modal-body
-    div#baselayerpanel.modal.fade
-      div.modal-dialog
-        div.modal-content
-          div.modal-header
-          div#baselayerpanel_b.modal-body
-
-    div#overlaypanel.modal.fade
-      div.modal-dialog
-        div.modal-content
-          div.modal-header
-          div.modal-body
-            div.tabbable
-              ul#overlaypanel_ul.nav.nav-tabs
-                if (fullscreen === true)
-                  li.active
-                    a(data-toggle='tab', href='#overlay_tab2')= t('map.systemOverlays')
-                else
-                  li.active
-                    a(data-toggle='tab', href='#overlay_tab1')= t('map.emergencyOverlays')
-                  li
-                    a(data-toggle='tab', href='#overlay_tab2')= t('map.systemOverlays')
-              if (fullscreen === true)
-                div#overlaypanel_div.tab-content
-                  div#overlay_tab2.tab-pane.active
-                    div#overlaypanel_b2.panel-group
-
-              else
-                div#overlaypanel_div.tab-content
-                  div#overlay_tab1.tab-pane.active
-                    div#overlaypanel_b1.panel-group
-                  div#overlay_tab2.tab-pane
-                    div#overlaypanel_b2.panel-group
 
     include ../shared/scripts
   

@@ -1,9 +1,12 @@
-html,
-body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    position: absolute;
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  position: absolute;
+}
+a, a:hover, a:active, a:focus {
+  outline: 0;
+  text-decoration: none;
 }
 .navbar-fixed-top {
   position: absolute !important;
@@ -16,7 +19,6 @@ body {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
-
 #map {
   padding: 0 !important;
   margin: 0 !important;
@@ -27,9 +29,8 @@ body {
   display: block;
   z-index: 0;
 }
-
 .img-hazard {
-   width:50%;
+  width: 50%;
 }
 .hin {
   border: 3px solid #000;
@@ -45,8 +46,40 @@ body {
   font-weight: 700;
   text-align: center;
 }
+.leaflet-control-layers{
+  display: none;
+}
+/*
+.leaflet-control-minimap{
+  display: none;
+}
+*/
+.loadscreen {
+    transition: 0.5s linear all;
+    opacity: 1;
+}
+.loadscreen .ng-hide {
+    opacity: 0;
+}
+.loadscreen {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: #FFF url("/images/Preloader_2.gif") no-repeat scroll center center;
+}
 
 .pagination {
   margin: 0 !important;
 }
-.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+.nav, .pagination, .carousel, .panel-title a {
+  cursor: pointer;
+}
+.panel-title .title {
+  width: 90%;
+}
+.tab-pane {
+  padding: 10px;
+}
