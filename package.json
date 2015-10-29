@@ -30,8 +30,8 @@
     "desktop": "grunt desktop",
     "doc": "grunt doc",
     "dbinit": "mocha test/testSync.js --timeout 30000 --reporter dot --bail --check-leaks test/testSync.js",
-    "migrate": "node_modules/.bin/sequelize db:migrate",
-    "seed": "node_modules/.bin/sequelize db:seed"
+    "migrate": "node_modules/.bin/sequelize --config config.json db:migrate",
+    "seed": "node_modules/.bin/sequelize --config config.json db:seed"
   },
   "repository": {
     "type": "git",
