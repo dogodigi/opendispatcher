@@ -2,13 +2,16 @@
   "development": {
     "dialect": "postgres",
     "host": "localhost",
-    "database": "circle_test",
+    "database": "circle_dev",
     "username": "ubuntu",
     "password": ""
   },
   "test": {
-    "dialect": "sqlite",
-    "storage": "./db.test.sqlite"
+    "dialect": "postgres",
+    "host": "localhost",
+    "database": "circle_test",
+    "username": "ubuntu",
+    "password": ""
   },
   "production": {
     "dialect": "sqlite",
