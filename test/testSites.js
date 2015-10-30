@@ -113,7 +113,7 @@
             [5.32393061048113,51.5787440865183]
           ]]]
         };
-        return models.Building.create({SiteId: 1, geometry: building}).bind(this).then(function (building) {
+        return models.Building.create({LevelId: 1, geometry: building}).bind(this).then(function (building) {
           var point = {
             "type": "Point",
             "crs":{
@@ -127,7 +127,7 @@
             housenumber: '10, BT',
             postcode: '1066XX',
             BuildingId: building.id,
-            SiteId: 1,
+            LevelId: 1,
             geometry: point
           }).then(function (address) {
             expect(address.street).toEqual('Boseind');
