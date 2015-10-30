@@ -142,10 +142,6 @@ opendispatcher.controller('settingsController', function($scope, $uibModalInstan
       baselayer.visible = false;
       //turn the layer off
     }
-    $scope.items = [{
-      name  : 'First Item',
-      value : 10
-    }];
   };
 });
 
