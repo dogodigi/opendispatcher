@@ -1,5 +1,8 @@
 (function () {
   'use strict';
+  angular.module('opendispatcher.controllers', []);
+  angular.module('opendispatcher.factories', []);
+  angular.module('opendispatcher.services', []);
   angular.module('opendispatcher', [
     'ngAnimate',
     'ui.router',
@@ -7,8 +10,11 @@
     'ui.bootstrap',
     'leaflet-directive',
     'ncy-angular-breadcrumb',
+    'angular.filter',
+    'angularRangeSlider',
     'jm.i18next',
     'opendispatcher.controllers',
+    'opendispatcher.factories',
     'opendispatcher.services'
     ])
   .config(function ($i18nextProvider) {
@@ -128,7 +134,13 @@
         },
         controller: 'OrganizationController'
       });
-  }).run(function($state) {
-      $state.go('sites'); //make a transition to movies state when app starts
   });
 }());
+// Clear browser cache (in development mode)
+//
+// http://stackoverflow.com/questions/14718826/angularjs-disable-partial-caching-on-dev-machine
+//app.run(function ($rootScope, $templateCache) {
+//  $rootScope.$on('$viewContentLoaded', function () {
+//    $templateCache.removeAll();
+//  });
+//});

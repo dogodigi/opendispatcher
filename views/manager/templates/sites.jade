@@ -47,4 +47,4 @@ div.container
     div.col-md-3
       a.btn.btn-small.btn-primary(ui-sref="newSite")= t('site.new')
     div.col-md-9
-      pagination(ng-model="currentPage", total-items="totalItems", max-size="maxSize",boundary-links="true", items-per-page="itemsPerPage", ng-change="pageChanged()", rotate="false", num-pages="numPages")
+      uib-pagination(ng-model="currentPage", total-items="totalItems", max-size="maxSize",boundary-links="true", items-per-page="itemsPerPage", ng-change="pageChanged()", rotate="false", num-pages="numPages")

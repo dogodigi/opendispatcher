@@ -1,6 +1,6 @@
 extends ../shared/header
-body
-  block content
+block content
+  body
     nav.navbar-default(role="navigation")
       div.container-fluid
         div.navbar-header
@@ -9,11 +9,11 @@ body
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href="#")
+          a#title.navbar-brand(href="#")
             span.glyphicon.glyphicon-fire &nbsp;
-            span Opendispatcher
+            span(data-i18n='app.name') Opendispatcher
 
-        div#navbar.collaps.navbar-collapse(collapse="navCollapsed", ng-controller="HeaderController")
+        div#navbar.uib-collapse.navbar-collapse(uib-collapse="navCollapsed", ng-controller="NavigationController")
           ul.nav.navbar-nav
             li(ng-class="{ active: isActive('/sites')}")
               a(ui-sref="sites")= t('app.features')
@@ -22,17 +22,12 @@ body
             li(ng-class="{ active: isActive('/user')}")
               a(ui-sref="user")= t('app.user')
             
-    div.container
+    div.container-fluid
       div(ncy-breadcrumb)
   
-    div.container(ui-view)
+    div.container-fluid(ui-view)
     
     footer.footer
       div.container
 
     include ../shared/scripts
-  
-    // opendispatcher
-    script(src='/js/opendispatcher/app.js')
-    script(src='/js/opendispatcher/controllers.js')
-    script(src='/js/opendispatcher/services.js')

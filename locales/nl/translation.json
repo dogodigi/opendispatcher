@@ -59,7 +59,8 @@
         "results": "Gevonden objecten",
         "cancel": "Annuleren",
         "close": "Sluiten",
-        "today": "Vandaag"
+        "today": "Vandaag",
+        "organization": "app.organization"
     },
     "bag": {
         "updated": "Mutatiedatum BAG"
@@ -285,12 +286,12 @@
         "abstract3": "EU-GHS/CLP bevat ook elementen uit de Stoffenrichtlijn (67/548/EEG) en de Preparatenrichtlijn (1999/45/EC) die niet in VN-GHS zijn opgenomen. Zo zijn in de verordening ook criteria voor het gebruik van  enkele risicozinnen (R-zinnen) opgenomen als EUH-zinnen. EU-GHS/CLP vervangt na een overgangsperiode de richtlijnen over indeling en etikettering van stoffen en mengsels (Stoffenrichtlijn 67/548/EG en Preparatenrichtlijn 1999/45/EG).",
         "source": "bron:"
     },
-    "comm":{
-      "ispossible": "Dekking",
-      "possible": "Beperkt",
-      "impossible": "Geen",
-      "alternative": "Alternatief",
-      "information": "Opmerkingen"
+    "comm": {
+        "ispossible": "Dekking",
+        "possible": "Beperkt",
+        "impossible": "Geen",
+        "alternative": "Alternatief",
+        "information": "Opmerkingen"
     },
     "organization": {
         "name": "Organisatie",
