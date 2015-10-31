@@ -172,6 +172,21 @@ module.exports = function(grunt) {
         }]
       }
     },
+    ngAnnotate: {
+      options: {
+        singleQuotes: true,
+      },
+      opendispatcher: {
+        files: {
+          'public/js/opendispatcher.js': [
+            'public/js/opendispatcher/app.js',
+            'public/js/opendispatcher/controllers/*.js',
+            'public/js/opendispatcher/factories/*.js',
+            'public/js/opendispatcher/services/*.js'
+          ]
+        },
+      }
+    },
     uglify: {
       desktop: {
         options: {
@@ -213,6 +228,9 @@ module.exports = function(grunt) {
             'public/js/dbkjs/mapcontrols.js',
             'public/js/dbkjs/dbkjs.js',
             'public/js/dbkjs/docready.js'
+          ],
+          'public/js/opendispatcher.min.js': [
+            'public/js/opendispatcher.js'
           ]
         }
       },
@@ -290,6 +308,7 @@ module.exports = function(grunt) {
       }
     }
   });
+  grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
@@ -446,7 +465,7 @@ module.exports = function(grunt) {
     fs.writeFileSync(path.resolve(__dirname, startDir + '/js/dbkjs/images_base64.js'), "var imagesBase64 = " + JSON.stringify(imagesBase64));
   });
 
-  grunt.registerTask('desktop', ['cssmin:desktop', 'uglify:desktop', 'copy:desktop', 'index:desktop']);
+  grunt.registerTask('desktop', ['uglify:desktop', 'cssmin:desktop', 'ngAnnotate', 'copy:desktop', 'index:desktop']);
   grunt.registerTask('mobile', ['cssmin:mobile', 'uglify:mobile', 'organisation:mobile', 'features:mobile', 'copy:mobile', 'index:mobile']);
   grunt.registerTask("doc", ["jsdoc:controllers", "jsdoc:application"]);
 };

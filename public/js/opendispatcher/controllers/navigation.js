@@ -1,12 +1,9 @@
-(function() {
-  'use strict';
-  angular
-    .module('opendispatcher.controllers')
-    .controller('NavigationController', NavigationController);
+angular
+  .module('opendispatcher.controllers')
+  .controller('NavigationController', NavigationController);
 
-  function NavigationController($scope, $location) {
-    $scope.isActive = function(viewLocation) {
-      return viewLocation === $location.path();
-    };
-  }
-}());
+function NavigationController($scope, $location) {
+  $scope.isActive = function(viewLocation) {
+    return viewLocation === $location.path();
+  };
+}

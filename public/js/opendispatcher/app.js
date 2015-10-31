@@ -1,9 +1,7 @@
-(function () {
-  'use strict';
-  angular.module('opendispatcher.controllers', []);
-  angular.module('opendispatcher.factories', []);
-  angular.module('opendispatcher.services', []);
-  angular.module('opendispatcher', [
+angular.module('opendispatcher.controllers', []);
+angular.module('opendispatcher.factories', []);
+angular.module('opendispatcher.services', []);
+angular.module('opendispatcher', [
     'ngAnimate',
     'ui.router',
     'ngResource',
@@ -16,21 +14,21 @@
     'opendispatcher.controllers',
     'opendispatcher.factories',
     'opendispatcher.services'
-    ])
-  .config(function ($i18nextProvider) {
-		  $i18nextProvider.options = {
-		  fallbackLng: 'en', // Default is dev
+  ])
+  .config(function($i18nextProvider) {
+    $i18nextProvider.options = {
+      fallbackLng: 'en', // Default is dev
       detectLngQS: 'l',
-		  useCookie: false,
+      useCookie: false,
       resGetPath: '/locales/__lng__/__ns__.json'
-	  };
+    };
   })
   .config(function($breadcrumbProvider) {
     $breadcrumbProvider.setOptions({
       prefixStateName: 'home'
     });
   })
-  .config(function ($stateProvider) {
+  .config(function($stateProvider) {
     $stateProvider
       .state('home', {
         ncyBreadcrumb: {
@@ -57,7 +55,9 @@
         resolve: {
           HazardsFactory: 'HazardsFactory',
           hazards: function(HazardsFactory) {
-            return HazardsFactory.query({ id: 1 }).$promise;
+            return HazardsFactory.query({
+              id: 1
+            }).$promise;
           }
         },
         ncyBreadcrumb: {
@@ -108,7 +108,9 @@
         resolve: {
           OrganizationFactory: 'OrganizationFactory',
           organization: function(OrganizationFactory, $stateParams) {
-            return OrganizationFactory.query({ id: $stateParams.id }).$promise;
+            return OrganizationFactory.query({
+              id: $stateParams.id
+            }).$promise;
           }
         },
         ncyBreadcrumb: {
@@ -125,7 +127,7 @@
         resolve: {
           OrganizationFactory: 'OrganizationFactory',
           organization: function(OrganizationFactory) {
-              return {};
+            return {};
           }
         },
         ncyBreadcrumb: {
@@ -135,7 +137,7 @@
         controller: 'OrganizationController'
       });
   });
-}());
+
 // Clear browser cache (in development mode)
 //
 // http://stackoverflow.com/questions/14718826/angularjs-disable-partial-caching-on-dev-machine

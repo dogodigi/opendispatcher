@@ -1,7 +1,7 @@
 {
   "name": "opendispatcher",
   "description": "opendispatcher - First responder HTML5 nodejs client application",
-  "version": "3.1.0",
+  "version": "4.0.0-beta1",
   "license": "GPL-3.0+",
   "author": {
     "name": "Milo van der Linden",
@@ -71,6 +71,7 @@
   },
   "devDependencies": {
     "grunt-jsdoc": "^1.0.0",
+    "grunt-ng-annotate": "^1.0.1",
     "jsdoc": "^3.3.3",
     "mocha": "2.3.2",
     "mocha-junit-reporter": "^1.5.0"
