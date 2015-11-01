@@ -74,13 +74,22 @@ global.conf.defaults({
         'port': 9999
     }
 });
+if (!fs.existsSync(__dirname + '/config.json')) {
+    console.log('Warning, ' + __dirname + '/config.json' + ' not present. Falling back to config.default.json');
+    //check to see if config file exists, if not, default to config.default.json
+    config = require(__dirname + '/config.default.json')[env];
+} else {
+    config = require(__dirname + '/config.json')[env];
+}
 
-var dbURL = 'postgres://' +
-        global.conf.get('database:user') + ':' +
-        global.conf.get('database:password') + '@' +
-        global.conf.get('database:host') + ':' +
-        global.conf.get('database:port') + '/' +
-        global.conf.get('database:dbname');
+var port = config.port || 5432;
+var dbURL = config.dialect + '://' +
+        config.username + ':' +
+        config.password + '@' +
+        config.host + ':' +
+        port + '/' +
+        config.database;
+
 var bagURL = 'postgres://' +
         global.conf.get('bag:user') + ':' +
         global.conf.get('bag:password') + '@' +
@@ -96,6 +105,7 @@ if (global.conf.get('infrastructure:user')) {
             global.conf.get('infrastructure:dbname');
     global.infra = anyDB.createPool(infraURL, {min: 2, max: 20});
 }
+
 global.pool = anyDB.createPool(dbURL, {min: 2, max: 20});
 global.bag = anyDB.createPool(bagURL, {min: 2, max: 20});
 global.defaultLanguage = global.conf.get('default:language') || 'en';

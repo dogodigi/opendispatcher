@@ -104,6 +104,7 @@ var getBagInfo = function(req, res) {
   global.bag.query(query_str, ['schema_creatie'],
     function(err, result) {
       if (err) {
+        console.log(err);
         res.status(400).json(err);
       } else {
         res.json(result.rows);
