@@ -19,7 +19,7 @@ block content
               span.input-group-addon
                 i.glyphicon.glyphicon-home(ng-hide="noResults", ng-class="{'glyphicon-remove': noResults, 'glyphicon-refresh': loadingLocations}")
                 i.glyphicon.glyphicon-remove(ng-show="noResults")
-              input#inputAddress.form-control(type="text", ng-model="site.address", placeholder!=t('search.address'), uib-typeahead="address for address in getLocation($viewValue)", uib-typeahead-wait-ms="1000", uib-typeahead-loading="loadingLocations", uib-typeahead-no-results="noResults")
+              input#inputAddress.form-control(type="text", typeahead-on-select="onSelect($item, $model, $label)", ng-model="match", placeholder!=t('search.address'), uib-typeahead="match.label for match in getLocation($viewValue)", typeahead-loading="loadingLocations", typeahead-no-results="noResults")
               span.input-group-addon
                 i.glyphicon.glyphicon-search
 

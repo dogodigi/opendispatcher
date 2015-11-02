@@ -29,7 +29,6 @@ router.route('/mapzen')
     if (req.query) {
         var request = require('request');
         req.query.api_key = 'search-Mm6BEtE';
-
         var x = request({url: 'https://search.mapzen.com/v1/autocomplete', qs: req.query});
         x.on('response', function(response) {
           var data = [];
@@ -56,6 +55,9 @@ router.route('/nominatim')
   .all( function (req, res) {
     if (req.query) {
         var request = require('request');
+        req.query.polygon_geojson = 1;
+        req.query.addressdetails = 1;
+        req.query.email = 'info@opendispatcher.org';
         var x = request({url: 'http://nominatim.openstreetmap.org/search', qs: req.query});
         req.pipe(x);
         x.pipe(res);
