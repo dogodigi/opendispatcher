@@ -1,14 +1,17 @@
 angular
   .module('opendispatcher.controllers')
-  .value('searchprovider', 'nominatim')
+  .value('searchprovider', 'mapzen')
   .controller('GeocoderController', GeocoderController);
 
-function GeocoderController($scope, GoogleGeocoderFactory, NominatimGeocoderFactory, MapzenGeocoderFactory, searchprovider) {
+function GeocoderController($scope, GoogleGeocoderFactory, NominatimGeocoderFactory, MapzenGeocoderFactory, searchprovider, leafletData) {
   $scope.onSelect = function($item, $model, $label) {
     console.log($item.location);
     //zoom to item.location
 
-    $scope.$item = $item;
+    //$scope.$item = $item;
+    leafletData.getMap().then(function(map) {
+      map.fitBounds(L.geoJson($item.location).getBounds());
+    });
     $scope.$model = $model;
     $scope.$label = $label;
   };
