@@ -17,7 +17,7 @@ div.container
         span.input-group-addon
           i.glyphicon.glyphicon-home(ng-hide="noResults", ng-class="{'glyphicon-remove': noResults, 'glyphicon-refresh': loadingLocations}")
           i.glyphicon.glyphicon-remove(ng-show="noResults")
-        input#inputAddress.form-control(type="text", ng-model="site.address", placeholder!=t('search.address'), uib-typeahead="address for address in getLocation($viewValue)", uib-typeahead-loading="loadingLocations", uib-typeahead-no-results="noResults")
+        input#inputAddress.form-control(type="text", ng-model="site.address", placeholder!=t('search.address'), uib-typeahead="address for address in getLocation($viewValue)", uib-typeahead-wait-ms="1000", uib-typeahead-loading="loadingLocations", uib-typeahead-no-results="noResults")
     div.form-group(ng-controller="SelectDateController")
       label= t('dbk.dateChecked')
       p.input-group

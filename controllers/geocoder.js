@@ -24,6 +24,34 @@ var router = express.Router();
 var http = require('http');
 var querystring = require('querystring');
 
+router.route('/mapzen')
+  .all( function (req, res) {
+    if (req.query) {
+        var request = require('request');
+        req.query.api_key = 'search-Mm6BEtE';
+
+        var x = request({url: 'https://search.mapzen.com/v1/autocomplete', qs: req.query});
+        x.on('response', function(response) {
+          var data = [];
+          response.on('data', function(chunk) {
+            data.push(chunk);
+          });
+          response.on('end', function() {
+            var finaldata = data.join('');
+            var result = JSON.parse(finaldata);
+            res.json(result.features);
+          });
+        });
+        x.on('error', function(err) {
+          res.status(400).json({
+            "error": "Timeout on proxy"
+          });
+        });
+    } else {
+        res.json({"booh": "Nah, nah, nah! You didn't say the magic words!"});
+    }
+  });
+
 router.route('/nominatim')
   .all( function (req, res) {
     if (req.query) {

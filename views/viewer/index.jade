@@ -14,31 +14,41 @@ block content
             span(data-i18n='app.name') Opendispatcher
 
         div#navbar.uib-collapse.navbar-collapse(uib-collapse="navCollapsed", ng-controller="NavigationController")
-          div#btn-grp-search.btn-group(style='display:none;')
-          div#btngrp_3.btn-group
-            a#c_minimap.btn.navbar-btn.btn-default(ng-click='toggleMiniMap()', title=t('map.mini'))
-              i.fa.fa-picture-o
-            a#c_settings.btn.navbar-btn.btn-default(ng-click="open('settings')", data-toggle='modal', title=t('map.settings'))
-              i.fa.fa-cogs
-            a#tb01.btn.navbar-btn.btn-default(ng-click="open('overlays')", data-toggle='modal', title=t('map.overlays'))
-              i.fa.fa-map-marker
-            a#tb02.btn.navbar-btn.btn-default(ng-click="open('baselayers')", data-toggle='modal', title=t('map.baselayers'))
-              i.fa.fa-globe
-            a#tb03.btn.navbar-btn.btn-default(href='#', title=t('map.info'))
-              i.fa.fa-info-circle
-          div#btngrp_navigation.btn-group
-            a#zoom_prev.btn.navbar-btn.btn-default(ng-disabled='previousDisabled', ng-click='historyPrevious()', title=t('map.prev'))
-              i.fa.fa-backward
-            a#zoom_next.btn.navbar-btn.btn-default(ng-disabled='nextDisabled', ng-click='historyNext()', title=t('map.next'))
-              i.fa.fa-forward
-            a#zoom_in.btn.navbar-btn.btn-default(ng-click='zoomIn()', title=t('map.zoomIn'))
-              i.fa.fa-search-plus
-            a#zoom_out.btn.navbar-btn.btn-default(ng-click='zoomOut()', title=t('map.zoomOut'))
-              i.fa.fa-search-minus
-            a#zoom_extent.btn.navbar-btn.btn-default(ng-click='zoomExtent()', title=t('map.zoomExtent'))
-              i.fa.fa-arrows-alt
-            a#permalink.btn.navbar-btn.btn-default(title=t('map.permalink'))
-              i.fa.fa-link
+          form.form-inline
+            div.input-group(ng-controller="GeocoderController")
+              span.input-group-addon
+                i.glyphicon.glyphicon-home(ng-hide="noResults", ng-class="{'glyphicon-remove': noResults, 'glyphicon-refresh': loadingLocations}")
+                i.glyphicon.glyphicon-remove(ng-show="noResults")
+              input#inputAddress.form-control(type="text", ng-model="site.address", placeholder!=t('search.address'), uib-typeahead="address for address in getLocation($viewValue)", uib-typeahead-wait-ms="1000", uib-typeahead-loading="loadingLocations", uib-typeahead-no-results="noResults")
+              span.input-group-addon
+                i.glyphicon.glyphicon-search
+
+            div#btn-grp-search.btn-group(style='display:none;')
+
+            div#btngrp_3.btn-group
+              a#c_minimap.btn.navbar-btn.btn-default(ng-click='toggleMiniMap()', title=t('map.mini'))
+                i.fa.fa-picture-o
+              a#c_settings.btn.navbar-btn.btn-default(ng-click="open('settings')", data-toggle='modal', title=t('map.settings'))
+                i.fa.fa-cogs
+              a#tb01.btn.navbar-btn.btn-default(ng-click="open('overlays')", data-toggle='modal', title=t('map.overlays'))
+                i.fa.fa-map-marker
+              a#tb02.btn.navbar-btn.btn-default(ng-click="open('baselayers')", data-toggle='modal', title=t('map.baselayers'))
+                i.fa.fa-globe
+              a#tb03.btn.navbar-btn.btn-default(href='#', title=t('map.info'))
+                i.fa.fa-info-circle
+            div#btngrp_navigation.btn-group
+              a#zoom_prev.btn.navbar-btn.btn-default(ng-disabled='previousDisabled', ng-click='historyPrevious()', title=t('map.prev'))
+                i.fa.fa-backward
+              a#zoom_next.btn.navbar-btn.btn-default(ng-disabled='nextDisabled', ng-click='historyNext()', title=t('map.next'))
+                i.fa.fa-forward
+              a#zoom_in.btn.navbar-btn.btn-default(ng-click='zoomIn()', title=t('map.zoomIn'))
+                i.fa.fa-search-plus
+              a#zoom_out.btn.navbar-btn.btn-default(ng-click='zoomOut()', title=t('map.zoomOut'))
+                i.fa.fa-search-minus
+              a#zoom_extent.btn.navbar-btn.btn-default(ng-click='zoomExtent()', title=t('map.zoomExtent'))
+                i.fa.fa-arrows-alt
+              a#permalink.btn.navbar-btn.btn-default(title=t('map.permalink'))
+                i.fa.fa-link
     div.container-fluid.fill
       div.loadscreen(ng-hide="!loading")
 
