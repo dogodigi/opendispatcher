@@ -434,7 +434,9 @@ dbkjs.modules.print = {
       if (layer.name !== null && "Feature,feature_sketch,print".indexOf(layer.name) === -1) {
         if (layer.getVisibility() === true) {
           var enc = _obj.encodeLayer(layer);
-          encodedLayers.push(enc);
+          if(enc){
+            encodedLayers.push(enc);
+          }
         }
       }
     });
@@ -454,13 +456,17 @@ dbkjs.modules.print = {
     if (options.overview) {
       $.each(options.overview.layers, function(layer) {
         var enc = _obj.encodeLayer(layer);
-        encodedOverviewLayers.push(enc);
+        if(enc){
+          encodedOverviewLayers.push(enc);
+        }
       });
       jsonData.overviewLayers = encodedOverviewLayers;
     } else {
       //set the baseLayers as the overviewlayer
       var enc = _obj.encodeLayer(map.baseLayer);
-      encodedOverviewLayers.push(enc);
+      if(enc){
+        encodedOverviewLayers.push(enc);
+      }
       jsonData.overviewLayers = encodedOverviewLayers;
     }
     $.ajax({
