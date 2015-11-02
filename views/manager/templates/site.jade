@@ -17,7 +17,7 @@ div.container
         span.input-group-addon
           i.glyphicon.glyphicon-home(ng-hide="noResults", ng-class="{'glyphicon-remove': noResults, 'glyphicon-refresh': loadingLocations}")
           i.glyphicon.glyphicon-remove(ng-show="noResults")
-        input#inputAddress.form-control(type="text", ng-model="site.address", placeholder!=t('search.address'), typeahead="address for address in getLocation($viewValue)", typeahead-loading="loadingLocations", typeahead-no-results="noResults")
+        input#inputAddress.form-control(type="text", ng-model="site.address", placeholder!=t('search.address'), uib-typeahead="address for address in getLocation($viewValue)", uib-typeahead-loading="loadingLocations", uib-typeahead-no-results="noResults")
     div.form-group(ng-controller="SelectDateController")
       label= t('dbk.dateChecked')
       p.input-group
@@ -25,9 +25,9 @@ div.container
           button.btn.btn-default(type="button", ng-click="open($event)")
             i.glyphicon.glyphicon-calendar
         input#inputChecked.form-control(type="text", 
-          datepicker-popup="{{format}}", 
+          uib-datepicker-popup="{{format}}", 
           ng-model="dt", is-open="status.opened", 
-          min-date="minDate", max-date="maxDate", datepicker-options="dateOptions", 
+          min-date="minDate", max-date="maxDate", uib-datepicker-options="dateOptions", 
           date-disabled="disabled(date, mode)", ng-required="true", 
           today-text=t('app.today'),
           close-text=t('app.close'))
@@ -35,9 +35,9 @@ div.container
       label= t('dbk.emergencyResponsePresent')
       p.input-group
         div.btn-group.btn-group-sm(role="group")
-          button.btn(type="button", ng-model="site.assistance", ng-class="{'btn-success': boolAssistanceClass}", title=t('app.yes'), btn-radio="true", ng-click="updateAssistance(true)")
+          button.btn(type="button", ng-model="site.assistance", ng-class="{'btn-success': boolAssistanceClass}", title=t('app.yes'), uib-btn-radio="true", ng-click="updateAssistance(true)")
             span.glyphicon.glyphicon-ok
-          button.btn(type="button", ng-model="site.assistance", ng-class="{'btn-danger': !boolAssistanceClass}", title=t('app.no'), btn-radio="false", ng-click="updateAssistance(false)")
+          button.btn(type="button", ng-model="site.assistance", ng-class="{'btn-danger': !boolAssistanceClass}", title=t('app.no'), uib-btn-radio="false", ng-click="updateAssistance(false)")
             span.glyphicon.glyphicon-remove
     div.form-group
       if(functiontype === 'new')

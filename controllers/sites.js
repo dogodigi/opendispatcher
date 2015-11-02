@@ -118,55 +118,39 @@ router.route('/new/api/site/:id')
       ],
       include: [
         {
-          model: models.Terrain,
-          attributes: [
-            [
-              models.sequelize.fn('ST_AsGeoJSON',
-                models.sequelize.fn('ST_TRANSFORM', models.sequelize.col('"Terrains.geometry"'),srid), 15, 2),
-              'the_geom'
-            ]
-          ]
-        },
-        {
-          model: models.Building,
+          model: models.Level,
           include:[
-            {model: models.Floor,
-              include: [{
-                model: models.Hazard,
-                attributes: [
-                  'name',
-                  'hin',
-                  'un',
-                  'quantity',
-                  [
-                    models.sequelize.fn('ST_AsGeoJSON',
-                      models.sequelize.fn('ST_TRANSFORM', models.sequelize.col('"Buildings.Floors.Hazards.geometry"'),srid), 15, 2),
-                    'the_geom'
-                  ]
-                ]
-              }]
-            }, {
-              model: models.Address,
+            {
+              model: models.Hazard,
               attributes: [
-                ['id', 'bagId'],
-                ['street', 'openbareRuimteNaam'],
-                ['housenumber', 'huisnummer'],
-                ['place', 'woonplaatsNaam'],
-                ['city', 'gemeenteNaam'],
-                'postcode',
+                'name',
+                'hin',
+                'un',
+                'quantity',
                 [
                   models.sequelize.fn('ST_AsGeoJSON',
-                    models.sequelize.fn('ST_TRANSFORM', models.sequelize.col('"Buildings.geometry"'),srid), 15, 2),
+                    models.sequelize.fn('ST_TRANSFORM', models.sequelize.col('"Levels.Hazards.geometry"'),srid), 15, 2),
                   'the_geom'
                 ]
               ]
-            }
+            },
+            {
+              model: models.Terrain,
+              attributes: [
+                [
+                  models.sequelize.fn('ST_AsGeoJSON',
+                    models.sequelize.fn('ST_TRANSFORM', models.sequelize.col('"Levels.Terrains.geometry"'),srid), 15, 2),
+                  'the_geom'
+                ]
+              ]
+            },
+            {model: models.Building}
           ],
           attributes: [
             'id',
             [
               models.sequelize.fn('ST_AsGeoJSON',
-                models.sequelize.fn('ST_TRANSFORM', models.sequelize.col('"Buildings.geometry"'),srid), 15, 2),
+                models.sequelize.fn('ST_TRANSFORM', models.sequelize.col('"Levels.Buildings.geometry"'),srid), 15, 2),
               'the_geom'
             ]
           ]
