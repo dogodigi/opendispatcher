@@ -44,7 +44,17 @@ block content
           a#title.navbar-brand(href='#', data-i18n='app.name') Opendispatcher
         div#od-navbar.collapse.navbar-collapse.pull-right
           div#btn-grp-search.btn-group(style='display:none;')
-          
+          div#btngrp_3.btn-group
+            a#c_minimap.btn.navbar-btn.btn-default(href='#', title=t('map.mini'))
+              i.fa.fa-picture-o
+            a#c_settings.btn.navbar-btn.btn-default(href='#settingspanel', data-toggle='modal', title=t('map.settings'))
+              i.fa.fa-cogs
+            a#tb01.btn.navbar-btn.btn-default(href='#overlaypanel', data-toggle='modal', title=t('map.overlays'))
+              i.fa.fa-map-marker
+            a#tb02.btn.navbar-btn.btn-default(href='#baselayerpanel', data-toggle='modal', title=t('map.baselayers'))
+              i.fa.fa-globe
+            a#tb03.btn.navbar-btn.btn-default(href='#', title=t('map.info'))
+              i.fa.fa-info-circle
           div#btngrp_navigation.btn-group
             a#zoom_prev.btn.navbar-btn.btn-default.disabled(href='#', title=t('map.prev'))
               i.fa.fa-backward
@@ -67,18 +77,6 @@ block content
         div#noordpijl(title=t('map.northarrow'),style='cursor:pointer;')
           i.fa.fa-long-arrow-up(style='font-size:40px;')
             span(style='font-size:20px') N
-      div#sidebar-wrapper
-        div#btngrp_3.btn-group.btn-group-vertical
-          a#c_minimap.btn.btn-default(href='#', title=t('map.mini'))
-            i.fa.fa-picture-o
-          a#c_settings.btn.btn-default(href='#settingspanel', data-toggle='modal', title=t('map.settings'))
-            i.fa.fa-cogs
-          a#tb01.btn.btn-default(href='#overlaypanel', data-toggle='modal', title=t('map.overlays'))
-            i.fa.fa-map-marker
-          a#tb02.btn.btn-default(href='#baselayerpanel', data-toggle='modal', title=t('map.baselayers'))
-            i.fa.fa-globe
-          a#tb03.btn.btn-default(href='#', title=t('map.info'))
-            i.fa.fa-info-circle
 
   if (fullscreen === true)
     a.btn.btn-default.dbk-title

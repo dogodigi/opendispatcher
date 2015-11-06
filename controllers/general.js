@@ -16,6 +16,7 @@ var getIndex = function index(req, res) {
   var activelang = req.i18n.language();
   var useFullscreen = false;
   var page = 'legacy/index';
+  var version = 3;
   if (req.headers['x-opendispatcher-dn']) {
     var arr1 = req.headers['x-opendispatcher-dn'].split('/');
     var user = {};
@@ -26,6 +27,7 @@ var getIndex = function index(req, res) {
   }
   if (req.query && (req.query.version === '4')) {
     page = 'viewer/index';
+    version = 4;
   }
   if (req.query && (req.query.mobile || req.query.mobile === '')) {
     useFullscreen = true;
@@ -35,6 +37,7 @@ var getIndex = function index(req, res) {
   res.render(page, {
     mylang: activelang,
     mode: req.app.get('env'),
+    version: version,
     fullscreen: useFullscreen,
     "base64": useBase64
   });

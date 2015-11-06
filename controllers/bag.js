@@ -126,6 +126,9 @@ var getAutocomplete = function(req, res) {
   // @todo Check to see if the database is up. If not, fall back to nominatim!
   if (req.query) {
     var searchphrase = req.params.searchphrase || '';
+    if (!searchphrase) {
+      searchphrase = req.query.text || '';
+    }
     var whereclause;
     var finalsearch;
     if (searchphrase.length > 2) {
@@ -133,7 +136,9 @@ var getAutocomplete = function(req, res) {
       if (!srid) {
         srid = 4326;
       }
-      // Are there any spaces in the searchphrase? use to_tsquery!
+      // Are there any plus signs in the searchphrase? use to_tsquery!
+      searchphrase = searchphrase.trim().toProperCase().replace(/\+/g, " ");
+
       if (searchphrase.trim().indexOf(' ') >= 0) {
         whereclause = "(textsearchable_adres @@ to_tsquery('dutch',$1)) ";
         finalsearch = searchphrase.trim().toProperCase().replace(/ /g, "&");
@@ -141,6 +146,7 @@ var getAutocomplete = function(req, res) {
         whereclause = "openbareruimtenaam like $1 ";
         finalsearch = searchphrase.trim().toProperCase() + '%';
       }
+      console.log(finalsearch);
       var query_str = "select openbareruimtenaam || ' ' || " +
         "CASE WHEN lower(woonplaatsnaam) = lower(gemeentenaam) THEN woonplaatsnaam " +
         "ELSE woonplaatsnaam || ', ' || gemeentenaam END as display_name, " +
@@ -265,6 +271,7 @@ var getAddress = function(req, res) {
 router.route('/api/bag/adres/:id').get(getAddress);
 router.route('/api/bag/address/:id').get(getAddress);
 router.route('/api/autocomplete/:searchphrase').get(getAutocomplete);
+router.route('/api/autocomplete').get(getAutocomplete);
 router.route('/api/bag/info').get(getBagInfo);
 router.route('/api/bag/buildings/:id.json').get(getBuilding);
 router.route('/api/bag/panden/:id.json').get(getBuilding);

@@ -15,15 +15,25 @@ block content
 
         div#navbar.uib-collapse.navbar-collapse(uib-collapse="navCollapsed", ng-controller="NavigationController")
           form.form-inline
-            div.input-group(ng-controller="GeocoderController")
-              span.input-group-addon
-                i.glyphicon.glyphicon-home(ng-hide="noResults", ng-class="{'glyphicon-remove': noResults, 'glyphicon-refresh': loadingLocations}")
-                i.glyphicon.glyphicon-remove(ng-show="noResults")
-              input#inputAddress.form-control(type="text", ng-model="site.address", placeholder!=t('search.address'), uib-typeahead="address for address in getLocation($viewValue)", uib-typeahead-wait-ms="1000", uib-typeahead-loading="loadingLocations", uib-typeahead-no-results="noResults")
-              span.input-group-addon
-                i.glyphicon.glyphicon-search
-
-            div#btn-grp-search.btn-group(style='display:none;')
+            div#btn-grp-nsearch.btn-group(ng-controller="SearchController")
+              div.input-group.navbar-btn
+                span#newsearch-add-on.input-group-addon
+                  i.fa(ng-hide="noResults", ng-class="[selectedType, {'glyphicon-remove': noResults, 'glyphicon-refresh': loadingLocations}]")
+                  i.glyphicon.glyphicon-remove(ng-show="noResults")
+                input#inputAddress.form-control(type="text", typeahead-on-select="onSelect($item, $model, $label)", ng-model="site.address", ng-i18next="[placeholder]{{searchPlaceholder}}", uib-typeahead="item.label for item in getLocation($viewValue) | limitTo:10", ng-maxlength="10", typeahead-min-length="2", uib-typeahead-loading="loadingLocations", uib-typeahead-no-results="noResults")
+                div.input-group-btn(uib-dropdown, is-open="status.isopen")
+                  button#search2_dropdown.btn.btn-default(ng-disabled="disabled", uib-dropdown-toggle, type="button")= t('search.search')
+                    | 
+                    span.caret
+                  ul.uib-dropdown-menu.dropdown-menu(role="menu" aria-labelledby="search2_dropdown")
+                    li(ng-repeat="provider in providers", role="menuitem")
+                      a(ng-click="changeProvider(provider)")
+                        i(class='fa {{provider.icon}}')
+                        | 
+                        span(ng-i18next='{{provider.text}}')
+                    
+            //div#btn-grp-search.btn-group(style='display:none;')
+              
 
             div#btngrp_3.btn-group
               a#c_minimap.btn.navbar-btn.btn-default(ng-click='toggleMiniMap()', title=t('map.mini'))
@@ -50,9 +60,10 @@ block content
               a#permalink.btn.navbar-btn.btn-default(title=t('map.permalink'))
                 i.fa.fa-link
     div.container-fluid.fill
-      div.loadscreen(ng-hide="!loading")
+      //div.loadscreen(ng-hide="!loading")
+      div#mapc1map1
 
-      leaflet#map(ng-hide="loading", defaults='defaults', geojson='geojson', layers="layers", controls="controls")
+      //leaflet#map(ng-hide="loading", defaults='defaults', geojson='geojson', layers="layers", controls="controls")
 
     div#footer
       div.container

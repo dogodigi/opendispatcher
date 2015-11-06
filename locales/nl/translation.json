@@ -244,7 +244,8 @@
         "coordinates": "Coordinaten",
         "coordplaceholder": "Lon,lat of X,Y punt voor decimaal",
         "infrastructure": "Hectometer",
-        "infraplaceholder": "Naam en hectometer"
+        "infraplaceholder": "Naam en hectometer",
+        "site": "search.site"
     },
     "gms": {
         "gms": "Melding"
@@ -318,5 +319,8 @@
         "placard": "Placard",
         "symbol": "Symbool",
         "radius": "Effectgebied"
+    },
+    "{{provider": {
+        "text}}": "{{provider.text}}"
     }
 }
