@@ -140,6 +140,46 @@ function SearchController($scope, GoogleGeocoderFactory, NominatimGeocoderFactor
               };
             });
           });
+      case "coordinates":
+        var loc;
+        var coords = val.split(/[\s,]+/);
+        coords[0] = parseFloat(coords[0]);
+        coords[1] = parseFloat(coords[1]);
+        if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+          if (coords[0] > 50.0 && coords[0] < 54.0 && coords[1] > 2.0 && coords[1] < 8.0) { //wgs84
+            loc = new OpenLayers.LonLat(coords[1], coords[0]).transform(new OpenLayers.Projection("EPSG:4326"), dbkjs.map.getProjectionObject());
+            $('#search_input').removeClass('has-error');
+            //transform loc to geoJson
+            return {
+              label: val,
+              geometry: {
+                type: 'Point',
+                coordinates: [loc.lon, loc.lat]
+              },
+              type: 'Coordinate'
+            };
+          } else if (coords[0] > -14000.0 && coords[0] < 293100.0 && coords[1] > 293100.0 && coords[1] < 650000.0) { //rd
+            loc = new OpenLayers.LonLat(coords[0], coords[1]).transform(new OpenLayers.Projection("EPSG:28992"), dbkjs.map.getProjectionObject());
+            $('#search_input').removeClass('has-error');
+            //transform loc to geoJson
+            return {
+              label: val,
+              geometry: {
+                type: 'Point',
+                coordinates: [loc.lon, loc.lat]
+              },
+              type: 'Coordinate'
+            };
+          } else {
+            // @todo build function to handle map fault
+            //maak het vakje rood, geen geldige coordinaten
+            $('#search_input').addClass('has-error');
+          }
+        } else {
+          $('#search_input').addClass('has-error');
+        }
+        return null;
+
 
       case "alarms":
         if (!$scope.alarmArray) {
