@@ -66,11 +66,11 @@
     "turf-envelope": "^1.0.2",
     "uglify-js": "2.5.0",
     "supertest": "^1.0.1",
+    "grunt-ng-annotate": "^1.0.1",
     "xml2js": "^0.4.13"
   },
   "devDependencies": {
     "grunt-jsdoc": "^1.0.0",
-    "grunt-ng-annotate": "^1.0.1",
     "jsdoc": "^3.3.3",
     "mocha": "2.3.2",
     "expect": "^1.10.0",

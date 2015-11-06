@@ -151,7 +151,7 @@
         "chemicals": "Chemicals",
         "risk": "Risk",
         "omsdetail": "OMS details",
-        "formalName": "Site Name"
+        "formalName": "Site Name",
         "comm": "Communication"
     },
     "chemicals": {
@@ -265,7 +265,7 @@
       "impossible": "No",
       "alternative": "Alternative",
       "information": "Remarks"
-    }
+    },
     "organization": {
         "name": "Name",
         "abbreviation": "Abbreviation",
