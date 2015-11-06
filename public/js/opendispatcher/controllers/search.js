@@ -58,6 +58,11 @@ function SearchController($scope, GoogleGeocoderFactory, NominatimGeocoderFactor
   $scope.onSelect = function($item, $model, $label) {
     console.log($item);
     //If item has an id; open that site, else zoom to the geometry
+    //zoom to item.location
+
+    //leafletData.getMap().then(function(map) {
+    //  map.fitBounds(L.geoJson($item.geometry).getBounds());
+    //});
 
   };
   $scope.changeProvider = function(provider) {

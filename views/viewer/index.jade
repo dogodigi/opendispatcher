@@ -34,17 +34,6 @@ block content
                     
             //div#btn-grp-search.btn-group(style='display:none;')
               
-            div#btngrp_3.btn-group
-              a#c_minimap.btn.navbar-btn.btn-default(ng-click='toggleMiniMap()', title=t('map.mini'))
-                i.fa.fa-picture-o
-              a#c_settings.btn.navbar-btn.btn-default(ng-click="open('settings')", data-toggle='modal', title=t('map.settings'))
-                i.fa.fa-cogs
-              a#tb01.btn.navbar-btn.btn-default(ng-click="open('overlays')", data-toggle='modal', title=t('map.overlays'))
-                i.fa.fa-map-marker
-              a#tb02.btn.navbar-btn.btn-default(ng-click="open('baselayers')", data-toggle='modal', title=t('map.baselayers'))
-                i.fa.fa-globe
-              a#tb03.btn.navbar-btn.btn-default(href='#', title=t('map.info'))
-                i.fa.fa-info-circle
             div#btngrp_navigation.btn-group
               a#zoom_prev.btn.navbar-btn.btn-default(ng-disabled='previousDisabled', ng-click='historyPrevious()', title=t('map.prev'))
                 i.fa.fa-backward
@@ -66,19 +55,19 @@ block content
 
       div#sidebar-wrapper
         div#btngrp_3.btn-group.btn-group-vertical
-          a#c_minimap.btn.btn-default(href='#', title=t('map.mini'))
+          a#c_minimap.btn.btn-default(ng-click='toggleMiniMap()', title=t('map.mini'))
             i.fa.fa-picture-o
-          a#c_settings.btn.btn-default(href='#settingspanel', data-toggle='modal', title=t('map.settings'))
+          a#c_settings.btn.btn-default(ng-click="open('settings')", data-toggle='modal', title=t('map.settings'))
             i.fa.fa-cogs
-          a#tb01.btn.btn-default(href='#overlaypanel', data-toggle='modal', title=t('map.overlays'))
+          a#tb01.btn.btn-default(ng-click="open('overlays')", data-toggle='modal', title=t('map.overlays'))
             i.fa.fa-map-marker
-          a#tb02.btn.btn-default(href='#baselayerpanel', data-toggle='modal', title=t('map.baselayers'))
+          a#tb02.btn.btn-default(ng-click="open('baselayers')", data-toggle='modal', title=t('map.baselayers'))
             i.fa.fa-globe
           a#tb03.btn.btn-default(href='#', title=t('map.info'))
             i.fa.fa-info-circle
-
+      
     div#footer
-      div.container
+      div.container-fluid
         span#measure
         span#coords
         span#scale
