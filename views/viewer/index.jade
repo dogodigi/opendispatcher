@@ -54,6 +54,19 @@ block content
 
       leaflet#map(ng-hide="loading", defaults='defaults', geojson='geojson', layers="layers", controls="controls")
 
+      div#sidebar-wrapper
+        div#btngrp_3.btn-group.btn-group-vertical
+          a#c_minimap.btn.btn-default(href='#', title=t('map.mini'))
+            i.fa.fa-picture-o
+          a#c_settings.btn.btn-default(href='#settingspanel', data-toggle='modal', title=t('map.settings'))
+            i.fa.fa-cogs
+          a#tb01.btn.btn-default(href='#overlaypanel', data-toggle='modal', title=t('map.overlays'))
+            i.fa.fa-map-marker
+          a#tb02.btn.btn-default(href='#baselayerpanel', data-toggle='modal', title=t('map.baselayers'))
+            i.fa.fa-globe
+          a#tb03.btn.btn-default(href='#', title=t('map.info'))
+            i.fa.fa-info-circle
+
     div#footer
       div.container
         span#measure

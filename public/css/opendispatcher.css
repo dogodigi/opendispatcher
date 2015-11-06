@@ -29,6 +29,25 @@ a, a:hover, a:active, a:focus {
   display: block;
   z-index: 0;
 }
+
+#sidebar-wrapper {
+  box-sizing: border-box;
+  display: block;
+  z-index: 0;
+  width: 50px;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  float: left;
+  position: absolute;
+  overflow: hidden;
+  background-color: #F8F8F8;
+  border-color: #E7E7E7;
+  border-width: 0px 0px 1px;
+  padding-top: 60px;
+  text-align: center;
+}
+
 .img-hazard {
   width: 50%;
 }
