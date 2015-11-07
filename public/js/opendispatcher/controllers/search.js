@@ -21,13 +21,14 @@
 angular
   .module('opendispatcher.controllers')
   .value('searchprovider', 'sites')
+  .value('map', 'openlayers')
   .controller('SearchController', SearchController);
 
 /**
  * This module connects the search autocomplete dialog to the different available searchProviders and allows
  * users to search for Sites or other entities that result in a map zoomTo()
  */
-function SearchController($scope, GoogleGeocoderFactory, NominatimGeocoderFactory, MapzenGeocoderFactory, BagGeocoderFactory, searchprovider, $filter) {
+function SearchController($scope, GoogleGeocoderFactory, NominatimGeocoderFactory, MapzenGeocoderFactory, BagGeocoderFactory, searchprovider, map, $filter) {
   $scope.selected = undefined;
   $scope.features = undefined;
   $scope.providers = [{
@@ -56,15 +57,19 @@ function SearchController($scope, GoogleGeocoderFactory, NominatimGeocoderFactor
 
   $scope.onSelect = function($item, $model, $label) {
     console.log($item);
-    if ($item.id) {
-      dbkjs.modules.feature.handleDbkOmsSearch($item.id);
-    }
     //If item has an id; open that site, else zoom to the geometry
     //zoom to item.location
-
-    //leafletData.getMap().then(function(map) {
-    //  map.fitBounds(L.geoJson($item.geometry).getBounds());
-    //});
+    switch (map) {
+      case "openlayers":
+        if ($item.id) {
+          dbkjs.modules.feature.handleDbkOmsSearch($item.olFeature);
+        }
+        break;
+      default:
+        leafletData.getMap().then(function(map) {
+          map.fitBounds(L.geoJson($item.geometry).getBounds());
+        });
+    }
 
   };
   $scope.changeProvider = function(provider) {
@@ -188,7 +193,7 @@ function SearchController($scope, GoogleGeocoderFactory, NominatimGeocoderFactor
           $scope.features = dbkjs.modules.feature.features;
         }
         return $filter('filter')($scope.features, {
-          attributes:{
+          attributes: {
             OMSNummer: val
           }
         }).map(function(item) {
@@ -199,6 +204,7 @@ function SearchController($scope, GoogleGeocoderFactory, NominatimGeocoderFactor
               coordinates: [item.geometry.x, item.geometry.y]
             },
             id: item.id,
+            olFeature: item,
             type: 'Site'
           };
         });
@@ -218,6 +224,7 @@ function SearchController($scope, GoogleGeocoderFactory, NominatimGeocoderFactor
               coordinates: [item.geometry.x, item.geometry.y]
             },
             id: item.id,
+            olFeature: item,
             type: 'Site'
           };
         });
