@@ -13,7 +13,7 @@ block content
             span.glyphicon.glyphicon-fire &nbsp;
             span(data-i18n='app.name') Opendispatcher
 
-        div#navbar.uib-collapse.navbar-collapse(uib-collapse="navCollapsed", ng-controller="NavigationController")
+        div#navbar.uib-collapse.navbar-collapse.pull-right(uib-collapse="navCollapsed", ng-controller="NavigationController")
           form.form-inline
             div#btn-grp-nsearch.btn-group(ng-controller="SearchController")
               div.input-group.navbar-btn
@@ -48,7 +48,7 @@ block content
               a#permalink.btn.navbar-btn.btn-default(title=t('map.permalink'))
                 i.fa.fa-link
     div.container-fluid.fill
-      //div.loadscreen(ng-hide="!loading")
+      div#cover.loadscreen(ng-hide="!loading")
       div#mapc1map1
 
       //leaflet#map(ng-hide="loading", defaults='defaults', geojson='geojson', layers="layers", controls="controls")

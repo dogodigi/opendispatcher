@@ -319,6 +319,9 @@ dbkjs.modules.feature = {
   getDbkSearchValue: function(feature) {
     return feature.attributes.formeleNaam + ' ' + (dbkjs.util.isJsonNull(feature.attributes.informeleNaam) ? '' : feature.attributes.informeleNaam);
   },
+  getOmsSearchValue: function(feature) {
+    return (dbkjs.util.isJsonNull(feature.attributes.OMSNummer) ? '' : feature.attributes.OMSNummer) + ' ' + (dbkjs.util.isJsonNull(feature.attributes.formeleNaam) ? '' : feature.attributes.formeleNaam);
+  },
   /**
    *
    */

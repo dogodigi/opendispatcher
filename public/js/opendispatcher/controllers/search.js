@@ -29,8 +29,7 @@ angular
  */
 function SearchController($scope, GoogleGeocoderFactory, NominatimGeocoderFactory, MapzenGeocoderFactory, BagGeocoderFactory, searchprovider, $filter) {
   $scope.selected = undefined;
-  $scope.siteArray = undefined;
-  $scope.alarmArray = undefined;
+  $scope.features = undefined;
   $scope.providers = [{
     text: 'search.dbk',
     placeholder: 'search.dbkplaceholder',
@@ -57,6 +56,9 @@ function SearchController($scope, GoogleGeocoderFactory, NominatimGeocoderFactor
 
   $scope.onSelect = function($item, $model, $label) {
     console.log($item);
+    if ($item.id) {
+      dbkjs.modules.feature.handleDbkOmsSearch($item.id);
+    }
     //If item has an id; open that site, else zoom to the geometry
     //zoom to item.location
 
@@ -182,14 +184,16 @@ function SearchController($scope, GoogleGeocoderFactory, NominatimGeocoderFactor
 
 
       case "alarms":
-        if (!$scope.alarmArray) {
-          $scope.alarmArray = dbkjs.modules.feature.getOmsSearchValues();
+        if (!$scope.features) {
+          $scope.features = dbkjs.modules.feature.features;
         }
-        return $filter('filter')($scope.alarmArray, {
-          value: val
+        return $filter('filter')($scope.features, {
+          attributes:{
+            OMSNummer: val
+          }
         }).map(function(item) {
           return {
-            label: item.value,
+            label: dbkjs.modules.feature.getOmsSearchValue(item),
             geometry: {
               type: 'Point',
               coordinates: [item.geometry.x, item.geometry.y]
@@ -199,14 +203,16 @@ function SearchController($scope, GoogleGeocoderFactory, NominatimGeocoderFactor
           };
         });
       default:
-        if (!$scope.siteArray) {
-          $scope.siteArray = dbkjs.modules.feature.getDbkSearchValues();
+        if (!$scope.features) {
+          $scope.features = dbkjs.modules.feature.features;
         }
-        return $filter('filter')($scope.siteArray, {
-          value: val
+        return $filter('filter')($scope.features, {
+          attributes: {
+            $: val
+          }
         }).map(function(item) {
           return {
-            label: item.value,
+            label: dbkjs.modules.feature.getDbkSearchValue(item),
             geometry: {
               type: 'Point',
               coordinates: [item.geometry.x, item.geometry.y]
