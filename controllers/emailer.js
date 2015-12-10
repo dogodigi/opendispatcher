@@ -35,6 +35,15 @@ var router = express.Router();
       var smtp = nodemailer.createTransport(global.conf.get('support:smtp'));
       // @todo get email from request, it can be changed in the database.
       email = global.conf.get('support:sendto');
+
+      var search = global.conf.get('support:linkreplace:search');
+      var replacement = global.conf.get('support:linkreplace:replacement');
+
+      var link = req.body.permalink;
+      if(search && replacement) {
+         var link = link.replace(new RegExp(search), replacement);
+      }
+
       var htmltemplate = t("email.annotationtitle") + ',<br/><br/>' +
         '<table>' +
         '<tr><th>' + t("email.title") + '</th><td>' + t("email.new") + '</td></tr>' +
@@ -47,7 +56,7 @@ var router = express.Router();
         '<tr><th>' + t("email.phone") + '</th><td>' + req.body.phone + '</td></tr>' +
         '<tr><td colspan="2"><hr /><td></tr>' +
         '<tr><td colspan="2">' + t("email.link") + '</td></tr>' +
-        '<tr><td colspan="2"><a href="' + req.body.permalink + '">' + req.body.permalink + '</td></tr><br/><br/>' +
+        '<tr><td colspan="2"><a href="' + link + '">' + link + '</td></tr><br/><br/>' +
         t("email.kindregards") + ',<br/><br/>' +
         t("email.team");
       var plaintemplate = t("email.annotationtitle") + ',\r\n\r\n' +
