@@ -192,3 +192,8 @@ router.route('/api/terrain/:id').get(getTerrain);
 
 
 module.exports = router;
+module.exports.getOrganisation = getOrganisation;
+module.exports.getFeatures = getSites;
+module.exports.getObject = getSite;
+module.exports.getGebied = getTerrain;
+
