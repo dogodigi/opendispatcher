@@ -545,6 +545,12 @@ dbkjs.documentReady = function() {
         }
       });
 
+      dbkjs.dbkInfoPanel.getView().append(
+        $('<div></div>')
+        .attr({'id': 'dbkinfopanel_b'})
+        .text(i18n.t("dialogs.noinfo"))
+      );
+
       // We are removing / moving some existing DIVS from HTML to convert prev. popups to fullscreen modal popups
       $('#baselayerpanel').remove();
       $('#overlaypanel').attr('id', 'tmp_overlaypanel');
