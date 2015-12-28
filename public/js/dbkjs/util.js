@@ -1070,6 +1070,8 @@ dbkjs.util = {
         // see http://stackoverflow.com/questions/7069167/css-transition-not-firing
         popup.css('width');
         popup.addClass('modal-popup-active');
+
+        $(dbkjs).trigger('modal_popup_show', {popupName: options.name});        
       },
       hide: function() {
         hidingFunction();

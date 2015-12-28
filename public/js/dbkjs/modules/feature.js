@@ -396,6 +396,12 @@ dbkjs.modules.feature = {
   /**
    *
    */
+  updateFilter: function() {
+    this.layer.redraw();
+  },  
+  /**
+   *
+   */
   zoomToPandgeometrie: function() {
     // Pandgeometrie layer must be loaded
 

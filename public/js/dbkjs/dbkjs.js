@@ -526,12 +526,24 @@ dbkjs.documentReady = function() {
       }).getView().append($('<div></div>').attr({
         'id': 'infopanel_b'
       }));
+
       // Create the DBK infopanel
-      dbkjs.util.createModalPopup({
-        name: 'dbkinfopanel'
-      }).getView().append($('<div></div>').attr({
-        'id': 'dbkinfopanel_b'
-      }));
+      dbkjs.dbkInfoPanel = new SplitScreenWindow("dbkinfopanel");
+      dbkjs.dbkInfoPanel.createElements();
+
+      // Put tabs at the bottom after width transition has ended
+      var updateContentHeight = function() {
+        var view = dbkjs.dbkInfoPanel.getView();
+        view.find(".tab-content").css("height", view.height() - view.find(".nav-pills").height());
+      };
+      $(dbkjs.dbkInfoPanel).on("show", function() {
+        var event = dbkjs.util.getTransitionEvent();
+        if(event) {
+          dbkjs.dbkInfoPanel.getView().parent().on(event, updateContentHeight);
+        } else {
+          updateContentHeight();
+        }
+      });
 
       // We are removing / moving some existing DIVS from HTML to convert prev. popups to fullscreen modal popups
       $('#baselayerpanel').remove();
@@ -581,6 +593,27 @@ dbkjs.documentReady = function() {
       $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="icon-info-sign"></i> ' + i18n.t("dialogs.clickinfo"), 'left:0;bottom:0;margin-bottom:0px;position:fixed'));
     }
     dbkjs.init();
+
+    // dbkjs.options.enableSplitScreen: enable split screen setting
+    // dbkjs.options.splitScreenChecked: split screen is enabled
+    if(dbkjs.options.enableSplitScreen) {
+      $(".main-button-group").css({paddingRight: "10px", width: "auto", float: "right", right: "0%"});
+
+      $(dbkjs).bind('dbkjs_init_complete', function() {
+        // Add config option to enable / disable split screen
+        $($("#settingspanel_b div.row")[0]).append('<div class="col-xs-12"><label><input type="checkbox" id="checkbox_splitScreen" ' + (dbkjs.options.splitScreenChecked ? 'checked' : '') + '>Toon informatie naast de kaart</label></div>');
+
+        $("#checkbox_splitScreen").on('change', function (e) {
+          dbkjs.options.splitScreenChecked = e.target.checked;
+          $(dbkjs).triggerHandler('setting_changed_splitscreen', dbkjs.options.splitScreenChecked);
+        });
+
+        // Hide all modal popups when settings is opened
+        $("#c_settings").on('click', function(e) {
+          $(dbkjs).triggerHandler('modal_popup_show', {popupName: 'settings'});
+        });
+      });
+    }
 
     $('#infopanel_b').html(dbkjs.options.info);
     $('#tb03, #c_minimap').click(function() {

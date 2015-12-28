@@ -197,6 +197,21 @@ dbkjs.protocol.jsonDBK = {
             }
         }
     },
+    /**
+     * Restore state to before any DBK was selected 
+     */
+    deselect: function() {
+        var _obj = dbkjs.protocol.jsonDBK;
+        $.each(_obj.layers, function (idx, lyr) {
+            lyr.destroyFeatures();
+        });
+        dbkjs.options.feature = null;
+        dbkjs.options.dbk = null;
+        if(dbkjs.viewmode === 'fullscreen') {
+            $('#dbkinfopanel_b').text(i18n.t("dialogs.noinfo"));
+        }
+        dbkjs.modules.updateFilter(0);
+    },    
     activateSelect: function (layer) {
         var _obj = dbkjs.protocol.jsonDBK;
         layer.events.on({

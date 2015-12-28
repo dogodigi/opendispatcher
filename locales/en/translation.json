@@ -82,6 +82,7 @@
         "layerNotFound": "Layer not found",
         "infoNotFound": "Information not found",
         "running": "Getting information...",
+        "noinfo": "No extra information available",
         "print": "Preparing print...",
         "printready": "Print ready for",
         "downloadpdf": "download",
