@@ -197,17 +197,9 @@ SplitScreenWindow.prototype.hide = function(noMapAdjust) {
             $("#vectorclickpanel").css({"width": "100%"});
 
             $("#mapc1map1").css({width: "100%"});
-
-            // Hack required to avoid OpenLayers maxExtent bug
-            window.setTimeout(function() {
-                dbkjs.map.updateSize();
-            }, 500);
-            // Hack required to show layers
-            window.setTimeout(function() {
-                $.each(dbkjs.map.layers, function(i,l) {
-                    l.redraw();
-                });
-            }, 600);
+            // Needs OpenLayers 2.13.1 patch:
+            // https://github.com/openlayers/openlayers/pull/1304
+            dbkjs.map.updateSize();
         }
 
         this.visible = false;
@@ -233,22 +225,9 @@ SplitScreenWindow.prototype.show = function() {
 
         $("#mapc1map1").css({width: "55%"});
         this.popup.css({width: "45%"});
-
-        // Hack required to avoid OpenLayers maxExtent bug
-
+        // Needs OpenLayers 2.13.1 patch:
         // https://github.com/openlayers/openlayers/issues/669
-        // https://groups.google.com/forum/#!topic/geoext-viewer-devel/CdKNko7LVg8
-        // Either upgrade OL or use null TileManager
-
-        window.setTimeout(function() {
-            dbkjs.map.updateSize();
-        }, 500);
-        // Hack required to show layers
-        window.setTimeout(function() {
-            $.each(dbkjs.map.layers, function(i,l) {
-                l.redraw();
-            });
-        }, 600);
+        dbkjs.map.updateSize();
 
         this.visible = true;
         $(this).triggerHandler('show');

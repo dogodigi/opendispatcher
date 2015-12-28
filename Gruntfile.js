@@ -239,6 +239,7 @@ module.exports = function(grunt) {
             'public/js/dbkjs/prototype/Layer.js',
             'public/js/dbkjs/prototype/Capabilities.js',
             'public/js/dbkjs/layout.js',
+            'public/js/dbkjs/windows.js',
             'public/js/dbkjs/modules/geolocate.js',
             'public/js/dbkjs/protocol/jsonDBK.js',
             'public/js/dbkjs/modules/search.js',
