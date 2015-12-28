@@ -72,14 +72,14 @@ module.exports = function(grunt) {
           dest: 'build/desktop/js/libs',
           expand: true
         }, {
-          cwd: 'public/font-awesome-4.1.0/css',
+          cwd: 'public/font-awesome-4.4.0/css',
           src: ['font-awesome.min.css'],
-          dest: 'build/desktop/font-awesome-4.1.0/css',
+          dest: 'build/desktop/font-awesome-4.4.0/css',
           expand: true
         }, {
-          cwd: 'public/font-awesome-4.1.0/fonts',
+          cwd: 'public/font-awesome-4.4.0/fonts',
           src: ['*'],
-          dest: 'build/desktop/font-awesome-4.1.0/fonts',
+          dest: 'build/desktop/font-awesome-4.4.0/fonts',
           expand: true
         }, {
           cwd: 'public/css',
@@ -94,7 +94,7 @@ module.exports = function(grunt) {
         }, {
           cwd: 'node_modules/i18next-client',
           src: ['i18next.js'],
-          dest: 'build/mobile/i18next',
+          dest: 'build/desktop/i18next',
           expand: true
         }]
       },

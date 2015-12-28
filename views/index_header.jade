@@ -9,6 +9,7 @@ html(lang=mylang)
     meta(name='description', content='opendispatcher - First responder HTML5 nodejs client application')
     meta(name='generator', content='jade-engine')
     title= t('app.title')
+    link(rel='stylesheet' href='font-awesome-4.4.0/css/font-awesome.min.css', type='text/css', media='screen')
     if(mode === 'development')
       if(fullscreen === true)
         link(rel='stylesheet' href='css/dbkm.css', type='text/css', media='screen')
@@ -16,12 +17,10 @@ html(lang=mylang)
         link(rel='stylesheet' href='css/dbk.css', type='text/css', media='screen')
 
       link(rel='stylesheet' href='js/libs/bootstrap-3.2.0-dist/css/bootstrap.min.css', type='text/css', media='screen')
-      link(rel='stylesheet' href='font-awesome-4.4.0/css/font-awesome.min.css', type='text/css', media='screen')
       link(rel='stylesheet' href='css/daterangepicker-bs3.css', type='text/css', media='screen')
       link(rel='stylesheet' href='css/typeahead.js-bootstrap.css', type='text/css', media='screen')
       link(rel='stylesheet' href='css/slider.css', type='text/css', media='screen')
     else
-      link(rel='stylesheet' href='font-awesome-4.1.0/css/font-awesome.min.css', type='text/css', media='screen')
       link(rel='stylesheet' href='css/dbk.min.css', type='text/css', media='screen')
     
   body
