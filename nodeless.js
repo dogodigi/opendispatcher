@@ -76,7 +76,7 @@ fs.unlink(outDir + '/compressjs.sh');
 
 console.log("Copy i18next...");
 fs.mkdirSync(outDir + '/i18next');
-fs.writeFileSync(outDir + '/i18next/i18next.js', fs.readFileSync('./node_modules/i18next/lib/dep/i18next.js'));
+fs.writeFileSync(outDir + '/i18next/i18next.js', fs.readFileSync('./node_modules/i18next-client/i18next.min.js'));
 
 console.log("Copy locales...");
 fs.mkdirSync(outDir + '/locales');
