@@ -93,29 +93,33 @@ dbkjs.modules.support = {
         });
         dbkjs.map.addControl(_obj.drag);
         _obj.drag.activate();
-        $('#supportpanel_b').html('');
+        $('#supportpanel_b').html('').css('padding-top', '0px');
         //Selectie voor kaartlagen
         var layerarray = [];
         $.each(dbkjs.map.layers, function(l_index, layer) {
+          // TODO: prefix the layers with _, remove hardcoded list here
           if ($.inArray(layer.name, ['hulplijn1', 'hulplijn2', 'Feature', 'Support', 'print']) === -1) {
-            //layername mag niet beginnen met OpenLayers_
-            if (layer.name.substring(0, 11) !== "OpenLayers_" && layer.getVisibility()) {
+            if (layer.name.indexOf("OpenLayers_") !== 0 && layer.name.indexOf("_") !== 0 && layer.getVisibility()) {
               layerarray.push(layer.name);
             }
           }
         });
         layerarray.sort();
         var p = $('<form id="support-form"  class="form-horizontal" role="form"></form>');
-        //p.append('<p class="bg-info">' + i18n.t('email.help') +'</p>');
+        $("#supportpanel_b").prepend('<p id="email_help"><i>' + i18n.t('email.help') +'</i></p>');
         var laag_input = $('<div class="form-group"></div>');
         var select = $('<select name="subject" class="form-control"></select>');
         select.append('<option selected>' + i18n.t('email.generalmessage') + '</option>');
-        var ignoreLayers = ["GMS Marker", "GPS Marker", "search"];
-        $.each(layerarray, function(l_index, name) {
-          if ($.inArray(name, ignoreLayers) === -1) {
-            select.append('<option>' + name + '</option>');
+        if(dbkjs.options.organisation.support.subjects) {
+          var subjects = dbkjs.options.organisation.support.subjects.split(",");
+          for(var i = 0; i < subjects.length; i++) {
+            select.append('<option>' + subjects[i] + '</option>');
           }
-        });
+        } else {
+          $.each(layerarray, function(l_index, name) {
+              select.append('<option>' + name + '</option>');
+          });
+        }
         laag_input.append('<label class="col-sm-4 control-label" for="subject">' + i18n.t('email.subject') + '</label>');
         laag_input.append($('<div class="col-sm-8"></div>').append(select));
         p.append(laag_input);
