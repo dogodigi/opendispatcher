@@ -85,14 +85,27 @@ dbkjs.protocol.jsonDBK = {
             _obj.layerGevaarlijkestof,
             _obj.layerTekstobject
         ];
-        _obj.selectlayers = [];
+        /**
+         * Only these layers can be selected and feature info is shown for
+         */
+        _obj.selectlayers = [
+            _obj.layerBrandcompartiment,
+            _obj.layerToegangterrein,
+            _obj.layerBrandweervoorziening,
+            _obj.layerComm,
+            _obj.layerGevaarlijkestof
+       ];
+       /**
+        * Layers for hover control, additionally these layers are shown on top of all other layers
+        */
         _obj.hoverlayers = [
             _obj.layerBrandweervoorziening,
             _obj.layerComm,
             _obj.layerBrandcompartiment,
             _obj.layerGevaarlijkestof,
             _obj.layerHulplijn,
-            _obj.layerToegangterrein
+            _obj.layerToegangterrein,
+            _obj.layerTekstobject
         ];
         dbkjs.map.addLayers(_obj.layers);
         dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.hoverlayers));
@@ -133,20 +146,86 @@ dbkjs.protocol.jsonDBK = {
         });
     },
     getfeatureinfo: function (e) {
+        var _obj = dbkjs.protocol.jsonDBK;
+        if(dbkjs.protocol.jsonDBK.selectlayers.indexOf(e.feature.layer) === -1) {
+            return;
+        }
+
+        if(dbkjs.viewmode === "fullscreen") {
+          _obj.showFullscreenFeatureInfo(e);
+        } else {
+          _obj.showDesktopFeatureInfo(e);
+        }
+    },
+    /**
+     * Return object of feature attributes to display in feature info. Attributes
+     * with _hidden prefix and a hardcoded list of attributes are skipped.
+     */
+    filterFeatureInfoAttributes: function(feature) {
+      var attributes = {};
+      for (var j in feature.attributes) {
+        // Hardcoded list of attributes to hide
+        if ($.inArray(j, ['No', 'Latitude', 'Longitude','namespace','fid', 'rotation']) === -1) {
+          // if a field has the suffix _hidden, hide it.
+          var hidden = '_hidden';
+          if(j.indexOf(hidden, j.length - hidden.length) === -1) {
+            attributes[j] = feature.attributes[j];
+          }
+        }
+      }
+      return attributes;
+    },
+    showFullscreenFeatureInfo: function(e) {
+        var _obj = dbkjs.protocol.jsonDBK;
+        var html;
+        var table;
+        $('#vectorclickpanel_h').html('<span class="h4"><i class="fa fa-info-circle">&nbsp;' + e.feature.layer.name + '</span>');
+        // XXX
+        if(e.feature.layer.name === 'Gevaarlijke stoffen' || e.feature.layer.name === 'Brandweervoorziening') {
+            html = $('<div class="table-responsive"></div>');
+            table = '';
+            if(e.feature.layer.name === 'Gevaarlijke stoffen') {
+                table = dbkjs.protocol.jsonDBK.constructGevaarlijkestofHeader();
+                table.append(dbkjs.protocol.jsonDBK.constructGevaarlijkestofRow(e.feature.attributes));
+                html.append(table);
+            }
+            if(e.feature.layer.name === 'Brandweervoorziening') {
+                table = dbkjs.protocol.jsonDBK.constructBrandweervoorzieningHeader();
+                table.append(dbkjs.protocol.jsonDBK.constructBrandweervoorzieningRow(e.feature.attributes));
+            }
+            html.append(table);
+            $('#vectorclickpanel_b').html('').append(html);
+            if(dbkjs.viewmode === 'fullscreen') {
+                $('#vectorclickpanel').show().on('click', function() {
+                    dbkjs.selectControl.unselectAll();
+                    $('#vectorclickpanel').hide();
+                });
+            }
+        } else {
+            // Generic attribute table
+            html = '<div class="table-responsive">';
+            html += '<table class="table table-hover">';
+            $.each(_obj.filterFeatureInfoAttributes(e.feature), function(name, value) {
+                if (!dbkjs.util.isJsonNull(value)) {
+                    html += '<tr><td><span>' + name + "</span>: </td><td>" + dbkjs.util.renderHTML(value) + "</td></tr>";
+                }
+            });
+            html += "</table>";
+            html += '</div>';
+            $('#vectorclickpanel_b').html(html);
+            $('#vectorclickpanel').show();
+        }
+    },
+    showDesktopFeatureInfo: function(e) {
+        var _obj = dbkjs.protocol.jsonDBK;
         dbkjs.gui.detailsPanelUpdateTitle(e.feature.layer.name);
         html = '<div style:"width: 100%" class="table-responsive">';
         html += '<table class="table table-hover">';
-        for (var j in e.feature.attributes) {
-          if ($.inArray(j, ['No', 'Latitude', 'Longitude','namespace','fid', 'rotation']) === -1) {
-            //if a field has the suffix _hidden, hide it.
-            var hidden = '_hidden';
-            if(j.indexOf(hidden, j.length - hidden.length) === -1) {
-              if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
-                html += '<tr><td>' + j + '</td><td>' + dbkjs.util.renderHTML(e.feature.attributes[j]) + '</td></tr>';
-              }
+        $.each(_obj.filterFeatureInfoAttributes(e.feature), function(name, value) {
+            if (!dbkjs.util.isJsonNull(value)) {
+                html += '<tr><td>' + name + '</td><td>' + dbkjs.util.renderHTML(value) + '</td></tr>';
             }
-          }
-        }
+        });
         html += '</table>';
         html += '</div>';
         //dbkjs.util.appendTab(dbkjs.wms_panel.attr("id"),'Brandcompartiment',html, true, 'br_comp_tab');

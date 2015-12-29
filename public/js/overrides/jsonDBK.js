@@ -130,46 +130,6 @@ dbkjs.protocol.jsonDBK.constructGevaarlijkestofRow = function(gevaarlijkestof) {
 dbkjs.protocol.jsonDBK.constructOmsdetail = function(feature) {
 };
 
-dbkjs.protocol.jsonDBK.getfeatureinfo = function(e){
-  var html;
-  var table;
-    $('#vectorclickpanel_h').html('<span class="h4"><i class="fa fa-info-circle">&nbsp;' + e.feature.layer.name + '</span>');
-    if(e.feature.layer.name === 'Gevaarlijke stoffen' || e.feature.layer.name === 'Brandweervoorziening') {
-        html = $('<div class="table-responsive"></div>');
-        table = '';
-        if(e.feature.layer.name === 'Gevaarlijke stoffen') {
-            table = dbkjs.protocol.jsonDBK.constructGevaarlijkestofHeader();
-            table.append(dbkjs.protocol.jsonDBK.constructGevaarlijkestofRow(e.feature.attributes));
-            html.append(table);
-        }
-        if(e.feature.layer.name === 'Brandweervoorziening') {
-            table = dbkjs.protocol.jsonDBK.constructBrandweervoorzieningHeader();
-            table.append(dbkjs.protocol.jsonDBK.constructBrandweervoorzieningRow(e.feature.attributes));
-        }
-        html.append(table);
-        $('#vectorclickpanel_b').html('').append(html);
-        if(dbkjs.viewmode === 'fullscreen') {
-            $('#vectorclickpanel').show().on('click', function() {
-                dbkjs.selectControl.unselectAll();
-                $('#vectorclickpanel').hide();
-            });
-        }
-    } else {
-        // Generic attribute table
-        html = '<div class="table-responsive">';
-        html += '<table class="table table-hover">';
-        for (var j in e.feature.attributes) {
-            if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
-                html += '<tr><td><span>' + j + "</span>: </td><td>" + e.feature.attributes[j] + "</td></tr>";
-            }
-        }
-        html += "</table>";
-        html += '</div>';
-        $('#vectorclickpanel_b').html(html);
-        $('#vectorclickpanel').show();
-    }
-};
-
 dbkjs.protocol.jsonDBK.getGebied = function(feature, activetab, onSuccess) {
     var _obj = dbkjs.protocol.jsonDBK;
     if(activetab){
