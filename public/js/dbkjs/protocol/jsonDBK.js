@@ -644,13 +644,7 @@ dbkjs.protocol.jsonDBK = {
             var id = 'collapse_gevaarlijkestof_' + feature.identificatie;
             var bv_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var bv_table_div = $('<div class="table-responsive"></div>');
-            var bv_table = $('<table id="gvslist" class="table table-hover"></table>');
-            bv_table.append('<tr><th>' +
-                i18n.t('chemicals.type') + '</th><th>' +
-                i18n.t('chemicals.indication') + '</th><th>' +
-                i18n.t('chemicals.name') + '</th><th>' +
-                i18n.t('chemicals.quantity') + '</th><th>' +
-                i18n.t('chemicals.information') + '</th></tr>');
+            var bv_table = _obj.constructGevaarlijkestofHeader();
             var features = [];
             $.each(feature.gevaarlijkestof, function (idx, myGeometry) {
                 var name = myGeometry.naamStof || '';
@@ -665,24 +659,16 @@ dbkjs.protocol.jsonDBK = {
                     "indication": myGeometry.gevaarsindicatienummer,
                     "information": information,
                     "unnumber": myGeometry.UNnummer,
+                    "radius": myGeometry.radius,
                     "fid": "gevaarlijkestof_ft_" + idx
                 };
-                var geviblock = '';
-                if (myFeature.attributes.indication !== 0 && myFeature.attributes.unnumber !== 0) {
-                    geviblock = '<div class="gevicode">' + myFeature.attributes.indication +
-                            '</div><div class="unnummer">' +
-                            myFeature.attributes.unnumber + '</div>';
-                }
-                var myrow = $('<tr id="' + idx + '">' +
-                        '<td><img class="thumb" src="' + dbkjs.basePath + 'images/' + myFeature.attributes.namespace.toLowerCase() + '/' +
-                        myFeature.attributes.type + '.png" alt="' +
-                        myFeature.attributes.type + '" title="' +
-                        myFeature.attributes.type + '"></td>' +
-                        '<td>' + geviblock + '</td>' +
-                        '<td>' + myFeature.attributes.name + '</td>' +
-                        '<td>' + myFeature.attributes.quantity + '</td>' +
-                        '<td>' + myFeature.attributes.information + '</td>' +
-                        '</tr>');
+                var myrow = _obj.constructGevaarlijkestofRow(myFeature.attributes);
+                myrow.mouseover(function(){
+                    dbkjs.selectControl.select(myFeature);
+                });
+                myrow.mouseout(function(){
+                    dbkjs.selectControl.unselect(myFeature);
+                });
                 bv_table.append(myrow);
                 features.push(myFeature);
             });
@@ -693,6 +679,37 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_group.append(bv_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">' + i18n.t('dbk.chemicals') + '</a></li>');
         }
+    },
+    constructGevaarlijkestofHeader: function() {
+        var bv_table = $('<table id="gvslist" class="table table-hover"></table>');
+        bv_table.append('<tr><th>' +
+            i18n.t('chemicals.type') + '</th><th>' +
+            i18n.t('chemicals.indication') + '</th><th>' +
+            i18n.t('chemicals.name') + '</th><th>' +
+            i18n.t('chemicals.quantity') + '</th><th>' +
+            i18n.t('chemicals.information') + '</th></tr>');
+        return bv_table;
+    },
+    constructGevaarlijkestofRow: function(gevaarlijkestof) {
+        var img = 'images/' + gevaarlijkestof.namespace.toLowerCase() + '/' +  gevaarlijkestof.type + '.png';
+        img = typeof imagesBase64 === 'undefined'  ? dbkjs.basePath + img : imagesBase64[img];
+
+        var geviblock = '';
+        if (gevaarlijkestof.indication !== 0 && gevaarlijkestof.unnumber !== 0) {
+            geviblock = '<div class="gevicode">' + gevaarlijkestof.indication +
+                    '</div><div class="unnummer">' +
+                    gevaarlijkestof.unnumber + '</div>';
+        }
+
+        return $('<tr id="' + gevaarlijkestof.fid + '">' +
+                '<td><img class="thumb" src="' + img + '" alt="' +
+                gevaarlijkestof.type + '" title="' +
+                gevaarlijkestof.type + '"></td>' +
+                '<td>' + geviblock + '</td>' +
+                '<td>' + gevaarlijkestof.name + '</td>' +
+                '<td>' + gevaarlijkestof.quantity + '</td>' +
+                '<td>' + gevaarlijkestof.information + '</td>' +
+                '</tr>');
     },
     constructFloors: function (feature) {
         var _obj = dbkjs.protocol.jsonDBK;
