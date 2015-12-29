@@ -536,14 +536,14 @@ dbkjs.documentReady = function() {
         var view = dbkjs.dbkInfoPanel.getView();
         view.find(".tab-content").css("height", view.height() - view.find(".nav-pills").height());
       };
-      $(dbkjs.dbkInfoPanel).on("show", function() {
-        var event = dbkjs.util.getTransitionEvent();
-        if(event) {
-          dbkjs.dbkInfoPanel.getView().parent().on(event, updateContentHeight);
-        } else {
+      var event = dbkjs.util.getTransitionEndEvent();
+      if(event) {
+        dbkjs.dbkInfoPanel.getView().parent().on(event, updateContentHeight);
+      } else {
+        $(dbkjs.dbkInfoPanel).on("show", function() {
           updateContentHeight();
-        }
-      });
+        });
+      }
 
       dbkjs.dbkInfoPanel.getView().append(
         $('<div></div>')
@@ -627,7 +627,7 @@ dbkjs.documentReady = function() {
         if (dbkjs.viewmode !== 'fullscreen') {
           $('#infopanel').toggle();
         } else {
-          dbkjs.util.getModalPopup('dbkinfopanel').show();
+          dbkjs.dbkInfoPanel.toggle();
         }
       } else if (this.id === "c_minimap") {
         $('#minimappanel').toggle();
