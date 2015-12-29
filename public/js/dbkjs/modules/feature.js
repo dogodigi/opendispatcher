@@ -427,6 +427,7 @@ dbkjs.modules.feature = {
       dbkjs.gui.infoPanelUpdateHtml('');
       if (e.feature.cluster) {
         if (e.feature.cluster.length === 1) {
+          // XXX should never come here because feature.cluster should be false, only do else part here
           _obj.zoomToFeature(e.feature.cluster[0]);
         } else {
           _obj.currentCluster = e.feature.cluster.slice();
