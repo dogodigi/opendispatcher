@@ -121,25 +121,24 @@ dbkjs.protocol.jsonDBK = {
             lyr.setVisibility(false);
         });
     },
+    /**
+     * Override this function to show/hide layers for modules which show/hide DBK layers
+     */
+    isLayerVisible: function(lyr) {
+        return true;
+    },
     showLayers: function () {
         var _obj = dbkjs.protocol.jsonDBK;
         _obj.layersVisible = true;
         $.each(_obj.layers, function (lindex, lyr) {
-            //afhankelijkheid van module layertoggle kan niet worden afgedwongen.
-            if (dbkjs.modules.layertoggle) {
-                if (dbkjs.modules.layertoggle.isLayerEnabled(lyr.name)) {
-                    lyr.setVisibility(true);
-                }
-            } else {
-                lyr.setVisibility(true);
-            }
+            lyr.setVisibility(_obj.isLayerVisible(lyr));
         });
     },
     resetLayers: function () {
         var _obj = dbkjs.protocol.jsonDBK;
         $.each(_obj.layers, function (lindex, lyr) {
             var currentVisibility = _obj.layersVisible;
-            if (currentVisibility && !dbkjs.modules.layertoggle.isLayerEnabled(lyr.name)) {
+            if (currentVisibility && !_obj.isVisible(lyr)) {
                 currentVisibility = false;
             }
             lyr.setVisibility(currentVisibility);
