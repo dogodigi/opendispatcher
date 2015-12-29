@@ -603,6 +603,7 @@ dbkjs.documentReady = function() {
     // dbkjs.options.enableSplitScreen: enable split screen setting
     // dbkjs.options.splitScreenChecked: split screen is enabled
     if(dbkjs.options.enableSplitScreen) {
+      // XXX move to dbkm.css
       $(".main-button-group").css({paddingRight: "10px", width: "auto", float: "right", right: "0%"});
 
       $(dbkjs).bind('dbkjs_init_complete', function() {
