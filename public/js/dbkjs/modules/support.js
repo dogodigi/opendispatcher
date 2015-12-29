@@ -120,30 +120,37 @@ dbkjs.modules.support = {
               select.append('<option>' + name + '</option>');
           });
         }
-        laag_input.append('<label class="col-sm-4 control-label" for="subject">' + i18n.t('email.subject') + '</label>');
+        var labelHtml;
+        if(dbkjs.viewmode === 'fullscreen') {
+          laag_input.append('<label class="col-sm-2 control-label" for="subject">' + i18n.t('email.subject') + '</label>');
+          labelHtml = '<div class="form-group"><label class="col-sm-2 control-label" for="';
+        } else {
+          laag_input.append('<label class="col-sm-4 control-label" for="subject">' + i18n.t('email.subject') + '</label>');
+          labelHtml = '<div class="form-group"><label class="col-sm-4 control-label" for="';
+        }
         laag_input.append($('<div class="col-sm-8"></div>').append(select));
         p.append(laag_input);
-        var adres_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="address">' +
+        var adres_input = $(labelHtml + 'address">' +
           i18n.t('email.address') +
           '</label><div class="col-sm-8"><input id="address" name="address" type="text" class="form-control" placeholder="' +
           i18n.t('email.address') + '"></div></div>');
         p.append(adres_input);
-        var user_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="name">' +
+        var user_input = $(labelHtml + 'name">' +
           i18n.t('email.name') +
           ' *</label><div class="col-sm-8"><input id="name" name="name" type="text" class="form-control required" placeholder="' +
           i18n.t('email.name') + '"></div></div>');
         p.append(user_input);
-        var mail_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="email">' +
+        var mail_input = $(labelHtml + 'email">' +
           i18n.t('email.email') +
           ' *</label><div class="col-sm-8"><input id="email" name="email" type="email" class="form-control required" placeholder="' +
           i18n.t('email.email') + '"></div></div>');
         p.append(mail_input);
-        var tel_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="phone">' +
+        var tel_input = $(labelHtml + 'phone">' +
           i18n.t('email.phone') +
           '</label><div class="col-sm-8"><input id="phone" name="phone" type="tel" class="form-control" placeholder="' +
           i18n.t('email.phone') + '"></div></div>');
         p.append(tel_input);
-        var remarks_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="remarks">' +
+        var remarks_input = $(labelHtml + 'remarks">' +
           i18n.t('email.remarks') +
           ' *</label><div class="col-sm-8"><textarea id="remarks" name="remarks" class="form-control required" placeholder="' +
           i18n.t('email.remarks') + '"></textarea></div></div>');
