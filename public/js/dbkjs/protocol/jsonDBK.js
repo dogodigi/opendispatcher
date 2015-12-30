@@ -1131,15 +1131,11 @@ dbkjs.protocol.jsonDBK = {
             _obj.activateSelect(_obj.layerTekstobject);
         }
     },
-    getObject: function (feature, activetab, noZoom) {
+    getObject: function (feature, activetab, noZoom, onSuccess) {
         var _obj = dbkjs.protocol.jsonDBK;
         if (activetab) {
             _obj.active_tab = activetab;
         }
-        //clear all layers first!
-        $.each(_obj.layers, function (idx, lyr) {
-            lyr.destroyFeatures();
-        });
         var params = {
             srid: dbkjs.options.projection.srid,
             timestamp: new Date().getTime()
@@ -1152,21 +1148,24 @@ dbkjs.protocol.jsonDBK = {
             fid = feature;
         }
         $.getJSON(dbkjs.dataPath + 'object/' + fid + '.json', params).done(function (data) {
+            // Clear all layers only when new data received
+            $.each(_obj.layers, function (idx, lyr) {
+                lyr.destroyFeatures();
+            });
+            if(onSuccess) {
+                onSuccess();
+            }
             dbkjs.protocol.jsonDBK.info(data, noZoom);
         }).fail(function (jqxhr, textStatus, error) {
             dbkjs.options.feature = null;
             dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
         });
     },
-    getGebied: function (feature, activetab) {
+    getGebied: function (feature, activetab, onSuccess) {
         var _obj = dbkjs.protocol.jsonDBK;
         if (activetab) {
             _obj.active_tab = activetab;
         }
-        //clear all layers first!
-        $.each(_obj.layers, function (idx, lyr) {
-            lyr.destroyFeatures();
-        });
         var params = {
             srid: dbkjs.options.projection.srid,
             timestamp: new Date().getTime()
@@ -1179,6 +1178,13 @@ dbkjs.protocol.jsonDBK = {
             fid = feature;
         }
         $.getJSON(dbkjs.dataPath + 'gebied/' + fid + '.json', params).done(function (data) {
+            // Clear all layers only when new data received
+            $.each(_obj.layers, function (idx, lyr) {
+                lyr.destroyFeatures();
+            });
+            if(onSuccess) {
+                onSuccess();
+            }
             dbkjs.protocol.jsonDBK.info(data);
         }).fail(function (jqxhr, textStatus, error) {
             dbkjs.options.feature = null;
