@@ -52,7 +52,8 @@ dbkjs.layout = {
                 // complexity for firefighters
                 opts = {
                     hideContrast: true,
-                    hideSymbolScaling: false
+                    hideSymbolScaling: false,
+                    hideSplitScreen: false
                 };
             } else {
                 // Default desktop options: don't hide any option
@@ -65,6 +66,9 @@ dbkjs.layout = {
         }
         if(!opts.hideSymbolScaling) {
             _obj.createSymbolScalingControls(parent);
+        }
+        if(!opts.hideSplitScreen) {
+            _obj.createSplitScreenControls(parent);
         }
 
         _obj.createAppVersionInfo(parent);
@@ -189,6 +193,24 @@ dbkjs.layout = {
         $("#checkbox_scaleStyle").on('change', function (e) {
             dbkjs.options.styleScaleAdjust = e.target.checked;
             dbkjs.redrawScaledLayers();
+        });
+    },
+    createSplitScreenControls: function(parent) {
+        // XXX move to dbkm.css
+        $(".main-button-group").css({paddingRight: "10px", width: "auto", float: "right", right: "0%"});
+
+        $($(parent + " div.row")[0]).append('<div class="col-xs-12"><label><input type="checkbox" id="checkbox_splitScreen" ' + 
+            (dbkjs.options.splitScreenChecked ? 'checked' : '') + '>' + i18n.t('app.splitScreen') + '</label></div>'
+        );
+
+        $("#checkbox_splitScreen").on('change', function (e) {
+            dbkjs.options.splitScreenChecked = e.target.checked;
+            $(dbkjs).triggerHandler('setting_changed_splitscreen', dbkjs.options.splitScreenChecked);
+        });
+
+        // Hide all modal popups when settings is opened
+        $("#c_settings").on('click', function(e) {
+            $(dbkjs).triggerHandler('modal_popup_show', {popupName: 'settings'});
         });
     }
 };

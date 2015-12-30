@@ -29,6 +29,7 @@
         "scaleStyle": "Scale icons based on zoom",
         "styleSizeAdjust": "Adjust icon size",
         "alwaysShowInformationLabels": "Always show labels",
+        "splitScreen": "Show information in split screen",
         "next": "Next",
         "map": "Map",
         "correctBuildings": "Are the correct buildings selected?",
