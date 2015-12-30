@@ -68,7 +68,10 @@ dbkjs.layout = {
         }
 
         _obj.createAppVersionInfo(parent);
-        _obj.createDatabaseVersionInfo(parent);
+
+        if(dbkjs.viewmode !== 'fullscreen') {
+            _obj.createDatabaseVersionInfo(parent);
+        }
     },
     createAppVersionInfo: function(parent) {
         var _relversion = 'Development';
@@ -88,7 +91,6 @@ dbkjs.layout = {
         );
     },
     createDatabaseVersionInfo: function(parent) {
-        // TODO: show this for safetymaps-onboard usage
         $.getJSON(dbkjs.dataPath + 'bag/info').done(function(data) {
             if(data[0].bag_update){
                 $(parent).append(
@@ -96,7 +98,6 @@ dbkjs.layout = {
                 );
             }
         });
-        // XXX 404 in static fullscreen version?
         $.getJSON(dbkjs.dataPath + 'infra/info').done(function(data) {
             if(data[0].updated){
                 $(parent).append(
