@@ -355,13 +355,11 @@ dbkjs.protocol.jsonDBK = {
                 dbkjs.gui.infoPanelShow();
             }
 
-            if (dbkjs.viewmode !== 'fullscreen') {
-                _obj.addMouseoverHandler("#bwvlist", _obj.layerBrandweervoorziening);
-                _obj.addMouseoutHandler("#bwvlist", _obj.layerBrandweervoorziening);
-                _obj.addMouseoverHandler("#gvslist", _obj.layerGevaarlijkestof);
-                _obj.addMouseoutHandler("#gvslist", _obj.layerGevaarlijkestof);
-                _obj.addRowClickHandler("#floorslist", "verdiepingen");
-            }
+            _obj.addMouseoverHandler("#bwvlist", _obj.layerBrandweervoorziening);
+            _obj.addMouseoutHandler("#bwvlist", _obj.layerBrandweervoorziening);
+            _obj.addMouseoverHandler("#gvslist", _obj.layerGevaarlijkestof);
+            _obj.addMouseoutHandler("#gvslist", _obj.layerGevaarlijkestof);
+            _obj.addRowClickHandler("#floorslist", "verdiepingen");
 
             _obj.processing = false;
         } else {
@@ -595,11 +593,7 @@ dbkjs.protocol.jsonDBK = {
             var id = 'collapse_brandweervoorziening_' + feature.identificatie;
             var bv_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var bv_table_div = $('<div class="table-responsive"></div>');
-            var bv_table = $('<table id="bwvlist" class="table table-hover"></table>');
-            bv_table.append('<tr><th>' +
-                    i18n.t('prevention.type') + '</th><th>' +
-                    i18n.t('prevention.name') + '</th><th>' +
-                    i18n.t('prevention.comment') + '</th></tr>');
+            var bv_table = _obj.constructBrandweervoorzieningHeader();
 
             var features = [];
             $.each(feature.brandweervoorziening, function (idx, myGeometry) {
@@ -616,14 +610,7 @@ dbkjs.protocol.jsonDBK = {
                     "fid": "brandweervoorziening_ft_" + idx
                 };
 
-                var myrow = $('<tr id="' + idx + '">' +
-                        '<td><img class="thumb" src="' + dbkjs.basePath + "images/" + myFeature.attributes.namespace.toLowerCase() + '/' +
-                        myFeature.attributes.type + '.png" alt="' +
-                        myFeature.attributes.type + '" title="' +
-                        myFeature.attributes.type + '"></td>' +
-                        '<td>' + myFeature.attributes.name + '</td>' +
-                        '<td>' + myFeature.attributes.information + '</td>' +
-                        '</tr>');
+                var myrow = _obj.constructBrandweervoorzieningRow(myFeature.attributes, idx);
                 //@@ Toekennen van callback verplaatst naar info().
                 bv_table.append(myrow);
                 features.push(myFeature);
@@ -637,6 +624,25 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">' + i18n.t('dbk.prevention') + '</a></li>');
 
         }
+    },
+    constructBrandweervoorzieningHeader: function() {
+        var bv_table = $('<table id="bwvlist" class="table table-hover"></table>');
+            bv_table.append('<tr><th>' +
+                    i18n.t('prevention.type') + '</th><th>' +
+                    i18n.t('prevention.name') + '</th><th>' +
+                    i18n.t('prevention.comment') + '</th></tr>');
+        return bv_table;
+    },
+    constructBrandweervoorzieningRow: function(brandweervoorziening, idx) {
+        var img = "images/" + brandweervoorziening.namespace.toLowerCase() + '/' +  brandweervoorziening.type + '.png';
+        img = typeof imagesBase64 === 'undefined'  ? dbkjs.basePath + img : imagesBase64[img];
+        return $('<tr data-feature-index="' + idx + '">' +
+                    '<td><img class="thumb" src="' + img + '" alt="'+
+                        brandweervoorziening.type +'" title="'+
+                        brandweervoorziening.type+'"></td>' +
+                    '<td>' + brandweervoorziening.name + '</td>' +
+                    '<td>' + brandweervoorziening.information + '</td>' +
+                '</tr>');
     },
     constructGevaarlijkestof: function (feature) {
         var _obj = dbkjs.protocol.jsonDBK;
@@ -662,13 +668,7 @@ dbkjs.protocol.jsonDBK = {
                     "radius": myGeometry.radius,
                     "fid": "gevaarlijkestof_ft_" + idx
                 };
-                var myrow = _obj.constructGevaarlijkestofRow(myFeature.attributes);
-                myrow.mouseover(function(){
-                    dbkjs.selectControl.select(myFeature);
-                });
-                myrow.mouseout(function(){
-                    dbkjs.selectControl.unselect(myFeature);
-                });
+                var myrow = _obj.constructGevaarlijkestofRow(myFeature.attributes, idx);
                 bv_table.append(myrow);
                 features.push(myFeature);
             });
@@ -690,7 +690,7 @@ dbkjs.protocol.jsonDBK = {
             i18n.t('chemicals.information') + '</th></tr>');
         return bv_table;
     },
-    constructGevaarlijkestofRow: function(gevaarlijkestof) {
+    constructGevaarlijkestofRow: function(gevaarlijkestof, idx) {
         var img = 'images/' + gevaarlijkestof.namespace.toLowerCase() + '/' +  gevaarlijkestof.type + '.png';
         img = typeof imagesBase64 === 'undefined'  ? dbkjs.basePath + img : imagesBase64[img];
 
@@ -701,7 +701,7 @@ dbkjs.protocol.jsonDBK = {
                     gevaarlijkestof.unnumber + '</div>';
         }
 
-        return $('<tr id="' + gevaarlijkestof.fid + '">' +
+        return $('<tr data-feature-index="' + idx + '">' +
                 '<td><img class="thumb" src="' + img + '" alt="' +
                 gevaarlijkestof.type + '" title="' +
                 gevaarlijkestof.type + '"></td>' +
@@ -1188,7 +1188,7 @@ dbkjs.protocol.jsonDBK = {
     addMouseoverHandler: function (tableid, vLayer) {
         $(tableid).on("mouseover", "tr", function () {
             //event.preventDefault();
-            var idx = $(this).attr("id");
+            var idx = $(this).attr("data-feature-index");
             var feature = vLayer.features[idx];
             if (feature) {
                 dbkjs.selectControl.select(feature);
@@ -1199,7 +1199,7 @@ dbkjs.protocol.jsonDBK = {
     addMouseoutHandler: function (tableid, vLayer) {
         $(tableid).on("mouseout", "tr", function () {
             //event.preventDefault();
-            var idx = $(this).attr("id");
+            var idx = $(this).attr("data-feature-index");
             var feature = vLayer.features[idx];
             if (feature) {
                 dbkjs.selectControl.unselect(feature);
