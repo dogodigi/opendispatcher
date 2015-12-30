@@ -63,7 +63,7 @@ dbkjs.protocol.jsonDBK.getObject = function(feature, activetab, noZoom, onSucces
     });
 };
 
-dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess) {
+dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess, noZoom) {
     var _obj = dbkjs.protocol.jsonDBK;
 
     if (!(feature && feature.attributes && feature.attributes.typeFeature)) {
@@ -124,7 +124,7 @@ dbkjs.protocol.jsonDBK.process =  function(feature, onSuccess) {
             dbkjs.protocol.jsonDBK.processing = true;
             dbkjs.util.alert('<i class="fa fa-spinner fa-spin"></i>', i18n.t('dialogs.running'), 'alert-info');
             if(feature.attributes.typeFeature === 'Object'){
-                dbkjs.protocol.jsonDBK.getObject(feature, 'algemeen', false, mySuccess);
+                dbkjs.protocol.jsonDBK.getObject(feature, 'algemeen', !!noZoom, mySuccess);
             } else if (feature.attributes.typeFeature === 'Gebied') {
                 dbkjs.protocol.jsonDBK.getGebied(feature, 'algemeen', mySuccess);
             }
