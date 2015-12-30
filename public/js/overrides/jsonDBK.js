@@ -1,7 +1,4 @@
 
-dbkjs.protocol.jsonDBK.constructOmsdetail = function(feature) {
-};
-
 dbkjs.protocol.jsonDBK.getGebied = function(feature, activetab, onSuccess) {
     var _obj = dbkjs.protocol.jsonDBK;
     if(activetab){
