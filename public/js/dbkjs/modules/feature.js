@@ -487,7 +487,6 @@ dbkjs.modules.feature = {
   showFeatureInfo: function(feature) {
     var _obj = dbkjs.modules.feature;
     dbkjs.protocol.jsonDBK.process(feature);
-    _obj.zoomToFeature(feature);
     if (dbkjs.viewmode === 'fullscreen') {
       dbkjs.util.getModalPopup('infopanel').hide();
     } else {
@@ -503,7 +502,6 @@ dbkjs.modules.feature = {
     dbkjs.options.dbk = $(this).attr("id");
     var feature = _obj.getActive();
     dbkjs.protocol.jsonDBK.process(feature);
-    _obj.zoomToFeature(feature);
     return false;
   }
 };

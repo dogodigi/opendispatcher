@@ -345,8 +345,13 @@ dbkjs.protocol.jsonDBK = {
             _obj.constructTekstobject(dbkjs.options.feature);
 
 
-            if (!noZoom && dbkjs.options.zoomToPandgeometrie) {
-                dbkjs.modules.feature.zoomToPandgeometrie();
+            if (!noZoom) {
+                if(dbkjs.options.zoomToPandgeometrie) {
+                    dbkjs.modules.feature.zoomToPandgeometrie();
+                } else {
+                console.log("zooming to feature");
+                    dbkjs.modules.feature.zoomToFeature(dbkjs.modules.feature.getActive());
+                }
             }
 
             if (dbkjs.viewmode === 'fullscreen') {
@@ -1161,7 +1166,7 @@ dbkjs.protocol.jsonDBK = {
             dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
         });
     },
-    getGebied: function (feature, activetab, onSuccess) {
+    getGebied: function (feature, activetab, noZoom, onSuccess) {
         var _obj = dbkjs.protocol.jsonDBK;
         if (activetab) {
             _obj.active_tab = activetab;
@@ -1185,7 +1190,7 @@ dbkjs.protocol.jsonDBK = {
             if(onSuccess) {
                 onSuccess();
             }
-            dbkjs.protocol.jsonDBK.info(data);
+            dbkjs.protocol.jsonDBK.info(data, noZoom);
         }).fail(function (jqxhr, textStatus, error) {
             dbkjs.options.feature = null;
             dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
