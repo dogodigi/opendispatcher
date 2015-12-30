@@ -88,7 +88,7 @@ dbkjs.init = function() {
 
   dbkjs.mapcontrols.createMapControls();
 
-  dbkjs.mapcontrols.registerMapEvents(dbkjs.layers.createBaseLayers());
+  $('#baselayerpanel_b').append(dbkjs.layers.createBaseLayers());
 
   dbkjs.showStatus = true;
 
