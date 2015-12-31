@@ -349,7 +349,6 @@ dbkjs.protocol.jsonDBK = {
                 if(dbkjs.options.zoomToPandgeometrie) {
                     dbkjs.modules.feature.zoomToPandgeometrie();
                 } else {
-                console.log("zooming to feature");
                     dbkjs.modules.feature.zoomToFeature(dbkjs.modules.feature.getActive());
                 }
             }
