@@ -30,6 +30,7 @@
         "scaleStyle": "Schaal iconen op basis van zoomniveau",
         "styleSizeAdjust": "Grootte van iconen aanpassen:",
         "alwaysShowInformationLabels": "Labels altijd tonen",
+        "splitScreen": "Toon informatie naast de kaart",
         "next": "Volgende",
         "map": "Kaart",
         "correctBuildings": " Zijn de juiste panden geselecteerd?",
@@ -258,7 +259,7 @@
         "phone": "Telefoon",
         "kindregards": "Met vriendelijke groet",
         "team": "de opendispatcher applicatie",
-        "help": "Versleep eventueel het symbool op de kaart om aan te geven waar de fout is geconstateerd of waar de melding over gaat.",
+        "help": "Versleep het symbool op de kaart om aan te geven waar de fout is geconstateerd of waar de melding over gaat.",
         "generalmessage":"Algemene melding",
         "construction": "Gebouw constructie"
     },

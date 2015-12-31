@@ -396,6 +396,12 @@ dbkjs.modules.feature = {
   /**
    *
    */
+  updateFilter: function() {
+    this.layer.redraw();
+  },  
+  /**
+   *
+   */
   zoomToPandgeometrie: function() {
     // Pandgeometrie layer must be loaded
 
@@ -421,6 +427,7 @@ dbkjs.modules.feature = {
       dbkjs.gui.infoPanelUpdateHtml('');
       if (e.feature.cluster) {
         if (e.feature.cluster.length === 1) {
+          // XXX should never come here because feature.cluster should be false, only do else part here
           _obj.zoomToFeature(e.feature.cluster[0]);
         } else {
           _obj.currentCluster = e.feature.cluster.slice();
@@ -480,7 +487,6 @@ dbkjs.modules.feature = {
   showFeatureInfo: function(feature) {
     var _obj = dbkjs.modules.feature;
     dbkjs.protocol.jsonDBK.process(feature);
-    _obj.zoomToFeature(feature);
     if (dbkjs.viewmode === 'fullscreen') {
       dbkjs.util.getModalPopup('infopanel').hide();
     } else {
@@ -496,7 +502,6 @@ dbkjs.modules.feature = {
     dbkjs.options.dbk = $(this).attr("id");
     var feature = _obj.getActive();
     dbkjs.protocol.jsonDBK.process(feature);
-    _obj.zoomToFeature(feature);
     return false;
   }
 };

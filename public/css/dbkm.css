@@ -221,7 +221,7 @@ a {
 }
 @media (max-width: 999px) {
     #foutknop {
-        left: 8px;
+        left: 20px;
         bottom: 75px;
         position: absolute;
     }
@@ -234,7 +234,7 @@ a {
 }
 @media (min-width: 1000px) and (orientation: landscape) {
     #foutknop {
-        left: 8px;
+        left: 20px;
         bottom: 0;
         position: absolute;
     }
@@ -291,7 +291,7 @@ body {
     margin-left:-200px;
     bottom:0;
     left:50%;
-    z-index:2001;
+    z-index:10000;
     margin-bottom: 0 !important;
 }
 .btn-group {

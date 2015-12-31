@@ -46,8 +46,9 @@ dbkjs.modules.geolocate = {
   },
   /**
    * @property {Object} layer - OpenLayers.Layer
+   * Layer name starts with _ to hide in support module layer list
    */
-  layer: new OpenLayers.Layer.Vector('GPS location'),
+  layer: new OpenLayers.Layer.Vector('_GPS location'),
   /**
    * @property {Boolean} firstGeolocation - true or false
    */
