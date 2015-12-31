@@ -50,8 +50,69 @@ dbkjs.modules.layertoggle = {
    */
   id: "dbk.module.layertoggle",
   /**
-   * Toggle layers based on type
+   * Default layer toggle buttons toggle based on brandweervoorziening
+   * category. Override in dbkjs.options.layertoggle.buttons, see comments for
+   * toggle button options.
    */
+  buttons: [{
+    id: 'object',
+    // Button label, can be null
+    label: i18n.t('layertoggle.general'),
+    // Button image if label is null
+    img: null,
+    // Font-awesome icon if label and img are null
+    icon: null,
+    
+    // CSS applied to button
+    css: {
+      'background-color': 'green'
+    },
+    
+    // Default button state
+    active: true,
+    
+    // Names of layers to hide when button inactive
+    layers: [], 
+
+    // Function called when button is inactive, returns true if a feature should be hidden
+    // Default: hide brandweervoorziening when category is 'objectinformatie'
+    hideFeature: function(layer, feature) {
+      return layer.name === "Brandweervoorzienining" && feature.attributes.category === 'objectinformatie';
+    }
+  },{
+    id: 'prevent',
+    label: i18n.t('layertoggle.prevent'),
+    css: {
+      'background-color': '#ffff4f'
+    },
+    active: true,
+    layers: ['Brandcompartiment'],
+    hideFeature: function(layer, feature) {
+      return layer.name === "Brandweervoorziening" && feature.attributes.category === 'preventief';
+    }    
+  },{
+    id: 'prepare',
+    label: i18n.t('layertoggle.prepare'),
+    css: {
+      'background-color': '#0e90d2'
+    },
+    active: true,
+    layers: [],
+    hideFeature: function(layer, feature) {
+      return layer.name === "Brandweervoorziening" && feature.attributes.category === 'preparatief';
+    }    
+  },{
+    id: 'repress',
+    label: i18n.t('layertoggle.repress'),
+    css: {
+      'background-color': '#0e90d2'
+    },
+    active: true,
+    layers: ['Gevaarlijke stoffen'],
+    hideFeature: function(layer, feature) {
+      return layer.name === "Brandweervoorziening" && feature.attributes.category === 'repressief';
+    }    
+  }],
   availableToggles: {
     'toggleObject': {
       'label': 'Algemeen',

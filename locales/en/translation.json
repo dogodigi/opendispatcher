@@ -256,5 +256,11 @@
       "impossible": "No",
       "alternative": "Alternative",
       "information": "Remarks"
+    },
+    "layertoggle": {
+      "general": "General",
+      "prevent": "Prevent",
+      "prepare": "Prepare",
+      "repress": "Repress"
     }
 }
