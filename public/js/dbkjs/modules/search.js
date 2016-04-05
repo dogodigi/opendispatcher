@@ -70,20 +70,14 @@ dbkjs.modules.search = {
   /**
    *
    */
-  viewmode: 'default',
-  /**
-   *
-   */
   register: function(options) {
-    if (options && options.viewmode) {
-      this.viewmode = options.viewmode;
-    }
-    if (this.viewmode === 'fullscreen') {
+    if (dbkjs.viewmode === 'fullscreen') {
       this.fullscreenLayout();
     } else {
       this.inlineLayout();
     }
-    this.layer = new OpenLayers.Layer.Vector('search');
+    // Layer name starts with _ to hide in support module layer list
+    this.layer = new OpenLayers.Layer.Vector('_search');
     dbkjs.map.addLayer(this.layer);
   },
   /**
@@ -162,21 +156,36 @@ dbkjs.modules.search = {
   createSearchGroup: function() {
     var search_group = $('<div></div>').addClass('input-group input-group-lg');
     var search_input = $('<input id="search_input" name="search_input" type="text" class="form-control" placeholder="' + i18n.t("search.dbkplaceholder") + '">');
-    var search_btn_grp = $(
-      '<span class="btn-group input-group-btn">' +
-      '<a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-building"></i> <span class="dropdown-text">' + i18n.t("search.dbk") + '</span> <span class="caret"></span></a>' +
-      '<ul class="dropdown-menu pull-right" id="search_dropdown" role="menu">' +
-      '<li><a href="#" id="s_dbk"><i class="fa fa-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
-      '<li><a href="#" id="s_oms"><i class="fa fa-bell"></i> ' + i18n.t("search.oms") + '</a></li>' +
-      '<li><a href="#" id="s_adres"><i class="fa fa-home"></i> ' + i18n.t("search.address") + '</a></li>' +
-      '<li><a href="#" id="s_coord"><i class="fa fa-thumb-tack"></i> ' + i18n.t("search.coordinates") + '</a></li>' +
-      '</ul>' +
-      '</span>'
-    );
-    search_group.append(search_input);
-    search_group.append(search_btn_grp);
-    // If function is enabled, add ability to search infrastructure point objects
-    $('#search_dropdown').append('<li id="li_s_infra"><a href="#" id="s_infra"><i class="fa fa-car"></i> ' + i18n.t("search.infrastructure") + '</a></li>');
+
+    if(dbkjs.options.searchTabs) {
+        // XXX adres and coord searches hidden with this option, should be configurable
+        var search_tabs = $(
+          '<ul id="search_tabs" class="nav nav-pills" style="margin-bottom: 10px">' +
+          '<li class="active"><a data-toggle="tab" href="#" id="s_dbk"><i class="fa fa-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
+          '<li><a  data-toggle="tab" href="#" id="s_address"><i class="fa fa-home"></i> ' + i18n.t("search.address") + '</a></li>' +
+          '</ul>'
+        );
+
+        search_group.append(search_tabs);
+        search_group.append(search_input);
+    } else {
+      var search_btn_grp = $(
+        '<span class="btn-group input-group-btn">' +
+        '<a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-building"></i> <span class="dropdown-text">' + i18n.t("search.dbk") + '</span> <span class="caret"></span></a>' +
+        '<ul class="dropdown-menu pull-right" id="search_dropdown" role="menu">' +
+        '<li><a href="#" id="s_dbk"><i class="fa fa-building"></i> ' + i18n.t("search.dbk") + '</a></li>' +
+        '<li><a href="#" id="s_oms"><i class="fa fa-bell"></i> ' + i18n.t("search.oms") + '</a></li>' +
+        '<li><a href="#" id="s_adres"><i class="fa fa-home"></i> ' + i18n.t("search.address") + '</a></li>' +
+        '<li><a href="#" id="s_coord"><i class="fa fa-thumb-tack"></i> ' + i18n.t("search.coordinates") + '</a></li>' +
+        '</ul>' +
+        '</span>'
+      );
+      search_group.append(search_input);
+      search_group.append(search_btn_grp);
+      // If function is enabled, add ability to search infrastructure point objects
+      $('#search_dropdown').append('<li id="li_s_infra"><a href="#" id="s_infra"><i class="fa fa-car"></i> ' + i18n.t("search.infrastructure") + '</a></li>');
+    }
+
     return $('<div class="row"></div>').append($('<div class="col-lg-12"></div>').append(search_group));
   },
   /**
@@ -210,7 +219,7 @@ dbkjs.modules.search = {
     ]);
     dbkjs.map.zoomToExtent(_obj.layer.getDataExtent());
     _obj.pulsate(circle);
-    if (_obj.viewmode === 'fullscreen' && _obj.searchPopup) {
+    if (dbkjs.viewmode === 'fullscreen' && _obj.searchPopup) {
       _obj.searchPopup.hide();
     }
   },
@@ -295,7 +304,24 @@ dbkjs.modules.search = {
         }
       };
 
+    if(dbkjs.options.searchTabs) {
+      // XXX add handler to all search options
+      $("#s_dbk, #s_address").on('click', function(e) {
+        var searchId = $(e.target).attr("id");
+        if(searchId && searchId.startsWith("s_")) {
+          currentSearch = searchId.substring(2);
+
+          $("#search_input").attr("placeholder", i18n.t("search." + currentSearch + "placeholder"));
+          window.setTimeout(function() {
+            searchField.keyup();
+          }, 100);
+        }
+      });
+    }
     searchField.on('keyup', function(e) {
+      if(dbkjs.options.searchTabs) {
+        currentSearch = $("#search_tabs li.active a").attr("id").substring(2);
+      }
       var searchText = searchField.val();
       if (searchText.length === 0) {
         $('.search_result').html('');

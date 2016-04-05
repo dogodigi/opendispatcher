@@ -106,7 +106,8 @@ dbkjs.modules.gms = {
       })
       .appendTo('#btngrp_3');
 
-    this.markers = new OpenLayers.Layer.Markers("GMS Marker");
+    // Layer name starts with _ to hide in support module layer list
+    this.markers = new OpenLayers.Layer.Markers("_GMS Marker");
     dbkjs.map.addLayer(this.markers);
 
     this.checkFeaturesLoaded();
@@ -213,8 +214,8 @@ dbkjs.modules.gms = {
    */
   reprojectToOpenLayersLonLat: function() {
     var me = this;
-    var lon = me.gms.Gms.IncidentAdres.Positie.X,
-      lat = me.gms.Gms.IncidentAdres.Positie.Y;
+    var lon = me.gms.Gms.IncidentAdres.Positie.X;
+    var lat = me.gms.Gms.IncidentAdres.Positie.Y;
 
     lon = lon / 100000;
     lat = lat / 100000;
@@ -371,7 +372,7 @@ dbkjs.modules.gms = {
       c = e(reprojected.lon.toFixed() + ", " + reprojected.lat.toFixed());
       table.append('<tr><td>Coördinaten</a></td>' +
         '<td><a href="#" onclick="dbkjs.modules.gms.zoom(); dbkjs.modules.gms.gmsPopup.hide();">' + c + '</a></td></tr>');
-    } else {}
+    }
     if (g.Kladblok) {
       row(e(dbkjs.util.nl2br(g.Kladblok)), "Kladblok");
     }

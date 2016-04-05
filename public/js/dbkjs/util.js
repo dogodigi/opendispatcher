@@ -1070,6 +1070,8 @@ dbkjs.util = {
         // see http://stackoverflow.com/questions/7069167/css-transition-not-firing
         popup.css('width');
         popup.addClass('modal-popup-active');
+
+        $(dbkjs).trigger('modal_popup_show', {popupName: options.name});        
       },
       hide: function() {
         hidingFunction();
@@ -1132,5 +1134,24 @@ dbkjs.util = {
    */
   gcd: function(a, b) {
     return (b === 0) ? a : dbkjs.util.gcd(b, a % b);
+  },
+  /**
+   * Get event for CSS transitions ending, or null if none found for current
+   * browser.
+   */
+  getTransitionEndEvent: function() {
+    var el = document.createElement('fakeelement');
+    var transitions = {
+      'transition': 'transitionend',
+      'OTransition': 'oTransitionEnd',
+      'MozTransition': 'transitionend',
+      'WebkitTransition': 'webkitTransitionEnd'
+    };
+    for (t in transitions) {
+      if (el.style[t] !== undefined) {
+         return transitions[t];
+      }
+    }
+    return null;
   }
 };
