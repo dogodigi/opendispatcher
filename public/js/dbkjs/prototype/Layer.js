@@ -180,7 +180,7 @@ dbkjs.Layer = dbkjs.Class({
             }
 
             if (dbkjs.viewmode === 'fullscreen') {
-                dv_panel_content.append('<img src="' + (metadata.legend ? metadata.legend : legend) + '"/>');
+                dv_panel_content.append('<img id="legend_' + this.id + '" src="' + (metadata.legend ? metadata.legend : legend) + '"/>');
             }
 
             this.div.append(dv_panel_content);
