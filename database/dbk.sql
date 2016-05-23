@@ -668,14 +668,27 @@ LANGUAGE SQL;
 -- met adres
 CREATE FUNCTION dbk.dbkfeatures_adres_json(srid integer = 28992) RETURNS TABLE (identificatie integer, "feature" json) AS 
 '
-SELECT t.identificatie,
-    row_to_json(t.*) AS "feature"
+SELECT t.identificatie, row_to_json(t.*) AS "feature"
    FROM ( SELECT 
-	gid, identificatie, "BHVaanwezig", "controleDatum", "formeleNaam", 
+  gid, identificatie, "BHVaanwezig", "controleDatum", "formeleNaam", 
         "informeleNaam", "OMSNummer", inzetprocedure, "typeFeature", 
-        st_asgeojson(st_transform(geometrie,$1),15,2)::json as geometry, verwerkt, hoofdobject, bouwlaag, risicoklasse,
--- XXX deleted checken       (select count(*) from wfs."DBK2" d2 where d2."Hoofdobject_ID" = d.identificatie) as verdiepingen,
-        (select count(*) from dbk."DBKFeature" d2 where d2.hoofdobject = d.identificatie) as verdiepingen,
+        st_asgeojson(st_transform(geometrie,28992),15,2)::json as geometry, verwerkt, hoofdobject, bouwlaag, risicoklasse,
+        (select count(*) from wfs."DBK2" d2 where d2."Hoofdobject_ID" = d.identificatie) as verdiepingen,
+
+          ( SELECT array_to_json(array_agg(row_to_json(b.*))) AS array_to_json
+                   FROM ( SELECT verdieping."DBK_ID" as "identificatie",
+                            verdieping2."Bouwlaag" as bouwlaand,
+                            verdieping."Formele_Naam" as "formeleNaam",
+                            verdieping."Informele_Naam" as "informeleNaam",
+                            case when d.identificatie = verdieping."DBK_ID" then 'hoofdobject' else 'verdieping' end as "type"
+                           FROM wfs."DBK" verdieping inner join wfs."DBK2" verdieping2 on verdieping."DBK_ID" = verdieping2."DBK_ID"
+                          WHERE 
+                          (verdieping2."Hoofdobject_ID" = d.identificatie) AND
+                          (viewer = true) AND ((now() > datumtijdviewerbegin and now() <= datumtijdviewereind) OR 
+(datumtijdviewerbegin is null and datumtijdviewereind is null) OR
+(now() > datumtijdviewerbegin and datumtijdviewereind is null) OR
+(datumtijdviewerbegin is null and now() <= datumtijdviewereind))
+                          ORDER BY bouwlaag) b) AS "verdiepingenObjecten",                          
             ( SELECT array_to_json(array_agg(row_to_json(a.*))) AS array_to_json
                    FROM ( SELECT "Adres"."bagId",
                             "Adres"."openbareRuimteNaam",
@@ -688,7 +701,7 @@ SELECT t.identificatie,
                             "Adres".huisnummertoevoeging,
                             "Adres".postcode
                            FROM dbk."Adres"
-                          WHERE "Adres"."bagId" = (select dob.adres_id from dbk."DBKObject" dob where dob.siteid = d.identificatie)) a) AS adres        
+                          WHERE "Adres"."bagId" = (select dob.adres_id from dbk."DBKObject" dob where dob.dbkfeature_id = d.identificatie)) a) AS adres      
    FROM dbk."DBKFeature" d where d.hoofdobject is null AND (not d.geometrie is null and not st_isempty(d.geometrie) and not d."typeFeature" is null) AND (viewer = true) AND ((now() > datumtijdviewerbegin and now() <= datumtijdviewereind) OR 
 (datumtijdviewerbegin is null and datumtijdviewereind is null) OR
 (now() > datumtijdviewerbegin and datumtijdviewereind is null) OR
