@@ -593,6 +593,11 @@ dbkjs.config.styles = {
                     return dbkjs.scaleStyleValue(12, feature.attributes.radius);
                 },
                 mydisplay: function (feature) {
+                    // This function is overridden by layertoggle module
+                    
+                    // Any string except "none" means display feature
+                    return "true";
+/*                    
                     if (dbkjs.options.visibleCategories &&
                           feature.attributes.category &&
                           dbkjs.options.visibleCategories[feature.attributes.category] === false) {
@@ -601,6 +606,7 @@ dbkjs.config.styles = {
                         // any string except "none" works here
                         return "true";
                     }
+*/                    
                 }
             }
         }), 'select': new OpenLayers.Style({

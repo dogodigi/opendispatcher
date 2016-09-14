@@ -278,5 +278,11 @@
       "impossible": "Geen",
       "alternative": "Alternatief",
       "information": "Opmerkingen"
+    },
+    "layertoggle": {
+      "general": "Algemeen",
+      "prevent": "Preventie",
+      "prepare": "Preparatie",
+      "repress": "Repressie"
     }
 }
