@@ -88,7 +88,7 @@ dbkjs.init = function() {
 
   dbkjs.mapcontrols.createMapControls();
 
-  dbkjs.mapcontrols.registerMapEvents(dbkjs.layers.createBaseLayers());
+  $('#baselayerpanel_b').append(dbkjs.layers.createBaseLayers());
 
   dbkjs.showStatus = true;
 
@@ -526,12 +526,30 @@ dbkjs.documentReady = function() {
       }).getView().append($('<div></div>').attr({
         'id': 'infopanel_b'
       }));
+
       // Create the DBK infopanel
-      dbkjs.util.createModalPopup({
-        name: 'dbkinfopanel'
-      }).getView().append($('<div></div>').attr({
-        'id': 'dbkinfopanel_b'
-      }));
+      dbkjs.dbkInfoPanel = new SplitScreenWindow("dbkinfopanel");
+      dbkjs.dbkInfoPanel.createElements();
+
+      // Put tabs at the bottom after width transition has ended
+      var updateContentHeight = function() {
+        var view = dbkjs.dbkInfoPanel.getView();
+        view.find(".tab-content").css("height", view.height() - view.find(".nav-pills").height());
+      };
+      var event = dbkjs.util.getTransitionEndEvent();
+      if(event) {
+        dbkjs.dbkInfoPanel.getView().parent().on(event, updateContentHeight);
+      } else {
+        $(dbkjs.dbkInfoPanel).on("show", function() {
+          updateContentHeight();
+        });
+      }
+
+      dbkjs.dbkInfoPanel.getView().append(
+        $('<div></div>')
+        .attr({'id': 'dbkinfopanel_b'})
+        .text(i18n.t("dialogs.noinfo"))
+      );
 
       // We are removing / moving some existing DIVS from HTML to convert prev. popups to fullscreen modal popups
       $('#baselayerpanel').remove();
@@ -588,7 +606,7 @@ dbkjs.documentReady = function() {
         if (dbkjs.viewmode !== 'fullscreen') {
           $('#infopanel').toggle();
         } else {
-          dbkjs.util.getModalPopup('dbkinfopanel').show();
+          dbkjs.dbkInfoPanel.toggle();
         }
       } else if (this.id === "c_minimap") {
         $('#minimappanel').toggle();

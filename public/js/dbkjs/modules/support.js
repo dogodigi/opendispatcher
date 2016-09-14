@@ -93,53 +93,64 @@ dbkjs.modules.support = {
         });
         dbkjs.map.addControl(_obj.drag);
         _obj.drag.activate();
-        $('#supportpanel_b').html('');
+        $('#supportpanel_b').html('').css('padding-top', '0px');
         //Selectie voor kaartlagen
         var layerarray = [];
         $.each(dbkjs.map.layers, function(l_index, layer) {
+          // TODO: prefix the layers with _, remove hardcoded list here
           if ($.inArray(layer.name, ['hulplijn1', 'hulplijn2', 'Feature', 'Support', 'print']) === -1) {
-            //layername mag niet beginnen met OpenLayers_
-            if (layer.name.substring(0, 11) !== "OpenLayers_" && layer.getVisibility()) {
+            if (layer.name.indexOf("OpenLayers_") !== 0 && layer.name.indexOf("_") !== 0 && layer.getVisibility()) {
               layerarray.push(layer.name);
             }
           }
         });
         layerarray.sort();
         var p = $('<form id="support-form"  class="form-horizontal" role="form"></form>');
-        //p.append('<p class="bg-info">' + i18n.t('email.help') +'</p>');
+        $("#supportpanel_b").prepend('<p id="email_help"><i>' + i18n.t('email.help') +'</i></p>');
         var laag_input = $('<div class="form-group"></div>');
         var select = $('<select name="subject" class="form-control"></select>');
         select.append('<option selected>' + i18n.t('email.generalmessage') + '</option>');
-        var ignoreLayers = ["GMS Marker", "GPS Marker", "search"];
-        $.each(layerarray, function(l_index, name) {
-          if ($.inArray(name, ignoreLayers) === -1) {
-            select.append('<option>' + name + '</option>');
+        if(dbkjs.options.organisation.support.subjects) {
+          var subjects = dbkjs.options.organisation.support.subjects.split(",");
+          for(var i = 0; i < subjects.length; i++) {
+            select.append('<option>' + subjects[i] + '</option>');
           }
-        });
-        laag_input.append('<label class="col-sm-4 control-label" for="subject">' + i18n.t('email.subject') + '</label>');
+        } else {
+          $.each(layerarray, function(l_index, name) {
+              select.append('<option>' + name + '</option>');
+          });
+        }
+        var labelHtml;
+        if(dbkjs.viewmode === 'fullscreen') {
+          laag_input.append('<label class="col-sm-2 control-label" for="subject">' + i18n.t('email.subject') + '</label>');
+          labelHtml = '<div class="form-group"><label class="col-sm-2 control-label" for="';
+        } else {
+          laag_input.append('<label class="col-sm-4 control-label" for="subject">' + i18n.t('email.subject') + '</label>');
+          labelHtml = '<div class="form-group"><label class="col-sm-4 control-label" for="';
+        }
         laag_input.append($('<div class="col-sm-8"></div>').append(select));
         p.append(laag_input);
-        var adres_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="address">' +
+        var adres_input = $(labelHtml + 'address">' +
           i18n.t('email.address') +
           '</label><div class="col-sm-8"><input id="address" name="address" type="text" class="form-control" placeholder="' +
           i18n.t('email.address') + '"></div></div>');
         p.append(adres_input);
-        var user_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="name">' +
+        var user_input = $(labelHtml + 'name">' +
           i18n.t('email.name') +
           ' *</label><div class="col-sm-8"><input id="name" name="name" type="text" class="form-control required" placeholder="' +
           i18n.t('email.name') + '"></div></div>');
         p.append(user_input);
-        var mail_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="email">' +
+        var mail_input = $(labelHtml + 'email">' +
           i18n.t('email.email') +
           ' *</label><div class="col-sm-8"><input id="email" name="email" type="email" class="form-control required" placeholder="' +
           i18n.t('email.email') + '"></div></div>');
         p.append(mail_input);
-        var tel_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="phone">' +
+        var tel_input = $(labelHtml + 'phone">' +
           i18n.t('email.phone') +
           '</label><div class="col-sm-8"><input id="phone" name="phone" type="tel" class="form-control" placeholder="' +
           i18n.t('email.phone') + '"></div></div>');
         p.append(tel_input);
-        var remarks_input = $('<div class="form-group"><label class="col-sm-4 control-label" for="remarks">' +
+        var remarks_input = $(labelHtml + 'remarks">' +
           i18n.t('email.remarks') +
           ' *</label><div class="col-sm-8"><textarea id="remarks" name="remarks" class="form-control required" placeholder="' +
           i18n.t('email.remarks') + '"></textarea></div></div>');

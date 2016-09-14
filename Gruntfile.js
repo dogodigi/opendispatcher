@@ -72,14 +72,14 @@ module.exports = function(grunt) {
           dest: 'build/desktop/js/libs',
           expand: true
         }, {
-          cwd: 'public/font-awesome-4.1.0/css',
+          cwd: 'public/font-awesome-4.4.0/css',
           src: ['font-awesome.min.css'],
-          dest: 'build/desktop/font-awesome-4.1.0/css',
+          dest: 'build/desktop/font-awesome-4.4.0/css',
           expand: true
         }, {
-          cwd: 'public/font-awesome-4.1.0/fonts',
+          cwd: 'public/font-awesome-4.4.0/fonts',
           src: ['*'],
-          dest: 'build/desktop/font-awesome-4.1.0/fonts',
+          dest: 'build/desktop/font-awesome-4.4.0/fonts',
           expand: true
         }, {
           cwd: 'public/css',
@@ -94,7 +94,7 @@ module.exports = function(grunt) {
         }, {
           cwd: 'node_modules/i18next-client',
           src: ['i18next.js'],
-          dest: 'build/mobile/i18next',
+          dest: 'build/desktop/i18next',
           expand: true
         }]
       },
@@ -239,6 +239,7 @@ module.exports = function(grunt) {
             'public/js/dbkjs/prototype/Layer.js',
             'public/js/dbkjs/prototype/Capabilities.js',
             'public/js/dbkjs/layout.js',
+            'public/js/dbkjs/windows.js',
             'public/js/dbkjs/modules/geolocate.js',
             'public/js/dbkjs/protocol/jsonDBK.js',
             'public/js/dbkjs/modules/search.js',
@@ -258,8 +259,6 @@ module.exports = function(grunt) {
             'public/js/dbkjs/mapcontrols.js',
             'public/js/dbkjs/dbkjs.js',
             'public/js/overrides/jsonDBK.js',
-            'public/js/overrides/layout.js',
-            'public/js/overrides/search.js',
             'public/js/dbkjs/docready.js'
           ]
         }

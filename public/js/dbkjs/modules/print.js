@@ -288,7 +288,7 @@ dbkjs.modules.print = {
           //maximum of 6 contacts. Otherwise it will mess up print format.
           $.each(currentFeature.contact, function(adr_index, adr) {
             //trim the telephone number to 25 chars.
-            var tel = (adr.telefoonnummer + Array(25).join(' ')).slice(-25);
+            var tel = (adr.telefoonnummer + Array(25).join(' ')).substring(0,25);
             adr_str += tel + ' ' + adr.naam + ' ' + '(' + adr.functie + ')\n';
           });
           //cut the address at max-string length (45 chars at max)
