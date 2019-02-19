@@ -57,7 +57,7 @@
     "pg": "*",
     "request": "*",
     "serve-favicon": "^2.3.0",
-    "uglify-js": "2.4.24"
+    "uglify-js": "2.6.0"
   },
   "devDependencies": {
     "grunt-jsdoc": "^1.0.0",
